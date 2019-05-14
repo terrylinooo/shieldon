@@ -1,0 +1,17 @@
+{
+    "name": "terrylinooo/shieldon",
+    "description": "Anti-scraping, XSS filtering and traffic controll on Web application layer.",
+    "keywords": ["anti-scraping", "xss-filter", "web-security"],
+    "homepage": "https://github.com/terrylinooo/shieldon",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Terry Lin",
+            "email": "contact@terryl.in",
+            "homepage": "https://terryl.in"
+        }
+    ],
+    "require": {
+        "doctrine/cache": "^1.8"
+    }
+}
