@@ -8,10 +8,25 @@
         {
             "name": "Terry Lin",
             "email": "contact@terryl.in",
-            "homepage": "https://terryl.in"
+            "homepage": "https://terryl.in",
+            "role": "Developer"
         }
     ],
+    "require": {
+        "php": ">=7.0.0"
+    },
     "require-dev": {
         "phpunit/phpunit": "^8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shieldon\\": "src/Shieldon/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Shieldon\\Tests\\": "tests/"
+        }
     }
 }
+
