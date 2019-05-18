@@ -10,12 +10,16 @@
 
 namespace Shieldon\Driver;
 
-use Doctrine\Common\Cache\RedisCache as Cache;
-
 /**
  * Redis Driver
  */
-class RedisDriver extends DriverAbstract
+class RedisDriver extends DriverProvider
 {
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
 
+    }
 }

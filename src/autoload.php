@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,14 +9,6 @@
  * file that was distributed with this source code.
  */
 
-namespace Shieldon\Driver;
+require __DIR__. '/Shieldon/Autoloader.php';
 
-use Doctrine\Common\Cache\MemcacheCache as Cache;
-
-/**
- * Memcache Driver
- */
-class FileDriver extends DriverAbstract
-{
-
-}
+Shieldon\Autoloader::register();

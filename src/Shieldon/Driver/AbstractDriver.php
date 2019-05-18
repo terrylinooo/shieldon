@@ -10,7 +10,7 @@
 
 namespace Shieldon\Driver;
 
-use ShieldTon\DriverInterface;
+use Shieldon\Driver\DriverInterface;
 
 /**
  * Abstract Driver.
@@ -18,24 +18,72 @@ use ShieldTon\DriverInterface;
 abstract class AbstractDriver implements DriverInterface
 {
     /**
-     * Undocumented function
+     * {@inheritDoc}
+     */
+    public function get(string $ip, string $type = 'log'): array
+    {
+        return $this->doFetch($ip, $type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function has(string $ip, string $type = 'log'): bool
+    {
+        return $this->checkExist($ip, $type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function save(string $ip, array $data, string $type = 'log', int $expire = 0): bool
+    {
+        return $this->doSave($ip, $data, $type, $expire);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function delete(string $ip, string $type = 'log'): bool
+    {
+        return $this->doDelete($ip, $type);
+    }
+
+    /**
+     * Implement fetch.
      *
-     * @param array $config
+     * @param string $ip The data id of the entry to fetch.
+     *
+     * @return array The data or an empty array.
+     */
+    abstract protected function doFetch(string $ip, string $type = 'log'): array;
+
+    /**
+     * Implement has.
+     *
+     * @param string $ip The data id of the entry to check for.
+     *
      * @return bool
      */
-    public function connect(array $config)
-    {
-        $configDefault = [
-            'ip'   => '127.0.0.1',
-            'port' => '',
-            'user' => '',
-            'pass' => '',
-        ];
+    abstract protected function checkExist(string $ip, string $type = 'log'): bool;
 
-        foreach ($configDefault as $v) {
-            if (! empty($config[$v])) {
-                $this->{$v} = $config[$v];
-            }
-        }
-    }
+    /**
+     * Implement save.
+     *
+     * @param string $ip     The data id.
+     * @param array  $data   The data.
+     * @param int    $expire The data will be deleted after expiring.
+     *
+     * @return bool
+     */
+    abstract protected function doSave(string $ip, array $data, string $type = 'log', $expire = 0): bool;
+
+    /**
+     * Implement delete.
+     *
+     * @param string $ip
+     *
+     * @return bool
+     */
+    abstract protected function doDelete(string $ip, string $type = 'log'): bool;
 }

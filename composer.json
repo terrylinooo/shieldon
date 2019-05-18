@@ -11,7 +11,7 @@
             "homepage": "https://terryl.in"
         }
     ],
-    "require": {
-        "doctrine/cache": "^1.8"
+    "require-dev": {
+        "phpunit/phpunit": "^8"
     }
 }

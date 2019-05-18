@@ -10,10 +10,21 @@
 
 namespace Shieldon\Driver;
 
-/**
- * Mysql Driver
- */
-class MemcachedDriver extends DriverAbstract
-{
+use PDO;
 
+/**
+ * Mysql Driver.
+ */
+class MysqlDriver extends AbstractSqlDriver
+{
+    /**
+     * Constructor.
+     *
+     * @param PDO $pdo
+     * @param bool $debug
+     */
+    public function __construct(PDO $pdo, bool $debug = false)
+    {
+        parent::__construct($pdo, $debug);
+    }
 }

@@ -8,14 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Shieldon\Driver;
-
-use Doctrine\Common\Cache\XcacheCache as Cache;
+namespace Shieldon\Component;
 
 /**
- * Xcache Driver
+ * ComponentInterface
  */
-class XcacheDriver extends DriverAbstract
+interface ComponentInterface
 {
-
+   
 }
