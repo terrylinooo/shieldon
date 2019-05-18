@@ -1,6 +1,6 @@
 # Shieldon :shield:
 
-Shieldon, a PHP library that prevents anti-scraping, XSS filitering and traffic controll. As if you are using a shield on your web applicaion to against bad-behavior bots, crawlers or vulnerability scanning and so on.
+Shieldon, a PHP library that provides anti-scraping, XSS filitering and traffic controll for your web application. As if you are using a shield on your web applicaion to fight against bad-behavior bots, crawlers or vulnerability scanning and so on.
 
 `version: 1.0.0.alpha`
 
