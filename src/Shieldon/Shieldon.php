@@ -496,19 +496,6 @@ class Shieldon
     }
 
     /**
-     * Set configuration. (Not yet ready)
-     *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return self
-     */
-    public function setProperty(string $key = '', $value = ''): self
-    {
-        return $this;
-    }
-
-    /**
      * Set a data channel.
      *
      * @param string $channel Oh, it is a channel.
@@ -588,7 +575,20 @@ class Shieldon
     }
 
     /**
-     * Undocumented function
+     * (Todo)
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return self
+     */
+    public function setProperty(string $key = '', $value = ''): self
+    {
+        return $this;
+    }
+
+    /**
+     * (Todo)
      *
      * @param int $count
      * @param int $period
@@ -597,6 +597,31 @@ class Shieldon
      * @return self
      */
     public function limitTraffic(int $count, int $period = 300, string $type = 'session'): self
+    {
+        return $this;
+    }
+
+    /**
+     * (Todo)
+     *
+     * @param string $type GET, POST, COOKIE.
+     * @param string $key  The key name of an array.
+     *
+     * @return self
+     */
+    public function xssClean(string $type, string $key): self
+    {
+        return $this;
+    }
+
+    /**
+     * (Todo)
+     *
+     * @param string $content The HTML text.
+     *
+     * @return self
+     */
+    public function setHtml(string $content): self
     {
         return $this;
     }

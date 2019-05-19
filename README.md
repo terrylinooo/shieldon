@@ -118,21 +118,43 @@ $shieldon->setDriver(
 );
 ```
 
-
 ## API
 
+- setDriver
+- setComponent
+- setProperty (Todo)
+- setChannel
+- createDatabase
+- ban
+- unban
+- limitTraffic (Todo)
+- xssClean (Todo)
+- setHtml (Todo)
+- run
 
-### banIP
+The public APIs can be chaining yet `SetDriver` must be the first and `run` must be the last.
+
+### ban
 
 ```php
 /*
  * @var string IP address
  */
-$shieldon->banIP('33.125.12.87');
+$shieldon->ban('33.125.12.87');
 
 ```
 
-### setTraffic
+### unban
+
+```php
+/*
+ * @var string IP address
+ */
+$shieldon->unban('33.125.12.87');
+
+```
+
+### limitTraffic
 
 ```php
 /*
