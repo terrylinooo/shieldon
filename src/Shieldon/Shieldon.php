@@ -125,7 +125,7 @@ class Shieldon
     protected $driver = null;
 
     /**
-     * Component pools.
+     * Container for Shieldon components.
      *
      * @var Interface
      */
@@ -167,213 +167,11 @@ class Shieldon
     }
 
     /**
-     * For first time installation only. This is for creating data tables automatically.
-     * Turning it on will check the data tables exist or not at every single pageview, 
-     * it's not good for high traffic websites.
-     *
-     * @param bool $bool
-     * 
-     * @return void
-     */
-    public function createDatabase(bool $bool)
-    {
-        $this->autoCreateDatabase = $bool;
-    }
-
-    /**
-     * Set configuration.
-     *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return bool
-     */
-    public function setProperty(string $key = '', $value = ''): bool
-    {
-
-    }
-
-    /**
-     * Set a data driver.
-     *
-     * @param DriverProvider $driver Query data from the driver you choose to use.
-     *
-     * @return void
-     */
-    public function setDriver(DriverProvider $driver): void
-    {
-        if ($driver instanceof DriverProvider) {
-            $this->driver = $driver;
-        } else {
-            throw new \UnexpectedValueException('Incorrect data driver provider.');
-        }
-    }
-
-    /**
-     * Set a data channel.
-     *
-     * @param string $channel Oh, it is a channel.
-     *
-     * @return void
-     */
-    public function setChannel(string $channel): void
-    {
-        if (! $this->driver instanceof DriverProvider) {
-            throw new LogicException('setChannel method requires setDriver set first.');
-        } else {
-            $this->driver->setChannel($channel);
-        }
-    }
-
-    /**
-     * Set a commponent.
-     * Sheildon needs commponents to work.
-     *
-     * @param ComponentInterface $component
-     *
-     * @return void
-     */
-    public function setComponent(ComponentInterface $component): void
-    {
-        if ($component instanceof ComponentInterface) {
-            $class = get_class($component);
-            $class = substr($class, strrpos($class, '\\') + 1);
-            $this->component[$class] = $component;
-        } else {
-            throw new \UnexpectedValueException('Incorrect component.');
-        }
-    }
-
-    /**
-     * Get a component.
-     *
-     * @param string $name
-     * @return ComponentInterface|null
-     */
-    public function getComponent(string $name): ?ComponentInterface
-    {
-        if (isset($this->component[$name]) && ($this->component[$name] instanceof ComponentInterface)) {
-            return $this->component[$name];
-        }
-        return null;
-    }
-
-    /**
-     * Run, run, run!
-     *
-     * Check the rule tables first, if an IP address has been listed.
-     * Call function detect() if an IP address is not listed in rule tables.
-     *
-     * @return bool TRUE: allow, FALSE: deny.
-     */
-    public function run(): bool
-    {
-        $this->driver->init($this->autoCreateDatabase);
-
-        if ($this->getComponent('Robot')) {
-
-            // First of all, check if is a a bad robot already defined in settings.
-            if ($this->getComponent('Robot')->isDenied()) {
-                return false;
-            }
-        }
-
-        if ($this->getComponent('Ip')) {
-
-            // Looking for rule table.
-            $ipRule = $this->driver->get($this->ip, 'rule');
-
-            $result = $this->getComponent('Ip')->check($this->ip, function() use ($ipRule) {
-
-                // Here should return ['ip', 'type', 'reason']
-                // for further checking in IP component.
-                if (! empty($ipRule)) {
-                    return [
-                        'ip' => $ipRule['log_ip'],
-                        'type' => $ipRule['type'],
-                        'reason' =>  $ipRule['reason'],
-                    ];
-                }
-
-                return [];
-            });
-
-            if (! empty($result) && is_array($result)) {
-                if (
-                    $result['code'] == $this->getComponent('Ip')::CODE_DENY_IP_RULE &&
-                    $result['code'] == $this->getComponent('Ip')::CODE_ALLOW_IP_RULE
-                ) {
-                    // This IP has been listed in rule table, so set $isRuleList = true.
-                    $this->$isRuleList = true;
-                }
-
-                switch ($result['status']) {
-                    case 'allow':
-                        return true;
-                        break;
-    
-                    case 'deny':
-                        return false;
-                        break;
-                }
-            } else {
-
-                // This IP address is not listed in rule table, let's detect it.
-                if ($this->enableFiltering) {
-
-                    // We need to record the live sessions first.
-                    // If they got banned, 
-                    return $this->detect();
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Ban an IP.
-     *
-     * @param string $ip
-     *
-     * @return void
-     */
-    public function ban(string $ip = ''): void
-    {
-        if ($this->getComponent('Ip')) {
-            $this->getComponent('Ip')->setDeniedList($ip);
-        }
-
-        $this->action(self::ACTION_DENY, self::CODE_MANUAL_BAN, $ip);
-    }
-
-    
-    /**
-     * Unban an IP.
-     *
-     * @param string $ip
-     *
-     * @return void
-     */
-    public function unban(string $ip = ''): void
-    {
-        if ('' === $ip) {
-            $ip = $this->ip;
-        }
-
-        if ($this->getComponent('Ip')) {
-            $this->getComponent('Ip')->removeIp($ip, 'deny');
-        }
-
-        $this->action(self::ACTION_UNBAN, self::CODE_MANUAL_BAN);
-    }
-
-    /**
      * Detect and analyze an user's behavior.
      *
      * @return bool
      */
-    private function detect()
+    protected function detect()
     {
         if ($this->getComponent('Robot')->isAllowed()) {
 
@@ -610,7 +408,7 @@ class Shieldon
      * 
      * @return void
      */
-    private function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
+    protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
     {
         $ip = $this->ip;
     
@@ -638,5 +436,241 @@ class Shieldon
         // Remove logs for this IP address because It already has it's own rule on system.
         // No need to count it anymore.
         $this->driver->delete($this->ip, 'log');
+    }
+
+    /**
+     * Get a component instance from component's container.
+     *
+     * @param string $name The component's class name.
+     *
+     * @return ComponentInterface|null
+     */
+    protected function getComponent(string $name): ?ComponentInterface
+    {
+        if (isset($this->component[$name]) && ($this->component[$name] instanceof ComponentInterface)) {
+            return $this->component[$name];
+        }
+        return null;
+    }
+
+    /*
+    | -------------------------------------------------------------------
+    |                            Public APIs
+    | -------------------------------------------------------------------
+    |  The public APIs can be chaining yet `SetDriver` must be the first 
+    |  and `run` must be the last.
+    */
+    
+    /**
+     * Set a data driver.
+     *
+     * @param DriverProvider $driver Query data from the driver you choose to use.
+     *
+     * @return self
+     */
+    public function setDriver(DriverProvider $driver): self
+    {
+        if ($driver instanceof DriverProvider) {
+            $this->driver = $driver;
+        } else {
+            throw new \UnexpectedValueException('Incorrect data driver provider.');
+        }
+
+        return $this;
+    }
+
+    /**
+     * For first time installation only. This is for creating data tables automatically.
+     * Turning it on will check the data tables exist or not at every single pageview, 
+     * it's not good for high traffic websites.
+     *
+     * @param bool $bool
+     * 
+     * @return self
+     */
+    public function createDatabase(bool $bool): self
+    {
+        $this->autoCreateDatabase = $bool;
+
+        return $this;
+    }
+
+    /**
+     * Set configuration. (Not yet ready)
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return self
+     */
+    public function setProperty(string $key = '', $value = ''): self
+    {
+        return $this;
+    }
+
+    /**
+     * Set a data channel.
+     *
+     * @param string $channel Oh, it is a channel.
+     *
+     * @return self
+     */
+    public function setChannel(string $channel): self
+    {
+        if (! $this->driver instanceof DriverProvider) {
+            throw new LogicException('setChannel method requires setDriver set first.');
+        } else {
+            $this->driver->setChannel($channel);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set a commponent.
+     * Sheildon needs commponents to work.
+     *
+     * @param ComponentInterface $component
+     *
+     * @return self
+     */
+    public function setComponent(ComponentInterface $component): self
+    {
+        if ($component instanceof ComponentInterface) {
+            $class = get_class($component);
+            $class = substr($class, strrpos($class, '\\') + 1);
+            $this->component[$class] = $component;
+        } else {
+            throw new \UnexpectedValueException('Incorrect component.');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Ban an IP.
+     *
+     * @param string $ip
+     *
+     * @return void
+     */
+    public function ban(string $ip = ''): self
+    {
+        if ($this->getComponent('Ip')) {
+            $this->getComponent('Ip')->setDeniedList($ip);
+        }
+
+        $this->action(self::ACTION_DENY, self::CODE_MANUAL_BAN, $ip);
+
+        return $this;
+    }
+
+    /**
+     * Unban an IP.
+     *
+     * @param string $ip
+     *
+     * @return self
+     */
+    public function unban(string $ip = ''): self
+    {
+        if ('' === $ip) {
+            $ip = $this->ip;
+        }
+
+        if ($this->getComponent('Ip')) {
+            $this->getComponent('Ip')->removeIp($ip, 'deny');
+        }
+
+        $this->action(self::ACTION_UNBAN, self::CODE_MANUAL_BAN);
+
+        return $this;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param int $count
+     * @param int $period
+     * @param string $type
+     *
+     * @return self
+     */
+    public function limitTraffic(int $count, int $period = 300, string $type = 'session'): self
+    {
+        return $this;
+    }
+
+    /**
+     * Run, run, run!
+     *
+     * Check the rule tables first, if an IP address has been listed.
+     * Call function detect() if an IP address is not listed in rule tables.
+     *
+     * @return bool TRUE: allow, FALSE: deny.
+     */
+    public function run(): bool
+    {
+        $this->driver->init($this->autoCreateDatabase);
+
+        if ($this->getComponent('Robot')) {
+
+            // First of all, check if is a a bad robot already defined in settings.
+            if ($this->getComponent('Robot')->isDenied()) {
+                return false;
+            }
+        }
+
+        if ($this->getComponent('Ip')) {
+
+            // Looking for rule table.
+            $ipRule = $this->driver->get($this->ip, 'rule');
+
+            $result = $this->getComponent('Ip')->check($this->ip, function() use ($ipRule) {
+
+                // Here should return ['ip', 'type', 'reason']
+                // for further checking in IP component.
+                if (! empty($ipRule)) {
+                    return [
+                        'ip' => $ipRule['log_ip'],
+                        'type' => $ipRule['type'],
+                        'reason' =>  $ipRule['reason'],
+                    ];
+                }
+
+                return [];
+            });
+
+            if (! empty($result) && is_array($result)) {
+                if (
+                    $result['code'] == $this->getComponent('Ip')::CODE_DENY_IP_RULE &&
+                    $result['code'] == $this->getComponent('Ip')::CODE_ALLOW_IP_RULE
+                ) {
+                    // This IP has been listed in rule table, so set $isRuleList = true.
+                    $this->$isRuleList = true;
+                }
+
+                switch ($result['status']) {
+                    case 'allow':
+                        return true;
+                        break;
+    
+                    case 'deny':
+                        return false;
+                        break;
+                }
+            } else {
+
+                // This IP address is not listed in rule table, let's detect it.
+                if ($this->enableFiltering) {
+
+                    // We need to record the live sessions first.
+                    // If they got banned, 
+                    return $this->detect();
+                }
+            }
+        }
+
+        return true;
     }
 }
