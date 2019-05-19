@@ -42,12 +42,13 @@ class Shieldon
 {
     use IpTrait;
 
-    // Reason codes.
+    // Reason codes (allow)
     public const CODE_IS_SEARCH_ENGINE = 100;
     public const CODE_IS_GOOGLE = 101;
     public const CODE_IS_BING = 102;
     public const CODE_IS_YAHOO = 103;
 
+    // Reason codes (deny)
     public const CODE_TOO_MANY_SESSIONS = 1;
     public const CODE_TOO_MANY_ACCESSES = 2;
     public const CODE_EMPTY_JS_COOKIE = 3;
@@ -63,6 +64,7 @@ class Shieldon
     // Action codes.
     public const ACTION_ALLOW = 1;
     public const ACTION_DENY = 0;
+    public const ACTION_UNBAN = 9;
 
     // Most of web crawlers do not render JavaScript, they only get text content they want,
     // so we can check if the cookie can be created by JavaScript.
@@ -98,7 +100,6 @@ class Shieldon
         'limit_flags'            => ['cookie' => 5, 'session' => 5, 'referer' => 10],
         'cookie_name'            => 'ssjd',
         'cookie_domain'          => '',
-        'robot'                  => array()
     ];
 
     /**
@@ -299,8 +300,8 @@ class Shieldon
 
             if (! empty($result) && is_array($result)) {
                 if (
-                       $result['code'] == $this->getComponent('Ip')::CODE_DENY_IP_RULE 
-                    && $result['code'] == $this->getComponent('Ip')::CODE_ALLOW_IP_RULE
+                    $result['code'] == $this->getComponent('Ip')::CODE_DENY_IP_RULE &&
+                    $result['code'] == $this->getComponent('Ip')::CODE_ALLOW_IP_RULE
                 ) {
                     // This IP has been listed in rule table, so set $isRuleList = true.
                     $this->$isRuleList = true;
@@ -328,7 +329,43 @@ class Shieldon
         }
 
         return true;
+    }
 
+    /**
+     * Ban an IP.
+     *
+     * @param string $ip
+     *
+     * @return void
+     */
+    public function ban(string $ip = ''): void
+    {
+        if ($this->getComponent('Ip')) {
+            $this->getComponent('Ip')->setDeniedList($ip);
+        }
+
+        $this->action(self::ACTION_DENY, self::CODE_MANUAL_BAN, $ip);
+    }
+
+    
+    /**
+     * Unban an IP.
+     *
+     * @param string $ip
+     *
+     * @return void
+     */
+    public function unban(string $ip = ''): void
+    {
+        if ('' === $ip) {
+            $ip = $this->ip;
+        }
+
+        if ($this->getComponent('Ip')) {
+            $this->getComponent('Ip')->removeIp($ip, 'deny');
+        }
+
+        $this->action(self::ACTION_UNBAN, self::CODE_MANUAL_BAN);
     }
 
     /**
@@ -361,9 +398,10 @@ class Shieldon
                     // You have already defined it in the settings.
                     $this->action(self::ACTION_ALLOW, self::CODE_IS_SEARCH_ENGINE);
                 }
-
-                return true;
             }
+
+            return true;
+
         } else {
 
             $now = time();
@@ -450,7 +488,7 @@ class Shieldon
                 if ($this->enableJsCookieCheck) {
 
                     // Get values from data table. We will count it and save it back to data table.
-                    $logData['flag_js_cookie'] = $ipDetail['flag_js_cookie'] ?? 0;
+                    $logData['flag_js_cookie']   = $ipDetail['flag_js_cookie']   ?? 0;
                     $logData['pageviews_cookie'] = $ipDetail['pageviews_cookie'] ?? 0;
 
                     $jsCookie = $_COOKIE[$this->properties['cookie_name']];
@@ -482,7 +520,7 @@ class Shieldon
 
                         // Reset to 0.
                         $logData['pageviews_cookie'] = 0;
-                        $logData['flag_js_cookie'] = 0;
+                        $logData['flag_js_cookie']   = 0;
 
                         // Remove cookie.
                         unset($_COOKIE[$this->properties['cookie_name']]);
@@ -527,7 +565,7 @@ class Shieldon
                         // Reset the pageview check for specfic time unit.
                         if ($resetStatus) {
                             $logData["first_time_{$timeUnit}"] = $now;
-                            $logData["pageviews_{$timeUnit}"]  = 0;
+                            $logData["pageviews_{$timeUnit}"] = 0;
                         }
                     }
                 }
@@ -536,7 +574,7 @@ class Shieldon
                 if ($now - $ipDetail['first_time_flag'] >= $this->properties['time_reset_flags']) {
                     $logData['flag_multi_session'] = 0;
                     $logData['flag_empty_referer'] = 0;
-                    $logData['flag_js_cookie']    = 0;
+                    $logData['flag_js_cookie']     = 0;
                 }
 
                 //die(var_dump($logData));
@@ -559,29 +597,46 @@ class Shieldon
                 $this->driver->save($this->ip, $logData, 'log');
             }
         }
+
+        return true;
     }
 
     /**
      * Start an action for this IP address, allow or deny, and give a reason for it.
      *
-     * @param string $do - accepted value: 'deny' or 'allow'
-     * @param string $reason
+     * @param int    $actionCode - 0: deny, 1: allow, 9: unban.
+     * @param string $reasonCode
      * @param string $assignIp
      * 
      * @return void
      */
-    private function action($do, $reason, $assignIp = ''): void
+    private function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
     {
-        $logData['log_ip']     = $this->ip;
-        $logData['ip_resolve'] = $this->ipResolvedHostname;
-        $logData['time']       = time();
-        $logData['type']       = ('allow' === $do) ? 1 : 0;
-        $logData['reason']     = $reason;
+        $ip = $this->ip;
+    
+        if ('' !== $assignIp) {
+            $ip = $assignIp;
+        }
 
-        $this->driver->save($this->ip, $logData, 'rule');
+        switch ($actionCode) {
+            case self::ACTION_ALLOW:
+            case self::ACTION_DENY:
+                $logData['log_ip']     = $this->ip;
+                $logData['ip_resolve'] = $this->ipResolvedHostname;
+                $logData['time']       = time();
+                $logData['type']       = $actionCode;
+                $logData['reason']     = $reasonCode;
+
+                $this->driver->save($this->ip, $logData, 'rule');
+                break;
+            
+            case self::ACTION_UNBAN:
+                $this->driver->delete($this->ip, 'rule');
+                break;
+        }
 
         // Remove logs for this IP address because It already has it's own rule on system.
         // No need to count it anymore.
-        //$this->driver->delete($this->ip, 'log');
+        $this->driver->delete($this->ip, 'log');
     }
 }

@@ -66,6 +66,7 @@ class Ip implements ComponentInterface
             return [
                 'status' => 'deny',
                 'code' => self::CODE_INVAILD_IP,
+                'comment' => 'Invalid IP.',
             ];
         }
 
@@ -73,6 +74,7 @@ class Ip implements ComponentInterface
             return [
                 'status' => 'deny',
                 'code' => self::CODE_DENY_IP,
+                'comment' => 'IP is in denied list.',
             ];
         }
 
@@ -80,6 +82,7 @@ class Ip implements ComponentInterface
             return [
                 'status' => 'allow',
                 'code' => self::CODE_ALLOW_IP,
+                'comment' => 'IP is in allowed list.',
             ];
         }
 
@@ -89,6 +92,7 @@ class Ip implements ComponentInterface
                     return [
                         'status' => 'deny',
                         'code' => self::CODE_DENY_IP_RANGE,
+                        'comment' => 'IP is denied list. (IP range)',
                     ];
                 }
             }
@@ -100,6 +104,7 @@ class Ip implements ComponentInterface
                     return [
                         'status' => 'allow',
                         'code' => self::CODE_DENY_IP_RANGE,
+                        'comment' => 'IP is allowed list. (IP range)',
                     ];
                 }
             }
@@ -110,23 +115,25 @@ class Ip implements ComponentInterface
             $result = call_user_func($rule);
 
             if (
-                   ! empty($result['ip'])
-                && ! isset($result['type'])
-                && ! isset($result['reason'])
+                   isset($result['ip'])
+                && isset($result['type'])
+                && isset($result['reason'])
             ) {
     
-                if (1 === $result['type']) {
+                if (1 === (int) $result['type']) {
                     return [
                         'status' => 'allow',
                         'code' => self::CODE_ALLOW_IP_RULE,
+                        'comment' => 'IP is allowed in rule table.',
                         'reason' => $result['reason'],
                     ];
                 }
     
-                if (0 === $result['type']) {
+                if (0 === (int) $result['type']) {
                     return [
                         'status' => 'deny',
                         'code' => self::CODE_DENY_IP_RULE,
+                        'comment' => 'IP is denied in rule table.',
                         'reason' => $result['reason'],
                     ];
                 }
@@ -285,10 +292,11 @@ class Ip implements ComponentInterface
      * Remove an IP from the Pool
      *
      * @param string $ip   IP address.
-     * @param string $type A: allow, D: deny.
-     * @return bool
+     * @param string $type
+     *
+     * @return void
      */
-    public function removeIp(string $ip, string $type): bool
+    public function removeIp(string $ip, string $type): void
     {
         if ('allow' === $type) {
             if (($key = array_search($ip, $this->allowedList)) !== false) {
