@@ -212,7 +212,8 @@ abstract class AbstractSqlDriver extends DriverProvider
                 $tableName = $this->tableLogs;
                 break;
         }
-        return $this->db->delete($tableName, $ip);
+
+        return $this->remove($tableName, ['log_ip' => $ip]);
     }
 
     /**
@@ -262,7 +263,7 @@ abstract class AbstractSqlDriver extends DriverProvider
             return $query->execute();
 
         } catch(\Exception $e) {
-            
+            //die($e->getMessage());
         }
 
         return false;
@@ -276,9 +277,10 @@ abstract class AbstractSqlDriver extends DriverProvider
      *
      * @return bool
      */
-    private function insert(string $table, array $data) {
-
-        $placeholder = [];
+    private function insert(string $table, array $data)
+    {
+        $placeholderField = [];
+        $placeholderValue = [];
         foreach($data as $k => $v) {
             $placeholderField[] = "`$k`";
             $placeholderValue[] = ":$k";
@@ -308,7 +310,52 @@ abstract class AbstractSqlDriver extends DriverProvider
             return $this->db->lastInsertId();
 
         } catch(\Exception $e) {
+            //die($e->getMessage());
+        }
 
+        return false;
+    }
+
+    /**
+     * Remove a row from a table.
+     *
+     * @param string $table
+     * @param array $where
+     *
+     * @return bool
+     */
+    private function remove(string $table, array $where): bool
+    {
+
+        $placeholder = [];
+        foreach($where as $k => $v) {
+            $placeholder[] = "`$k` = :$k";
+        }
+
+        $dataPlaceholder = implode(' AND ', $placeholder);
+
+        try {
+
+            $sql = 'DELETE FROM ' . $table . ' WHERE ' . $dataPlaceholder;
+            $query = $this->db->prepare($sql);
+
+            foreach($where as $k => $v) {
+                if (is_numeric($v)) {
+                    $pdoParam = $this->db::PARAM_INT;
+                } elseif (is_bool($v)) {
+                    $pdoParam = $this->db::PARAM_BOOL;
+                } elseif (is_null($v)) {
+                    $pdoParam = $this->db::PARAM_NULL;
+                } else {
+                    $pdoParam = $this->db::PARAM_STR;
+                }
+                $query->bindValue(":$k", $v, $pdoParam);
+            }
+
+            return $query->execute();
+
+        } catch(\Exception $e) {
+            //die($e->getMessage());
         }
 
         return false;
