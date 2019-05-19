@@ -12,8 +12,13 @@ Shieldon requires at least `PHP 7.0` to run.
 
 ### Install
 
-```
+Use PHP Composer:
+```shell
 composer require terrylinooo/shieldon
+```
+Or, download it and includes the Shieldon autoloader.
+```php
+require 'Shieldon/src/autoload.php';
 ```
 
 ### How to use
@@ -67,7 +72,7 @@ $shieldon->setHtml($html);
 ## Drivers
 
 ### MySQL
-```
+```php
 $db = [
     'host' => '127.0.0.1',
     'dbname' => 'test_projects',
@@ -82,11 +87,11 @@ $pdoInstance = new \PDO(
     $db['pass']
 );
 
-$shieldon->setDriver(new \Shieldon\Driver\MysqlDriver($pdoInstance))
+$shieldon->setDriver(new \Shieldon\Driver\MysqlDriver($pdoInstance));
 ```
 
 ### SQLite
-```
+```php
 $dbLocation = APPPATH . 'cache/shieldon.sqlite3';
 $pdoInstance = new \PDO('sqlite:' . $dbLocation);
 $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
@@ -95,7 +100,7 @@ $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
 ### Redis
 
 Ongoing...
-```
+```php
 $redis = new \Redis();
 $redis->connect('127.0.0.1', 6319);
 $shieldon->setDriver(new \Shieldon\Driver\RedisDriver($redis));
@@ -104,7 +109,7 @@ $shieldon->setDriver(new \Shieldon\Driver\RedisDriver($redis));
 ### File
 
 Ongoing...
-```
+```php
 $shieldon->setDriver(
     new \Shieldon\Driver\FileDriver([
         'directory' => APPPATH . '../cache/shieldon',
