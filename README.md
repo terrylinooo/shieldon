@@ -8,7 +8,7 @@ Don't use it until first release come.
 
 ## Get started
 
-Shieldon requires at least `PHP 7.0` to run.
+Shieldon requires at least `PHP 7.1` to run.
 
 ### Install
 
@@ -69,6 +69,8 @@ $shieldon->limitTraffic(500, 300);
 $shieldon->setHtml($html);
 ```
 
+---
+
 ## Drivers
 
 - MySQL
@@ -123,18 +125,20 @@ $shieldon->setDriver(
 );
 ```
 
-## API
+---
+
+## APIs
 
 - setDriver
 - setComponent
 - setProperty (Todo)
 - setChannel
+- setHtml (Todo)
 - createDatabase
 - ban
 - unban
 - limitTraffic (Todo)
 - xssClean (Todo)
-- setHtml (Todo)
 - run
 
 The public APIs can be chaining yet `SetDriver` must be the first and `run` must be the last.
