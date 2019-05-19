@@ -71,6 +71,11 @@ $shieldon->setHtml($html);
 
 ## Drivers
 
+- MySQL
+- File (Todo)
+- Redis (Todo)
+- SQLite
+
 ### MySQL
 ```php
 $db = [
@@ -162,6 +167,12 @@ $shieldon->unban('33.125.12.87');
  * @var integer Period. (Unit: second)
  */
 $shieldon->setTraffic(500, 300);
+```
+
+### run
+
+```
+$shieldon->run();
 ```
 
 Not yet ready....
