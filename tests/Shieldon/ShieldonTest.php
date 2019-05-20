@@ -10,11 +10,10 @@
 
 namespace Shieldon;
 
-use PHPUnit\Framework\TestCase;
 use function saveTestingFile;
 use function removeTestingFile;
 
-class ShieldonTest extends TestCase
+class ShieldonTest extends \PHPUnit\Framework\TestCase
 {
     public function testDetect()
     {

@@ -16,7 +16,7 @@ Use PHP Composer:
 ```shell
 composer require terrylinooo/shieldon
 ```
-Or, download it and includes the Shieldon autoloader.
+Or, download it and include the Shieldon autoloader.
 ```php
 require 'Shieldon/src/autoload.php';
 ```
