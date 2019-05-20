@@ -62,6 +62,16 @@ trait IpTrait
     }
 
     /**
+     * Get current set IP.
+     *
+     * @return string
+     */
+    public function getIp(): string
+    {
+        return $this->ip;
+    }
+
+    /**
      * Set a RDNS record for the check.
      *
      * @param string $rdns Reserve DNS record for that IP address.
@@ -71,5 +81,15 @@ trait IpTrait
     public function setRdns($rdns): void
     {
         $this->ipResolvedHostname = $rdns;
+    }
+
+    /**
+     * Get IP resolved hostname.
+     *
+     * @return string
+     */
+    public function getRdns(): string
+    {
+        return $this->ipResolvedHostname;
     }
 }

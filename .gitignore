@@ -1,8 +1,9 @@
 vendor
 composer.phar
-phpunit.xml
 composer.lock
+phpunit.phar
 .DS_Store
 .php_cs.cache
 .hg
 .vscode
+tmp
