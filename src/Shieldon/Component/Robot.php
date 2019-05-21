@@ -365,4 +365,28 @@ class Robot implements ComponentInterface, RobotInterface
 
         return $isSocialNetwork;
     }
+
+    /**
+     * It is no use. Just for testing propose only.
+     *
+     * @param string $string The user-agent string.
+     *
+     * @return void
+     */
+    public function setUserAgent($string): void
+    {
+        $this->userAgentString = $string;
+    }
+
+    /**
+     * It is no use. Just for testing propose only.
+     *
+     * @param string $string The user-agent string.
+     *
+     * @return void
+     */
+    public function getUserAgent($string): string
+    {
+        return $this->userAgentString;
+    }
 }
