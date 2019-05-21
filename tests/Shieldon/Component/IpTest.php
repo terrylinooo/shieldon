@@ -120,36 +120,75 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
     public function testSetAllowedList()
     {
-
+        $ipComponent = new Ip();
+        $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
+        $ipComponent->setAllowedList($s);
+        $t = $ipComponent->getAllowedList();
+        if ($s === $t) {
+            $this->assertTrue(true);
+        }
     }
 
     public function testSetAllowedIp()
     {
-
+        $ipComponent = new Ip();
+        $s = '127.33.33.33';
+        $t = $ipComponent->setAllowedIp($s);
+        if ($s === $t) {
+            $this->assertTrue(true);
+        }
     }
 
     public function testGetAllowedList()
     {
-        
+        $ipComponent = new Ip();
+        $t = $ipComponent->getAllowedList();
+        $this->assertIsArray($t);
     }
 
     public function testSetDeniedList()
     {
-
+        $ipComponent = new Ip();
+        $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
+        $ipComponent->setDeniedList($s);
+        $t = $ipComponent->getDeniedList();
+        if ($s === $t) {
+            $this->assertTrue(true);
+        }
     }
 
     public function testSetDeniedIp()
     {
-        
+        $ipComponent = new Ip();
+        $s = '127.33.33.33';
+        $t = $ipComponent->setDeniedIp($s);
+        if ($s === $t) {
+            $this->assertTrue(true);
+        }
     }
 
     public function testGetDeniedList()
     {
-        
+        $ipComponent = new Ip();
+        $t = $ipComponent->getDeniedList();
+        $this->assertIsArray($t);
     }
 
     public function testRemoveIp()
     {
-        
+        $ipComponent = new Ip();
+        $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
+        $ipComponent->setAllowedList($s);
+        $ipComponent->removeIp('127.33.33.33', 'allow');
+        $t = $ipComponent->getAllowedList();
+        if (! in_array('127.33.33.33', $t)) {
+            $this->assertTrue(true);
+        }
+        if (in_array('127.33.33.34', $t)) {
+            $this->assertTrue(true);
+        }
+        if (in_array('127.33.33.35', $t)) {
+            $this->assertTrue(true);
+        }
     }
 }

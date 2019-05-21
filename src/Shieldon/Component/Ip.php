@@ -318,7 +318,7 @@ class Ip implements ComponentInterface
     public function setAllowedList(array $ips): void
     {
         foreach($ips as $ip) {
-            $this-setAllowedIp(ip);
+            $this->setAllowedIp($ip);
         }
     }
 
@@ -362,7 +362,7 @@ class Ip implements ComponentInterface
     public function setDeniedList(array $ips): void
     {
         foreach($ips as $ip) {
-            $this-setDeniedIp(ip);
+            $this->setDeniedIp($ip);
         }
     }
 
