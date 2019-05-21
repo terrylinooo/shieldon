@@ -62,12 +62,61 @@ interface RobotInterface
      *
      * @return boolean
      */
-    public function isSearchEngine(): bool;
+    public function isSearchbot(): bool;
 
     /**
-     * Check if is a robot from social networking service.
+     * It is no use. Just for testing propose only.
      *
-     * @return boolean
+     * @param string $string The user-agent string.
+     *
+     * @return void
      */
-    public function isSocialNetwork(): bool;
+    public function setUserAgent($string): void;
+
+    /**
+     * It is no use. Just for testing propose only.
+     *
+     * @return void
+     */
+    public function getUserAgent(): string;
+
+    /**
+     * Set RDNS List.
+     *
+     * @param array $data
+     * @param string $type
+     *
+     * @return void
+     */
+    public function setRdnsList(array $data, string $type = ''): void;
+
+    /**
+     * Get RDNS List.
+     *
+     * @param array $data
+     * @param string $type
+     *
+     * @return array
+     */
+    public function geRdnsList(array $data, string $type = ''): array;
+
+    /**
+     * Set user-agent List.
+     *
+     * @param array $data
+     * @param string $type
+     *
+     * @return void
+     */
+    public function setAgentList(array $data, string $type = ''): void;
+
+    /**
+     * Get user-agent List.
+     *
+     * @param array $data
+     * @param string $type
+     *
+     * @return array
+     */
+    public function geAgentList(array $data, string $type = ''): array;
  }

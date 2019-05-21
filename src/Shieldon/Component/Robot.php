@@ -41,14 +41,7 @@ class Robot implements ComponentInterface, RobotInterface
      *
      * @var array
      */
-    protected $searchEngineList = [];
-
-    /**
-     * Data pool for social network.
-     *
-     * @var array
-     */
-    protected $socialNetworkList = [];
+    protected $searchbotList = [];
 
     /**
      * Robot's user-agent text.
@@ -159,22 +152,6 @@ class Robot implements ComponentInterface, RobotInterface
             ],
         ];
 
-        $this->socialNetworkList = [
-
-            // RDNS for robot's IP address.
-            'rdns' => [
-
-            ],
-
-            // The social networking robots' user-agent string.
-            'agent' => [
-                'Twitterbot',
-                'Facebot',
-                'facebookexternalhit',
-                'Pinterest',
-            ],
-        ];
-
         if (! empty($_SERVER['HTTP_USER_AGENT'])) {
             $this->userAgentString = $_SERVER['HTTP_USER_AGENT'];
         }
@@ -192,7 +169,7 @@ class Robot implements ComponentInterface, RobotInterface
      */
     public function setStrict($bool): void
     {
-        $this->strictMode = (bool) $bool;
+        $this->strictMode = $bool;
     }
 
     /**
@@ -224,7 +201,7 @@ class Robot implements ComponentInterface, RobotInterface
      */
     public function isAllowed(): bool
     {
-        if (! preg_match('/(' . implode('|', $this->allowedList['agent']). ')/i', $this->userAgentString)) {
+        if (! preg_match('/(' . implode('|', $this->allowedList['agent']) . ')/i', $this->userAgentString)) {
             return false;
         }
 
@@ -241,6 +218,8 @@ class Robot implements ComponentInterface, RobotInterface
                     return true;
                 } 
             } 
+        } else {
+            return true;
         }
 
         return false;
@@ -315,9 +294,9 @@ class Robot implements ComponentInterface, RobotInterface
     /**
      * {@inheritDoc}
      */
-    public function isSearchEngine(): bool
+    public function isSearchbot(): bool
     {
-        $isSearchEngline = false;
+        $isSearchbot = false;
 
         if ($this->strictMode) {
 
@@ -329,49 +308,16 @@ class Robot implements ComponentInterface, RobotInterface
     
                 // If the IP is the same as hostname's resolved IP.
                 if ($ip === $this->ip) {
-                    $isSearchEngline = true;
+                    $isSearchbot = true;
                 } 
             } 
         }
 
-        return $isSearchEngline;
+        return $isSearchbot;
     }
 
     /**
      * {@inheritDoc}
-     */
-    public function isSocialNetwork(): bool
-    {
-        $isSocialNetwork = false;
-
-        if ($this->strictMode) {
-
-            // If strict mode is on, we will check the RDNS record to see if it is in the whitelist.
-            if (preg_match('/(' . implode('|', $this->allowedList['rdns']) . ')/i', $this->ipResolvedHostname)) {
-
-                // confirm hostname's IP again
-                $ip = gethostbyname($this->ipResolvedHostname);
-    
-                // If the IP is the same as hostname's resolved IP.
-                if ($ip === $this->ip) {
-                    $isSocialNetwork = true;
-                } 
-            } 
-        }
-
-        if (preg_match('/(' . implode('|', $this->socialNetworkList['agent']) . ')/i', $this->userAgentString)) {
-            $isSocialNetwork = true;
-        }
-
-        return $isSocialNetwork;
-    }
-
-    /**
-     * It is no use. Just for testing propose only.
-     *
-     * @param string $string The user-agent string.
-     *
-     * @return void
      */
     public function setUserAgent($string): void
     {
@@ -379,14 +325,58 @@ class Robot implements ComponentInterface, RobotInterface
     }
 
     /**
-     * It is no use. Just for testing propose only.
-     *
-     * @param string $string The user-agent string.
-     *
-     * @return void
+     * {@inheritDoc}
      */
-    public function getUserAgent($string): string
+    public function getUserAgent(): string
     {
         return $this->userAgentString;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setRdnsList(array $data, string $type = ''): void
+    {
+        switch($type) {
+            case 'allow'    : $this->allowedList['rdns']       = $data; break;
+            case 'deny'     : $this->deniedList['rdns']        = $data; break;
+            case 'searchbot': $this->searchEnglineList['rdns'] = $data; break;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function geRdnsList(array $data, string $type = ''): array
+    {
+        switch($type) {
+            case 'allow'    : return $this->allowedList['rdns'];       break;
+            case 'deny'     : return $this->deniedList['rdns'];        break;
+            case 'searchbot': return $this->searchEnglineList['rdns']; break;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAgentList(array $data, string $type = ''): void
+    {
+        switch($type) {
+            case 'allow'    : $this->allowedList['agent']       = $data; break;
+            case 'deny'     : $this->deniedList['agent']        = $data; break;
+            case 'searchbot': $this->searchEnglineList['agent'] = $data; break;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function geAgentList(array $data, string $type = ''): array
+    {
+        switch($type) {
+            case 'allow'    : return $this->allowedList['agent'];       break;
+            case 'deny'     : return $this->deniedList['agent'];        break;
+            case 'searchbot': return $this->searchEnglineList['agent']; break;
+        } 
     }
 }
