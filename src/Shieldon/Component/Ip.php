@@ -150,6 +150,44 @@ class Ip implements ComponentInterface
      *                https://github.com/cloudflare/CloudFlare-Tools/blob/master/cloudflare/inRange.php
      * We can it test here: http://jodies.de/ipcalc
      *
+     * -------------------------------------------------------------------------------
+     *  Netmask          Netmask (binary)                    CIDR  Notes    
+     * -------------------------------------------------------------------------------
+     *  255.255.255.255  11111111.11111111.11111111.11111111  /32  Host (single addr) 
+     *  255.255.255.254  11111111.11111111.11111111.11111110  /31  Unuseable 
+     *  255.255.255.252  11111111.11111111.11111111.11111100  /30  2   useable 
+     *  255.255.255.248  11111111.11111111.11111111.11111000  /29  6   useable 
+     *  255.255.255.240  11111111.11111111.11111111.11110000  /28  14  useable 
+     *  255.255.255.224  11111111.11111111.11111111.11100000  /27  30  useable 
+     *  255.255.255.192  11111111.11111111.11111111.11000000  /26  62  useable 
+     *  255.255.255.128  11111111.11111111.11111111.10000000  /25  126 useable 
+     *  255.255.255.0    11111111.11111111.11111111.00000000  /24  Class C 254 useable   
+     *  255.255.254.0    11111111.11111111.11111110.00000000  /23  2   Class C's 
+     *  255.255.252.0    11111111.11111111.11111100.00000000  /22  4   Class C's 
+     *  255.255.248.0    11111111.11111111.11111000.00000000  /21  8   Class C's 
+     *  255.255.240.0    11111111.11111111.11110000.00000000  /20  16  Class C's 
+     *  255.255.224.0    11111111.11111111.11100000.00000000  /19  32  Class C's 
+     *  255.255.192.0    11111111.11111111.11000000.00000000  /18  64  Class C's 
+     *  255.255.128.0    11111111.11111111.10000000.00000000  /17  128 Class C's 
+     *  255.255.0.0      11111111.11111111.00000000.00000000  /16  Class B      
+     *  255.254.0.0      11111111.11111110.00000000.00000000  /15  2   Class B's 
+     *  255.252.0.0      11111111.11111100.00000000.00000000  /14  4   Class B's 
+     *  255.248.0.0      11111111.11111000.00000000.00000000  /13  8   Class B's 
+     *  255.240.0.0      11111111.11110000.00000000.00000000  /12  16  Class B's 
+     *  255.224.0.0      11111111.11100000.00000000.00000000  /11  32  Class B's 
+     *  255.192.0.0      11111111.11000000.00000000.00000000  /10  64  Class B's 
+     *  255.128.0.0      11111111.10000000.00000000.00000000  /9   128 Class B's 
+     *  255.0.0.0        11111111.00000000.00000000.00000000  /8   Class A  
+     *  254.0.0.0        11111110.00000000.00000000.00000000  /7 
+     *  252.0.0.0        11111100.00000000.00000000.00000000  /6 
+     *  248.0.0.0        11111000.00000000.00000000.00000000  /5 
+     *  240.0.0.0        11110000.00000000.00000000.00000000  /4 
+     *  224.0.0.0        11100000.00000000.00000000.00000000  /3 
+     *  192.0.0.0        11000000.00000000.00000000.00000000  /2 
+     *  128.0.0.0        10000000.00000000.00000000.00000000  /1 
+     *  0.0.0.0          00000000.00000000.00000000.00000000  /0   IP space
+     * -------------------------------------------------------------------------------
+     *
      * @param  string $ip    IP to check in IPV4 and IPV6 format
      * @param  string $range IP/CIDR netmask eg. 127.0.0.0/24, also 127.0.0.1 is accepted and /32 assumed
      *
@@ -257,14 +295,29 @@ class Ip implements ComponentInterface
     }
 
     /**
+     * Add IP addresses to the whitelist pool.
+     *
+     * @param array $ips
+     *
+     * @return void
+     */
+    public function setAllowedList(array $ips): void
+    {
+        foreach($ips as $ip) {
+            $this-setAllowedIp(ip);
+        }
+    }
+
+    /**
      * Add an IP address to the whitelist pool.
      *
      * @param string $ip
-     * @return bool
+     *
+     * @return void
      */
-    public function setAllowedList(string $ip): bool
+    public function setAllowedIp(string $ip): void
     {
-        if (! in_array($this->allowedList, $ip)) {
+        if (! in_array($ip, $this->allowedList)) {
             array_push($this->allowedList, $ip);
         }
 
@@ -273,19 +326,60 @@ class Ip implements ComponentInterface
     }
 
     /**
-     * Add an IP address to the whitelist pool.
+     * Get IP addresses from the whitelist pool.
+     *
+     * @return array
+     */
+    public function getAllowedList(): array
+    {
+        if (is_array($this->allowedList)) {
+            return $this->allowedList;
+        }
+        return [];
+    }
+
+    /**
+     * Add IP addresses to the blacklist pool.
+     *
+     * @param array $ips
+     *
+     * @return void
+     */
+    public function setDeniedList(array $ips): void
+    {
+        foreach($ips as $ip) {
+            $this-setDeniedIp(ip);
+        }
+    }
+
+    /**
+     * Add an IP address to the blacklist pool.
      *
      * @param string $ip
-     * @return bool
+     *
+     * @return void
      */
-    public function setDeniedList(string $ip): bool
+    public function setDeniedIp(string $ip): void
     {
-        if (! in_array($this->deniedList, $ip)) {
+        if (! in_array($ip, $this->deniedList)) {
             array_push($this->deniedList, $ip);
         }
 
         // This method will also remove an IP address from whitelist pool, if exists.
         $this->removeIp($ip, 'allow');
+    }
+
+    /**
+     * Get IP addresses from the blacklist pool.
+     *
+     * @return array
+     */
+    public function getDeniedList(): array
+    {
+        if (is_array($this->deniedList)) {
+            return $this->deniedList;
+        }
+        return [];
     }
 
     /**
