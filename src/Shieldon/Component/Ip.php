@@ -218,7 +218,7 @@ class Ip implements ComponentInterface
 
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
 
-            $ip = $this->ip2long6($ip);
+            $ip = $this->decimalIpv6($ip);
 
             $pieces = explode('/', $ipRange, 2);
             $left_piece = $pieces[0];
@@ -263,8 +263,8 @@ class Ip implements ComponentInterface
             }
 
             // Rebuild the final long form IPV6 address
-            $first = $this->ip2long6(implode(':', $first));
-            $last = $this->ip2long6(implode(':', $last));
+            $first = $this->decimalIpv6(implode(':', $first));
+            $last = $this->decimalIpv6(implode(':', $last));
 
             return ($ip >= $first && $ip <= $last);
         }
@@ -278,7 +278,7 @@ class Ip implements ComponentInterface
      * @param string $ip
      * @return string
      */
-    public function ip2long6(string $ip): string
+    public function decimalIpv6(string $ip): string
     {
         if (substr_count($ip, '::')) {
             $ip = str_replace('::', str_repeat(':0000', 8 - substr_count($ip, ':')) . ':', $ip);
@@ -288,10 +288,24 @@ class Ip implements ComponentInterface
         $rIp = '';
 
         foreach ($ip as $v) {
-            $rIp .= str_pad(base_convert($v, 16, 2), 16, 0, STR_PAD_LEFT);
+            $rIp .= str_pad(base_convert($v, 16, 2), 16, '0', STR_PAD_LEFT);
         }
-
         return base_convert($rIp, 2, 10);
+    }
+
+    /**
+     * Get the ipv6 full format and return it as a decimal value. (Confirmation version)
+     *
+     * @param string $ip
+     * @return string
+     */
+    public function _decimalIpv6($ip): string
+    {
+        $binNum = '';
+        foreach (unpack('C*', inet_pton($ip)) as $byte) {
+            $binNum .= str_pad(decbin($byte), 8, "0", STR_PAD_LEFT);
+        }
+        return base_convert(ltrim($binNum, '0'), 2, 10);
     }
 
     /**
