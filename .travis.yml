@@ -1,0 +1,9 @@
+language: php
+  - 7.1
+  - 7.2
+  - 7.3
+  - nightly
+before_script:
+  - composer self-update
+  - composer install --no-interaction --prefer-source --dev
+script: composer test
