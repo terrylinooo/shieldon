@@ -239,8 +239,7 @@ class Robot implements ComponentInterface, RobotInterface
 
         $robotAgents = array_merge(
             $this->allowedList['agent'],
-            $this->deniedList['agent'],
-            $this->socialNetworkList['agent']
+            $this->deniedList['agent']
         );
 
         if (preg_match('/(' . implode('|', $robotHosts). ')/i', $this->ipResolvedHostname)) {

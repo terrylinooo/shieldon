@@ -106,11 +106,11 @@ class RobotTest extends \PHPUnit\Framework\TestCase
     public function testIsYahoo()
     {
         $robotComponent = new Robot();
-        $robotComponent->setUserAgent('AdsBot-Google (+http://www.google.com/adsbot.html)');
+        $robotComponent->setUserAgent('Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)');
         $t = $robotComponent->isYahoo();
         $this->assertFalse($t);
-        $robotComponent->setIp('66.249.66.1');
-        $robotComponent->setRdns('crawl-66-249-66-1.googlebot.com');
+        $robotComponent->setIp('8.12.144.1');
+        $robotComponent->setRdns('UNKNOWN-8-12-144-X.yahoo.com');
         $t = $robotComponent->isYahoo();
         $this->assertTrue($t);
     }
@@ -118,11 +118,11 @@ class RobotTest extends \PHPUnit\Framework\TestCase
     public function testIsBing()
     {
         $robotComponent = new Robot();
-        $robotComponent->setUserAgent('AdsBot-Google (+http://www.google.com/adsbot.html)');
+        $robotComponent->setUserAgent('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)');
         $t = $robotComponent->isBing();
         $this->assertFalse($t);
-        $robotComponent->setIp('66.249.66.1');
-        $robotComponent->setRdns('crawl-66-249-66-1.googlebot.com');
+        $robotComponent->setIp('40.77.169.1');
+        $robotComponent->setRdns('msnbot-40-77-169-1.search.msn.com');
         $t = $robotComponent->isBing();
         $this->assertTrue($t);
     }

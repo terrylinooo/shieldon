@@ -154,12 +154,14 @@ class Shieldon
     {
         $this->referer = $_SERVER['HTTP_REFERER'] ?? '';
 
-        if ($this->enableSessionCheck) {
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-            if (! $this->sessionId) {
-                $this->sessionId = session_id();
+        if ((php_sapi_name() !== 'cli')) {
+            if ($this->enableSessionCheck) {
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                if (! $this->sessionId) {
+                    $this->sessionId = session_id();
+                }
             }
         }
 
