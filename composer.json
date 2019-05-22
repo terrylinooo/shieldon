@@ -28,6 +28,13 @@
         "psr-4": {
             "Shieldon\\Tests\\": "tests/"
         }
+    },
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
 
