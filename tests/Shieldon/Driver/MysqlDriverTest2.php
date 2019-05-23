@@ -12,5 +12,8 @@ namespace Shieldon\Driver;
 
 class MysqlDriverTest extends \PHPUnit\Framework\TestCase
 {
-
+    public function  test__construct()
+    {
+        $db = new MysqlDriver()
+    }
 }
