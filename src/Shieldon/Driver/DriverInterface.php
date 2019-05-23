@@ -23,6 +23,16 @@ interface DriverInterface
     public function get(string $ip, string $type = 'log'): array;
 
     /**
+     * Get all entries from the driver provider.
+     *
+     * @param string $ip   The data id of the entry to fetch.
+     * @param string $type The data type.
+     *
+     * @return array The data or an empty array.
+     */
+    public function getAll(string $type = 'log'): array;
+
+    /**
      * Tests if an entry exists in the data.
      *
      * @param string $ip The data id of the entry to check for.

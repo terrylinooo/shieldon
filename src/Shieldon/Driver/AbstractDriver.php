@@ -28,6 +28,14 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      */
+    public function getAll(string $type = 'log'): array
+    {
+        return $this->doFetchAll($type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function has(string $ip, string $type = 'log'): bool
     {
         return $this->checkExist($ip, $type);
@@ -57,6 +65,15 @@ abstract class AbstractDriver implements DriverInterface
      * @return array The data or an empty array.
      */
     abstract protected function doFetch(string $ip, string $type = 'log'): array;
+
+    /**
+     * Implement fetch all.
+     *
+     * @param string $type The data type.
+     *
+     * @return array The data or an empty array.
+     */
+    abstract protected function doFetchAll(string $type = 'log'): array;
 
     /**
      * Implement has.

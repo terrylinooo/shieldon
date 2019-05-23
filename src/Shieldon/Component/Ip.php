@@ -70,14 +70,6 @@ class Ip implements ComponentInterface
             ];
         }
 
-        if (in_array($ip, $this->deniedList)) {
-            return [
-                'status' => 'deny',
-                'code' => self::CODE_DENY_IP,
-                'comment' => 'IP is in denied list.',
-            ];
-        }
-
         if (in_array($ip, $this->allowedList)) {
             return [
                 'status' => 'allow',
@@ -86,16 +78,12 @@ class Ip implements ComponentInterface
             ];
         }
 
-        foreach ($this->deniedList as $deniedIp) {
-            if (strpos($deniedIp, '/') !== false) {
-                if ($this->inRange($ip, $deniedIp)) {
-                    return [
-                        'status' => 'deny',
-                        'code' => self::CODE_DENY_IP_RANGE,
-                        'comment' => 'IP is denied list. (IP range)',
-                    ];
-                }
-            }
+        if (in_array($ip, $this->deniedList)) {
+            return [
+                'status' => 'deny',
+                'code' => self::CODE_DENY_IP,
+                'comment' => 'IP is in denied list.',
+            ];
         }
 
         foreach ($this->allowedList as $allowedIp) {
@@ -105,6 +93,18 @@ class Ip implements ComponentInterface
                         'status' => 'allow',
                         'code' => self::CODE_DENY_IP_RANGE,
                         'comment' => 'IP is allowed list. (IP range)',
+                    ];
+                }
+            }
+        }
+
+        foreach ($this->deniedList as $deniedIp) {
+            if (strpos($deniedIp, '/') !== false) {
+                if ($this->inRange($ip, $deniedIp)) {
+                    return [
+                        'status' => 'deny',
+                        'code' => self::CODE_DENY_IP_RANGE,
+                        'comment' => 'IP is denied list. (IP range)',
                     ];
                 }
             }

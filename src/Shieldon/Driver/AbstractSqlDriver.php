@@ -95,14 +95,12 @@ abstract class AbstractSqlDriver extends DriverProvider
         switch ($type) {
 
             case 'rule':
-
                 $sql = 'SELECT * FROM ' . $this->tableRuleList . '
                     WHERE log_ip = :log_ip
                     LIMIT 1';
 
                 $query = $this->db->prepare($sql);
                 $query->bindValue(':log_ip', $ip);
-
                 $query->execute();
                 $result = $query->fetch();
 
@@ -112,20 +110,79 @@ abstract class AbstractSqlDriver extends DriverProvider
                 break;
 
             case 'log':
-            default:
-
                 $sql = 'SELECT log_ip, log_data FROM ' . $this->tableLogs . '
                     WHERE log_ip = :log_ip
                     LIMIT 1';
 
                 $query = $this->db->prepare($sql);
                 $query->bindValue(':log_ip', $ip);
-
                 $query->execute();
                 $result = $query->fetch();
 
                 if (! empty($result['log_data'])) {
                     return json_decode($result['log_data'], true); 
+                }
+                break;
+
+            case 'session':
+                $sql = 'SELECT * FROM ' . $this->tableSessions . '
+                    WHERE id = :id
+                    LIMIT 1';
+
+                $query = $this->db->prepare($sql);
+                $query->bindValue(':id', $ip);
+                $query->execute();
+                $result = $query->fetch();
+
+                if (is_array($result)) {
+                    return $result;
+                }
+                break;
+        }
+
+        return [];
+    }
+
+   /**
+     * {@inheritDoc}
+     */
+    protected function doFetchAll(string $type = 'log'): array
+    {
+        switch ($type) {
+
+            case 'rule':
+                $sql = 'SELECT * FROM ' . $this->tableRuleList;
+
+                $query = $this->db->prepare($sql);
+                $query->execute();
+                $result = $query->fetchAll($this->db::FETCH_ASSOC);
+
+                if (is_array($result)) {
+                    return $result;
+                }
+                break;
+
+            case 'log':
+                $sql = 'SELECT log_ip, log_data FROM ' . $this->tableLogs;
+
+                $query = $this->db->prepare($sql);
+                $query->execute();
+                $result = $query->fetchAll($this->db::FETCH_ASSOC);
+
+                if (is_array($result)) {
+                    return $result;
+                }
+                break;
+
+            case 'session':
+                $sql = 'SELECT * FROM ' . $this->tableSessions;
+
+                $query = $this->db->prepare($sql);
+                $query->execute();
+                $result = $query->fetchAll($this->db::FETCH_ASSOC);
+
+                if (is_array($result)) {
+                    return $result;
                 }
                 break;
         }
@@ -142,25 +199,31 @@ abstract class AbstractSqlDriver extends DriverProvider
 
             case 'rule':
                 $tableName = $this->tableRuleList;
+                $field = 'log_ip';
                 break;
 
             case 'log':
-            default:
                 $tableName = $this->tableLogs;
+                $field = 'log_ip';
+                break;
+
+            case 'session':
+                $tableName = $this->tableSessions;
+                $field = 'id';
                 break;
         }
 
-        $sql = 'SELECT log_ip FROM ' . $tableName . '
-            WHERE log_ip = :log_ip
+        $sql = 'SELECT ' . $field . ' FROM ' . $tableName . '
+            WHERE ' . $field . ' = :' . $field . '
             LIMIT 1';
 
         $query = $this->db->prepare($sql);
-        $query->bindValue(':log_ip', $ip);
+        $query->bindValue(':' . $field, $ip);
 
         $query->execute();
         $result = $query->fetch();
 
-        if (! empty($result['log_ip'])) {
+        if (! empty($result[$field])) {
             return true; 
         }
 
@@ -176,20 +239,30 @@ abstract class AbstractSqlDriver extends DriverProvider
 
             case 'rule':
                 $tableName = $this->tableRuleList;
+                $logWhere['log_ip'] = $ip;
                 $logData = $data;
+                $logData['log_ip'] = $ip;
                 break;
 
             case 'log':
-            default:
                 $tableName = $this->tableLogs;
+                $logWhere['log_ip'] = $ip;
+                $logData['log_ip'] = $ip;
                 $logData['log_data'] = json_encode($data);
+                break;
+
+            case 'session':
+                $tableName = $this->tableSessions;
+                $logWhere['id'] = $data['id'];
+                $logData['id'] = $data['id'];
+                $logData['ip'] = $ip;
+                $logData['time'] = $data['time'];
+                $logData = $data;
                 break;
         }
 
-        $logData['log_ip'] = $ip;
-
         if ($this->checkExist($ip, $type)) {
-            $logWhere['log_ip'] = $ip;
+            
             return $this->update($tableName, $logData, $logWhere);
         } else {
             return (bool) $this->insert($tableName, $logData);
@@ -202,18 +275,22 @@ abstract class AbstractSqlDriver extends DriverProvider
     protected function doDelete(string $ip, string $type = 'log'): bool
     {
         switch ($type) {
-
             case 'rule':
                 $tableName = $this->tableRuleList;
+                return $this->remove($this->tableRuleList, ['log_ip' => $ip]);
                 break;
 
             case 'log':
+                return $this->remove($this->tableLogs, ['log_ip' => $ip]);
+                break;
+            case 'session':
+                return $this->remove($this->tableSessions, ['id' => $ip]);
+                break;
             default:
-                $tableName = $this->tableLogs;
                 break;
         }
 
-        return $this->remove($tableName, ['log_ip' => $ip]);
+        
     }
 
     /**
@@ -393,7 +470,7 @@ abstract class AbstractSqlDriver extends DriverProvider
         $this->db->query($sql);
 
         $sql = "
-            CREATE TABLE `{$this->tableDbEngine}` (
+            CREATE TABLE `{$this->tableSessions}` (
                 `id` varchar(40) NOT NULL,
                 `ip` varchar(46) NOT NULL,
                 `time` int(10) UNSIGNED NOT NULL,
@@ -417,7 +494,7 @@ abstract class AbstractSqlDriver extends DriverProvider
         $sql = "DROP TABLE IF EXISTS `{$this->tableRuleList}`";
         $this->db->query($sql);
 
-        $sql = "DROP TABLE IF EXISTS `{$this->tableDbEngine}`";
+        $sql = "DROP TABLE IF EXISTS `{$this->tableSessions}`";
         $this->db->query($sql);
 
         $this->installSql();
