@@ -12,5 +12,51 @@ namespace Shieldon\Driver;
 
 class SqliteDriverTest extends \PHPUnit\Framework\TestCase
 {
+    public function test__construct()
+    {
+        try {
+            $pdoInstance = new \PDO('sqlite::memory:');
+            $db = new SqliteDriver($pdoInstance);
+        } catch(\PDOException $e) {
+            $this->assertTrue(false);
+        }
 
+        if ($db instanceof MysqlDriver) {
+            $this->assertTrue(true);
+        }
+    }
+
+    public function testInstallSql()
+    {
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $db = new SqliteDriver($pdoInstance);
+
+        try {
+            $class = new \ReflectionObject($db);
+            $method = $class->getMethod('installSql');
+            $method->setAccessible(true);
+            $method->invoke($db);
+            $this->assertTrue(true);
+        } catch(\Exception $e) {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testCheckTableExists()
+    {
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $db = new SqliteDriver($pdoInstance);
+
+        try {
+            $class = new \ReflectionObject($db);
+            $method = $class->getMethod('checkTableExists');
+            $method->setAccessible(true);
+            $result = $method->invoke($db);
+            $this->assertTrue($result);
+        } catch(\Exception $e) {
+            $this->assertTrue(false);
+        }
+    }
 }

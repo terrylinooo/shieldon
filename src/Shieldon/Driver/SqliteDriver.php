@@ -76,6 +76,7 @@ class SqliteDriver extends AbstractSqlDriver
         // Try a select statement against the table
         // Run it in try/catch in case PDO is in ERRMODE_EXCEPTION.
         // $debug should be false, otherwise an error occurs.
+        
         try {
             $result = $this->db->query("SELECT 1 FROM $this->tableLogs LIMIT 1");
 
