@@ -42,13 +42,19 @@ $shieldon->setComponent(new \Shieldon\Component\Robot());
 // You can ignore this setting if you only use one Shieldon on your web application. This is for multiple instances.
 $shieldon->setChannel('web_project');
 
+// Only allow 10 sessions to view current page.
+// The defailt expire time is 300 seconds.
+$shieldon->limitSession(10);
+
 // Start protecting your website!
 $result = $shieldon->run();
 
-if ($result) {
+if ($result === 1) {
     echo 'You are allowed.';
-} else {
+} elseif ($result === 0) {
     echo 'You are banned';
+} elseif ($result === 2) {
+    echo 'Current web is busy, please wait a monent.';
 }
 ```
 
@@ -133,14 +139,17 @@ $shieldon->setDriver(
 
 - setDriver
 - setComponent
-- setProperty (Todo)
+- setProperty
+- setProperties
 - setChannel
 - setHtml (Todo)
 - createDatabase
+- allow
+- deny
 - ban
 - unban
-- limitTraffic (Todo)
-- xssClean (Todo)
+- limitSession
+- xssClean
 - run
 
 The public APIs can be chaining yet `SetDriver` must be the first and `run` must be the last.

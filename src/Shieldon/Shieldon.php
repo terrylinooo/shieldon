@@ -66,6 +66,11 @@ class Shieldon
     public const ACTION_DENY = 0;
     public const ACTION_UNBAN = 9;
 
+    // Result codes.
+    public const RESPONSE_DENY = 0;
+    public const RESPONSE_ALLOW = 1;
+    public const RESPONSE_LIMIT = 2;
+
     // Most of web crawlers do not render JavaScript, they only get text content they want,
     // so we can check if the cookie can be created by JavaScript.
     // This is hard to prevent headless browser robots, but it can stop probably 70% poor robots.
@@ -150,7 +155,7 @@ class Shieldon
      *
      * @var bool
      */
-    private $isLimitTraffic = [];
+    private $isLimitSession = [];
 
     /**
      * Constructor.
@@ -516,7 +521,7 @@ class Shieldon
     /**
      * Deny an IP.
      *
-     * @param mixed $ip
+     * @param string|array $ip
      *
      * @return void
      */
@@ -539,7 +544,7 @@ class Shieldon
     /**
      * Allow an IP.
      *
-     * @param mixed $ip
+     * @param string|array $ip
      *
      * @return void
      */
@@ -632,29 +637,141 @@ class Shieldon
     }
 
     /**
-     * (Todo)
+     * Limt online sessions.
      *
      * @param int $count
      * @param int $period
      *
      * @return self
      */
-    public function limitTraffic(int $count = 1000, int $period = 300): self
+    public function limitSession(int $count = 1000, int $period = 300): self
     {
-        $this->isLimitTraffic = [$count, $period];
+        $this->isLimitSession = [$count, $period];
         return $this;
     }
 
     /**
-     * (Todo)
+     * Remove possible injection charactors.
      *
      * @param string $type GET, POST, COOKIE.
      * @param string $key  The key name of an array.
      *
      * @return self
      */
-    public function xssClean(string $type, string $key): self
+    public function xssClean(string $type, string $key = '', bool $exact = false): self
     {
+        $unwantedCharacters = [
+            '"', "'", '[', ']', '~', '=', '*', '&', '^', '%',
+            '$', '#', '@', '!', '<', '>', ';', '.', '|', '/',
+            '+', '_', ':', '(', ')', '{', '}', '%', '\\'
+        ];
+
+        switch ($type) {
+            case 'GET':
+            case 'COOKIE':
+            case 'POST':
+            case 'GLOBAL':
+
+                if (empty($_{$type})) {
+                    return $this;
+                }
+
+                $filiter = $_{$type};
+
+                if ($exact) {
+                    if (isset($filiter[$key])) {
+                        // string
+                        if (is_string($filiter[$key])) {
+                            foreach ($unwantedCharacters as $c) {
+                                if (strpos($filiter[$key], $c) !== false) {
+                                    $filiter[$key] = '';
+                                }
+                            }
+                        }
+                        // array
+                        if (is_array($filiter[$key])) {
+                            foreach ($filiter[$key] as $j => $k) {
+                                // string
+                                if (is_string($filiter[$key][$j])) {
+                                    foreach ($unwantedCharacters as $c) {
+                                        if (strpos($filiter[$key][$j], $c) !== false) {
+                                            $filiter[$key][$j] = '';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        // Check first layer.
+                        if (is_array($filiter)) {
+                            foreach ($filiter as $k => $v) {
+                                // string
+                                if (is_string($filiter[$k])) {
+                                    foreach ($unwantedCharacters as $c) {
+                                        if (strpos($filiter[$k], $c) !== false) {
+                                            $filiter[$k] = '';
+                                        }
+                                    }
+                                }
+                                // array
+                                if (is_array($filiter[$k])) {
+                                    foreach ($filiter[$k] as $kk => $vv) {
+                                        // string
+                                        if (is_string($filiter[$kk])) {
+                                            foreach ($unwantedCharacters as $c) {
+                                                if (strpos($filiter[$kk], $c) !== false) {
+                                                    $filiter[$k][$kk] = '';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                } else {
+                    if (isset($filiter[$key])) {
+                        // string
+                        if (is_string($filiter[$key])) {
+                            $filiter[$key] = trim(str_replace($unwantedCharacters, '', $filiter[$key]));
+                        }
+                        // array
+                        if (is_array($filiter[$key])) {
+                            foreach ($filiter[$key] as $j => $k) {
+                                if (is_string($filiter[$key][$j])) {
+                                    $filiter[$key] = trim(str_replace($unwantedCharacters, '', $filiter[$key]));
+                                }
+                            }
+                        }
+                    } else {
+                        // Check first layer.
+                        if (is_array($filiter)) {
+                            foreach ($filiter as $k => $v) {
+                                // string
+                                if (is_string($filiter[$k])) {
+                                    $filiter[$k] = trim(str_replace($unwantedCharacters, '', $filiter[$k]));
+                                }
+                                // array
+                                if (is_array($filiter[$k])) {
+                                    foreach ($filiter[$k] as $kk => $vv) {
+                                        if (is_string($filiter[$kk])) {
+                                            $filiter[$kk] = trim(str_replace($unwantedCharacters, '', $filiter[$kk]));
+                                        }
+                                    }
+                                }
+                            } 
+                        }
+                    }
+
+                }
+
+                break;
+            default:
+                break;
+        }
+
+        $_{$type} = $filiter;
+
         return $this;
     }
 
@@ -676,9 +793,9 @@ class Shieldon
      * Check the rule tables first, if an IP address has been listed.
      * Call function detect() if an IP address is not listed in rule tables.
      *
-     * @return bool TRUE: allow, FALSE: deny.
+     * @return int RESPONSE_CODE
      */
-    public function run(): bool
+    public function run(): int
     {    
         $this->driver->init($this->autoCreateDatabase);
 
@@ -686,7 +803,7 @@ class Shieldon
 
             // First of all, check if is a a bad robot already defined in settings.
             if ($this->getComponent('Robot')->isDenied()) {
-                return false;
+                return self::RESPONSE_DENY;
             }
         }
 
@@ -747,7 +864,7 @@ class Shieldon
                         }
 
                         // Allowed robots not join to our traffic handler.
-                        return true;
+                        return self::RESPONSE_ALLOW;
                     }
                 }
 
@@ -765,7 +882,7 @@ class Shieldon
         }
 
         if (! empty($ipRule) && $ipRule['type'] == 0) {
-            return false;
+            return self::RESPONSE_DENY;
         }
 
         // This IP address is not listed in rule table, let's detect it.
@@ -776,7 +893,7 @@ class Shieldon
             return $this->sessionHandler($this->detect());
         }
 
-        return true;
+        return self::RESPONSE_ALLOW;
     }
 
     /**
@@ -784,23 +901,26 @@ class Shieldon
      *
      * @param bool $checkPassed
      *
-     * @return bool
+     * @return int RESPONSE_CODE
      */
-    private function sessionHandler($checkPassed = false)
+    private function sessionHandler($checkPassed = false): int
     {
         if (! $checkPassed) {
-            return false;
+            return self::RESPONSE_DENY;
         }
 
-        if (empty($this->isLimitTraffic)) {
-            return true;
+        // If you don't enable `limit traffic`, ignore the following steps.
+        if (empty($this->isLimitSession)) {
+            return self::RESPONSE_ALLOW;
+
         } else {
-            $limit = (int) ($this->isLimitTraffic[0] ?? 0);
-            $period = (int) ($this->isLimitTraffic[1] ?? 300);
+
+            // Get the proerties.
+            $limit = (int) ($this->isLimitSession[0] ?? 0);
+            $period = (int) ($this->isLimitSession[1] ?? 300);
             $now = time();
     
             $onlineSessions = $this->driver->getAll('session');
-
             $sessionPools = [];
 
             foreach ($onlineSessions as $k => $v) {
@@ -812,24 +932,31 @@ class Shieldon
             }
 
             if (! in_array($this->sessionId, $sessionPools)) {
+
+                // New session, record this data.
                 $data['id'] = $this->sessionId;
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
                 $this->driver->save($this->sessionId, $data, 'session');
+
             } else {
+
+                // Remove current session if it expires.
                 if ($now - $lasttime > $period) {
                     $this->driver->delete($this->sessionId, 'session');
                 }
             }
 
+            // Count the online sessions.
             $onlineCount = count($sessionPools);
 
+            // Online session count reached the limit. So return RESPONSE_LIMIT response code.
             if ($onlineCount >= $limit) {
-                return false;
+                return self::RESPONSE_LIMIT;
             }
         }
 
-        return true;
+        return self::RESPONSE_ALLOW;
     }
 }
 
