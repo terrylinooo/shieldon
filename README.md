@@ -25,7 +25,7 @@ require 'Shieldon/src/autoload.php';
 
 ### How to use
 
-Here is a simple example let you know how Shieldon works.
+Here is a full example let you know how Shieldon works.
 
 ```php
 $shieldon = new \Shieldon\Shieldon();
@@ -37,6 +37,8 @@ $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
 
 // Set core components.
 $shieldon->setComponent(new \Shieldon\Component\Ip());
+// This compoent will only allow popular search engline.
+// Other bots will go into the checking process.
 $shieldon->setComponent(new \Shieldon\Component\Robot());
 
 // You can ignore this setting if you only use one Shieldon on your web application. This is for multiple instances.
@@ -46,19 +48,48 @@ $shieldon->setChannel('web_project');
 // The defailt expire time is 300 seconds.
 $shieldon->limitSession(10);
 
+// Set a Captcha servie. For example: Google recaptcha.
+$shieldon->setCaptcha(new \Shieldon\Captcha\Recaptcha([
+    'key' => '6LfkOaUUAAAAAH-AlTz3hRQ25SK8kZKb2hDRSwz9',
+    'secret' => '6LfkOaUUAAAAAJddZ6k-1j4hZC1rOqYZ9gLm0WQh',
+]));
+
 // Start protecting your website!
+
 $result = $shieldon->run();
 
-if ($result === 1) {
-    echo 'You are allowed.';
-} elseif ($result === 0) {
-    echo 'You are banned';
+// The result:
+// 0 - banned
+// 1 - passed
+// 2 - busy (limit online sessions)
+if ($result === 0) {
+    if ($shieldon->captchaResponse()) {
+        // Unban current session.
+        $shieldon->unban();
+    } else {
+        // Output the result page with HTTP status code 200.
+        $shieldon->output(200);
+    }
 } elseif ($result === 2) {
-    echo 'Current web is busy, please wait a monent.';
+    // Outupt the busy page.
+    $shieldon->output();
 }
+
+
 ```
 
-Other usages:
+## Screenshots
+
+When usera or robots are trying to view many your web pages at a very short period of time. They will temporarily get banned. 
+
+![](https://i.imgur.com/lzWiw4V.png)
+
+When an user has reached the online session limit.
+![](https://i.imgur.com/oQrlzH6.png)
+
+You can set the online session limit by using `limitSession` API.
+
+## Other usages:
 ```php
 // Ban an IP address 33.125.12.87 immediately.
 $shieldon->banIP('33.125.12.87');
@@ -68,13 +99,14 @@ $shielon->xssClean('GET', 'key');
 // Other examples:
 $shielon->xssClean('POST', 'content');
 $shielon->xssClean('COOKIE', 'tracking');
+$shielon->xssClean('POST');
 
 // Limit 500 sessions in 300 seconds.
-$shieldon->limitTraffic(500, 300);
+$shieldon->limitSession(500, 300);
 
 // Set a custom error page. It will display to the vistors who are blocked.
 // Blocked user must solve CAPTCHA to continue browsering.
-$shieldon->setHtml($html);
+$shieldon->setHtml($html, 'stop');
 ```
 
 ---
@@ -142,7 +174,9 @@ $shieldon->setDriver(
 - setProperty
 - setProperties
 - setChannel
-- setHtml (Todo)
+- setCaptcha
+- captchaResponse
+- setHtml
 - createDatabase
 - allow
 - deny
@@ -154,11 +188,140 @@ $shieldon->setDriver(
 
 The public APIs can be chaining yet `SetDriver` must be the first and `run` must be the last.
 
+### setDriver
+```php
+/**
+ * @param DriverProvider
+ * @return $this
+ */
+$dbLocation = APPPATH . 'cache/shieldon.sqlite3';
+$pdoInstance = new \PDO('sqlite:' . $dbLocation);
+$shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
+```
+
+### setComponent
+```php
+/**
+ * @param ComponentInterface
+ * @return $this
+ */
+$shieldon->setComponent(new \Shieldon\Component\Ip());
+```
+
+### setProperty
+```php
+/**
+ * @param string $key
+ * @param mixed  $value
+ */
+$shieldon->setProperty('time_unit_quota', [
+    ['s' => 4, 'm' => 20, 'h' => 60, 'd' => 240]
+]);
+
+// default settings
+private $properties = [
+    'time_unit_quota'        => ['s' => 2, 'm' => 10, 'h' => 30, 'd' => 60],
+    'time_reset_limit'       => 3600,
+    'interval_check_referer' => 5,
+    'interval_check_session' => 30,
+    'limit_unusual_behavior' => ['cookie' => 5, 'session' => 5, 'referer' => 10],
+    'cookie_name'            => 'ssjd',
+    'cookie_domain'          => '',
+];
+```
+
+### setChannel
+```php
+/**
+ * @param string Channel name.
+ */
+$shieldon->setChannel('web_project');
+
+// Start new shieldon each day.
+$shieldon->setChannel('web_project_' . date('Ymd'));
+```
+
+### setCaptcha
+
+```php
+/**
+ * @param CaptchaInterface
+ * @return $this
+ */
+$shieldon->setCaptcha(new \Shieldon\Captcha\Recaptcha([
+    'key' => '6LfkOaUUAAAAAH-AlTz3hRQ25SK8kZKb2hDRSwz9',
+    'secret' => '6LfkOaUUAAAAAJddZ6k-1j4hZC1rOqYZ9gLm0WQh',
+    'version' => 'v2',
+    'lang' => 'en',
+]));
+
+```
+
+### captchaResponse
+```php
+/**
+ * @return bool true: Captcha is solved successfully, false overwise.
+ */
+$result = $this->captchaResponsse();
+```
+
+### createDatabase
+```php
+/**
+ * @param bool true or false (defaukt: true)
+ */
+$this->createDatabase(false);
+```
+
+### setHtml
+```php
+/**
+ * @param string HTML text.
+ * @return $this
+ */
+$htmlText = '<html>...bala...bala...</html>';
+$this->setHTML($htmlText);
+```
+
+### xssClean
+```php
+/**
+ * @param string variable type: POST, COOKIE, GET, GLOBAL
+ * @param string key name
+ * @param bool   true: replacd with null if contains illegal charactor.
+ *               false: replacd with filitered string.
+ * @return $this
+ */
+$shielon->xssClean('POST');
+```
+
+### deny
+
+```php
+/**
+ * @param string Single IP address or IP range
+ * @return $this
+ */
+$shieldon->deny('33.125.12.1');  
+$shieldon->deny('33.125.12.1/24'); // deny 33.125.12 C class.
+```
+
+### allow
+```php
+/**
+ * @param string Single IP address or IP range
+ * @return $this
+ */
+$shieldon->allow('33.125.12.1');  
+$shieldon->allow('33.125.12.1/24'); // allow 33.125.12 C class.
+```
+
 ### ban
 
 ```php
-/*
- * @var string IP address
+/**
+ * @param string Single IP address
+ * @return $this
  */
 $shieldon->ban('33.125.12.87');
 
@@ -167,27 +330,140 @@ $shieldon->ban('33.125.12.87');
 ### unban
 
 ```php
-/*
- * @var string IP address
+/**
+ * @param string Signle IP address
+ * @return $this
  */
 $shieldon->unban('33.125.12.87');
 
 ```
 
-### limitTraffic
+### limitSession
 
 ```php
-/*
- * @var integer Maximum amount of online vistors.
- * @var integer Period. (Unit: second)
+/**
+ * @param integer Maximum amount of online vistors.
+ * @param integer Period. (Unit: second)
+ * @return $this
  */
-$shieldon->setTraffic(500, 300);
+$shieldon->setSession(500, 300);
 ```
 
 ### run
 
+```php
+/**
+ * @return integer Reponse code. 0 => banned. 1 => passed. 2 => session limit.
+ */
+$result = $shieldon->run();
 ```
-$shieldon->run();
+
+## Component API
+
+Build component instances.
+
+```php
+$ip = new \Shieldon\Component\Ip();
+$roboot = new \Shieldon\Component\Robot();
 ```
+
+###$ip->inRange
+
+
+```php
+/**
+ * @param string IP to check in IPV4 and IPV6 format
+ * @param string IP/CIDR netmask
+ * @return bool
+ *
+ */
+$result = $ip->inRange('123.22.33.44', '123.22.33.1/24');
+// true
+```
+###$ip->setAllowedList
+```php
+/**
+ * @param array Ip array
+ */
+
+$ip = new \Shieldon\Component\Ip();
+$allowedIps = [
+    '123.22.33.44',
+    '88.22.33.55',
+];
+
+$ip->setAllowedList($allowedIps);
+$shieldon->setComponent($ip);
+```
+
+###$ip->setAllowedIp
+```php
+/**
+ * @param array Ip array
+ */
+
+$ip = new \Shieldon\Component\Ip();
+$ip->setAllowedIp('123.22.33.44');
+$shieldon->setComponent($ip);
+```
+
+###$ip->getAllowedList
+```php
+/**
+ * @return array
+ */
+
+$ip = new \Shieldon\Component\Ip();
+$list = $ip->getAllowedList();
+// ['123.22.33.44', '123.22.33.43', 'xxx.xxx.xxx.xxx']
+```
+###$ip->setDeniedList
+```php
+/**
+ * @param array Ip array
+ */
+
+$ip = new \Shieldon\Component\Ip();
+$deniedIps = [
+    '123.22.33.44',
+    '88.22.33.55',
+];
+
+$ip->setDenieddList($deniedIps);
+$shieldon->setComponent($ip);
+```
+
+###$ip->setDeniedIp
+```php
+/**
+ * @param string Signle IP address.
+ */
+
+$ip = new \Shieldon\Component\Ip();
+$ip->setDeniedIp('123.22.33.44');
+$shieldon->setComponent($ip);
+```
+
+###$ip->getDeniedList
+```php
+/**
+ * @return array
+ */
+
+$ip = new \Shieldon\Component\Ip();
+$list = $ip->getDenieddList();
+// ['123.22.33.44', '123.22.33.43', 'xxx.xxx.xxx.xxx']
+```
+
+###$ip->removeIp
+```php
+/**
+ * @param string $ip   IP address.
+ * @param string $type 'allow', 'deny'
+ */
+$ip = new \Shieldon\Component\Ip();
+$ip->removeIp('123.22.33.44');
+```
+
 
 Not yet ready....

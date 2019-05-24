@@ -10,7 +10,6 @@
 
 namespace Shieldon\Component;
 
-use Shieldon\Driver\DriverProvider;
 use function base_convert;
 use function filter_var;
 use function in_array;

@@ -29,6 +29,8 @@ namespace Shieldon;
 
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Component\ComponentInterface;
+use Shieldon\Captcha\CaptchaInterface;
+
 use LogicException;
 use UnexpectedValueException;
 
@@ -37,6 +39,7 @@ use function gethostbyaddr;
 use function session_id;
 use function strrpos;
 use function substr;
+
 
 class Shieldon
 {
@@ -70,6 +73,9 @@ class Shieldon
     public const RESPONSE_DENY = 0;
     public const RESPONSE_ALLOW = 1;
     public const RESPONSE_LIMIT = 2;
+
+    // Shieldon directory.
+    private const SHIELDON_DIR = __DIR__;
 
     // Most of web crawlers do not render JavaScript, they only get text content they want,
     // so we can check if the cookie can be created by JavaScript.
@@ -137,6 +143,20 @@ class Shieldon
     protected $component = [];
 
     /**
+     * Container for captcha addons.
+     *
+     * @var Interface
+     */
+    protected $captcha = [];
+
+    /**
+     * Html output.
+     *
+     * @var array
+     */
+    private $html = [];
+
+    /**
      * The session ID.
      *
      * @var string
@@ -158,6 +178,13 @@ class Shieldon
     private $isLimitSession = [];
 
     /**
+     * Result.
+     *
+     * @var int
+     */
+    private $result = 1;
+
+    /**
      * Constructor.
      * 
      * @return void
@@ -175,6 +202,11 @@ class Shieldon
                     $this->sessionId = session_id();
                 }
             }
+        }
+
+        // At least load a captcha instance. Example is the base one.
+        if (! isset($this->captcha['Example'])) {
+            $this->setCaptcha(new \Shieldon\Captcha\Example());
         }
 
         $this->setIp();
@@ -457,7 +489,7 @@ class Shieldon
         if ($driver instanceof DriverProvider) {
             $this->driver = $driver;
         } else {
-            throw new \UnexpectedValueException('Incorrect data driver provider.');
+            throw new UnexpectedValueException('Incorrect data driver provider.');
         }
 
         return $this;
@@ -498,21 +530,57 @@ class Shieldon
     }
 
     /**
-     * Set a commponent.
-     * Sheildon needs commponents to work.
+     * Set a captcha.
      *
-     * @param ComponentInterface $component
+     * @param CaptchaInterface $instance
      *
      * @return self
      */
-    public function setComponent(ComponentInterface $component): self
+    public function setCaptcha(CaptchaInterface $instance): self
     {
-        if ($component instanceof ComponentInterface) {
-            $class = get_class($component);
+        if ($instance instanceof CaptchaInterface) {
+            $class = get_class($instance);
             $class = substr($class, strrpos($class, '\\') + 1);
-            $this->component[$class] = $component;
+            $this->captcha[$class] = $instance;
         } else {
-            throw new \UnexpectedValueException('Incorrect component.');
+            throw new UnexpectedValueException('Incorrect Captcha instance.');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Return the result from Captchas.
+     *
+     * @return bool
+     */
+    public function captchaResponse(): bool
+    {
+        foreach ($this->captcha as $captcha) {
+            if (! $captcha->response()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Set a commponent.
+     * Sheildon needs commponents to work.
+     *
+     * @param ComponentInterface $instance
+     *
+     * @return self
+     */
+    public function setComponent(ComponentInterface $instance): self
+    {
+        if ($instance instanceof ComponentInterface) {
+            $class = get_class($instance);
+            $class = substr($class, strrpos($class, '\\') + 1);
+            $this->component[$class] = $instance;
+        } else {
+            throw new UnexpectedValueException('Incorrect component.');
         }
 
         return $this;
@@ -776,15 +844,59 @@ class Shieldon
     }
 
     /**
-     * (Todo)
+     * Set result page's HTML.
      *
      * @param string $content The HTML text.
+     * @param string $type    The page type: stop, busy.
      *
      * @return self
      */
-    public function setHtml(string $content): self
+    public function setHtml(string $content, string $type): self
     {
+        if ('busy' === $type || 'stop' === $type) {
+            $this->html[$type] = $content;
+        }
         return $this;
+    }
+
+    /**
+     * Output result page.
+     *
+     * @param int $httpStatus 
+     *
+     * @echo string
+     */
+    public function output(int $httpStatus = 0): string
+    {
+        $output = '';
+
+        if (0 === $this->result) {
+            $type = 'stop';
+        } elseif (2 === $this->result) {
+            $type = 'busy';
+        } else {
+            return '';
+        }
+
+        if (empty($this->html[$type])) {
+            $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.phtml';
+            if (file_exists($viewPath)) {
+                define('SHIELDON_VIEW', true);
+                ob_start();
+                require $viewPath;
+                $output = ob_get_contents();
+                ob_end_clean();
+            }
+        } else {
+            $output = $this->html[$type];
+        }
+
+        if (0 !== $httpStatus) {
+            http_response_code($httpStatus);
+        }
+
+        echo $output;
+        exit;
     }
 
     /**
@@ -796,14 +908,14 @@ class Shieldon
      * @return int RESPONSE_CODE
      */
     public function run(): int
-    {    
+    {
         $this->driver->init($this->autoCreateDatabase);
 
         if ($this->getComponent('Robot')) {
 
             // First of all, check if is a a bad robot already defined in settings.
             if ($this->getComponent('Robot')->isDenied()) {
-                return self::RESPONSE_DENY;
+                return $this->result = self::RESPONSE_DENY;
             }
         }
 
@@ -833,7 +945,7 @@ class Shieldon
                     $result['code'] == $this->getComponent('Ip')::CODE_ALLOW_IP_RULE
                 ) {
                     // This IP has been listed in rule table, so set $isRuleList = true.
-                    $this->$isRuleList = true;
+                    $this->isRuleList = true;
                 }
 
                 if ($this->getComponent('Robot')) {
@@ -864,25 +976,25 @@ class Shieldon
                         }
 
                         // Allowed robots not join to our traffic handler.
-                        return self::RESPONSE_ALLOW;
+                        return $this->result = self::RESPONSE_ALLOW;
                     }
                 }
 
                 // The rule list checking result is here.
                 switch ($result['status']) {
                     case 'allow':
-                        return $this->sessionHandler(true);
+                        return $this->result = $this->sessionHandler(true);
                         break;
     
                     case 'deny':
-                        return $this->sessionHandler(false);
+                        return $this->result = $this->sessionHandler(false);
                         break;
                 }
             }
         }
 
         if (! empty($ipRule) && $ipRule['type'] == 0) {
-            return self::RESPONSE_DENY;
+            return $this->result = self::RESPONSE_DENY;
         }
 
         // This IP address is not listed in rule table, let's detect it.
@@ -890,10 +1002,10 @@ class Shieldon
 
             // We need to record the live sessions first.
             // If they got banned, 
-            return $this->sessionHandler($this->detect());
+            return $this->result = $this->sessionHandler($this->detect());
         }
 
-        return self::RESPONSE_ALLOW;
+        return $this->result = self::RESPONSE_ALLOW;
     }
 
     /**

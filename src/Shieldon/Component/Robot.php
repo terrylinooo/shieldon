@@ -13,7 +13,6 @@ namespace Shieldon\Component;
 use function preg_match;
 use function implode;
 use function gethostbyname;
-use function gethostbyaddr;
 
 /**
  * Robot
