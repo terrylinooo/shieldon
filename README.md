@@ -175,6 +175,8 @@ $shieldon->setDriver(
 - setProperties
 - setChannel
 - setCaptcha
+- setFiliters
+- outputJsSnippet
 - captchaResponse
 - setHtml
 - createDatabase
@@ -257,6 +259,35 @@ $shieldon->setCaptcha(new \Shieldon\Captcha\Recaptcha([
 
 ```
 
+### setFiliters
+
+```php
+/**
+ * @param array Filter settings.
+ * @return $this
+ */
+$shieldon->setFilters([
+    'session' => true,
+    'cookie' => true,
+    'referer' => true,
+    'frequency' => true,
+]);
+
+```
+
+### outputJsSnippet
+
+* Required if cookie filiter is enabled.
+
+```php
+/**
+ * @return string JavaScript string.
+ */
+$jsCode = $shieldon->outputJsSnippet();
+// Output this variable in your page template.
+```
+
+
 ### captchaResponse
 ```php
 /**
@@ -268,7 +299,7 @@ $result = $this->captchaResponsse();
 ### createDatabase
 ```php
 /**
- * @param bool true or false (defaukt: true)
+ * @param bool true or false (default: true)
  */
 $this->createDatabase(false);
 ```
@@ -347,6 +378,17 @@ $shieldon->unban('33.125.12.87');
  * @return $this
  */
 $shieldon->setSession(500, 300);
+```
+
+### outputJsSnippet
+
+```php
+/**
+ * @return string Js code.
+ */
+
+$jsCode = $shieldon->outputJsSnippet();
+// echo this variable in anywhere of your page template.
 ```
 
 ### run

@@ -80,7 +80,7 @@ class Shieldon
     // Most of web crawlers do not render JavaScript, they only get text content they want,
     // so we can check if the cookie can be created by JavaScript.
     // This is hard to prevent headless browser robots, but it can stop probably 70% poor robots.
-    private $enableJsCookieCheck = false;
+    private $enableCookieCheck = false;
 
     // Every unique user has an unique session, but if an user creates different sessions in every connection..
     // that means the user's browser doesn't support cookie.
@@ -300,7 +300,7 @@ class Shieldon
             /*** JAVASCRIPT COOKIE ***/
 
             // Let's checking cookie created by javascript..
-            if ($this->enableJsCookieCheck) {
+            if ($this->enableCookieCheck) {
 
                 // Get values from data table. We will count it and save it back to data table.
                 $logData['flag_js_cookie']   = $ipDetail['flag_js_cookie']   ?? 0;
@@ -469,6 +469,69 @@ class Shieldon
         return null;
     }
 
+/**
+     * Deal with online sessions.
+     *
+     * @param bool $checkPassed
+     *
+     * @return int RESPONSE_CODE
+     */
+    private function sessionHandler($checkPassed = false): int
+    {
+        if (! $checkPassed) {
+            return self::RESPONSE_DENY;
+        }
+
+        // If you don't enable `limit traffic`, ignore the following steps.
+        if (empty($this->isLimitSession)) {
+            return self::RESPONSE_ALLOW;
+
+        } else {
+
+            // Get the proerties.
+            $limit = (int) ($this->isLimitSession[0] ?? 0);
+            $period = (int) ($this->isLimitSession[1] ?? 300);
+            $now = time();
+    
+            $onlineSessions = $this->driver->getAll('session');
+            $sessionPools = [];
+
+            foreach ($onlineSessions as $k => $v) {
+                $sessionPools[] = $v['id'];
+
+                if ($this->sessionId === $v['id']) {
+                    $lasttime = (int) $v['time'];
+                }
+            }
+
+            if (! in_array($this->sessionId, $sessionPools)) {
+
+                // New session, record this data.
+                $data['id'] = $this->sessionId;
+                $data['ip'] = $this->ip;
+                $data['time'] = $now;
+                $this->driver->save($this->sessionId, $data, 'session');
+
+            } else {
+
+                // Remove current session if it expires.
+                if ($now - $lasttime > $period) {
+                    $this->driver->delete($this->sessionId, 'session');
+                }
+            }
+
+            // Count the online sessions.
+            $onlineCount = count($sessionPools);
+
+            // Online session count reached the limit. So return RESPONSE_LIMIT response code.
+            if ($onlineCount >= $limit) {
+                return self::RESPONSE_LIMIT;
+            }
+        }
+
+        return self::RESPONSE_ALLOW;
+    }
+
     /*
     | -------------------------------------------------------------------
     |                            Public APIs
@@ -476,7 +539,7 @@ class Shieldon
     |  The public APIs can be chaining yet `SetDriver` must be the first 
     |  and `run` must be the last.
     */
-    
+
     /**
      * Set a data driver.
      *
@@ -1009,66 +1072,52 @@ class Shieldon
     }
 
     /**
-     * Deal with online sessions.
+     * Set the filiters.
      *
-     * @param bool $checkPassed
-     *
-     * @return int RESPONSE_CODE
+     * @param array $settings Filiter settings
+     * @return self
      */
-    private function sessionHandler($checkPassed = false): int
+    public function setFiliters($settings): self
     {
-        if (! $checkPassed) {
-            return self::RESPONSE_DENY;
-        }
+        $requiredFilters = [
+            'cookie' => true,
+            'session' => true,
+            'frequency' => true,
+            'referer' => true,
+        ];
 
-        // If you don't enable `limit traffic`, ignore the following steps.
-        if (empty($this->isLimitSession)) {
-            return self::RESPONSE_ALLOW;
-
-        } else {
-
-            // Get the proerties.
-            $limit = (int) ($this->isLimitSession[0] ?? 0);
-            $period = (int) ($this->isLimitSession[1] ?? 300);
-            $now = time();
-    
-            $onlineSessions = $this->driver->getAll('session');
-            $sessionPools = [];
-
-            foreach ($onlineSessions as $k => $v) {
-                $sessionPools[] = $v['id'];
-
-                if ($this->sessionId === $v['id']) {
-                    $lasttime = (int) $v['time'];
-                }
-            }
-
-            if (! in_array($this->sessionId, $sessionPools)) {
-
-                // New session, record this data.
-                $data['id'] = $this->sessionId;
-                $data['ip'] = $this->ip;
-                $data['time'] = $now;
-                $this->driver->save($this->sessionId, $data, 'session');
-
-            } else {
-
-                // Remove current session if it expires.
-                if ($now - $lasttime > $period) {
-                    $this->driver->delete($this->sessionId, 'session');
-                }
-            }
-
-            // Count the online sessions.
-            $onlineCount = count($sessionPools);
-
-            // Online session count reached the limit. So return RESPONSE_LIMIT response code.
-            if ($onlineCount >= $limit) {
-                return self::RESPONSE_LIMIT;
+        foreach ($requiredFilters as $k => $v) {
+            if (isset($settings[$k])) {
+                $u = 'enable' . utfirst($k) . 'Check';
+                $this->{$u} = $settings[$k] ?? false;
             }
         }
 
-        return self::RESPONSE_ALLOW;
+        return $this;
+    }
+
+    /**
+     * Print javascript snippet in your webpages.
+     * This snippet generate cookie on client's browser,then we check the cookie to identify the client is a rebot or not.
+     *
+     * @return string
+     */
+    public function outputJsSnippet(): string
+    {
+        $tmpCookieName = $this->properties['cookie_name'];
+        $tmpCookieDomain = $this->properties['cookie_domain'];
+
+        $jsString = <<<"EOF"
+
+            <script>
+                var d = new Date();
+                d.setTime(d.getTime()+(7*24*60*60*1000));
+                var expires = "expires="+d.toUTCString();
+                document.cookie = "{$tmpCookieName}=1;domain=.{$tmpCookieDomain};"+expires;
+            </script>
+
+EOF;
+        return $jsString;
     }
 }
 
