@@ -80,7 +80,7 @@ if ($result === 0) {
 
 ## Screenshots
 
-When usera or robots are trying to view many your web pages at a very short period of time. They will temporarily get banned. 
+When users or robots are trying to view many your web pages at a very short period of time. They will temporarily get banned. 
 
 ![](https://i.imgur.com/lzWiw4V.png)
 
@@ -360,110 +360,15 @@ $result = $shieldon->run();
 
 ## Component API
 
-Build component instances.
+- [Ip](https://github.com/terrylinooo/shieldon/wiki/Component-Ip)
+- [Robot](https://github.com/terrylinooo/shieldon/wiki/Component-Robot)
 
-```php
-$ip = new \Shieldon\Component\Ip();
-$roboot = new \Shieldon\Component\Robot();
-```
+---
 
-###$ip->inRange
+## License
 
+MIT
 
-```php
-/**
- * @param string IP to check in IPV4 and IPV6 format
- * @param string IP/CIDR netmask
- * @return bool
- *
- */
-$result = $ip->inRange('123.22.33.44', '123.22.33.1/24');
-// true
-```
-###$ip->setAllowedList
-```php
-/**
- * @param array Ip array
- */
+## Author
 
-$ip = new \Shieldon\Component\Ip();
-$allowedIps = [
-    '123.22.33.44',
-    '88.22.33.55',
-];
-
-$ip->setAllowedList($allowedIps);
-$shieldon->setComponent($ip);
-```
-
-###$ip->setAllowedIp
-```php
-/**
- * @param array Ip array
- */
-
-$ip = new \Shieldon\Component\Ip();
-$ip->setAllowedIp('123.22.33.44');
-$shieldon->setComponent($ip);
-```
-
-###$ip->getAllowedList
-```php
-/**
- * @return array
- */
-
-$ip = new \Shieldon\Component\Ip();
-$list = $ip->getAllowedList();
-// ['123.22.33.44', '123.22.33.43', 'xxx.xxx.xxx.xxx']
-```
-###$ip->setDeniedList
-```php
-/**
- * @param array Ip array
- */
-
-$ip = new \Shieldon\Component\Ip();
-$deniedIps = [
-    '123.22.33.44',
-    '88.22.33.55',
-];
-
-$ip->setDenieddList($deniedIps);
-$shieldon->setComponent($ip);
-```
-
-###$ip->setDeniedIp
-```php
-/**
- * @param string Signle IP address.
- */
-
-$ip = new \Shieldon\Component\Ip();
-$ip->setDeniedIp('123.22.33.44');
-$shieldon->setComponent($ip);
-```
-
-###$ip->getDeniedList
-```php
-/**
- * @return array
- */
-
-$ip = new \Shieldon\Component\Ip();
-$list = $ip->getDenieddList();
-// ['123.22.33.44', '123.22.33.43', 'xxx.xxx.xxx.xxx']
-```
-
-###$ip->removeIp
-```php
-/**
- * @param string $ip   IP address.
- * @param string $type 'allow', 'deny'
- */
-$ip = new \Shieldon\Component\Ip();
-$ip->removeIp('123.22.33.44');
-```
-
-
-Not yet ready....
+- [Terry Lin](https://terryl.in)
