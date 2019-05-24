@@ -58,21 +58,17 @@ $shieldon->setCaptcha(new \Shieldon\Captcha\Recaptcha([
 
 $result = $shieldon->run();
 
-// The result:
-// 0 - banned
-// 1 - passed
-// 2 - busy (limit online sessions)
-if ($result === 0) {
+
+if ($result !== $shieldon::RESPONSE_ALLOW) {
     if ($shieldon->captchaResponse()) {
+
         // Unban current session.
         $shieldon->unban();
     } else {
+
         // Output the result page with HTTP status code 200.
         $shieldon->output(200);
     }
-} elseif ($result === 2) {
-    // Outupt the busy page.
-    $shieldon->output();
 }
 
 
@@ -180,8 +176,6 @@ $shieldon->setDriver(
 - captchaResponse
 - setHtml
 - createDatabase
-- allow
-- deny
 - ban
 - unban
 - limitSession
@@ -326,27 +320,6 @@ $this->setHTML($htmlText);
 $shielon->xssClean('POST');
 ```
 
-### deny
-
-```php
-/**
- * @param string Single IP address or IP range
- * @return $this
- */
-$shieldon->deny('33.125.12.1');  
-$shieldon->deny('33.125.12.1/24'); // deny 33.125.12 C class.
-```
-
-### allow
-```php
-/**
- * @param string Single IP address or IP range
- * @return $this
- */
-$shieldon->allow('33.125.12.1');  
-$shieldon->allow('33.125.12.1/24'); // allow 33.125.12 C class.
-```
-
 ### ban
 
 ```php
@@ -378,17 +351,6 @@ $shieldon->unban('33.125.12.87');
  * @return $this
  */
 $shieldon->setSession(500, 300);
-```
-
-### outputJsSnippet
-
-```php
-/**
- * @return string Js code.
- */
-
-$jsCode = $shieldon->outputJsSnippet();
-// echo this variable in anywhere of your page template.
 ```
 
 ### run

@@ -47,7 +47,7 @@ class SqliteDriver extends AbstractSqlDriver
             CREATE TABLE IF NOT EXISTS {$this->tableRuleList} (
                 log_ip VARCHAR(46) PRIMARY KEY, 
                 ip_resolve VARCHAR(255), 
-                type TINYINT(1), 
+                type TINYINT(3), 
                 reason TINYINT(3), 
                 time INT(10)
             );

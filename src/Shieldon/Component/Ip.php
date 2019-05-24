@@ -128,11 +128,20 @@ class Ip implements ComponentInterface
                     ];
                 }
     
-                if (0 === (int) $result['type']) {
+                if (-1 === (int) $result['type']) {
                     return [
                         'status' => 'deny',
                         'code' => self::CODE_DENY_IP_RULE,
                         'comment' => 'IP is denied in rule table.',
+                        'reason' => $result['reason'],
+                    ];
+                }
+
+                if (0 === (int) $result['type']) {
+                    return [
+                        'status' => 'stop',
+                        'code' => self::CODE_DENY_IP_RULE,
+                        'comment' => 'IP is temporarily banned in rule table.',
                         'reason' => $result['reason'],
                     ];
                 }

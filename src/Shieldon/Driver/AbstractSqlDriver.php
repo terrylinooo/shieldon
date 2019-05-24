@@ -460,7 +460,7 @@ abstract class AbstractSqlDriver extends DriverProvider
             CREATE TABLE IF NOT EXISTS `{$this->tableRuleList}` (
                 `log_ip` varchar(46) NOT NULL,
                 `ip_resolve` varchar(255) NOT NULL,
-                `type` tinyint(1) UNSIGNED NOT NULL,
+                `type` tinyint(3) UNSIGNED NOT NULL,
                 `reason` tinyint(3) UNSIGNED NOT NULL,
                 `time` int(10) UNSIGNED NOT NULL,
                 PRIMARY KEY (`log_ip`)

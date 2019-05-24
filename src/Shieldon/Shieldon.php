@@ -46,33 +46,35 @@ class Shieldon
     use IpTrait;
 
     // Reason codes (allow)
-    public const CODE_IS_SEARCH_ENGINE = 100;
-    public const CODE_IS_GOOGLE = 101;
-    public const CODE_IS_BING = 102;
-    public const CODE_IS_YAHOO = 103;
+    public const REASON_IS_SEARCH_ENGINE = 100;
+    public const REASON_IS_GOOGLE = 101;
+    public const REASON_IS_BING = 102;
+    public const REASON_IS_YAHOO = 103;
 
     // Reason codes (deny)
-    public const CODE_TOO_MANY_SESSIONS = 1;
-    public const CODE_TOO_MANY_ACCESSES = 2;
-    public const CODE_EMPTY_JS_COOKIE = 3;
-    public const CODE_EMPTY_REFERER = 4;
+    public const REASON_TOO_MANY_SESSIONS = 1;
+    public const REASON_TOO_MANY_ACCESSES = 2;
+    public const REASON_EMPTY_JS_COOKIE = 3;
+    public const REASON_EMPTY_REFERER = 4;
 
-    public const CODE_REACHED_LIMIT_DAY = 11;
-    public const CODE_REACHED_LIMIT_HOUR = 12;
-    public const CODE_REACHED_LIMIT_MINUTE = 13;
-    public const CODE_REACHED_LIMIT_SECOND = 14;
+    public const REASON_REACHED_LIMIT_DAY = 11;
+    public const REASON_REACHED_LIMIT_HOUR = 12;
+    public const REASON_REACHED_LIMIT_MINUTE = 13;
+    public const REASON_REACHED_LIMIT_SECOND = 14;
 
-    public const CODE_MANUAL_BAN = 99;
+    public const REASON_MANUAL_BAN = 99;
 
     // Action codes.
-    public const ACTION_ALLOW = 1;
     public const ACTION_DENY = 0;
+    public const ACTION_ALLOW = 1;
+    public const ACTION_TEMPORARILY_BAN = 2;
     public const ACTION_UNBAN = 9;
 
     // Result codes.
     public const RESPONSE_DENY = 0;
     public const RESPONSE_ALLOW = 1;
-    public const RESPONSE_LIMIT = 2;
+    public const RESPONSE_TEMPORARILY_BAN = 2;
+    public const RESPONSE_LIMIT = 3;
 
     // Shieldon directory.
     private const SHIELDON_DIR = __DIR__;
@@ -267,8 +269,8 @@ class Shieldon
 
                     // Ban this IP if they reached the limit.
                     if ($logData['flag_empty_referer'] >= $this->properties['limit_unusual_behavior']['referer']) {
-                        $this->action(self::ACTION_DENY, self::CODE_EMPTY_REFERER);
-                        return false;
+                        $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_EMPTY_REFERER);
+                        return self::RESPONSE_TEMPORARILY_BAN;
                     }
                 }
             }
@@ -291,8 +293,8 @@ class Shieldon
 
                     // Ban this IP if they reached the limit.
                     if ($logData['flag_multi_session'] >= $this->properties['limit_unusual_behavior']['session']) {
-                        $this->action(self::ACTION_DENY, self::CODE_TOO_MANY_SESSIONS);
-                        return false;
+                        $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_TOO_MANY_SESSIONS);
+                        return self::RESPONSE_TEMPORARILY_BAN;
                     }
                 }
             }
@@ -326,8 +328,8 @@ class Shieldon
                 if ($logData['flag_js_cookie'] >= $this->properties['limit_unusual_behavior']['cookie']) {
 
                     // Ban this IP if they reached the limit.
-                    $this->action(self::ACTION_DENY, self::CODE_EMPTY_JS_COOKIE);
-                    return false;
+                    $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_EMPTY_JS_COOKIE);
+                    return self::RESPONSE_TEMPORARILY_BAN;
                 }
 
                 // Remove JS cookie and reset.
@@ -364,11 +366,11 @@ class Shieldon
                         // If an user's pageview count is more than the time period limit
                         // He or she will get banned.
                         if ($logData["pageviews_{$timeUnit}"] >= $this->properties['time_unit_quota'][$timeUnit]) {
-                            if ($timeUnit === 's') $this->action(self::ACTION_DENY, self::CODE_REACHED_LIMIT_SECOND);
-                            if ($timeUnit === 'm') $this->action(self::ACTION_DENY, self::CODE_REACHED_LIMIT_MINUTE);
-                            if ($timeUnit === 'h') $this->action(self::ACTION_DENY, self::CODE_REACHED_LIMIT_HOUR);
-                            if ($timeUnit === 'd') $this->action(self::ACTION_DENY, self::CODE_REACHED_LIMIT_DAY);
-                            return false;
+                            if ($timeUnit === 's') $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_REACHED_LIMIT_SECOND);
+                            if ($timeUnit === 'm') $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_REACHED_LIMIT_MINUTE);
+                            if ($timeUnit === 'h') $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_REACHED_LIMIT_HOUR);
+                            if ($timeUnit === 'd') $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_REACHED_LIMIT_DAY);
+                            return self::RESPONSE_TEMPORARILY_BAN;
                         }
                     }
                 }
@@ -412,7 +414,7 @@ class Shieldon
             $this->driver->save($this->ip, $logData, 'log');
         }
 
-        return true;
+        return self::RESPONSE_ALLOW;
     }
 
     /**
@@ -427,31 +429,34 @@ class Shieldon
     protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
     {
         $ip = $this->ip;
+        $ipResolvedHostname = $this->ipResolvedHostname;
     
         if ('' !== $assignIp) {
             $ip = $assignIp;
+            $ipResolvedHostname = gethostbyaddr($ip);
         }
 
         switch ($actionCode) {
             case self::ACTION_ALLOW:
             case self::ACTION_DENY:
-                $logData['log_ip']     = $this->ip;
-                $logData['ip_resolve'] = $this->ipResolvedHostname;
+            case self::ACTION_TEMPORARILY_BAN:
+                $logData['log_ip']     = $ip;
+                $logData['ip_resolve'] = $ipResolvedHostname;
                 $logData['time']       = time();
                 $logData['type']       = $actionCode;
                 $logData['reason']     = $reasonCode;
 
-                $this->driver->save($this->ip, $logData, 'rule');
+                $this->driver->save($ip, $logData, 'rule');
                 break;
             
             case self::ACTION_UNBAN:
-                $this->driver->delete($this->ip, 'rule');
+                $this->driver->delete($ip, 'rule');
                 break;
         }
 
         // Remove logs for this IP address because It already has it's own rule on system.
         // No need to count it anymore.
-        $this->driver->delete($this->ip, 'log');
+        $this->driver->delete($ip, 'log');
     }
 
     /**
@@ -469,17 +474,17 @@ class Shieldon
         return null;
     }
 
-/**
+    /**
      * Deal with online sessions.
      *
      * @param bool $checkPassed
      *
      * @return int RESPONSE_CODE
      */
-    private function sessionHandler($checkPassed = false): int
+    private function sessionHandler($statusCode): int
     {
-        if (! $checkPassed) {
-            return self::RESPONSE_DENY;
+        if (self::RESPONSE_ALLOW !== $statusCode) {
+            return $statusCode;
         }
 
         // If you don't enable `limit traffic`, ignore the following steps.
@@ -650,52 +655,6 @@ class Shieldon
     }
 
     /**
-     * Deny an IP.
-     *
-     * @param string|array $ip
-     *
-     * @return void
-     */
-    public function deny($ip = ''): self
-    {
-        if ('' === $ip) {
-            $ip = $this->ip;
-        }
-
-        if ($this->getComponent('Ip')) {
-            if (is_array($ip)) {
-                $this->getComponent('Ip')->setDeniedList($ip);
-            } elseif (is_string($ip)) {
-                $this->getComponent('Ip')->setDeniedIp($ip);
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * Allow an IP.
-     *
-     * @param string|array $ip
-     *
-     * @return void
-     */
-    public function allow($ip = ''): self
-    {
-        if ('' === $ip) {
-            $ip = $this->ip;
-        }
-
-        if ($this->getComponent('Ip')) {
-            if (is_array($ip)) {
-                $this->getComponent('Ip')->setAllowedList($ip);
-            } elseif (is_string($ip)) {
-                $this->getComponent('Ip')->setAllowedIp($ip);
-            }
-        }
-        return $this;
-    }
-
-    /**
      * Ban an IP.
      *
      * @param string $ip
@@ -708,8 +667,7 @@ class Shieldon
             $ip = $this->ip;
         }
  
-        $this->deny($ip);
-        $this->action(self::ACTION_DENY, self::CODE_MANUAL_BAN, $ip);
+        $this->action(self::ACTION_DENY, self::REASON_MANUAL_BAN, $ip);
 
         return $this;
     }
@@ -727,11 +685,7 @@ class Shieldon
             $ip = $this->ip;
         }
 
-        if ($this->getComponent('Ip')) {
-            $this->getComponent('Ip')->removeIp($ip, 'deny');
-        }
-
-        $this->action(self::ACTION_UNBAN, self::CODE_MANUAL_BAN);
+        $this->action(self::ACTION_UNBAN, self::REASON_MANUAL_BAN, $ip);
 
         return $this;
     }
@@ -910,15 +864,16 @@ class Shieldon
      * Set result page's HTML.
      *
      * @param string $content The HTML text.
-     * @param string $type    The page type: stop, busy.
+     * @param string $type    The page type: stop, limit, deny.
      *
      * @return self
      */
     public function setHtml(string $content, string $type): self
     {
-        if ('busy' === $type || 'stop' === $type) {
+        if ('limit' === $type || 'stop' === $type || 'deny' === $type) {
             $this->html[$type] = $content;
         }
+
         return $this;
     }
 
@@ -933,25 +888,47 @@ class Shieldon
     {
         $output = '';
 
-        if (0 === $this->result) {
+        if (self::RESPONSE_TEMPORARILY_BAN === $this->result) {
             $type = 'stop';
-        } elseif (2 === $this->result) {
-            $type = 'busy';
+        } elseif (self::RESPONSE_LIMIT === $this->result) {
+            $type = 'limit';
+        } elseif (self::RESPONSE_DENY === $this->result) {
+            $type = 'deny';
         } else {
             return '';
         }
 
+        // Use default template if there is no custom HTML template.
         if (empty($this->html[$type])) {
             $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.phtml';
+
             if (file_exists($viewPath)) {
                 define('SHIELDON_VIEW', true);
+
                 ob_start();
                 require $viewPath;
                 $output = ob_get_contents();
                 ob_end_clean();
             }
         } else {
+    
             $output = $this->html[$type];
+
+            if ('stop' === $type) {
+
+                // Build captcha form.
+                ob_start();
+
+                foreach ($this->captcha as $captcha) {
+                    echo $captcha->form();
+                }
+
+                $captchaFormElements = ob_get_contents();
+                ob_end_clean();
+
+                // Inject captcha HTML form elements into custom template.
+                $output = str_replace('{{captcha}}', $captchaFormElements, $output);
+            }
         }
 
         if (0 !== $httpStatus) {
@@ -1021,21 +998,21 @@ class Shieldon
                         if ($this->getComponent('Robot')->isGoogle()) {
     
                             // Add current IP into allowed list, because it is from real Google domain.
-                            $this->action(self::ACTION_ALLOW, self::CODE_IS_GOOGLE);
+                            $this->action(self::ACTION_ALLOW, self::REASON_IS_GOOGLE);
                             
                         } elseif ($this->getComponent('Robot')->isBing()) {
 
                             // Add current IP into allowed list, because it is from real Bing domain.
-                            $this->action(self::ACTION_ALLOW, self::CODE_IS_BING);
+                            $this->action(self::ACTION_ALLOW, self::REASON_IS_BING);
 
                         } elseif ($this->getComponent('Robot')->isYahoo()) {
                             // Add current IP into allowed list, because it is from real Yahoo domain.
-                            $this->action(self::ACTION_ALLOW, self::CODE_IS_YAHOO);
+                            $this->action(self::ACTION_ALLOW, self::REASON_IS_YAHOO);
 
                         } else {
                             // Add current IP into allowed list, because you trust it.
                             // You have already defined it in the settings.
-                            $this->action(self::ACTION_ALLOW, self::CODE_IS_SEARCH_ENGINE);
+                            $this->action(self::ACTION_ALLOW, self::REASON_IS_SEARCH_ENGINE);
                         }
 
                         // Allowed robots not join to our traffic handler.
@@ -1046,18 +1023,24 @@ class Shieldon
                 // The rule list checking result is here.
                 switch ($result['status']) {
                     case 'allow':
-                        return $this->result = $this->sessionHandler(true);
+                        $resultCode = self::RESPONSE_ALLOW;
                         break;
     
                     case 'deny':
-                        return $this->result = $this->sessionHandler(false);
+                        $resultCode = self::RESPONSE_DENY;
+                        break;
+
+                    case 'stop':
+                        $resultCode = self::RESPONSE_TEMPORARILY_BAN;
                         break;
                 }
+
+                return $this->result = $this->sessionHandler($resultCode);
             }
         }
 
-        if (! empty($ipRule) && $ipRule['type'] == 0) {
-            return $this->result = self::RESPONSE_DENY;
+        if (! empty($ipRule) && $ipRule['type'] !== 1) {
+            return $this->result = (int) $ipRule['type'];
         }
 
         // This IP address is not listed in rule table, let's detect it.
