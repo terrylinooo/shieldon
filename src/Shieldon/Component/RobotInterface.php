@@ -98,7 +98,7 @@ interface RobotInterface
      *
      * @return array
      */
-    public function geRdnsList(array $data, string $type = ''): array;
+    public function getRdnsList(array $data, string $type = ''): array;
 
     /**
      * Set user-agent List.
@@ -118,5 +118,5 @@ interface RobotInterface
      *
      * @return array
      */
-    public function geAgentList(array $data, string $type = ''): array;
+    public function getAgentList(array $data, string $type = ''): array;
  }

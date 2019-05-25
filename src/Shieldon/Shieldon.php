@@ -67,13 +67,13 @@ class Shieldon
     // Action codes.
     public const ACTION_DENY = 0;
     public const ACTION_ALLOW = 1;
-    public const ACTION_TEMPORARILY_BAN = 2;
+    public const ACTION_TEMPORARILY_DENY = 2;
     public const ACTION_UNBAN = 9;
 
     // Result codes.
     public const RESPONSE_DENY = 0;
     public const RESPONSE_ALLOW = 1;
-    public const RESPONSE_TEMPORARILY_BAN = 2;
+    public const RESPONSE_TEMPORARILY_DENY = 2;
     public const RESPONSE_LIMIT = 3;
 
     // Shieldon directory.
@@ -113,6 +113,7 @@ class Shieldon
         'limit_unusual_behavior' => ['cookie' => 5, 'session' => 5, 'referer' => 10],
         'cookie_name'            => 'ssjd',
         'cookie_domain'          => '',
+        'disable_credit_link'    => false,
     ];
 
     /**
@@ -269,8 +270,8 @@ class Shieldon
 
                     // Ban this IP if they reached the limit.
                     if ($logData['flag_empty_referer'] >= $this->properties['limit_unusual_behavior']['referer']) {
-                        $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_EMPTY_REFERER);
-                        return self::RESPONSE_TEMPORARILY_BAN;
+                        $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_EMPTY_REFERER);
+                        return self::RESPONSE_TEMPORARILY_DENY;
                     }
                 }
             }
@@ -293,8 +294,8 @@ class Shieldon
 
                     // Ban this IP if they reached the limit.
                     if ($logData['flag_multi_session'] >= $this->properties['limit_unusual_behavior']['session']) {
-                        $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_TOO_MANY_SESSIONS);
-                        return self::RESPONSE_TEMPORARILY_BAN;
+                        $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_TOO_MANY_SESSIONS);
+                        return self::RESPONSE_TEMPORARILY_DENY;
                     }
                 }
             }
@@ -328,8 +329,8 @@ class Shieldon
                 if ($logData['flag_js_cookie'] >= $this->properties['limit_unusual_behavior']['cookie']) {
 
                     // Ban this IP if they reached the limit.
-                    $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_EMPTY_JS_COOKIE);
-                    return self::RESPONSE_TEMPORARILY_BAN;
+                    $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_EMPTY_JS_COOKIE);
+                    return self::RESPONSE_TEMPORARILY_DENY;
                 }
 
                 // Remove JS cookie and reset.
@@ -366,11 +367,11 @@ class Shieldon
                         // If an user's pageview count is more than the time period limit
                         // He or she will get banned.
                         if ($logData["pageviews_{$timeUnit}"] >= $this->properties['time_unit_quota'][$timeUnit]) {
-                            if ($timeUnit === 's') $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_REACHED_LIMIT_SECOND);
-                            if ($timeUnit === 'm') $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_REACHED_LIMIT_MINUTE);
-                            if ($timeUnit === 'h') $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_REACHED_LIMIT_HOUR);
-                            if ($timeUnit === 'd') $this->action(self::ACTION_TEMPORARILY_BAN, self::REASON_REACHED_LIMIT_DAY);
-                            return self::RESPONSE_TEMPORARILY_BAN;
+                            if ($timeUnit === 's') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_SECOND);
+                            if ($timeUnit === 'm') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_MINUTE);
+                            if ($timeUnit === 'h') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_HOUR);
+                            if ($timeUnit === 'd') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_DAY);
+                            return self::RESPONSE_TEMPORARILY_DENY;
                         }
                     }
                 }
@@ -393,8 +394,6 @@ class Shieldon
                 $logData['flag_empty_referer'] = 0;
                 $logData['flag_js_cookie']     = 0;
             }
-
-            //die(var_dump($logData));
 
             $this->driver->save($this->ip, $logData, 'log');
 
@@ -439,7 +438,7 @@ class Shieldon
         switch ($actionCode) {
             case self::ACTION_ALLOW:
             case self::ACTION_DENY:
-            case self::ACTION_TEMPORARILY_BAN:
+            case self::ACTION_TEMPORARILY_DENY:
                 $logData['log_ip']     = $ip;
                 $logData['ip_resolve'] = $ipResolvedHostname;
                 $logData['time']       = time();
@@ -868,7 +867,7 @@ class Shieldon
      *
      * @return self
      */
-    public function setHtml(string $content, string $type): self
+    public function setView(string $content, string $type): self
     {
         if ('limit' === $type || 'stop' === $type || 'deny' === $type) {
             $this->html[$type] = $content;
@@ -888,7 +887,7 @@ class Shieldon
     {
         $output = '';
 
-        if (self::RESPONSE_TEMPORARILY_BAN === $this->result) {
+        if (self::RESPONSE_TEMPORARILY_DENY === $this->result) {
             $type = 'stop';
         } elseif (self::RESPONSE_LIMIT === $this->result) {
             $type = 'limit';
@@ -901,6 +900,11 @@ class Shieldon
         // Use default template if there is no custom HTML template.
         if (empty($this->html[$type])) {
             $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.phtml';
+
+            $showCreditLink = false;
+            if (empty($this->properties['disable_credit_link'])) {
+                $showCreditLink = true;
+            }
 
             if (file_exists($viewPath)) {
                 define('SHIELDON_VIEW', true);
@@ -1031,7 +1035,7 @@ class Shieldon
                         break;
 
                     case 'stop':
-                        $resultCode = self::RESPONSE_TEMPORARILY_BAN;
+                        $resultCode = self::RESPONSE_TEMPORARILY_DENY;
                         break;
                 }
 

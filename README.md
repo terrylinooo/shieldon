@@ -76,14 +76,24 @@ if ($result !== $shieldon::RESPONSE_ALLOW) {
 
 ## Screenshots
 
-When users or robots are trying to view many your web pages at a very short period of time. They will temporarily get banned. 
+When the users or robots are trying to view many your web pages at a short period of time, they will temporarily get banned. To get unbanned by solving Catpcha.
 
-![](https://i.imgur.com/lzWiw4V.png)
+![](https://i.imgur.com/FfG8fTF.png)
 
-When an user has reached the online session limit.
-![](https://i.imgur.com/oQrlzH6.png)
+When an user has reached the online session limit. You can set the online session limit by using `limitSession` API.
+![](https://i.imgur.com/1HpMO5Q.png)
 
-You can set the online session limit by using `limitSession` API.
+When an user has been permanently banned.
+
+![](https://i.imgur.com/7PdjkKV.png)
+
+You can permanently ban anyone by using the following APIs.
+
+- ban(string)
+- setDeniedList(array) `IP component API`
+- setDeniedIp(string) `IP component API`
+- setRdnsList(array, 'deny') `Robot component API`
+- setAgentList(array, 'deny') `Robot component API`
 
 ## Other usages:
 ```php
@@ -102,7 +112,7 @@ $shieldon->limitSession(500, 300);
 
 // Set a custom error page. It will display to the vistors who are blocked.
 // Blocked user must solve CAPTCHA to continue browsering.
-$shieldon->setHtml($html, 'stop');
+$shieldon->setView($html, 'stop');
 ```
 
 ---
@@ -174,7 +184,7 @@ $shieldon->setDriver(
 - setFiliters
 - outputJsSnippet
 - captchaResponse
-- setHtml
+- setView
 - createDatabase
 - ban
 - unban
@@ -298,14 +308,14 @@ $result = $this->captchaResponsse();
 $this->createDatabase(false);
 ```
 
-### setHtml
+### setView
 ```php
 /**
  * @param string HTML text.
  * @return $this
  */
 $htmlText = '<html>...bala...bala...</html>';
-$this->setHTML($htmlText);
+$this->setView($htmlText);
 ```
 
 ### xssClean
