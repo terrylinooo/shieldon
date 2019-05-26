@@ -175,7 +175,7 @@ abstract class AbstractSqlDriver extends DriverProvider
                 break;
 
             case 'session':
-                $sql = 'SELECT * FROM ' . $this->tableSessions;
+                $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY time ASC';
 
                 $query = $this->db->prepare($sql);
                 $query->execute();

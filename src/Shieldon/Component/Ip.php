@@ -16,6 +16,8 @@ use function in_array;
 use function strpos;
 use function explode;
 use function substr_count;
+use function pow;
+use function str_pad;
 
 /**
  * Ip

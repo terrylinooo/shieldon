@@ -107,7 +107,7 @@ class ImageCaptcha implements CaptchaInterface
      */
     public function response(): bool
     {
-        if (empty($_POST['shieldon_image_captcha'])) {
+        if (empty($_POST['shieldon_image_captcha']) || empty($_SESSION['shieldon_image_captcha_hash'])) {
             return false;
         }
 
@@ -218,6 +218,7 @@ class ImageCaptcha implements CaptchaInterface
 
             $x1 = (int) (($rad1 * cos($theta)) + $xAxis);
             $y1 = (int) (($rad1 * sin($theta)) + $yAxis);
+
             imageline($im, $x, $y, $x1, $y1, $colors['grid']);
             $theta -= $thetac;
         }

@@ -188,6 +188,20 @@ class Shieldon
     private $result = 1;
 
     /**
+     * Get online session count
+     *
+     * @var integer
+     */
+    private $sessionCount = 0;
+
+    /**
+     * Current session order.
+     *
+     * @var integer
+     */
+    private $currentSessionOrder = 0;
+
+    /**
      * Constructor.
      * 
      * @return void
@@ -500,12 +514,22 @@ class Shieldon
             $onlineSessions = $this->driver->getAll('session');
             $sessionPools = [];
 
+            $i = 1;
+            $currentSessionOrder = 1;
+
             foreach ($onlineSessions as $k => $v) {
                 $sessionPools[] = $v['id'];
+                $lasttime = (int) $v['time'];
 
                 if ($this->sessionId === $v['id']) {
-                    $lasttime = (int) $v['time'];
+                    $currentSessionOrder = $i;
                 }
+
+                // Remove session if it expires.
+                if ($now - $lasttime > $period) {
+                    $this->driver->delete($v['id'], 'session');
+                }
+                $i++;
             }
 
             if (! in_array($this->sessionId, $sessionPools)) {
@@ -515,20 +539,14 @@ class Shieldon
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
                 $this->driver->save($this->sessionId, $data, 'session');
-
-            } else {
-
-                // Remove current session if it expires.
-                if ($now - $lasttime > $period) {
-                    $this->driver->delete($this->sessionId, 'session');
-                }
             }
 
             // Count the online sessions.
-            $onlineCount = count($sessionPools);
+            $this->onlineCount = count($sessionPools);
+            $this->currentSessionOrder = $currentSessionOrder;
 
             // Online session count reached the limit. So return RESPONSE_LIMIT response code.
-            if ($onlineCount >= $limit) {
+            if ($currentSessionOrder >= $limit) {
                 return self::RESPONSE_LIMIT;
             }
         }
@@ -846,7 +864,6 @@ class Shieldon
                             } 
                         }
                     }
-
                 }
 
                 break;
@@ -902,6 +919,7 @@ class Shieldon
             $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.phtml';
 
             $showCreditLink = false;
+            $showOnlineInfomation = true;
             if (empty($this->properties['disable_credit_link'])) {
                 $showCreditLink = true;
             }
@@ -1084,6 +1102,16 @@ class Shieldon
     }
 
     /**
+     * Get online people count. If enable limitSession.
+     *
+     * @return integer
+     */
+    public function getSessionCount(): int
+    {
+        return $this->sessionCount;
+    }
+
+    /**
      * Print javascript snippet in your webpages.
      * This snippet generate cookie on client's browser,then we check the cookie to identify the client is a rebot or not.
      *
@@ -1102,7 +1130,6 @@ class Shieldon
                 var expires = "expires="+d.toUTCString();
                 document.cookie = "{$tmpCookieName}=1;domain=.{$tmpCookieDomain};"+expires;
             </script>
-
 EOF;
         return $jsString;
     }
