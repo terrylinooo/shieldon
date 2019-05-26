@@ -205,6 +205,13 @@ class Shieldon
     private $currentSessionOrder = 0;
 
     /**
+     * Used on limitSession.
+     *
+     * @var integer
+     */
+    private $currentWaitNumber = 0;
+
+    /**
      * Constructor.
      * 
      * @return void
@@ -553,6 +560,7 @@ class Shieldon
             // Count the online sessions.
             $this->sessionCount = count($sessionPools);
             $this->currentSessionOrder = $currentSessionOrder;
+            $this->currentWaitNumber = $currentSessionOrder - $limit;
 
             // Online session count reached the limit. So return RESPONSE_LIMIT response code.
             if ($currentSessionOrder >= $limit) {

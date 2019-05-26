@@ -29,7 +29,7 @@ $lang = require __DIR__ . '/' . 'lang.php';
             <?php if ($showLineupInformation || $showOnlineInformation) : ?>
             <div class="infobar">
                 <?php if ($showLineupInformation) : ?>
-                    <?php printf($lang['lineup_info'], '<strong>' . $this->currentSessionOrder . '</strong>'); ?>&nbsp;&nbsp;
+                    <?php printf($lang['lineup_info'], '<strong>' . $this->currentWaitNumber . '</strong>'); ?>&nbsp;&nbsp;
                 <?php endif; ?>
                 <?php if ($showOnlineInformation) : ?>
                     <?php printf($lang['online_info'], '<strong>' . $this->sessionCount . '</strong>'); ?>
