@@ -117,7 +117,7 @@ $shieldon->setView($html, 'stop');
 
 ---
 
-## Drivers
+## Data drivers
 
 - MySQL
 - File (Todo)
@@ -172,6 +172,36 @@ $shieldon->setDriver(
 ```
 
 ---
+
+## Captcha addons
+
+You can use as many as Captcha on your Shieldon instance, just like the image below:
+
+![](https://i.imgur.com/nbjject.png)
+
+Currently supports:
+
+- Google ReCaptcha
+- Image Captcha.
+
+Google ReCaptcha
+```php
+$shieldon->setCaptcha(new \Shieldon\Captcha\Recaptcha([
+    'key' => '6LfkOaUUAAAAAH-AlTz3hRQ25SK8kZKb2hDRSwz9',
+    'secret' => '6LfkOaUUAAAAAJddZ6k-1j4hZC1rOqYZ9gLm0WQh',
+    'version' => 'v2', // v2 or v3, default: v2
+    'lang' => 'en', // default: en
+]));
+
+```
+
+Image Captcha
+
+```php
+$shieldon->setCaptcha(new \Shieldon\Captcha\ImageCaptcha());
+```
+
+We will add more Captcha addons in the feature.
 
 ## APIs
 
