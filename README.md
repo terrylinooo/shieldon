@@ -177,7 +177,7 @@ $shieldon->setDriver(
 
 You can use as many as Captcha on your Shieldon instance, just like the image below:
 
-![](https://i.imgur.com/nbjject.png)
+![](https://i.imgur.com/walgEMs.png)
 
 Currently supports:
 
