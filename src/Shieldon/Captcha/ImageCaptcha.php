@@ -11,6 +11,26 @@
 namespace Shieldon\Captcha;
 
 use function random_int;
+use function imagecreatetruecolor;
+use function imagestring;
+use function imagecreate;
+use function imagerectangle;
+use function imagedestroy;
+use function imagecolorallocate;
+use function imagefilledrectangle;
+use function imageline;
+use function imagejpeg;
+use function imagepng;
+use function ob_get_contents;
+use function ob_end_clean;
+use function base64_encode;
+use function function_exists;
+use function password_verify;
+use function password_hash;
+use function cos;
+use function sin;
+use function mt_rand;
+use function strlen;
 
 class ImageCaptcha implements CaptchaInterface
 {
@@ -47,17 +67,17 @@ class ImageCaptcha implements CaptchaInterface
      */
     public function __construct(array $config = [])
     {
-		$defaults = [
-			'img_width'	  => 250,
-			'img_height'  => 50,
-			'word_length' => 8,
+        $defaults = [
+            'img_width'	  => 250,
+            'img_height'  => 50,
+            'word_length' => 8,
             'font_spacing' => 10,
-			'pool'		  => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-			'colors'	  => [
-				'background' => [255, 255, 255],
-				'border'	 => [153, 200, 255],
-				'text'		 => [51, 153, 255],
-				'grid'		 => [153, 200, 255]
+            'pool'		  => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            'colors'	  => [
+                'background' => [255, 255, 255],
+                'border'	 => [153, 200, 255],
+                'text'		 => [51, 153, 255],
+                'grid'		 => [153, 200, 255]
             ]
         ];
 
@@ -143,12 +163,12 @@ class ImageCaptcha implements CaptchaInterface
     }
 
     /**
-	 * Create CAPTCHA
-	 *
-	 * @return	string
-	 */
-	protected function createCaptcha()
-	{
+     * Create CAPTCHA
+     *
+     * @return	string
+     */
+    protected function createCaptcha()
+    {
         $this->word = '';
         $poolLength = strlen($this->properties['pool']);
         $randMax = $poolLength - 1;
@@ -156,86 +176,86 @@ class ImageCaptcha implements CaptchaInterface
         for ($i = 0; $i < $this->properties['word_length']; $i++) {
             $this->word .= $this->properties['pool'][random_int(0, $randMax)];
         }
-				
-		// Determine angle and position.
-		$length	= strlen($this->word);
-		$angle	= ($length >= 6) ? mt_rand(-($length - 6), ($length - 6)) : 0;
-		$xAxis	= mt_rand(6, (360 / $length) - 16);
-		$yAxis  = ($angle >= 0) ? mt_rand($this->properties['img_height'], $this->properties['img_width']) : mt_rand(6, $this->properties['img_height']);
+                
+        // Determine angle and position.
+        $length	= strlen($this->word);
+        $angle	= ($length >= 6) ? mt_rand(-($length - 6), ($length - 6)) : 0;
+        $xAxis	= mt_rand(6, (360 / $length) - 16);
+        $yAxis  = ($angle >= 0) ? mt_rand($this->properties['img_height'], $this->properties['img_width']) : mt_rand(6, $this->properties['img_height']);
 
-		// Create image.
+        // Create image.
         if (function_exists('imagecreatetruecolor')) {
             $im = imagecreatetruecolor($this->properties['img_width'], $this->properties['img_height']);
         } else {
             $im = imagecreate($this->properties['img_width'], $this->properties['img_height']);
         }
 
-		// Assign colors.
+        // Assign colors.
         $colors = [];
-		foreach ($this->properties['colors'] as $k => $v) {
-			$colors[$k] = imagecolorallocate($im, $v[0], $v[1], $v[2]);
-		}
+        foreach ($this->properties['colors'] as $k => $v) {
+            $colors[$k] = imagecolorallocate($im, $v[0], $v[1], $v[2]);
+        }
 
-		// Create the rectangle.
-		ImageFilledRectangle($im, 0, 0, $this->properties['img_width'], $this->properties['img_height'], $colors['background']);
+        // Create the rectangle.
+        imagefilledrectangle($im, 0, 0, $this->properties['img_width'], $this->properties['img_height'], $colors['background']);
 
-		// Create the spiral pattern.
-		$theta		= 1;
-		$thetac		= 7;
-		$radius		= 16;
-		$circles	= 20;
-		$points		= 32;
+        // Create the spiral pattern.
+        $theta		= 1;
+        $thetac		= 7;
+        $radius		= 16;
+        $circles	= 20;
+        $points		= 32;
 
-		for ($i = 0, $cp = ($circles * $points) - 1; $i < $cp; $i++) {
-			$theta += $thetac;
+        for ($i = 0, $cp = ($circles * $points) - 1; $i < $cp; $i++) {
+            $theta += $thetac;
             $rad = $radius * ($i / $points);
 
-			$x = (int) (($rad * cos($theta)) + $xAxis);
+            $x = (int) (($rad * cos($theta)) + $xAxis);
             $y = (int) (($rad * sin($theta)) + $yAxis);
 
-			$theta += $thetac;
+            $theta += $thetac;
             $rad1 = $radius * (($i + 1) / $points);
 
-			$x1 = (int) (($rad1 * cos($theta)) + $xAxis);
-			$y1 = (int) (($rad1 * sin($theta)) + $yAxis);
-			imageline($im, $x, $y, $x1, $y1, $colors['grid']);
-			$theta -= $thetac;
-		}
+            $x1 = (int) (($rad1 * cos($theta)) + $xAxis);
+            $y1 = (int) (($rad1 * sin($theta)) + $yAxis);
+            imageline($im, $x, $y, $x1, $y1, $colors['grid']);
+            $theta -= $thetac;
+        }
 
-		// Write the text
+        // Write the text
         $z = (int) ($this->properties['img_width'] / ($length / 3));
         $x = mt_rand(0, $z);
         $y = 0;
-		
-		for ($i = 0; $i < $length; $i++) {
+        
+        for ($i = 0; $i < $length; $i++) {
             $y = mt_rand(0 , $this->properties['img_height'] / 2);
             imagestring($im, 5, $x, $y, $this->word[$i], $colors['text']);
             $x += ($this->properties['font_spacing'] * 2);
-		}
-
-		// Create the border.
-		imagerectangle($im, 0, 0, $this->properties['img_width'] - 1, $this->properties['img_height'] - 1, $colors['border']);
-
-		// Generate image in base64 string.
-        ob_start (); 
-
-		if (function_exists('imagejpeg')) {
-            $this->imageType = 'jpeg';
-			imagejpeg($im);
-		} elseif (function_exists('imagepng')) {
-            $this->imageType = 'png';
-			imagepng($im);
-		} else {
-			echo '';
         }
 
-        $image_data = ob_get_contents (); 
-        ob_end_clean ();
+        // Create the border.
+        imagerectangle($im, 0, 0, $this->properties['img_width'] - 1, $this->properties['img_height'] - 1, $colors['border']);
+
+        // Generate image in base64 string.
+        ob_start (); 
+
+        if (function_exists('imagejpeg')) {
+            $this->imageType = 'jpeg';
+            imagejpeg($im);
+        } elseif (function_exists('imagepng')) {
+            $this->imageType = 'png';
+            imagepng($im);
+        } else {
+            echo '';
+        }
+
+        $image_data = ob_get_contents(); 
+        ob_end_clean();
         imagedestroy($im);
 
         // Save hash.
         $_SESSION['shieldon_image_captcha_hash'] = password_hash($this->word, PASSWORD_ARGON2I);
 
         return base64_encode($image_data);
-	}
+    }
 }
