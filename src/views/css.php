@@ -104,6 +104,11 @@ $css = <<< EOF
         height: 250px;
     }
 
+    .infobar {
+        text-align: center;
+        margin: 10px 0;
+    }
+
 </style>
 
 EOF;

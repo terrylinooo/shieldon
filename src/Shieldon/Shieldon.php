@@ -113,7 +113,10 @@ class Shieldon
         'limit_unusual_behavior' => ['cookie' => 5, 'session' => 5, 'referer' => 10],
         'cookie_name'            => 'ssjd',
         'cookie_domain'          => '',
-        'disable_credit_link'    => false,
+        'lang'                   => 'en',
+        'display_credit_link'    => true,
+        'display_online_info'    => true,
+        'display_lineup_info'    => true,
     ];
 
     /**
@@ -510,12 +513,14 @@ class Shieldon
             $limit = (int) ($this->isLimitSession[0] ?? 0);
             $period = (int) ($this->isLimitSession[1] ?? 300);
             $now = time();
-    
+
             $onlineSessions = $this->driver->getAll('session');
             $sessionPools = [];
 
             $i = 1;
-            $currentSessionOrder = 1;
+            $currentSessionOrder = 0;
+
+            //die('<pre>' . var_dump($onlineSessions) . '</pre>');
 
             foreach ($onlineSessions as $k => $v) {
                 $sessionPools[] = $v['id'];
@@ -532,6 +537,10 @@ class Shieldon
                 $i++;
             }
 
+            if (0 === $currentSessionOrder) {
+                $currentSessionOrder = $i;
+            }
+
             if (! in_array($this->sessionId, $sessionPools)) {
 
                 // New session, record this data.
@@ -542,7 +551,7 @@ class Shieldon
             }
 
             // Count the online sessions.
-            $this->onlineCount = count($sessionPools);
+            $this->sessionCount = count($sessionPools);
             $this->currentSessionOrder = $currentSessionOrder;
 
             // Online session count reached the limit. So return RESPONSE_LIMIT response code.
@@ -645,6 +654,10 @@ class Shieldon
             if (! $captcha->response()) {
                 return false;
             }
+        }
+
+        if (! empty($this->isLimitSession)) {
+            $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
         }
 
         return true;
@@ -768,110 +781,108 @@ class Shieldon
             '+', '_', ':', '(', ')', '{', '}', '%', '\\'
         ];
 
-        switch ($type) {
-            case 'GET':
-            case 'COOKIE':
-            case 'POST':
-            case 'GLOBAL':
+        if (
+               'GET'    === $type
+            || 'COOKIE' === $type 
+            || 'POST'   === $type
+            || 'GLOBAL' === $type
+        ) {
+            $type = '_' . $type;
 
-                if (empty($_{$type})) {
-                    return $this;
-                }
+            if (empty(${$type})) {
+                return $this;
+            }
 
-                $filiter = $_{$type};
+            $filiter = ${$type};
 
-                if ($exact) {
-                    if (isset($filiter[$key])) {
-                        // string
-                        if (is_string($filiter[$key])) {
-                            foreach ($unwantedCharacters as $c) {
-                                if (strpos($filiter[$key], $c) !== false) {
-                                    $filiter[$key] = '';
-                                }
+            if ($exact) {
+                if (isset($filiter[$key])) {
+                    // string
+                    if (is_string($filiter[$key])) {
+                        foreach ($unwantedCharacters as $c) {
+                            if (strpos($filiter[$key], $c) !== false) {
+                                $filiter[$key] = '';
                             }
                         }
-                        // array
-                        if (is_array($filiter[$key])) {
-                            foreach ($filiter[$key] as $j => $k) {
-                                // string
-                                if (is_string($filiter[$key][$j])) {
-                                    foreach ($unwantedCharacters as $c) {
-                                        if (strpos($filiter[$key][$j], $c) !== false) {
-                                            $filiter[$key][$j] = '';
-                                        }
+                    }
+                    // array
+                    if (is_array($filiter[$key])) {
+                        foreach ($filiter[$key] as $j => $k) {
+                            // string
+                            if (is_string($filiter[$key][$j])) {
+                                foreach ($unwantedCharacters as $c) {
+                                    if (strpos($filiter[$key][$j], $c) !== false) {
+                                        $filiter[$key][$j] = '';
                                     }
                                 }
                             }
                         }
-                    } else {
-                        // Check first layer.
-                        if (is_array($filiter)) {
-                            foreach ($filiter as $k => $v) {
-                                // string
-                                if (is_string($filiter[$k])) {
-                                    foreach ($unwantedCharacters as $c) {
-                                        if (strpos($filiter[$k], $c) !== false) {
-                                            $filiter[$k] = '';
-                                        }
+                    }
+                } else {
+                    // Check first layer.
+                    if (is_array($filiter)) {
+                        foreach ($filiter as $k => $v) {
+                            // string
+                            if (is_string($filiter[$k])) {
+                                foreach ($unwantedCharacters as $c) {
+                                    if (strpos($filiter[$k], $c) !== false) {
+                                        $filiter[$k] = '';
                                     }
                                 }
-                                // array
-                                if (is_array($filiter[$k])) {
-                                    foreach ($filiter[$k] as $kk => $vv) {
-                                        // string
-                                        if (is_string($filiter[$kk])) {
-                                            foreach ($unwantedCharacters as $c) {
-                                                if (strpos($filiter[$kk], $c) !== false) {
-                                                    $filiter[$k][$kk] = '';
-                                                }
+                            }
+                            // array
+                            if (is_array($filiter[$k])) {
+                                foreach ($filiter[$k] as $kk => $vv) {
+                                    // string
+                                    if (is_string($filiter[$kk])) {
+                                        foreach ($unwantedCharacters as $c) {
+                                            if (strpos($filiter[$kk], $c) !== false) {
+                                                $filiter[$k][$kk] = '';
                                             }
                                         }
                                     }
                                 }
-                            } 
+                            }
+                        } 
+                    }
+                }
+            } else {
+                if (isset($filiter[$key])) {
+                    // string
+                    if (is_string($filiter[$key])) {
+                        $filiter[$key] = trim(str_replace($unwantedCharacters, '', $filiter[$key]));
+                    }
+                    // array
+                    if (is_array($filiter[$key])) {
+                        foreach ($filiter[$key] as $j => $k) {
+                            if (is_string($filiter[$key][$j])) {
+                                $filiter[$key] = trim(str_replace($unwantedCharacters, '', $filiter[$key]));
+                            }
                         }
                     }
                 } else {
-                    if (isset($filiter[$key])) {
-                        // string
-                        if (is_string($filiter[$key])) {
-                            $filiter[$key] = trim(str_replace($unwantedCharacters, '', $filiter[$key]));
-                        }
-                        // array
-                        if (is_array($filiter[$key])) {
-                            foreach ($filiter[$key] as $j => $k) {
-                                if (is_string($filiter[$key][$j])) {
-                                    $filiter[$key] = trim(str_replace($unwantedCharacters, '', $filiter[$key]));
-                                }
+                    // Check first layer.
+                    if (is_array($filiter)) {
+                        foreach ($filiter as $k => $v) {
+                            // string
+                            if (is_string($filiter[$k])) {
+                                $filiter[$k] = trim(str_replace($unwantedCharacters, '', $filiter[$k]));
                             }
-                        }
-                    } else {
-                        // Check first layer.
-                        if (is_array($filiter)) {
-                            foreach ($filiter as $k => $v) {
-                                // string
-                                if (is_string($filiter[$k])) {
-                                    $filiter[$k] = trim(str_replace($unwantedCharacters, '', $filiter[$k]));
-                                }
-                                // array
-                                if (is_array($filiter[$k])) {
-                                    foreach ($filiter[$k] as $kk => $vv) {
-                                        if (is_string($filiter[$kk])) {
-                                            $filiter[$kk] = trim(str_replace($unwantedCharacters, '', $filiter[$kk]));
-                                        }
+                            // array
+                            if (is_array($filiter[$k])) {
+                                foreach ($filiter[$k] as $kk => $vv) {
+                                    if (is_string($filiter[$kk])) {
+                                        $filiter[$kk] = trim(str_replace($unwantedCharacters, '', $filiter[$kk]));
                                     }
                                 }
-                            } 
-                        }
+                            }
+                        } 
                     }
                 }
-
-                break;
-            default:
-                break;
+            }
         }
 
-        $_{$type} = $filiter;
+        ${$type} = $filiter;
 
         return $this;
     }
@@ -914,14 +925,40 @@ class Shieldon
             return '';
         }
 
+        /**
+         * @var string The language of output UI. It is used on views.
+         */
+        $langCode = $this->properties['lang'] ?? 'en';
+
+        /**
+         * @var bool Show Shieldon's credit link. It is used on views.
+         */
+        $showCreditLink = true;
+
+        /**
+         * @var bool Show online session count. It is used on views.
+         */
+        $showOnlineInformation = true;
+
+        /**
+         * @var bool Show lineup information. It is used on views.
+         */
+        $showLineupInformation = true;
+
         // Use default template if there is no custom HTML template.
         if (empty($this->html[$type])) {
             $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.phtml';
 
-            $showCreditLink = false;
-            $showOnlineInfomation = true;
-            if (empty($this->properties['disable_credit_link'])) {
-                $showCreditLink = true;
+            if (empty($this->properties['display_credit_link'])) {
+                $showCreditLink = false;
+            }
+
+            if (empty($this->properties['display_lineup_info'])) {
+                $showCreditLink = false;
+            }
+
+            if (empty($this->properties['display_online_info'])) {
+                $showCreditLink = false;
             }
 
             if (file_exists($viewPath)) {
@@ -956,6 +993,9 @@ class Shieldon
         if (0 !== $httpStatus) {
             http_response_code($httpStatus);
         }
+
+        // Remove unused variable notices generated from PHP intelephense.
+        unset($langCode, $showCreditLink, $showOnlineInformation, $showLineupInformation);
 
         echo $output;
         exit;

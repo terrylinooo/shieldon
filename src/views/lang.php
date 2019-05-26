@@ -18,6 +18,8 @@ switch ($langCode) {
         $lang['stop.submit']  = '送出';
 
         $lang['credit'] = '這個網站由 %s 開源專案防護。';
+        $lang['lineup_info'] = '您的號碼牌：%s。';
+        $lang['online_info'] = '線上人數： %s。';
         break;
     case 'en':
     default:
@@ -35,6 +37,8 @@ switch ($langCode) {
         $lang['stop.submit']  = 'Submit';
         
         $lang['credit'] = 'This website is protected by %s open source project.';
+        $lang['lineup_info'] = 'Your number: %1s.';
+        $lang['online_info'] = 'Online: %s.';
         break;
 }
 

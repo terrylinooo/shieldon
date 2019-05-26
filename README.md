@@ -64,11 +64,9 @@ if ($result !== $shieldon::RESPONSE_ALLOW) {
 
         // Unban current session.
         $shieldon->unban();
-    } else {
-
-        // Output the result page with HTTP status code 200.
-        $shieldon->output(200);
     }
+    // Output the result page with HTTP status code 200.
+    $shieldon->output(200);
 }
 
 
@@ -212,6 +210,7 @@ We will add more Captcha addons in the feature.
 - setChannel
 - setCaptcha
 - setFiliters
+- setIp
 - outputJsSnippet
 - captchaResponse
 - setView
@@ -306,6 +305,23 @@ $shieldon->setFilters([
     'referer' => true,
     'frequency' => true,
 ]);
+
+```
+
+### setIp
+
+```php
+/**
+ * @param string
+ * @return $this
+ */
+
+// Here is an example, cature real vistor IP from CloudFlare.
+$realIp = $_SERVER['HTTP_CF_CONNECTING_IP'];
+
+// If you use a CDN serive on your website, 
+// make sure to cature the real vistor IP, overwise users will get banned.
+$shieldon->setIp($realIp);
 
 ```
 
