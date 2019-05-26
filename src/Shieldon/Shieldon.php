@@ -216,7 +216,7 @@ class Shieldon
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct(array $properties = [])
     {
         $this->referer = $_SERVER['HTTP_REFERER'] ?? '';
 
@@ -234,6 +234,10 @@ class Shieldon
         // At least load a captcha instance. Example is the base one.
         if (! isset($this->captcha['Example'])) {
             $this->setCaptcha(new \Shieldon\Captcha\Example());
+        }
+
+        if (! empty($properties)) {
+            $this->setProperties($properties);
         }
 
         $this->setIp();
@@ -751,8 +755,8 @@ class Shieldon
     public function setProperties(array $settings): self
     {
         foreach ($this->properties as $k => $v) {
-            if (! empty($settings['k'])) {
-                $this->properties['k'] = $v;
+            if (isset($settings[$k])) {
+                $this->properties[$k] = $settings[$k];
             }
         }
 
