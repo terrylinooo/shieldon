@@ -52,6 +52,13 @@ abstract class AbstractSqlDriver extends DriverProvider
     protected $db;
 
     /**
+     * Check if is initialized or not.
+     *
+     * @var bool
+     */
+    protected $isInitialized;
+
+    /**
      * Constructor.
      *
      * @param PDO $pdo
@@ -76,9 +83,7 @@ abstract class AbstractSqlDriver extends DriverProvider
      */
     public function init($dbCheck = true): void
     {
-        static $isInitialized = false;
-
-        if (! $isInitialized) {
+        if (! $this->isInitialized) {
             if (! empty($this->channel)) {
                 $this->tableLogs = $this->channel . '_' . $this->tableLogs;
                 $this->tableRuleList = $this->channel . '_' . $this->tableRuleList;
@@ -90,7 +95,7 @@ abstract class AbstractSqlDriver extends DriverProvider
             }
         }
 
-        $isInitialized = true;
+        $this->isInitialized = true;
     }
 
     /**

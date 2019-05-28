@@ -20,7 +20,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     {
         $shieldon = new \Shieldon\Shieldon();
 
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite');
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
 
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
@@ -59,24 +59,24 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
     public function testAction()
     {
+        // Test 1. Check temporaily denying.
+
         $shieldon = new \Shieldon\Shieldon();
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite');
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
 
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance, true);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
         $shieldon->setDriver($driver);
         
         $shieldon->setComponent(new \Shieldon\Component\Ip());
         $shieldon->setComponent(new \Shieldon\Component\Robot());
 
-        $shieldon->setChannel('test_shieldon_detect_s');
+        $shieldon->setChannel('test_shieldon_detect');
         $driver->init();
 
-        // Test 1. Check temporaily denying.
         $reflection = new \ReflectionObject($shieldon);
         $method = $reflection->getMethod('action');
         $method->setAccessible(true);
-
         $method->invokeArgs($shieldon, [
             $shieldon::ACTION_TEMPORARILY_DENY, $shieldon::REASON_REACHED_LIMIT_MINUTE, '140.112.172.11'
         ]);
@@ -86,11 +86,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $result);
 
         // Test 2. Check unbaning.
+
         $method->invokeArgs($shieldon, [
             $shieldon::ACTION_UNBAN, $shieldon::REASON_MANUAL_BAN, '140.112.172.11'
         ]);
 
-        $shieldon->setIp('140.112.172.11');
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
     }
