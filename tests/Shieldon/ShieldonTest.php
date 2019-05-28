@@ -10,6 +10,8 @@
 
 namespace Shieldon;
 
+use Shieldon\Component\ComponentInterface;
+
 use function saveTestingFile;
 
 class ShieldonTest extends \PHPUnit\Framework\TestCase
@@ -76,24 +78,37 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $method->setAccessible(true);
 
         $method->invokeArgs($shieldon, [
-            $shieldon::ACTION_TEMPORARILY_DENY, $shieldon::REASON_REACHED_LIMIT_MINUTE, '111.222.1.1'
+            $shieldon::ACTION_TEMPORARILY_DENY, $shieldon::REASON_REACHED_LIMIT_MINUTE, '140.112.172.11'
         ]);
 
-        $shieldon->setIp('111.222.1.1');
+        $shieldon->setIp('140.112.172.11');
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $result);
 
         // Test 2. Check unbaning.
-        $reflection = new \ReflectionObject($shieldon);
-        $method = $reflection->getMethod('action');
-        $method->setAccessible(true);
-
         $method->invokeArgs($shieldon, [
-            $shieldon::ACTION_UNBAN, $shieldon::REASON_MANUAL_BAN, '111.222.1.1'
+            $shieldon::ACTION_UNBAN, $shieldon::REASON_MANUAL_BAN, '140.112.172.11'
         ]);
 
-        $shieldon->setIp('111.222.1.1');
+        $shieldon->setIp('140.112.172.11');
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+    }
+
+    public function testGetComponent()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setComponent(new \Shieldon\Component\Ip());
+
+        $reflection = new \ReflectionObject($shieldon);
+        $method = $reflection->getMethod('getComponent');
+        $method->setAccessible(true);
+        $result = $method->invokeArgs($shieldon, ['Ip']);
+
+        if ($result instanceof ComponentInterface) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
     }
 }
