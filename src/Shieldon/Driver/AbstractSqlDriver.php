@@ -76,15 +76,21 @@ abstract class AbstractSqlDriver extends DriverProvider
      */
     public function init($dbCheck = true): void
     {
-        if (! empty($this->channel)) {
-            $this->tableLogs = $this->channel . '_' . $this->tableLogs;
-            $this->tableRuleList = $this->channel . '_' . $this->tableRuleList;
-            $this->tableSessions = $this->channel . '_' . $this->tableSessions;
+        static $isInitialized = false;
+
+        if (! $isInitialized) {
+            if (! empty($this->channel)) {
+                $this->tableLogs = $this->channel . '_' . $this->tableLogs;
+                $this->tableRuleList = $this->channel . '_' . $this->tableRuleList;
+                $this->tableSessions = $this->channel . '_' . $this->tableSessions;
+            }
+    
+            if ($dbCheck && ! $this->checkTableExists()) {
+                $this->installSql();
+            }
         }
 
-        if (! $this->checkTableExists()) {
-            $this->installSql();
-        }
+        $isInitialized = true;
     }
 
     /**

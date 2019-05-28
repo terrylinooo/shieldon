@@ -94,11 +94,10 @@ interface RobotInterface
      * Get RDNS List.
      *
      * @param array $data
-     * @param string $type
      *
      * @return array
      */
-    public function getRdnsList(array $data, string $type = ''): array;
+    public function getRdnsList(string $type = ''): array;
 
     /**
      * Set user-agent List.
@@ -113,10 +112,9 @@ interface RobotInterface
     /**
      * Get user-agent List.
      *
-     * @param array $data
      * @param string $type
      *
      * @return array
      */
-    public function getAgentList(array $data, string $type = ''): array;
+    public function getAgentList(string $type = ''): array;
  }

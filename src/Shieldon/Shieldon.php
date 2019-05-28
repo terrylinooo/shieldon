@@ -297,7 +297,7 @@ class Shieldon
                     }
 
                     // Ban this IP if they reached the limit.
-                    if ($logData['flag_empty_referer'] >= $this->properties['limit_unusual_behavior']['referer']) {
+                    if ($logData['flag_empty_referer'] > $this->properties['limit_unusual_behavior']['referer']) {
                         $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_EMPTY_REFERER);
                         return self::RESPONSE_TEMPORARILY_DENY;
                     }
@@ -321,7 +321,7 @@ class Shieldon
                     }
 
                     // Ban this IP if they reached the limit.
-                    if ($logData['flag_multi_session'] >= $this->properties['limit_unusual_behavior']['session']) {
+                    if ($logData['flag_multi_session'] > $this->properties['limit_unusual_behavior']['session']) {
                         $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_TOO_MANY_SESSIONS);
                         return self::RESPONSE_TEMPORARILY_DENY;
                     }
@@ -354,7 +354,7 @@ class Shieldon
                     $logData['flag_js_cookie']++;
                 }
 
-                if ($logData['flag_js_cookie'] >= $this->properties['limit_unusual_behavior']['cookie']) {
+                if ($logData['flag_js_cookie'] > $this->properties['limit_unusual_behavior']['cookie']) {
 
                     // Ban this IP if they reached the limit.
                     $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_EMPTY_JS_COOKIE);
@@ -394,7 +394,7 @@ class Shieldon
 
                         // If an user's pageview count is more than the time period limit
                         // He or she will get banned.
-                        if ($logData["pageviews_{$timeUnit}"] >= $this->properties['time_unit_quota'][$timeUnit]) {
+                        if ($logData["pageviews_{$timeUnit}"] > $this->properties['time_unit_quota'][$timeUnit]) {
                             if ($timeUnit === 's') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_SECOND);
                             if ($timeUnit === 'm') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_MINUTE);
                             if ($timeUnit === 'h') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_HOUR);

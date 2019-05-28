@@ -345,7 +345,7 @@ class Robot implements ComponentInterface, RobotInterface
     /**
      * {@inheritDoc}
      */
-    public function getRdnsList(array $data, string $type = ''): array
+    public function getRdnsList(string $type = ''): array
     {
         switch($type) {
             case 'allow'    : return $this->allowedList['rdns'];       break;
@@ -369,7 +369,7 @@ class Robot implements ComponentInterface, RobotInterface
     /**
      * {@inheritDoc}
      */
-    public function getAgentList(array $data, string $type = ''): array
+    public function getAgentList(string $type = ''): array
     {
         switch($type) {
             case 'allow'    : return $this->allowedList['agent'];       break;
