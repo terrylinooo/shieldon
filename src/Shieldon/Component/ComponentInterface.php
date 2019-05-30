@@ -47,5 +47,5 @@ interface ComponentInterface
      *
      * @return void
      */
-    function removeDeniedItem(string $string): void;
+    function removeItem(string $string): void;
 }

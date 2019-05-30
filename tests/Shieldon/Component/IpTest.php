@@ -144,11 +144,11 @@ class IpTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testSetDeniedIp()
+    public function testSetDeniedItem()
     {
         $ipComponent = new Ip();
         $s = '127.33.33.33';
-        $t = $ipComponent->setDeniedIp($s);
+        $t = $ipComponent->setDeniedItem($s);
         if ($s === $t) {
             $this->assertTrue(true);
         }
@@ -166,7 +166,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $ipComponent = new Ip();
         $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
         $ipComponent->setAllowedList($s);
-        $ipComponent->removeIp('127.33.33.33', 'allow');
+        $ipComponent->removeItem('127.33.33.33');
         $t = $ipComponent->getAllowedList();
         if (! in_array('127.33.33.33', $t)) {
             $this->assertTrue(true);
