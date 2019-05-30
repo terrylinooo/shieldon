@@ -23,7 +23,7 @@ trait IpTrait
      *
      * @var string
      */
-    private $ip = '';
+    protected $ip = '';
 
     /**
      * The RDNS recond of the Robot's IP address.
@@ -32,32 +32,36 @@ trait IpTrait
      *
      * @var string
      */
-    private $ipResolvedHostname = '';
+    protected $ipResolvedHostname = '';
 
     /**
      * Set an IP address. 
      * If you want to deal with the proxy and CDN IPs.
      *
      * @param string $ip
+     * @param bool   $queryRdns 
      *
      * @return void
      */
-    public function setIp(string $ip = ''): void
+    public function setIp(string $ip = '', $queryRdns = false): void
     {
-        if (empty($ip)) {
-            $this->ip = $_SERVER['REMOTE_ADDR'];
-        } else {
-            $this->ip = $ip;
+        if (! empty($ip)) {
+            $_SERVER['REMOTE_ADDR'] = $ip;
         }
 
-        // Check if your IP is from localhost, perhpas your are in development environment?
-        if (
-            (substr($this->ip, 0 , 8) === '192.168.') || 
-            (substr($this->ip, 0 , 6) === '127.0.')
-        ) {
-            $this->setRdns('localhost');
-        } else {
-            $this->setRdns(gethostbyaddr($this->ip));
+        $this->ip = $_SERVER['REMOTE_ADDR'];
+
+        if ($queryRdns) {
+
+            // Check if your IP is from localhost, perhpas your are in development environment?
+            if (
+                (substr($this->ip, 0 , 8) === '192.168.') || 
+                (substr($this->ip, 0 , 6) === '127.0.')
+            ) {
+                $this->setRdns('localhost');
+            } else {
+                $this->setRdns(gethostbyaddr($this->ip));
+            }
         }
     }
 

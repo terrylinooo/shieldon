@@ -33,11 +33,10 @@ $dbLocation = APPPATH . 'cache/shieldon.sqlite3';
 $pdoInstance = new \PDO('sqlite:' . $dbLocation);
 $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
 
-// Set core components.
-$shieldon->setComponent(new \Shieldon\Component\Ip());
+// Set components.
 // This compoent will only allow popular search engline.
 // Other bots will go into the checking process.
-$shieldon->setComponent(new \Shieldon\Component\Robot());
+$shieldon->setComponent(new \Shieldon\Component\TrustedBot());
 
 // You can ignore this setting if you only use one Shieldon on your web application. This is for multiple instances.
 $shieldon->setChannel('web_project');

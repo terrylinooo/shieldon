@@ -49,13 +49,10 @@ abstract class DriverProvider extends AbstractDriver
         switch ($type) {
             // Rule table data structure.
             case 'rule':
-
-
                 break;
 
             // Session table data structure.
             case 'session':
-
                 break;
 
             // Log table data structure.
@@ -104,8 +101,6 @@ abstract class DriverProvider extends AbstractDriver
                 break;
             // end switch
         }
-
-        
 
         return $parsedData;
     }

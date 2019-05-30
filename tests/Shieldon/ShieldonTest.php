@@ -10,7 +10,7 @@
 
 namespace Shieldon;
 
-use Shieldon\Component\ComponentInterface;
+use Shieldon\Component\ComponentProvider;
 
 use function saveTestingFile;
 
@@ -26,7 +26,9 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
 
         $shieldon->setComponent(new \Shieldon\Component\Ip());
-        $shieldon->setComponent(new \Shieldon\Component\Robot());
+        $shieldon->setComponent(new \Shieldon\Component\UserAgent());
+        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->setComponent(new \Shieldon\Component\RDns());
 
         $shieldon->setChannel('test_shieldon_detect_s');
 
@@ -69,7 +71,9 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setDriver($driver);
         
         $shieldon->setComponent(new \Shieldon\Component\Ip());
-        $shieldon->setComponent(new \Shieldon\Component\Robot());
+        $shieldon->setComponent(new \Shieldon\Component\UserAgent());
+        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->setComponent(new \Shieldon\Component\RDns());
 
         $shieldon->setChannel('test_shieldon_detect');
         $driver->init();
@@ -105,7 +109,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $method->setAccessible(true);
         $result = $method->invokeArgs($shieldon, ['Ip']);
 
-        if ($result instanceof ComponentInterface) {
+        if ($result instanceof ComponentProvider) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);

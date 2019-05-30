@@ -211,6 +211,14 @@ class Shieldon
      */
     private $currentWaitNumber = 0;
 
+
+    /**
+     * Strict mode.
+     *
+     * @var boolean
+     */
+    private $strictMode = false;
+
     /**
      * Constructor.
      * 
@@ -240,7 +248,7 @@ class Shieldon
             $this->setProperties($properties);
         }
 
-        $this->setIp();
+        $this->setIp('', true);
     }
 
     /**
@@ -456,6 +464,7 @@ class Shieldon
     protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
     {
         $ip = $this->ip;
+
         $ipResolvedHostname = $this->ipResolvedHostname;
     
         if ('' !== $assignIp) {
@@ -728,6 +737,7 @@ class Shieldon
         }
 
         $this->action(self::ACTION_UNBAN, self::REASON_MANUAL_BAN, $ip);
+        $this->result = self::RESPONSE_ALLOW;
 
         return $this;
     }
@@ -759,6 +769,18 @@ class Shieldon
                 $this->properties[$k] = $settings[$k];
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Strict mode.
+     *
+     * @return self
+     */
+    public function strictMode(): self
+    {
+        $this->strictMode = true;
 
         return $this;
     }
@@ -1025,76 +1047,26 @@ class Shieldon
     {
         $this->driver->init($this->autoCreateDatabase);
 
-        if ($this->getComponent('Robot')) {
+        foreach ($this->component as $conponent) {
+
+            $conponent->setIp($this->ip);
+            $conponent->setRdns($this->ipResolvedHostname);
+
+            if ($this->strictMode) {
+                $conponent->strictMode();
+            }
 
             // First of all, check if is a a bad robot already defined in settings.
-            if ($this->getComponent('Robot')->isDenied()) {
+            if ($conponent->isDenied()) {
                 return $this->result = self::RESPONSE_DENY;
             }
         }
 
-        // Looking for rule table.
-        $ipRule = $this->driver->get($this->ip, 'rule');
-
         if ($this->getComponent('Ip')) {
 
-            $result = $this->getComponent('Ip')->check($this->ip, function() use ($ipRule) {
+            $result = $this->getComponent('Ip')->check();
 
-                // Here should return ['ip', 'type', 'reason']
-                // for further checking in IP component.
-                if (! empty($ipRule)) {
-                    return [
-                        'ip' => $ipRule['log_ip'],
-                        'type' => $ipRule['type'],
-                        'reason' =>  $ipRule['reason'],
-                    ];
-                }
-
-                return [];
-            });
-
-            if (! empty($result) && is_array($result)) {
-                if (
-                    $result['code'] == $this->getComponent('Ip')::CODE_DENY_IP_RULE &&
-                    $result['code'] == $this->getComponent('Ip')::CODE_ALLOW_IP_RULE
-                ) {
-                    // This IP has been listed in rule table, so set $isRuleList = true.
-                    $this->isRuleList = true;
-                }
-
-                if ($this->getComponent('Robot')) {
-
-                    // We want to put all the allowed robot into the rule list, so that the checking of IP's resolved hostname 
-                    // is no more needed for that IP.
-
-                    if (! $this->isRuleList && $this->getComponent('Robot')->isAllowed()) {
-
-                        if ($this->getComponent('Robot')->isGoogle()) {
-    
-                            // Add current IP into allowed list, because it is from real Google domain.
-                            $this->action(self::ACTION_ALLOW, self::REASON_IS_GOOGLE);
-                            
-                        } elseif ($this->getComponent('Robot')->isBing()) {
-
-                            // Add current IP into allowed list, because it is from real Bing domain.
-                            $this->action(self::ACTION_ALLOW, self::REASON_IS_BING);
-
-                        } elseif ($this->getComponent('Robot')->isYahoo()) {
-                            // Add current IP into allowed list, because it is from real Yahoo domain.
-                            $this->action(self::ACTION_ALLOW, self::REASON_IS_YAHOO);
-
-                        } else {
-                            // Add current IP into allowed list, because you trust it.
-                            // You have already defined it in the settings.
-                            $this->action(self::ACTION_ALLOW, self::REASON_IS_SEARCH_ENGINE);
-                        }
-
-                        // Allowed robots not join to our traffic handler.
-                        return $this->result = self::RESPONSE_ALLOW;
-                    }
-                }
-
-                // The rule list checking result is here.
+            if (! empty($result)) {
                 switch ($result['status']) {
                     case 'allow':
                         $resultCode = self::RESPONSE_ALLOW;
@@ -1103,29 +1075,54 @@ class Shieldon
                     case 'deny':
                         $resultCode = self::RESPONSE_DENY;
                         break;
-
-                    case 'stop':
-                        $resultCode = self::RESPONSE_TEMPORARILY_DENY;
-                        break;
                 }
 
                 return $this->result = $this->sessionHandler($resultCode);
             }
         }
 
-        if (! empty($ipRule) && $ipRule['type'] !== 1) {
-            return $this->result = (int) $ipRule['type'];
+        // Looking for rule table.
+        $ipRule = $this->driver->get($this->ip, 'rule');
+
+        if (! empty($ipRule)) {
+            if ($ipRule['type'] === self::ACTION_ALLOW) {
+                $this->isRuleList = true;
+            } else {
+                return $this->result = (int) $ipRule['type'];
+            }
+        }
+
+        if (! $this->isRuleList) {
+            if ($this->getComponent('TrustedBot')) {
+                // We want to put all the allowed robot into the rule list, so that the checking of IP's resolved hostname 
+                // is no more needed for that IP.
+                if ($this->getComponent('TrustedBot')->isAllowed()) {
+                    if ($this->getComponent('TrustedBots')->isGoogle()) {
+                        // Add current IP into allowed list, because it is from real Google domain.
+                        $this->action(self::ACTION_ALLOW, self::REASON_IS_GOOGLE);
+                    } elseif ($this->getComponent('TrustedBot')->isBing()) {
+                        // Add current IP into allowed list, because it is from real Bing domain.
+                        $this->action(self::ACTION_ALLOW, self::REASON_IS_BING);
+                    } elseif ($this->getComponent('TrustedBot')->isYahoo()) {
+                        // Add current IP into allowed list, because it is from real Yahoo domain.
+                        $this->action(self::ACTION_ALLOW, self::REASON_IS_YAHOO);
+                    } else {
+                        // Add current IP into allowed list, because you trust it.
+                        // You have already defined it in the settings.
+                        $this->action(self::ACTION_ALLOW, self::REASON_IS_SEARCH_ENGINE);
+                    }
+                    // Allowed robots not join to our traffic handler.
+                    return $this->result = self::RESPONSE_ALLOW;
+                }
+            }
         }
 
         // This IP address is not listed in rule table, let's detect it.
         if ($this->enableFiltering) {
-
-            // We need to record the live sessions first.
-            // If they got banned, 
             return $this->result = $this->sessionHandler($this->detect());
         }
 
-        return $this->result = self::RESPONSE_ALLOW;
+        return $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
     }
 
     /**

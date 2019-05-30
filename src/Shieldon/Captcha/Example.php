@@ -54,7 +54,8 @@ class Example implements CaptchaInterface
      */
     public function form(): string
     {
-        $html = '<input type="hidden" name="shieldon_captcha" value="ok">';
+        $html  = '<input id="shieldon-captcha-example" type="hidden" name="shieldon_captcha">';
+        $html .= '<script>document.getElementById("shieldon-captcha-example").value = "ok";</script>';
 
         return $html;
     }

@@ -24,8 +24,9 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
         // Test 2. Check denied list.
         $ipComponent = new Ip();
-        $ipComponent->setDeniedIp('127.0.55.44');
+        $ipComponent->setDeniedItem('127.0.55.44');
         $t = $ipComponent->check('127.0.55.44');
+
         $this->assertIsArray($t);
         $this->assertEquals(3 , count($t));
         $this->assertEquals('deny' , $t['status']);
@@ -33,8 +34,9 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
         // Test 3. Check  allowed list.
         $ipComponent = new Ip();
-        $ipComponent->setAllowedIp('127.0.55.55');
-        $t = $ipComponent->check('127.0.55.55');
+        $ipComponent->setAllowedItem('39.9.197.241');
+        $t = $ipComponent->check('39.9.197.241');
+
         $this->assertIsArray($t);
         $this->assertEquals(3 , count($t));
         $this->assertEquals('allow' , $t['status']);
@@ -42,7 +44,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
         // Test 4. Check IP is if in denied IP range.
         $ipComponent = new Ip();
-        $ipComponent->setDeniedIp('127.0.55.0/16');
+        $ipComponent->setDeniedItem('127.0.55.0/16');
         $t = $ipComponent->check('127.0.33.1');
         $this->assertIsArray($t);
         $this->assertEquals(3 , count($t));
@@ -51,26 +53,11 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
         // Test 5. Check IP is if in allowed IP range.
         $ipComponent = new Ip();
-        $ipComponent->setDeniedIp('127.0.55.0/16');
-        $ipComponent->setAllowedIp('127.0.55.0/16');
+        $ipComponent->setDeniedItem('127.0.55.0/16');
+        $ipComponent->setAllowedItem('127.0.55.0/16');
         $t = $ipComponent->check('127.0.33.1');
         $this->assertIsArray($t);
         $this->assertEquals(3 , count($t));
-        $this->assertEquals('allow' , $t['status']);
-        unset($ipComponent, $t);
-
-        // Test 6. Test callback.
-        $ipComponent = new Ip();
-        $t = $ipComponent->check('127.1.1.1', function() {
-            return [
-                'ip' => '127.1.1.1',
-                'type' => 1,
-                'reason' =>  1234,
-            ];
-        });
-
-        $this->assertIsArray($t);
-        $this->assertEquals(4 , count($t));
         $this->assertEquals('allow' , $t['status']);
         unset($ipComponent, $t);
     }
@@ -133,7 +120,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
     {
         $ipComponent = new Ip();
         $s = '127.33.33.33';
-        $t = $ipComponent->setAllowedIp($s);
+        $t = $ipComponent->setAllowedItem($s);
         if ($s === $t) {
             $this->assertTrue(true);
         }

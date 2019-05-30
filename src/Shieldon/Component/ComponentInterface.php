@@ -15,5 +15,37 @@ namespace Shieldon\Component;
  */
 interface ComponentInterface
 {
-   
+    /**
+     * Set denied item list. 
+     *
+     * @param array $stringList String list.
+     *
+     * @return void
+     */
+    function setDeniedList(array $stringList): void;
+
+    /**
+     * Set denied item.
+     *
+     * @param string $string
+     *
+     * @return void
+     */
+    function setDeniedItem(string $string): void;
+
+    /**
+     * Return current denied list.
+     *
+     * @return array
+     */
+    function getDeniedList(): array;
+
+    /**
+     * Remove a denied item.
+     *
+     * @param string $string
+     *
+     * @return void
+     */
+    function removeDeniedItem(string $string): void;
 }

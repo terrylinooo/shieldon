@@ -22,18 +22,20 @@ use function str_pad;
 /**
  * Ip
  */
-class Ip implements ComponentInterface
+class Ip extends ComponentProvider
 {
+    use \Shieldon\IpTrait;
+
     /**
      * Constant
      */
-    public const CODE_INVAILD_IP = 99;
-    public const CODE_DENY_IP = 11;
-    public const CODE_DENY_IP_RANGE = 12;
-    public const CODE_DENY_IP_RULE = 13;
-    public const CODE_ALLOW_IP = 21;
+    public const CODE_INVAILD_IP     = 99;
+    public const CODE_DENY_IP        = 11;
+    public const CODE_DENY_IP_RANGE  = 12;
+    public const CODE_DENY_IP_RULE   = 13;
+    public const CODE_ALLOW_IP       = 21;
     public const CODE_ALLOW_IP_RANGE = 22;
-    public const CODE_ALLOW_IP_RULE = 23;
+    public const CODE_ALLOW_IP_RULE  = 23;
 
     /**
      * Data pool for hard whitelist.
@@ -43,17 +45,9 @@ class Ip implements ComponentInterface
     protected $allowedList = [];
 
     /**
-     * Data pool for hard blacklist.
-     *
-     * @var array
-     */
-    protected $deniedList = [];
-
-    /**
      * Check an IP if it exists in Anti-Scraping allow/deny list.
      *
-     * @param string $ip   IP address you want to check.
-     * @param mixed  $rule The callback function to do a finall check for the IP address.
+     * @param string $ip
      *
      * @return array If data entry exists, it will return an array structure:
      *               - status: ALLOW | DENY
@@ -61,9 +55,13 @@ class Ip implements ComponentInterface
      *
      *               if nothing found, it will return an empty array instead.
      */
-    public function check(string $ip, $rule = null): array
+    public function check(string $ip = ''): array
     {
-        if (! filter_var($ip, FILTER_VALIDATE_IP)) {
+        if ('' !== $ip) {
+            $this->setIp($ip);
+        }
+
+        if (! filter_var($this->ip, FILTER_VALIDATE_IP)) {
             return [
                 'status' => 'deny',
                 'code' => self::CODE_INVAILD_IP,
@@ -71,7 +69,7 @@ class Ip implements ComponentInterface
             ];
         }
 
-        if (in_array($ip, $this->allowedList)) {
+        if ($this->isAllowed()) {
             return [
                 'status' => 'allow',
                 'code' => self::CODE_ALLOW_IP,
@@ -79,75 +77,12 @@ class Ip implements ComponentInterface
             ];
         }
 
-        if (in_array($ip, $this->deniedList)) {
+        if ($this->isDenied()) {
             return [
                 'status' => 'deny',
                 'code' => self::CODE_DENY_IP,
                 'comment' => 'IP is in denied list.',
             ];
-        }
-
-        foreach ($this->allowedList as $allowedIp) {
-            if (strpos($allowedIp, '/') !== false) {
-                if ($this->inRange($ip, $allowedIp)) {
-                    return [
-                        'status' => 'allow',
-                        'code' => self::CODE_DENY_IP_RANGE,
-                        'comment' => 'IP is allowed list. (IP range)',
-                    ];
-                }
-            }
-        }
-
-        foreach ($this->deniedList as $deniedIp) {
-            if (strpos($deniedIp, '/') !== false) {
-                if ($this->inRange($ip, $deniedIp)) {
-                    return [
-                        'status' => 'deny',
-                        'code' => self::CODE_DENY_IP_RANGE,
-                        'comment' => 'IP is denied list. (IP range)',
-                    ];
-                }
-            }
-        }
-
-        if (is_callable($rule)) {
-
-            $result = call_user_func($rule);
-
-            if (
-                   isset($result['ip'])
-                && isset($result['type'])
-                && isset($result['reason'])
-            ) {
-    
-                if (1 === (int) $result['type']) {
-                    return [
-                        'status' => 'allow',
-                        'code' => self::CODE_ALLOW_IP_RULE,
-                        'comment' => 'IP is allowed in rule table.',
-                        'reason' => $result['reason'],
-                    ];
-                }
-    
-                if (-1 === (int) $result['type']) {
-                    return [
-                        'status' => 'deny',
-                        'code' => self::CODE_DENY_IP_RULE,
-                        'comment' => 'IP is denied in rule table.',
-                        'reason' => $result['reason'],
-                    ];
-                }
-
-                if (0 === (int) $result['type']) {
-                    return [
-                        'status' => 'stop',
-                        'code' => self::CODE_DENY_IP_RULE,
-                        'comment' => 'IP is temporarily banned in rule table.',
-                        'reason' => $result['reason'],
-                    ];
-                }
-            }
         }
 
         return [];
@@ -264,7 +199,7 @@ class Ip implements ComponentInterface
                 $mainIpPieces[7] = $last_piece;
     
             } else {
-    
+
                 // Build the full form of the IPV6 address
                 for ($i = $size; $i < 8; $i++) {
                     $first[$i] = '0000';
@@ -319,34 +254,69 @@ class Ip implements ComponentInterface
     }
 
     /**
-     * Add IP addresses to the whitelist pool.
-     *
-     * @param array $ips
-     *
-     * @return void
+     * {@inheritDoc}
      */
-    public function setAllowedList(array $ips): void
+    public function isDenied(): bool
     {
-        foreach($ips as $ip) {
-            $this->setAllowedIp($ip);
+        foreach ($this->deniedList as $deniedIp) {
+            if (strpos($deniedIp, '/') !== false) {
+                if ($this->inRange($this->ip, $deniedIp)) {
+                    return true;
+                }
+            } else {
+                if ($deniedIp === $this->ip) {
+                    return true;
+                }
+            }
         }
+
+        return false;
     }
 
     /**
-     * Add an IP address to the whitelist pool.
+     * {@inheritDoc}
+     */
+    public function isAllowed(): bool
+    {
+        foreach ($this->allowedList as $allowedIp) {
+            if (strpos($allowedIp, '/') !== false) {
+                if ($this->inRange($this->ip, $allowedIp)) {
+                    return true;
+                }
+            } else {
+                if ($allowedIp === $this->ip) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Add IP addresses to the whitelist pool.
      *
-     * @param string $ip
+     * @param array $stringList String list.
      *
      * @return void
      */
-    public function setAllowedIp(string $ip): void
+    public function setAllowedList(array $stringList): void
     {
-        if (! in_array($ip, $this->allowedList)) {
-            array_push($this->allowedList, $ip);
-        }
+        $this->allowedList = $stringList;
+    }
 
-        // This method will also remove an IP address from blacklist pool, if exists.
-        $this->removeIp($ip, 'deny');
+    /**
+     * Add an allowed item to the whitelist pool.
+     *
+     * @param string $string
+     *
+     * @return void
+     */
+    public function setAllowedItem(string $string): void
+    {
+        if (! in_array($string, $this->allowedList)) {
+            array_push($this->allowedList, $string);
+        }
     }
 
     /**
@@ -362,70 +332,10 @@ class Ip implements ComponentInterface
         return [];
     }
 
-    /**
-     * Add IP addresses to the blacklist pool.
-     *
-     * @param array $ips
-     *
-     * @return void
-     */
-    public function setDeniedList(array $ips): void
+    public function removeAllowedItem(string $string): void
     {
-        foreach($ips as $ip) {
-            $this->setDeniedIp($ip);
-        }
-    }
-
-    /**
-     * Add an IP address to the blacklist pool.
-     *
-     * @param string $ip
-     *
-     * @return void
-     */
-    public function setDeniedIp(string $ip): void
-    {
-        if (! in_array($ip, $this->deniedList)) {
-            array_push($this->deniedList, $ip);
-        }
-
-        // This method will also remove an IP address from whitelist pool, if exists.
-        $this->removeIp($ip, 'allow');
-    }
-
-    /**
-     * Get IP addresses from the blacklist pool.
-     *
-     * @return array
-     */
-    public function getDeniedList(): array
-    {
-        if (is_array($this->deniedList)) {
-            return $this->deniedList;
-        }
-        return [];
-    }
-
-    /**
-     * Remove an IP from the Pool
-     *
-     * @param string $ip   IP address.
-     * @param string $type
-     *
-     * @return void
-     */
-    public function removeIp(string $ip, string $type): void
-    {
-        if ('allow' === $type) {
-            if (($key = array_search($ip, $this->allowedList)) !== false) {
-                unset($this->allowedList[$key]);
-            }
-        }
-
-        if ('deny' === $type) {
-            if (($key = array_search($ip, $this->deniedList)) !== false) {
-                unset($this->deniedList[$key]);
-            }
+        if (($key = array_search($string, $this->allowedList)) !== false) {
+            unset($this->allowedList[$key]);
         }
     }
 }
