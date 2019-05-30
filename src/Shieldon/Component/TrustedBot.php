@@ -65,9 +65,6 @@ class TrustedBot extends ComponentProvider
         if (! empty($_SERVER['HTTP_USER_AGENT'])) {
             $this->userAgentString = $_SERVER['HTTP_USER_AGENT'];
         }
-
-        // Don't care about the proxy. Using proxy is considered bad behavior here.
-        $this->ip = $this->setIp();
     }
 
     /**
@@ -80,15 +77,17 @@ class TrustedBot extends ComponentProvider
                 return false;
             }
     
-            // If strict mode is on, we will check the RDNS record to see if it is in the whitelist.
+            // We will check the RDNS record to see if it is in the whitelist.
             if (preg_match('/(' . implode('|', $this->trustedBotList) . ')/i', $this->ipResolvedHostname)) {
                 $ip = gethostbyname($this->ipResolvedHostname);
     
                 // If the IP is different as hostname's resolved IP. It is maybe a fake bot.
-                if ($ip !== $this->ip) {
-                    return false;
+                if ($this->strictMode) {
+                    if ($ip !== $this->ip) {
+                        return false;
+                    }
                 }
-    
+
                 return true;
             }
         }

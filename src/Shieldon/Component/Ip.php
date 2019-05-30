@@ -331,11 +331,4 @@ class Ip extends ComponentProvider
         }
         return [];
     }
-
-    public function removeAllowedItem(string $string): void
-    {
-        if (($key = array_search($string, $this->allowedList)) !== false) {
-            unset($this->allowedList[$key]);
-        }
-    }
 }

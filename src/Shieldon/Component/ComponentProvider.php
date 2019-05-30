@@ -56,20 +56,6 @@ abstract class ComponentProvider implements ComponentInterface
     }
 
     /**
-     * Remove a denied item.
-     *
-     * @param string $string
-     *
-     * @return void
-     */
-    public function removeDeniedItem(string $string): void
-    {
-        if (($key = array_search($string, $this->deniedList)) !== false) {
-            unset($this->deniedList[$key]);
-        }
-    }
-
-    /**
      * Return current denied list.
      *
      * @return array
@@ -81,12 +67,36 @@ abstract class ComponentProvider implements ComponentInterface
 
     /**
      * Enable strict mode.
+     * 
+     * @param bool $bool Set true to enble strict mode, false to disable it overwise.
      *
      * @return void
      */
-    public function strictMode(): void
+    public function setStrict(bool $bool): void
     {
-        $this->strictMode = true;
+        $this->strictMode = $bool;
+    }
+
+    /**
+     * Remove item.
+     *
+     * @param string $string
+     *
+     * @return void
+     */
+    public function removeItem(string $string): void
+    {
+        if (! empty($this->allowedList)) {
+            if (($key = array_search($string, $this->allowedList)) !== false) {
+                unset($this->allowedList[$key]);
+            }
+        }
+
+        if (! empty($this->deniedList)) {
+            if (($key = array_search($string, $this->deniedList)) !== false) {
+                unset($this->deniedList[$key]);
+            }
+        }
     }
 
     /**

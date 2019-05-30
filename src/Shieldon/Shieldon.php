@@ -4,6 +4,7 @@
  * @name        Shieldon
  * @author      Terry Lin
  * @link        https://github.com/terrylinooo/shieldon
+ * @version     1.2.0
  * @license     MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -775,12 +776,14 @@ class Shieldon
 
     /**
      * Strict mode.
+     * 
+     * @param bool $bool Set true to enble strict mode, false to disable it overwise.
      *
      * @return self
      */
-    public function strictMode(): self
+    public function setStrict(bool $bool): self
     {
-        $this->strictMode = true;
+        $this->strictMode = $bool;
 
         return $this;
     }
@@ -1051,10 +1054,7 @@ class Shieldon
 
             $conponent->setIp($this->ip);
             $conponent->setRdns($this->ipResolvedHostname);
-
-            if ($this->strictMode) {
-                $conponent->strictMode();
-            }
+            $conponent->setStrict($this->strictMode);
 
             // First of all, check if is a a bad robot already defined in settings.
             if ($conponent->isDenied()) {
