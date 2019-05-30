@@ -28,7 +28,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setComponent(new \Shieldon\Component\Ip());
         $shieldon->setComponent(new \Shieldon\Component\UserAgent());
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
-        $shieldon->setComponent(new \Shieldon\Component\RDns());
+        $shieldon->setComponent(new \Shieldon\Component\Rdns());
 
         $shieldon->setChannel('test_shieldon_detect_s');
 
@@ -73,7 +73,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setComponent(new \Shieldon\Component\Ip());
         $shieldon->setComponent(new \Shieldon\Component\UserAgent());
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
-        $shieldon->setComponent(new \Shieldon\Component\RDns());
+        $shieldon->setComponent(new \Shieldon\Component\Rdns());
 
         $shieldon->setChannel('test_shieldon_detect');
         $driver->init();
