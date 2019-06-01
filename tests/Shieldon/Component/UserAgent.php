@@ -11,18 +11,18 @@
 namespace Shieldon\Component;
 
 
-class TrustedBotTest extends \PHPUnit\Framework\TestCase
+class UserAgentTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
     {
-        $trustedBotComponent = new TrustedBot();
-        $trustedBotComponent->setStrict(false);
+        $userAgentComponent = new UserAgent();
+        $userAgentComponent->setStrict(false);
 
-        $reflection = new \ReflectionObject($trustedBotComponent);
+        $reflection = new \ReflectionObject($userAgentComponent);
         $t = $reflection->getProperty('strictMode');
         $t->setAccessible(true);
   
         $this->assertEquals('strictMode' , $t->name);
-        $this->assertFalse($t->getValue($trustedBotComponent));
+        $this->assertFalse($t->getValue($userAgentComponent));
     }
 }

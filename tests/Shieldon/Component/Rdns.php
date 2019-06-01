@@ -11,18 +11,18 @@
 namespace Shieldon\Component;
 
 
-class TrustedBotTest extends \PHPUnit\Framework\TestCase
+class RdnsTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
     {
-        $trustedBotComponent = new TrustedBot();
-        $trustedBotComponent->setStrict(false);
+        $rdnsComponent = new Rdns();
+        $rdnsComponent->setStrict(false);
 
-        $reflection = new \ReflectionObject($trustedBotComponent);
+        $reflection = new \ReflectionObject($rdnsComponent);
         $t = $reflection->getProperty('strictMode');
         $t->setAccessible(true);
   
         $this->assertEquals('strictMode' , $t->name);
-        $this->assertFalse($t->getValue($trustedBotComponent));
+        $this->assertFalse($t->getValue($rdnsComponent));
     }
 }
