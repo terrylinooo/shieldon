@@ -40,7 +40,7 @@ use function gethostbyaddr;
 use function session_id;
 use function strrpos;
 use function substr;
-
+use Shieldon\Component\ComponentProvider;
 
 class Shieldon
 {
@@ -76,6 +76,20 @@ class Shieldon
     public const RESPONSE_ALLOW = 1;
     public const RESPONSE_TEMPORARILY_DENY = 2;
     public const RESPONSE_LIMIT = 3;
+
+    /**
+     * Driver for storing data.
+     *
+     * @var DriverInterface
+     */
+    public $driver = null;
+
+    /**
+     * Container for Shieldon components.
+     *
+     * @var Interface
+     */
+    public $component = [];
 
     // Shieldon directory.
     private const SHIELDON_DIR = __DIR__;
@@ -134,20 +148,6 @@ class Shieldon
      * @var string
      */
     protected $referer = '';
-
-    /**
-     * Driver for storing data.
-     *
-     * @var DriverInterface
-     */
-    protected $driver = null;
-
-    /**
-     * Container for Shieldon components.
-     *
-     * @var Interface
-     */
-    protected $component = [];
 
     /**
      * Container for captcha addons.
@@ -229,16 +229,7 @@ class Shieldon
     {
         $this->referer = $_SERVER['HTTP_REFERER'] ?? '';
 
-        if ((php_sapi_name() !== 'cli')) {
-            if ($this->enableSessionCheck) {
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
-                }
-                if (! $this->sessionId) {
-                    $this->sessionId = session_id();
-                }
-            }
-        }
+        $this->setSessionId();
 
         // At least load a captcha instance. Example is the base one.
         if (! isset($this->captcha['Example'])) {
@@ -562,7 +553,13 @@ class Shieldon
                 $currentSessionOrder = $i;
             }
 
+            // Count the online sessions.
+            $this->sessionCount = count($sessionPools);
+            $this->currentSessionOrder = $currentSessionOrder;
+            $this->currentWaitNumber = $currentSessionOrder - $limit;
+
             if (! in_array($this->sessionId, $sessionPools)) {
+                $this->sessionCount++;
 
                 // New session, record this data.
                 $data['id'] = $this->sessionId;
@@ -571,11 +568,6 @@ class Shieldon
                 $this->driver->save($this->sessionId, $data, 'session');
             }
 
-            // Count the online sessions.
-            $this->sessionCount = count($sessionPools);
-            $this->currentSessionOrder = $currentSessionOrder;
-            $this->currentWaitNumber = $currentSessionOrder - $limit;
-
             // Online session count reached the limit. So return RESPONSE_LIMIT response code.
             if ($currentSessionOrder >= $limit) {
                 return self::RESPONSE_LIMIT;
@@ -583,6 +575,31 @@ class Shieldon
         }
 
         return self::RESPONSE_ALLOW;
+    }
+
+    /**
+     * For testing propose.
+     *
+     * @param string $sessionId
+     *
+     * @return void
+     */
+    private function setSessionId(string $sessionId = ''): void
+    {
+        if ('' !== $sessionId) {
+            $this->sessionId = $sessionId;
+        } else {
+            if ((php_sapi_name() !== 'cli')) {
+                if ($this->enableSessionCheck) {
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    if (! $this->sessionId) {
+                        $this->sessionId = session_id();
+                    }
+                }
+            }
+        }
     }
 
     /*
@@ -689,13 +706,13 @@ class Shieldon
      * Set a commponent.
      * Sheildon needs commponents to work.
      *
-     * @param ComponentInterface $instance
+     * @param ComponentProvider $instance
      *
      * @return self
      */
-    public function setComponent(ComponentInterface $instance): self
+    public function setComponent(ComponentProvider $instance): self
     {
-        if ($instance instanceof ComponentInterface) {
+        if ($instance instanceof ComponentProvider) {
             $class = get_class($instance);
             $class = substr($class, strrpos($class, '\\') + 1);
             $this->component[$class] = $instance;

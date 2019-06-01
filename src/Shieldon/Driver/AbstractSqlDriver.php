@@ -17,27 +17,6 @@ use PDO;
 abstract class AbstractSqlDriver extends DriverProvider
 {
     /**
-     * Data table for regular session logs.
-     *
-     * @var string
-     */
-    protected $tableLogs = 'shieldon_logs';
-
-    /**
-     * Data table name for whitelist.
-     *
-     * @var string
-     */
-    protected $tableRuleList = 'shieldon_rule_list';
-
-    /**
-     * Data table for recording online session count.
-     *
-     * @var string
-     */
-    protected $tableSessions = 'shieldon_sessions';
-
-    /**
      * Data engine will be used on.
      *
      * @var string
@@ -85,11 +64,9 @@ abstract class AbstractSqlDriver extends DriverProvider
     {
         if (! $this->isInitialized) {
             if (! empty($this->channel)) {
-                $this->tableLogs = $this->channel . '_' . $this->tableLogs;
-                $this->tableRuleList = $this->channel . '_' . $this->tableRuleList;
-                $this->tableSessions = $this->channel . '_' . $this->tableSessions;
+                $this->setChannel($this->channel);
             }
-    
+
             if ($dbCheck && ! $this->checkTableExists()) {
                 $this->installSql();
             }
@@ -300,8 +277,14 @@ abstract class AbstractSqlDriver extends DriverProvider
             default:
                 break;
         }
+    }
 
-        
+    /**
+     * {@inheritDoc}
+     */
+    protected function doRebuild(): bool
+    {
+        return $this->rebuildSql();
     }
 
     /**
@@ -452,63 +435,78 @@ abstract class AbstractSqlDriver extends DriverProvider
     /**
      * Create SQL tables that Shieldon needs.
      *
-     * @return void
+     * @return bool
      */
-    protected function installSql(): void
+    protected function installSql(): bool
     {
-        $sql = "
-            CREATE TABLE IF NOT EXISTS `{$this->tableLogs}` (
-                `log_ip` varchar(46) NOT NULL,
-                `log_data` blob,
-                PRIMARY KEY (`log_ip`)
-            ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
-        ";
+        try {
 
+            $sql = "
+                CREATE TABLE IF NOT EXISTS `{$this->tableLogs}` (
+                    `log_ip` varchar(46) NOT NULL,
+                    `log_data` blob,
+                    PRIMARY KEY (`log_ip`)
+                ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
+            ";
 
-        $this->db->query($sql);
+            $this->db->query($sql);
 
-        $sql = "
-            CREATE TABLE IF NOT EXISTS `{$this->tableRuleList}` (
-                `log_ip` varchar(46) NOT NULL,
-                `ip_resolve` varchar(255) NOT NULL,
-                `type` tinyint(3) UNSIGNED NOT NULL,
-                `reason` tinyint(3) UNSIGNED NOT NULL,
-                `time` int(10) UNSIGNED NOT NULL,
-                PRIMARY KEY (`log_ip`)
-            ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
-        ";
+            $sql = "
+                CREATE TABLE IF NOT EXISTS `{$this->tableRuleList}` (
+                    `log_ip` varchar(46) NOT NULL,
+                    `ip_resolve` varchar(255) NOT NULL,
+                    `type` tinyint(3) UNSIGNED NOT NULL,
+                    `reason` tinyint(3) UNSIGNED NOT NULL,
+                    `time` int(10) UNSIGNED NOT NULL,
+                    PRIMARY KEY (`log_ip`)
+                ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
+            ";
 
-        $this->db->query($sql);
+            $this->db->query($sql);
 
-        $sql = "
-            CREATE TABLE `{$this->tableSessions}` (
-                `id` varchar(40) NOT NULL,
-                `ip` varchar(46) NOT NULL,
-                `time` int(10) UNSIGNED NOT NULL,
-                PRIMARY KEY (`id`)
-            ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
-        ";
+            $sql = "
+                CREATE TABLE `{$this->tableSessions}` (
+                    `id` varchar(40) NOT NULL,
+                    `ip` varchar(46) NOT NULL,
+                    `time` int(10) UNSIGNED NOT NULL,
+                    PRIMARY KEY (`id`)
+                ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
+            ";
 
-        $this->db->query($sql);
+            $this->db->query($sql);
+
+            return true;
+
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
      * Clean all records in IP log and IP rule tables, and then rebuild new tables.
      *
-     * @return void
+     * @return bool
      */
-    protected function rebuildSql(): void
+    protected function rebuildSql(): bool
     {
-        $sql = "DROP TABLE IF EXISTS `{$this->tableLogs}`";
-        $this->db->query($sql);
+        try {
 
-        $sql = "DROP TABLE IF EXISTS `{$this->tableRuleList}`";
-        $this->db->query($sql);
+            $sql = "DROP TABLE IF EXISTS `{$this->tableLogs}`";
+            $this->db->query($sql);
 
-        $sql = "DROP TABLE IF EXISTS `{$this->tableSessions}`";
-        $this->db->query($sql);
+            $sql = "DROP TABLE IF EXISTS `{$this->tableRuleList}`";
+            $this->db->query($sql);
 
-        $this->installSql();
+            $sql = "DROP TABLE IF EXISTS `{$this->tableSessions}`";
+            $this->db->query($sql);
+
+            $this->installSql();
+
+            return true;
+
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**

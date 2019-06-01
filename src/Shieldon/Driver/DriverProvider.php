@@ -16,6 +16,27 @@ namespace Shieldon\Driver;
 abstract class DriverProvider extends AbstractDriver
 {
     /**
+     * Data table for regular session logs.
+     *
+     * @var string
+     */
+    protected $tableLogs = 'shieldon_logs';
+
+    /**
+     * Data table name for whitelist.
+     *
+     * @var string
+     */
+    protected $tableRuleList = 'shieldon_rule_list';
+
+    /**
+     * Data table for recording online session count.
+     *
+     * @var string
+     */
+    protected $tableSessions = 'shieldon_sessions';
+
+    /**
      * The prefix of the database tables, or the name of file directory.
      *
      * @var string
@@ -32,6 +53,22 @@ abstract class DriverProvider extends AbstractDriver
     public function setChannel(string $channel): void
     {
         $this->channel = $channel;
+
+        if (! empty($this->channel)) {
+            $this->tableLogs = $this->channel . '_shieldon_logs';
+            $this->tableRuleList = $this->channel . '_shieldon_rule_list';
+            $this->tableSessions = $this->channel . '_shieldon_sessions';
+        }
+    }
+
+    /**
+     * Get channel name.
+     *
+     * @return string
+     */
+    public function getChannel(): string
+    {
+        return $this->channel;
     }
 
     /**

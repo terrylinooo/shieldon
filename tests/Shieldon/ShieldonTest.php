@@ -115,4 +115,99 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
             $this->assertTrue(false);
         }
     }
+
+    public function testSessionHandler()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
+        $shieldon->setDriver($driver);
+        $shieldon->setChannel('test_shieldon_session');
+
+        $_limit = 4;
+        $shieldon->limitSession($_limit, 300);
+        $shieldon->driver->rebuild();
+        
+        $reflection = new \ReflectionObject($shieldon);
+        $methodSessionHandler = $reflection->getMethod('sessionHandler');
+        $methodSessionHandler->setAccessible(true);
+
+
+        // The first visitor.
+        $shieldon->setIp('140.112.172.11');
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
+        $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 999999))]);
+        $shieldon->run();
+
+        $sessionHandlerResult = $methodSessionHandler->invokeArgs($shieldon, [$shieldon::RESPONSE_ALLOW]);
+
+        $this->assertSame($sessionHandlerResult, $shieldon::RESPONSE_ALLOW);
+
+        $t = $reflection->getProperty('sessionCount');
+        $t->setAccessible(true);
+        $sessionCount = $t->getValue($shieldon);
+        $this->assertSame(1, $sessionCount);
+
+        $t = $reflection->getProperty('currentSessionOrder');
+        $t->setAccessible(true);
+        $currentSessionOrder = $t->getValue($shieldon);
+        $this->assertSame(1, $currentSessionOrder);
+
+        $currentWaitNumber = $currentSessionOrder - $_limit;
+        
+        $t = $reflection->getProperty('currentWaitNumber');
+        $t->setAccessible(true);
+        $this->assertSame($currentWaitNumber, $t->getValue($shieldon));
+
+        // The second visitor.
+        $shieldon->setIp('140.112.172.12');
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
+        $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 1000))]);
+
+        $result = $shieldon->run();
+        $t = $reflection->getProperty('currentSessionOrder');
+        $t->setAccessible(true);
+        $currentSessionOrder = $t->getValue($shieldon);
+        $this->assertSame(2, $currentSessionOrder);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // The third visitor.
+        $shieldon->setIp('140.112.172.13');
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
+        $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1001, 2000))]);
+
+        $result = $shieldon->run();
+        $t = $reflection->getProperty('currentSessionOrder');
+        $t->setAccessible(true);
+        $currentSessionOrder = $t->getValue($shieldon);
+        $this->assertSame(3, $currentSessionOrder);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // The fourth visitor.
+        $shieldon->setIp('140.112.172.14');
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
+        $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(2001, 3000))]);
+
+        $result = $shieldon->run();
+        $t = $reflection->getProperty('currentSessionOrder');
+        $t->setAccessible(true);
+        $currentSessionOrder = $t->getValue($shieldon);
+        $this->assertSame(4, $currentSessionOrder);
+        $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
+
+        // The fifth vistor.
+        $shieldon->setIp('140.112.172.15');
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
+        $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 999999))]);
+
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
+    }
 }

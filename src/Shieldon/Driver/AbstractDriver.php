@@ -58,6 +58,14 @@ abstract class AbstractDriver implements DriverInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function rebuild(): bool
+    {
+        return $this->doRebuild();
+    }
+
+    /**
      * Implement fetch.
      *
      * @param string $ip The data id of the entry to fetch.
@@ -103,4 +111,11 @@ abstract class AbstractDriver implements DriverInterface
      * @return bool
      */
     abstract protected function doDelete(string $ip, string $type = 'log'): bool;
+
+    /**
+     * Rebuild data tables.
+     *
+     * @return bool
+     */
+    abstract protected function doRebuild(): bool;
 }

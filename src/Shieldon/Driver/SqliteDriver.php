@@ -30,40 +30,48 @@ class SqliteDriver extends AbstractSqlDriver
       /**
      * Create SQL tables that Shieldon needs.
      *
-     * @return void
+     * @return bool
      */
-    protected function installSql(): void
+    protected function installSql(): bool
     {
-        $sql = "
-            CREATE TABLE IF NOT EXISTS {$this->tableLogs} (
-                log_ip VARCHAR(46) PRIMARY KEY,
-                log_data BLOB
-            );
-        ";
+        try {
+            $sql = "
+                CREATE TABLE IF NOT EXISTS {$this->tableLogs} (
+                    log_ip VARCHAR(46) PRIMARY KEY,
+                    log_data BLOB
+                );
+            ";
 
-        $this->db->query($sql);
+            $this->db->query($sql);
 
-        $sql = "
-            CREATE TABLE IF NOT EXISTS {$this->tableRuleList} (
-                log_ip VARCHAR(46) PRIMARY KEY, 
-                ip_resolve VARCHAR(255), 
-                type TINYINT(3), 
-                reason TINYINT(3), 
-                time INT(10)
-            );
-        ";
+            $sql = "
+                CREATE TABLE IF NOT EXISTS {$this->tableRuleList} (
+                    log_ip VARCHAR(46) PRIMARY KEY, 
+                    ip_resolve VARCHAR(255), 
+                    type TINYINT(3), 
+                    reason TINYINT(3), 
+                    time INT(10)
+                );
+            ";
 
-        $this->db->query($sql);
+            $this->db->query($sql);
 
-        $sql = "
-            CREATE TABLE IF NOT EXISTS {$this->tableSessions} (
-                id VARCHAR(40) PRIMARY KEY, 
-                ip VARCHAR(46),
-                time INT(10)
-            );
-        ";
+            $sql = "
+                CREATE TABLE IF NOT EXISTS {$this->tableSessions} (
+                    id VARCHAR(40) PRIMARY KEY, 
+                    ip VARCHAR(46),
+                    time INT(10)
+                );
+            ";
 
-        $this->db->query($sql);
+            $this->db->query($sql);
+
+            return true;
+
+        } catch (\Exception $e) {
+            return false;
+        }
+        
     }
 
     /**

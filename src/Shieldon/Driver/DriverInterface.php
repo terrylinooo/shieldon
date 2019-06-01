@@ -66,6 +66,14 @@ interface DriverInterface
      *              return false overwise.
      */
     public function delete(string $ip, string $type = 'log'): bool;
+
+
+    /**
+     * Rebuild data table.
+     *
+     * @return bool
+     */
+    public function rebuild(): bool;
 }
 
 
