@@ -16,6 +16,7 @@ class Autoloader
     private $dir;
     private $namespace;
 
+    // @codeCoverageIgnoreStart
     public function __construct()
     {
         $this->dir = __DIR__;
@@ -26,6 +27,7 @@ class Autoloader
     {
         spl_autoload_register(array(new self(), 'autoload'), true, false);
     }
+    // @codeCoverageIgnoreEnd
 
     public function autoload($className)
     {

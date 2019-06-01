@@ -85,7 +85,10 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true , $t);
         $t = $ipComponent->inRange('127.0.1.44', '127.0.0.0/24');
         $this->assertEquals(false , $t);
-        unset($ipComponent, $t);
+
+        // Single Ip
+        $t = $ipComponent->inRange('127.0.0.1', '127.0.0.1');
+        $this->assertEquals(true , $t);
 
         // Test 2. Check IP is if in C class subnet.
         $ipComponent = new Ip();
@@ -95,9 +98,8 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true , $t);
         $t = $ipComponent->inRange('127.1.33.33', '127.0.0.0/16');
         $this->assertEquals(false , $t);
-        unset($ipComponent, $t);
 
-        // Test 2. Check IP is if in B class subnet.
+        // Test 3. Check IP is if in B class subnet.
         $ipComponent = new Ip();
         $t = $ipComponent->inRange('127.33.250.33', '127.0.0.0/8');
         $this->assertEquals(true , $t);
@@ -105,7 +107,19 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true , $t); 
         $t = $ipComponent->inRange('128.33.250.33', '127.0.0.0/8');
         $this->assertEquals(false , $t);
-        unset($ipComponent, $t);
+
+        // Test 4. Check IPv6
+        $ipComponent = new Ip();
+        $t = $ipComponent->inRange('2001:db8:ffff:ffff:ffff:ffff:ffff:ffff', '2001:db8::/32');
+        $this->assertEquals(true , $t);
+
+        $t = $ipComponent->inRange('2001:db8:ffff:ffff:ffff:ffff:ffff:ffff', '2001:db8::0/32');
+        $this->assertEquals(false , $t);
+
+        // Test 5. Check Invalid IP
+        $ipComponent = new Ip();
+        $t = $ipComponent->inRange('127.0.333.33', '127.0.250.0/16');
+        $this->assertEquals(false , $t);
     }
 
     public function testDecimalIpv6()
@@ -113,9 +127,13 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $ipComponent = new Ip();
         $t = $ipComponent->decimalIpv6('FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
         $t = $ipComponent->_decimalIpv6('FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
-        $this->assertSame('338288524927261046600406220626806860202' , $t);
-        $this->assertSame('338288524927261046600406220626806860202' , $t);
-        unset($ipComponent, $t);
+        $this->assertSame('338288524927261046600406220626806860202', $t);
+        $this->assertSame('338288524927261046600406220626806860202', $t);
+       
+        $t = $ipComponent->decimalIpv6('2001:DB8:2de::e13');
+        $t = $ipComponent->_decimalIpv6('2001:DB8:2de::e13');
+        $this->assertSame('42540766412169952080266446484866804624', $t);
+        $this->assertSame('42540766412169952080266446484866804624', $t);
     }
 
     public function testSetAllowedList()

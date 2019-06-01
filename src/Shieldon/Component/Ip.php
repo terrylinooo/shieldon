@@ -326,9 +326,7 @@ class Ip extends ComponentProvider
      */
     public function getAllowedList(): array
     {
-        if (is_array($this->allowedList)) {
-            return $this->allowedList;
-        }
-        return [];
+        return $this->allowedList;
+        
     }
 }
