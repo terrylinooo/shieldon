@@ -6,14 +6,16 @@
             <directory>tests/Shieldon/</directory>
         </testsuite>
     </testsuites>
-
     <filter>
         <whitelist>
             <directory suffix=".php">src/Shieldon/</directory>
         </whitelist>
     </filter>
-
     <php>
         <ini name="date.timezone" value="UTC"/>
     </php>
+    <logging>
+        <log type="coverage-clover" target="clover.xml"/>
+        <log type="coverage-html" target="tests/report" charset="UTF-8"/>
+    </logging>
 </phpunit>

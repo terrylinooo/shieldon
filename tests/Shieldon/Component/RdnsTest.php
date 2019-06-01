@@ -60,7 +60,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
         $rdnsComponent = new Rdns();
         $deniedList = $rdnsComponent->getDeniedList();
 
-        $this->assertSame($deniedList, []);
+        $this->assertSame($deniedList, ['.webcrawler.link']);
     }
 
     public function testRemoveItem()

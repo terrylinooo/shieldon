@@ -25,12 +25,14 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
 
+        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
         $shieldon->setComponent(new \Shieldon\Component\Ip());
         $shieldon->setComponent(new \Shieldon\Component\UserAgent());
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
         $shieldon->setComponent(new \Shieldon\Component\Rdns());
 
         $shieldon->setChannel('test_shieldon_detect_s');
+        $shieldon->driver->rebuild();
 
         // Fake a IP for testing.
         $randomFakeIp = [rand(100, 200),rand(100, 200),rand(100, 200),rand(100, 200)];
@@ -69,14 +71,15 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
         $shieldon->setDriver($driver);
-        
+
+        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
         $shieldon->setComponent(new \Shieldon\Component\Ip());
         $shieldon->setComponent(new \Shieldon\Component\UserAgent());
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
         $shieldon->setComponent(new \Shieldon\Component\Rdns());
 
         $shieldon->setChannel('test_shieldon_detect');
-        $driver->init();
+        $shieldon->driver->rebuild();
 
         $reflection = new \ReflectionObject($shieldon);
         $method = $reflection->getMethod('action');

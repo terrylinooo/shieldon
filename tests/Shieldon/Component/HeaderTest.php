@@ -25,6 +25,37 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($t->getValue($headerComponent));
     }
 
+    public function testIsDenied()
+    {
+        $headerComponent = new Header();
+
+        $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
+        $headerComponent->setDeniedItem('test');
+
+        $result = $headerComponent->isDenied();
+        $this->assertTrue($result);
+
+        $_SERVER['HTTP_TEST_VAR'] = 'This is a t2est string.';
+
+        $result = $headerComponent->isDenied();
+        $this->assertFalse($result);
+    }
+
+    public function testGetHeaders()
+    {
+        $headerComponent = new Header();
+
+        $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
+        $_SERVER['HTTP_TEST_VAR2'] = 'This is a testt string.';
+
+        $results = $headerComponent->getHeaders();
+
+        $this->assertSame($results, [
+            'Test-Var' => 'This is a test string.',
+            'Test-Var2' => 'This is a testt string.',
+        ]);
+    }
+
     public function testSetDeniedList()
     {
         $list = ['gzip', 'robot'];
@@ -77,36 +108,5 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $deniedList = $headerComponent->getDeniedList();
 
         $this->assertSame($deniedList, []);
-    }
-
-    public function testIsDenied()
-    {
-        $headerComponent = new Header();
-
-        $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
-        $headerComponent->setDeniedItem('test');
-
-        $result = $headerComponent->isDenied();
-        $this->assertTrue($result);
-
-        $_SERVER['HTTP_TEST_VAR'] = 'This is a t2est string.';
-
-        $result = $headerComponent->isDenied();
-        $this->assertFalse($result);
-    }
-
-    public function testGetHeader()
-    {
-        $headerComponent = new Header();
-
-        $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
-        $_SERVER['HTTP_TEST_VAR2'] = 'This is a testt string.';
-
-        $results = $headerComponent->getHeaders();
-
-        $this->assertSame($results, [
-            'Test-Var' => 'This is a test string.',
-            'Test-Var2' => 'This is a testt string.',
-        ]);
     }
 }
