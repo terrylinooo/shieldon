@@ -12,6 +12,19 @@ namespace Shieldon\Component;
 
 class IpTest extends \PHPUnit\Framework\TestCase
 {
+    public function testSetStrict()
+    {
+        $ipComponent = new Ip();
+        $ipComponent->setStrict(false);
+
+        $reflection = new \ReflectionObject($ipComponent);
+        $t = $reflection->getProperty('strictMode');
+        $t->setAccessible(true);
+  
+        $this->assertEquals('strictMode' , $t->name);
+        $this->assertFalse($t->getValue($ipComponent));
+    }
+
     public function testCheck()
     {
         // Test 1. Check incorrect IP address.
@@ -161,7 +174,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertIsArray($t);
     }
 
-    public function testRemoveIp()
+    public function testRemoveItem()
     {
         $ipComponent = new Ip();
         $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];

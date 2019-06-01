@@ -40,7 +40,7 @@ class Header extends ComponentProvider
         $headers = $this->getHeaders();
 
         if (! empty($this->deniedList)) {
-            if (preg_match('/(' . implode('|', $this->deniedList). ')/i', imolode(',', $headers))) {
+            if (preg_match('/(' . implode('|', $this->deniedList). ')/i', implode(',', $headers))) {
                 return true;
             }
         }

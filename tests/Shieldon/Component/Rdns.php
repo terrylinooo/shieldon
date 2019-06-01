@@ -25,4 +25,69 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('strictMode' , $t->name);
         $this->assertFalse($t->getValue($rdnsComponent));
     }
+
+    public function testSetDeniedList()
+    {
+        $list = ['.example.com', '.hello.com'];
+
+        $rdnsComponent = new Rdns();
+        $rdnsComponent->setDeniedList($list);
+
+        $deniedList = $rdnsComponent->getDeniedList();
+
+        $this->assertSame($deniedList, $list);
+    }
+
+
+    public function testSetDeniedItem()
+    {
+        $string = '.baidu.com';
+
+        $rdnsComponent = new Rdns();
+        $rdnsComponent->setDeniedItem($string);
+
+        $deniedList = $rdnsComponent->getDeniedList();
+
+        if (in_array($string, $deniedList)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testGetDeniedList()
+    {
+        $rdnsComponent = new Rdns();
+        $deniedList = $rdnsComponent->getDeniedList();
+
+        $this->assertSame($deniedList, []);
+    }
+
+    public function testRemoveItem()
+    {
+        $string = '.yahoo.com';
+
+        $rdnsComponent = new Rdns();
+        $rdnsComponent->setDeniedItem($string);
+
+        $deniedList = $rdnsComponent->getDeniedList();
+
+        $this->assertSame($deniedList, ['.webcrawler.link', '.yahoo.com']);
+
+        $rdnsComponent->removeItem('.yahoo.com');
+        $deniedList = $rdnsComponent->getDeniedList();
+
+        $this->assertSame($deniedList, ['.webcrawler.link']);
+    }
+
+    public function testIsDenied()
+    {
+        $rdnsComponent = new Rdns();
+
+        $rdnsComponent->setDeniedItem('test');
+        $rdnsComponent->setRdns('.webcrawler.link');
+
+        $result = $rdnsComponent->isDenied();
+        $this->assertTrue($result);
+    }
 }

@@ -25,4 +25,74 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('strictMode' , $t->name);
         $this->assertFalse($t->getValue($userAgentComponent));
     }
+
+    public function testSetDeniedList()
+    {
+        $list = ['google.com', 'yahoo.com'];
+
+        $userAgentComponent = new UserAgent();
+        $userAgentComponent->setDeniedList($list);
+
+        $deniedList = $userAgentComponent->getDeniedList();
+
+        $this->assertSame($deniedList, $list);
+    }
+
+    public function testSetDeniedItem()
+    {
+        $string = 'baidu.com';
+
+        $userAgentComponent = new UserAgent();
+        $userAgentComponent->setDeniedItem($string);
+
+        $deniedList = $userAgentComponent->getDeniedList();
+
+        if (in_array($string, $deniedList)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testGetDeniedList()
+    {
+        $userAgentComponent = new UserAgent();
+        $deniedList = $userAgentComponent->getDeniedList();
+
+        $this->assertSame($deniedList, [
+            'domain',
+            'copyright',
+            'Ahrefs',
+            'roger',
+            'moz.com',
+            'MJ12bot',
+            'findlinks',
+            'Semrush',
+            'archive',
+        ]);
+    }
+
+    public function testRemoveItem()
+    {
+        $userAgentComponent = new UserAgent();
+        $userAgentComponent->removeItem('Ahrefs');
+
+        $deniedList = $userAgentComponent->getDeniedList();
+
+        if (! in_array('Ahrefs', $deniedList)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testIsDenied()
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)';
+
+        $userAgentComponent = new UserAgent();
+
+        $result = $userAgentComponent->isDenied();
+        $this->assertTrue($result);
+    }
 }

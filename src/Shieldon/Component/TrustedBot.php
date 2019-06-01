@@ -46,19 +46,18 @@ class TrustedBot extends ComponentProvider
     {
         // They are robots we welcome in this whitelist.
         $this->trustedBotList = [
-
             // User-agent   => RDNS
             'google'        => '.googlebot.com',
-            'google'        => '.google.com',
+            'Google.'        => '.google.com',
             'live'          => '.live.com', 
             'msn'           => '.msn.com',
             'ask'           => '.ask.com',
             'bing'          => '.bing.com',
             'inktomisearch' => '.inktomisearch.com',
             'yahoo'         => '.yahoo.com',
-            'yahoo'         => '.yahoo.net',
+            'Yahoo'         => '.yahoo.net',
             'yandex'        => '.yandex.com',
-            'yandex'        => '.yandex.ru',
+            'Yandex'        => '.yandex.ru',
             'w3.org'        => '.w3.org',
         ];
 
@@ -99,6 +98,7 @@ class TrustedBot extends ComponentProvider
      * Add a trusted bot.
      *
      * @param string $userAgentString
+     *
      * @param string $rdns
      *
      * @return void
@@ -106,6 +106,45 @@ class TrustedBot extends ComponentProvider
     public function addItem(string $userAgentString, string $rdns): void
     {
         $this->trustedBotList[$userAgentString] = '.' . trim($rdns, '.');
+    }
+
+    /**
+     * Add trusted bot list.
+     *
+     * @param array $list
+     *
+     * @return void
+     */
+    public function addList(array $list): void
+    {
+        $this->trustedBotList = $list;
+    }
+
+    /**
+     * Get trusted list.
+     *
+     * @return array
+     */
+    public function getList(): array
+    {
+        return $this->trustedBotList;
+    }
+
+    /**
+     * Remove item.
+     *
+     * @param string $string
+     *
+     * @return void
+     */
+    public function removeItem(string $string): void
+    {
+        if (! empty($this->trustedBotList)) {
+            $key = array_search($string, $this->trustedBotList);
+            if (false !==  $key) {
+                unset($this->trustedBotList[$key]);
+            }
+        }
     }
 
     /**

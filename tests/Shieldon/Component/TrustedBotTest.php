@@ -25,4 +25,38 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('strictMode' , $t->name);
         $this->assertFalse($t->getValue($trustedBotComponent));
     }
+
+    public function testSetDeniedList()
+    {
+        $this->assertFalse(false);
+    }
+
+    public function testSetDeniedItem()
+    {
+        $this->assertFalse(false);
+    }
+
+    public function testGetDeniedList()
+    {
+        $this->assertFalse(false);
+    }
+
+    public function testIsDenied()
+    {
+        $this->assertFalse(false);
+    }
+
+    public function testRemoveItem()
+    {
+        $trustedBotComponent = new TrustedBot();
+
+        $trustedBotComponent->removeItem('.google.com');
+        $list = $trustedBotComponent->getList();
+
+        if (! in_array('.google.com', $list)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
 }

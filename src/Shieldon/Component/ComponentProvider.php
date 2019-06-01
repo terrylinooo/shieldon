@@ -87,13 +87,15 @@ abstract class ComponentProvider implements ComponentInterface
     public function removeItem(string $string): void
     {
         if (! empty($this->allowedList)) {
-            if (($key = array_search($string, $this->allowedList)) !== false) {
+            $key = array_search($string, $this->allowedList);
+            if (false !==  $key) {
                 unset($this->allowedList[$key]);
             }
         }
 
         if (! empty($this->deniedList)) {
-            if (($key = array_search($string, $this->deniedList)) !== false) {
+            $key = array_search($string, $this->deniedList);
+            if (false !==  $key) {
                 unset($this->deniedList[$key]);
             }
         }
