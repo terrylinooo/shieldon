@@ -75,11 +75,11 @@ class TrustedBot extends ComponentProvider
             if (! preg_match('/(' . implode('|', array_keys($this->trustedBotList)) . ')/i', $this->userAgentString)) {
                 return false;
             }
-    
+
             // We will check the RDNS record to see if it is in the whitelist.
             if (preg_match('/(' . implode('|', $this->trustedBotList) . ')/i', $this->ipResolvedHostname)) {
                 $ip = gethostbyname($this->ipResolvedHostname);
-    
+
                 // If the IP is different as hostname's resolved IP. It is maybe a fake bot.
                 if ($this->strictMode) {
                     if ($ip !== $this->ip) {
@@ -128,6 +128,16 @@ class TrustedBot extends ComponentProvider
     public function getList(): array
     {
         return $this->trustedBotList;
+    }
+
+    /**
+     * Set trusted list.
+     *
+     * @return void
+     */
+    public function setList(array $list): void
+    {
+        $this->trustedBotList = $list;
     }
 
     /**

@@ -94,5 +94,21 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
         $result = $userAgentComponent->isDenied();
         $this->assertTrue($result);
+
+        $_SERVER['HTTP_USER_AGENT'] = '';
+        $userAgentComponent = new UserAgent();
+        $userAgentComponent->setStrict(true);
+        $result = $userAgentComponent->isDenied();
+        $this->assertTrue($result);
+
+        $reflection = new \ReflectionObject($userAgentComponent);
+        $t = $reflection->getProperty('userAgentString');
+        $t->setAccessible(true);
+  
+        if ($t->getValue($userAgentComponent) === '') {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
     }
 }

@@ -65,10 +65,6 @@ class Header extends ComponentProvider
      */
     public function getHeaders(): array
     {
-        if (!is_array($_SERVER)) {
-            return [];
-        }
-
         $headers = [];
 
         foreach ($_SERVER as $name => $value) {

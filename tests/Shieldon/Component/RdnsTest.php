@@ -83,10 +83,27 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
     public function testIsDenied()
     {
         $rdnsComponent = new Rdns();
-
-        $rdnsComponent->setDeniedItem('test');
         $rdnsComponent->setRdns('.webcrawler.link');
+        $result = $rdnsComponent->isDenied();
+        $this->assertTrue($result);
 
+        $rdnsComponent = new Rdns();
+        $rdnsComponent->setStrict(true);
+        $rdnsComponent->setRdns('');
+        $result = $rdnsComponent->isDenied();
+        $this->assertTrue($result);
+
+        $rdnsComponent = new Rdns();
+        $rdnsComponent->setStrict(true);
+        $rdnsComponent->setRdns('crawl-66-249-66-1.googlebot.com');
+        $rdnsComponent->setIp('66.249.66.1');
+        $result = $rdnsComponent->isDenied();
+        $this->assertFalse($result);
+
+        $rdnsComponent = new Rdns();
+        $rdnsComponent->setStrict(true);
+        $rdnsComponent->setRdns('crawl-66-249-66-1.googlebot.com');
+        $rdnsComponent->setIp('66.249.66.2');
         $result = $rdnsComponent->isDenied();
         $this->assertTrue($result);
     }

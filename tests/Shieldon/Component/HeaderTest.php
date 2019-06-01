@@ -39,6 +39,11 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
         $result = $headerComponent->isDenied();
         $this->assertFalse($result);
+
+        $headerComponent = new Header();
+        $headerComponent->setStrict(true);
+        $result = $headerComponent->isDenied();
+        $this->assertTrue($result);
     }
 
     public function testGetHeaders()
@@ -54,6 +59,12 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
             'Test-Var' => 'This is a test string.',
             'Test-Var2' => 'This is a testt string.',
         ]);
+
+        unset($_SERVER['HTTP_TEST_VAR']);
+        unset($_SERVER['HTTP_TEST_VAR2']);
+
+        $results = $headerComponent->getHeaders();
+        $this->assertSame($results, []);
     }
 
     public function testSetDeniedList()
