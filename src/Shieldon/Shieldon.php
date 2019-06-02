@@ -252,6 +252,7 @@ class Shieldon
     {
         $now = time();
         $logData = [];
+        $isFlaggedAsUnusualBehavior = false;
 
         $resetPageviews = [
             's' => false, // second.
@@ -262,10 +263,12 @@ class Shieldon
 
         // Fetch an IP data from Shieldon log table.
         $ipDetail = $this->driver->get($this->ip, 'log');
+
         $ipDetail = $this->driver->parseData($ipDetail, 'log');
+        $logData  = $ipDetail;
 
         // Counting user pageviews.
-        foreach ($resetPageviews as $timeUnit => $valueNotUsed) {
+        foreach (array_keys($resetPageviews) as $timeUnit) {
 
             // Each time unit will increase by 1.
             $logData["pageviews_{$timeUnit}"] = $ipDetail["pageviews_{$timeUnit}"] + 1;
@@ -275,25 +278,24 @@ class Shieldon
         $logData['first_time_flag'] = $ipDetail['first_time_flag'];
 
         if (! empty($ipDetail['ip'])) {
-
             $logData['ip']             = $this->ip;
             $logData['session']        = $this->sessionId;
             $logData['hostname']       = $this->ipResolvedHostname;
             $logData['last_time']      = $now;
-            $logData['flag_js_cookie'] = 0;
 
             /*** HTTP_REFERER ***/
 
             if ($this->enableRefererCheck) {
 
-                if ($now - $ipDetail['last_time'] <= $this->properties['interval_check_referer']) {
+                if ($now - $ipDetail['last_time'] > $this->properties['interval_check_referer']) {
 
                     // Get values from data table. We will count it and save it back to data table.
                     // If an user is already in your website, it is impossible no referer when he views other pages.
                     $logData['flag_empty_referer'] = $ipDetail['flag_empty_referer'] ?? 0;
 
-                    if (empty($this->user_http_referer)) {
+                    if (empty($this->referer)) {
                         $logData['flag_empty_referer']++;
+                        $isFlaggedAsUnusualBehavior = true;
                     }
 
                     // Ban this IP if they reached the limit.
@@ -308,16 +310,17 @@ class Shieldon
 
             if ($this->enableSessionCheck) {
 
-                if ($now - $ipDetail['last_time'] <= $this->properties['interval_check_session']) {
+                if ($now - $ipDetail['last_time'] > $this->properties['interval_check_session']) {
 
                     // Get values from data table. We will count it and save it back to data table.
                     $logData['flag_multi_session'] = $ipDetail['flag_multi_session'] ?? 0;
-
+                    
                     if ($this->sessionId !== $ipDetail['session']) {
 
                         // Is is possible because of direct access by the same user many times.
                         // Or they don't have session cookie set.
                         $logData['flag_multi_session']++;
+                        $isFlaggedAsUnusualBehavior = true;
                     }
 
                     // Ban this IP if they reached the limit.
@@ -337,10 +340,12 @@ class Shieldon
                 $logData['flag_js_cookie']   = $ipDetail['flag_js_cookie']   ?? 0;
                 $logData['pageviews_cookie'] = $ipDetail['pageviews_cookie'] ?? 0;
 
-                $jsCookie = $_COOKIE[$this->properties['cookie_name']];
+                $c = $this->properties['cookie_name'];
+
+                $jsCookie = $_COOKIE[$c] ?? 0;
 
                 // Checking if a cookie is created by JavaScript.
-                if (isset($jsCookie)) {
+                if (! empty($jsCookie)) {
 
                     if ($jsCookie == '1') {
                         $logData['pageviews_cookie']++;
@@ -348,10 +353,12 @@ class Shieldon
                     } else {
                         // Flag it if the value is not 1.
                         $logData['flag_js_cookie']++;
+                        $isFlaggedAsUnusualBehavior = true;
                     }
                 } else {
                     // If we cannot find the cookie, flag it.
                     $logData['flag_js_cookie']++;
+                    $isFlaggedAsUnusualBehavior = true;
                 }
 
                 if ($logData['flag_js_cookie'] > $this->properties['limit_unusual_behavior']['cookie']) {
@@ -370,7 +377,7 @@ class Shieldon
 
                     // Remove cookie.
                     unset($_COOKIE[$this->properties['cookie_name']]);
-                    setcookie($this->properties['cookie_name'], null, -1, '/');
+                    $this->resetCookie();
                 }
             }
 
@@ -416,11 +423,18 @@ class Shieldon
                 }
             }
 
+            // Is fagged as unusual beavior? Count the first time.
+            if ($isFlaggedAsUnusualBehavior) {
+                $logData['first_time_flag'] = (! empty($logData['first_time_flag'])) ? $logData['first_time_flag'] : $now;
+            }
+
             // Reset the flagged factor check.
-            if ($now - $ipDetail['first_time_flag'] >= $this->properties['time_reset_limit']) {
-                $logData['flag_multi_session'] = 0;
-                $logData['flag_empty_referer'] = 0;
-                $logData['flag_js_cookie']     = 0;
+            if (! empty($ipDetail['first_time_flag'])) {
+                if ($now - $ipDetail['first_time_flag'] >= $this->properties['time_reset_limit']) {
+                    $logData['flag_multi_session'] = 0;
+                    $logData['flag_empty_referer'] = 0;
+                    $logData['flag_js_cookie']     = 0;
+                }
             }
 
             $this->driver->save($this->ip, $logData, 'log');
@@ -577,6 +591,8 @@ class Shieldon
         return self::RESPONSE_ALLOW;
     }
 
+    // @codeCoverageIgnoreStart
+
     /**
      * For testing propose.
      *
@@ -601,6 +617,20 @@ class Shieldon
             }
         }
     }
+
+    /**
+     * Reset cookie.
+     *
+     * @return void
+     */
+    private function resetCookie(): void
+    {
+        if ((php_sapi_name() !== 'cli')) {
+            setcookie($this->properties['cookie_name'], '', -1, '/');
+        }
+    }
+
+    // @codeCoverageIgnoreEnd
 
     /*
     | -------------------------------------------------------------------
@@ -1143,12 +1173,12 @@ class Shieldon
     }
 
     /**
-     * Set the filiters.
+     * Set the filters
      *
-     * @param array $settings Filiter settings
+     * @param array $settings filter settings
      * @return self
      */
-    public function setFiliters($settings): self
+    public function setFilters($settings): self
     {
         $requiredFilters = [
             'cookie' => true,
@@ -1159,7 +1189,7 @@ class Shieldon
 
         foreach ($requiredFilters as $k => $v) {
             if (isset($settings[$k])) {
-                $u = 'enable' . utfirst($k) . 'Check';
+                $u = 'enable' . ucfirst($k) . 'Check';
                 $this->{$u} = $settings[$k] ?? false;
             }
         }

@@ -16,6 +16,40 @@ use function saveTestingFile;
 
 class ShieldonTest extends \PHPUnit\Framework\TestCase
 {
+    public function test__construct()
+    {
+        $properties = [
+            'time_unit_quota'        => ['s' => 1, 'm' => 1, 'h' => 1, 'd' => 1],
+            'time_reset_limit'       => 1,
+            'interval_check_referer' => 1,
+            'interval_check_session' => 1,
+            'limit_unusual_behavior' => ['cookie' => 1, 'session' => 1, 'referer' => 1],
+            'cookie_name'            => 'unittest',
+            'cookie_domain'          => 'localhost',
+            'lang'                   => 'zh',
+            'display_credit_link'    => false,
+            'display_online_info'    => false,
+            'display_lineup_info'    => false,
+        ];
+
+        $shieldon = new \Shieldon\Shieldon($properties);
+
+        $reflection = new \ReflectionObject($shieldon);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+        $properties = $t->getValue($shieldon);
+
+        $this->assertSame($properties['interval_check_session'], 1);
+        $this->assertSame($properties['time_reset_limit'], 1);
+        $this->assertSame($properties['limit_unusual_behavior'], ['cookie' => 1, 'session' => 1, 'referer' => 1]);
+        $this->assertSame($properties['cookie_name'], 'unittest');
+        $this->assertSame($properties['cookie_domain'], 'localhost');
+        $this->assertSame($properties['lang'], 'zh');
+        $this->assertSame($properties['display_credit_link'], false);
+        $this->assertSame($properties['display_online_info'], false);
+        $this->assertSame($properties['display_lineup_info'], false);
+    }
+
     public function testDetect()
     {
         $shieldon = new \Shieldon\Shieldon();
@@ -31,14 +65,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
         $shieldon->setComponent(new \Shieldon\Component\Rdns());
 
-        $shieldon->setChannel('test_shieldon_detect_s');
+        $shieldon->setChannel('test_shieldon_detect');
         $shieldon->driver->rebuild();
 
-        // Fake a IP for testing.
-        $randomFakeIp = [rand(100, 200),rand(100, 200),rand(100, 200),rand(100, 200)];
-        $ip = implode('.', $randomFakeIp);
-        
-        $shieldon->setIp($ip);
+        // Test 1.
+        $shieldon->setIp('141.112.175.1');
 
         $shieldon->setProperty('time_unit_quota', [
             's' => 2,
@@ -58,7 +89,142 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $result[4]);
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $result[5]);
 
-        return $result;
+        // Test 2. Reset the pageview check for specfic time unit.
+        $shieldon->setIp('141.112.175.2');
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
+        sleep(2);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
+        $ipDetail = $shieldon->driver->get('141.112.175.2', 'log');
+
+        if ($ipDetail['pageviews_s'] == 0) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+
+        // Test 3. Session. Ban this IP if they reached the limit.
+        $shieldon->setFilters([
+            'session'   => true,
+            'cookie'    => false,
+            'referer'   => false,
+            'frequency' => false,
+        ]);
+
+        $shieldon->setProperty('interval_check_session', 1);
+        $shieldon->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
+
+        // Let's get started checking Session.
+        for ($i =  0; $i < 5; $i++) {
+            $shieldon->setIp('140.112.172.255');
+            $shieldon->limitSession(1000, 9999);
+            $reflection = new \ReflectionObject($shieldon);
+            $methodSetSessionId = $reflection->getMethod('setSessionId');
+            $methodSetSessionId->setAccessible(true);
+            $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(2001, 3000))]);
+            $results[$i] = $shieldon->run();
+            sleep(2);
+        }
+
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[0]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[1]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[2]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[3]);
+        $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $results[4]);
+
+        unset($results);
+
+        // Test 4. Referer.
+        $shieldon->setFilters([
+            'session'   => false,
+            'cookie'    => false,
+            'referer'   => true,
+            'frequency' => false,
+        ]);
+
+        $shieldon->setProperty('interval_check_referer', 1);
+        $shieldon->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
+
+        for ($i =  0; $i < 5; $i++) {
+            $shieldon->setIp('140.112.173.1');
+            $results[$i] = $shieldon->run();
+            sleep(2);
+        }
+
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[0]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[1]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[2]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[3]);
+        $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $results[4]);
+
+        unset($results);
+
+        // Test 5. JS Cookie
+
+        $shieldon->setFilters([
+            'session'   => false,
+            'cookie'    => true,
+            'referer'   => false,
+            'frequency' => false,
+        ]);
+
+        $shieldon->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
+
+        for ($i =  0; $i < 5; $i++) {
+            $shieldon->setIp('140.112.174.1');
+            $results[$i] = $shieldon->run();
+        }
+
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[0]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[1]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[2]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[3]);
+        $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $results[4]);
+
+        $shieldon->setProperty('cookie_name', 'unittest');
+        $_COOKIE['unittest'] = 1;
+
+        for ($i =  0; $i < 10; $i++) {
+            $shieldon->setIp('140.112.175.1');
+            $results[$i] = $shieldon->run();
+
+            if ($i >= 5) {
+                $_COOKIE['unittest'] = 2;
+            }
+        }
+
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[0]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[1]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[2]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[3]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[4]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[5]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[6]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $results[7]);
+        $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $results[8]);
+        $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $results[9]);
+
+        // Test 6. Reset the flagged factor check.
+        $shieldon->setFilters([
+            'session'   => false,
+            'cookie'    => false,
+            'referer'   => true,
+            'frequency' => false,
+        ]);
+
+        $shieldon->setProperty('interval_check_referer', 1);
+        $shieldon->setProperty('time_reset_limit', 1);
+        $shieldon->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
+
+        $shieldon->setIp('140.112.173.11');
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
+        sleep(2);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
+        $ipDetail = $shieldon->driver->get('140.112.173.11', 'log');
+        $this->assertEquals($ipDetail['flag_empty_referer'], 1);
+        sleep(2);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
+        $ipDetail = $shieldon->driver->get('140.112.173.11', 'log');
+        $this->assertEquals($ipDetail['flag_empty_referer'], 0);
     }
 
     public function testAction()
@@ -212,5 +378,54 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
+
+        // // Remove session if it expires.
+        $shieldon->limitSession($_limit, 1);
+        sleep(3);
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
+    }
+
+    public function testSetProperty()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setProperty();
+        $shieldon->setProperty('interval_check_session', 1);
+        $shieldon->setProperty('time_reset_limit', 1);
+        $shieldon->setProperty('limit_unusual_behavior', ['cookie' => 1, 'session' => 1, 'referer' => 1]);
+        $shieldon->setProperty('cookie_name', 'unittest');
+        $shieldon->setProperty('cookie_domain', 'localhost');
+        $shieldon->setProperty('lang', 'zh');
+        $shieldon->setProperty('display_credit_link', false);
+        $shieldon->setProperty('display_online_info', false);
+        $shieldon->setProperty('display_lineup_info', false);
+
+        $reflection = new \ReflectionObject($shieldon);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+        $properties = $t->getValue($shieldon);
+
+        $this->assertSame($properties['interval_check_session'], 1);
+        $this->assertSame($properties['time_reset_limit'], 1);
+        $this->assertSame($properties['limit_unusual_behavior'], ['cookie' => 1, 'session' => 1, 'referer' => 1]);
+        $this->assertSame($properties['cookie_name'], 'unittest');
+        $this->assertSame($properties['cookie_domain'], 'localhost');
+        $this->assertSame($properties['lang'], 'zh');
+        $this->assertSame($properties['display_credit_link'], false);
+        $this->assertSame($properties['display_online_info'], false);
+        $this->assertSame($properties['display_lineup_info'], false);
+    }
+
+    public function testSetStrict()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setStrict(false);
+
+        $reflection = new \ReflectionObject($shieldon);
+        $t = $reflection->getProperty('strictMode');
+        $t->setAccessible(true);
+  
+        $this->assertEquals('strictMode' , $t->name);
+        $this->assertFalse($t->getValue($shieldon));
     }
 }
