@@ -779,8 +779,15 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
     }
 
-    public function disableFiltering()
+    public function testDisableFiltering()
     {
-        
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->disableFiltering();
+        $reflection = new \ReflectionObject($shieldon);
+        $t = $reflection->getProperty('enableFiltering');
+        $t->setAccessible(true);
+        $enableFiltering = $t->getValue($shieldon);
+
+        $this->assertFalse($enableFiltering);
     }
 }
