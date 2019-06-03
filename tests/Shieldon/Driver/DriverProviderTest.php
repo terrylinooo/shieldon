@@ -51,5 +51,8 @@ class DriverProviderTest extends \PHPUnit\Framework\TestCase
         ];
 
         $this->assertSame($result, $fields);
+
+        $this->assertSame([], $mock->parseData([], 'rule'));
+        $this->assertSame([], $mock->parseData([], 'session'));
     }
 }

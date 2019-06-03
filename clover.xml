@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1559567149">
-  <project timestamp="1559567149">
+<coverage generated="1559568139">
+  <project timestamp="1559568139">
     <package name="Shieldon">
       <file name="D:\terrylin\data\_projects\vendor\shieldon\src\Shieldon\Autoloader.php">
         <class name="Shieldon\Autoloader" namespace="Shieldon">
@@ -1047,7 +1047,7 @@
       </file>
       <file name="D:\terrylin\data\_projects\vendor\shieldon\src\Shieldon\Driver\DriverProvider.php">
         <class name="Shieldon\Driver\DriverProvider" namespace="Shieldon\Driver">
-          <metrics complexity="10" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="23" coveredstatements="21" elements="26" coveredelements="23"/>
+          <metrics complexity="10" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="23" coveredstatements="23" elements="26" coveredelements="26"/>
         </class>
         <line num="53" type="method" name="setChannel" visibility="public" complexity="2" crap="2" count="5"/>
         <line num="55" type="stmt" count="5"/>
@@ -1058,13 +1058,13 @@
         <line num="62" type="stmt" count="5"/>
         <line num="69" type="method" name="getChannel" visibility="public" complexity="1" crap="1" count="3"/>
         <line num="71" type="stmt" count="3"/>
-        <line num="82" type="method" name="parseData" visibility="public" complexity="7" crap="7.10" count="10"/>
+        <line num="82" type="method" name="parseData" visibility="public" complexity="7" crap="7" count="10"/>
         <line num="84" type="stmt" count="10"/>
         <line num="86" type="stmt" count="10"/>
         <line num="88" type="stmt" count="10"/>
-        <line num="89" type="stmt" count="0"/>
+        <line num="89" type="stmt" count="1"/>
         <line num="92" type="stmt" count="10"/>
-        <line num="93" type="stmt" count="0"/>
+        <line num="93" type="stmt" count="1"/>
         <line num="96" type="stmt" count="10"/>
         <line num="102" type="stmt" count="10"/>
         <line num="127" type="stmt" count="10"/>
@@ -1075,7 +1075,7 @@
         <line num="135" type="stmt" count="10"/>
         <line num="138" type="stmt" count="10"/>
         <line num="142" type="stmt" count="10"/>
-        <metrics loc="143" ncloc="76" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="23" coveredstatements="21" elements="26" coveredelements="23"/>
+        <metrics loc="143" ncloc="76" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="23" coveredstatements="23" elements="26" coveredelements="26"/>
       </file>
       <file name="D:\terrylin\data\_projects\vendor\shieldon\src\Shieldon\Driver\FileDriver.php">
         <class name="Shieldon\Driver\FileDriver" namespace="Shieldon\Driver">
@@ -1178,6 +1178,6 @@
     <file name="D:\terrylin\data\_projects\vendor\shieldon\src\Shieldon\Driver\DriverInterface.php">
       <metrics loc="79" ncloc="21" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
-    <metrics files="23" loc="3906" ncloc="2336" classes="20" methods="109" coveredmethods="75" conditionals="0" coveredconditionals="0" statements="931" coveredstatements="684" elements="1040" coveredelements="759"/>
+    <metrics files="23" loc="3906" ncloc="2336" classes="20" methods="109" coveredmethods="76" conditionals="0" coveredconditionals="0" statements="931" coveredstatements="686" elements="1040" coveredelements="762"/>
   </project>
 </coverage>
