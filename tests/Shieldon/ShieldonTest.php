@@ -384,6 +384,9 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         sleep(3);
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
+
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
     }
 
     public function testSetProperty()
@@ -427,5 +430,357 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
   
         $this->assertEquals('strictMode' , $t->name);
         $this->assertFalse($t->getValue($shieldon));
+    }
+
+    public function testSetDriver()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
+        $shieldon->setDriver($driver);
+
+        if ($shieldon->driver === $driver) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testCreateDatabase()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->createDatabase(false);
+    
+        $reflection = new \ReflectionObject($shieldon);
+        $t = $reflection->getProperty('autoCreateDatabase');
+        $t->setAccessible(true);
+        $this->assertFalse($t->getValue($shieldon));
+    }
+
+    public function testSetChannel()
+    {
+
+        $shieldon = new \Shieldon\Shieldon();
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
+        $shieldon->setDriver($driver);
+
+        $shieldon->setChannel('unittest');
+
+        if ('unittest' === $shieldon->driver->getChannel()) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+
+        // Test exception.
+        $this->expectException(\LogicException::class);
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setChannel('unittest');
+    }
+
+    public function testSetCaptcha()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $imageCaptcha = new \Shieldon\Captcha\ImageCaptcha();
+        $shieldon->setCaptcha($imageCaptcha);
+
+        $reflection = new \ReflectionObject($shieldon);
+        $t = $reflection->getProperty('captcha');
+        $t->setAccessible(true);
+        $refectedCaptcha = $t->getValue($shieldon);
+
+        if ($refectedCaptcha['ImageCaptcha'] === $imageCaptcha) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testCaptchaResponse()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setCaptcha(new \Shieldon\Captcha\ImageCaptcha());
+        $result = $shieldon->captchaResponse();
+        $this->assertFalse($result);
+
+        $shieldon = new \Shieldon\Shieldon();
+        $_POST['shieldon_captcha'] = 'ok';
+        $result = $shieldon->captchaResponse();
+        $this->assertTrue($result);
+
+        $shieldon = new \Shieldon\Shieldon();
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
+        $shieldon->setDriver($driver);
+
+        $shieldon->limitSession(1000, 9999);
+        $reflection = new \ReflectionObject($shieldon);
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
+        $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(2001, 3000))]);
+        $result = $shieldon->run();
+        $result = $shieldon->captchaResponse();
+        $this->assertTrue($result);
+    }
+
+    public function testSetComponent()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $ipComponent = new \Shieldon\Component\Ip();
+        $shieldon->setComponent($ipComponent);
+
+        if ($shieldon->component['Ip'] === $ipComponent) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testBan()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
+        $shieldon->setDriver($driver);
+        $shieldon->driver->rebuild();
+
+        $shieldon->ban();
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_DENY, $result);
+
+        $shieldon->unban();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
+    }
+
+    public function testUnBan()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
+        $shieldon->setDriver($driver);
+        $shieldon->driver->rebuild();
+        $shieldon->setIp('33.33.33.33');
+
+        $shieldon->ban('33.33.33.33');
+        $this->assertSame($shieldon::RESPONSE_DENY, $shieldon->run());
+
+        $shieldon->unban('33.33.33.33');
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
+    }
+
+    public function testSetView()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setView('<html><body>hello</body></html>', 'deny');
+        $reflection = new \ReflectionObject($shieldon);
+        $t = $reflection->getProperty('html');
+        $t->setAccessible(true);
+        $view = $t->getValue($shieldon);
+        if ($view['deny'] === '<html><body>hello</body></html>') {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testOutput()
+    {
+        $_SERVER['REQUEST_URI'] = '/';
+
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setProperty('display_credit_link', false);
+        $shieldon->setProperty('display_online_info', false);
+        $shieldon->setProperty('display_lineup_info', false);
+
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
+        $shieldon->setDriver($driver);
+        $shieldon->driver->rebuild();
+
+        // Limit
+        $shieldon->setIp('33.33.33.33');
+        $reflection = new \ReflectionObject($shieldon);
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
+        $methodSetSessionId->invokeArgs($shieldon, [md5('hello, this is an unit test!')]);
+
+		$shieldon->limitSession(1, 30000);
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+        $result = $shieldon->run();
+		if ($result === $shieldon::RESPONSE_LIMIT) {
+            $output = $shieldon->output(0, false);
+
+            if (strpos($output, 'Please line up') !== false) {
+                $this->assertTrue(true);
+            } else {
+                $this->assertTrue(false);
+            }
+        }
+
+        $shieldon->limitSession(100, 30000);
+        $shieldon->setIp('33.33.33.33');
+        $shieldon->ban('33.33.33.33');
+        $result = $shieldon->run();
+
+		if ($result === $shieldon::RESPONSE_DENY) {
+            $output = $shieldon->output(0, false);
+
+            if (strpos($output, 'Access denied') !== false) {
+                $this->assertTrue(true);
+            } else {
+                $this->assertTrue(false);
+            }
+        } else {
+            $this->assertTrue(false);
+        }
+
+        $shieldon->setIp('141.112.175.1');
+
+        $shieldon->setProperty('time_unit_quota', [
+            's' => 2,
+            'm' => 20, 
+            'h' => 60, 
+            'd' => 240
+        ]);
+
+        $result = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $result[$i] = $shieldon->run();
+        }
+
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result[1]);
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result[2]);
+        if ($result[3] === $shieldon::RESPONSE_TEMPORARILY_DENY) {
+            $output = $shieldon->output(0, false);
+
+            if (strpos($output, 'Captcha') !== false) {
+                $this->assertTrue(true);
+            } else {
+                $this->assertTrue(false);
+            }
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testRun()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
+        $shieldon->setDriver($driver);
+        $shieldon->driver->rebuild();
+
+        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->setComponent(new \Shieldon\Component\Ip());
+		$shieldon->setComponent(new \Shieldon\Component\Header());
+		$shieldon->setComponent(new \Shieldon\Component\UserAgent());
+        $shieldon->setComponent(new \Shieldon\Component\Rdns());
+        
+        // By default, it will block this session because of no common header information
+        $shieldon->setStrict(true);
+        $shieldon->setIp('8.8.8.8');
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_DENY, $result);
+
+        // Set an IP to whitelist.
+        $shieldon->component['Ip']->setAllowedItem('8.8.8.8');
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // Set an IP to blacklist.
+        $shieldon->component['Ip']->removeItem('8.8.8.8');
+        $shieldon->component['Ip']->setDeniedItem('8.8.8.8');
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_DENY, $result);
+
+        // Check trusted bots.
+
+        // BING
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setDriver($driver);
+        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
+        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->setIp('40.77.169.1', true);
+        $shieldon->setStrict(false);
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // Code coverage for - // is no more needed for that IP.
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // GOOGLE
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setDriver($driver);
+        $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
+        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->setIp('66.249.66.1', true);
+        $shieldon->setStrict(false);
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // Code coverage for - // is no more needed for that IP.
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // YAHOO
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setDriver($driver);
+        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)';
+        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->setIp('8.12.144.1', true);
+        $shieldon->setStrict(false);
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // Code coverage for - // is no more needed for that IP.
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // OTHER
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setDriver($driver);
+        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)';
+        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->setIp('100.43.90.1', true);
+        $shieldon->setStrict(false);
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // Code coverage for - // is no more needed for that IP.
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setDriver($driver);
+        $shieldon->disableFiltering();
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+    }
+
+    public function testGetSessionCount()
+    {
+
+    }
+
+    public function testOutputJsSnippet()
+    {
+
+    }
+
+    public function disableFiltering()
+    {
+        
     }
 }

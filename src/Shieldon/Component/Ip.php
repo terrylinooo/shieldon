@@ -285,6 +285,7 @@ class Ip extends ComponentProvider
                 }
             } else {
                 if ($allowedIp === $this->ip) {
+  
                     return true;
                 }
             }

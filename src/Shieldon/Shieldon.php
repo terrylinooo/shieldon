@@ -87,7 +87,7 @@ class Shieldon
     /**
      * Container for Shieldon components.
      *
-     * @var Interface
+     * @var array
      */
     public $component = [];
 
@@ -547,24 +547,27 @@ class Shieldon
             $currentSessionOrder = 0;
 
             //die('<pre>' . var_dump($onlineSessions) . '</pre>');
+            if (! empty($onlineSessions)) {
+                foreach ($onlineSessions as $k => $v) {
+                    $sessionPools[] = $v['id'];
+                    $lasttime = (int) $v['time'];
+    
+                    if ($this->sessionId === $v['id']) {
+                        $currentSessionOrder = $i;
+                    }
+    
+                    // Remove session if it expires.
+                    if ($now - $lasttime > $period) {
+                        $this->driver->delete($v['id'], 'session');
+                    }
+                    $i++;
+                }
 
-            foreach ($onlineSessions as $k => $v) {
-                $sessionPools[] = $v['id'];
-                $lasttime = (int) $v['time'];
-
-                if ($this->sessionId === $v['id']) {
+                if (0 === $currentSessionOrder) {
                     $currentSessionOrder = $i;
                 }
-
-                // Remove session if it expires.
-                if ($now - $lasttime > $period) {
-                    $this->driver->delete($v['id'], 'session');
-                }
-                $i++;
-            }
-
-            if (0 === $currentSessionOrder) {
-                $currentSessionOrder = $i;
+            } else {
+                $currentSessionOrder = 0;
             }
 
             // Count the online sessions.
@@ -651,8 +654,6 @@ class Shieldon
     {
         if ($driver instanceof DriverProvider) {
             $this->driver = $driver;
-        } else {
-            throw new UnexpectedValueException('Incorrect data driver provider.');
         }
 
         return $this;
@@ -705,8 +706,6 @@ class Shieldon
             $class = get_class($instance);
             $class = substr($class, strrpos($class, '\\') + 1);
             $this->captcha[$class] = $instance;
-        } else {
-            throw new UnexpectedValueException('Incorrect Captcha instance.');
         }
 
         return $this;
@@ -746,8 +745,6 @@ class Shieldon
             $class = get_class($instance);
             $class = substr($class, strrpos($class, '\\') + 1);
             $this->component[$class] = $instance;
-        } else {
-            throw new UnexpectedValueException('Incorrect component.');
         }
 
         return $this;
@@ -850,128 +847,6 @@ class Shieldon
     }
 
     /**
-     * Remove possible injection charactors.
-     *
-     * @param string $type GET, POST, COOKIE.
-     * @param string $key  The key name of an array.
-     *
-     * @return self
-     */
-    public function xssClean(string $type, string $key = '', bool $exact = false): self
-    {
-        $unwantedCharacters = [
-            '"', "'", '[', ']', '~', '=', '*', '&', '^', '%',
-            '$', '#', '@', '!', '<', '>', ';', '.', '|', '/',
-            '+', '_', ':', '(', ')', '{', '}', '%', '\\'
-        ];
-
-        if (
-               'GET'    === $type
-            || 'COOKIE' === $type 
-            || 'POST'   === $type
-            || 'GLOBAL' === $type
-        ) {
-            $type = '_' . $type;
-
-            if (empty(${$type})) {
-                return $this;
-            }
-
-            $filiter = ${$type};
-
-            if ($exact) {
-                if (isset($filiter[$key])) {
-                    // string
-                    if (is_string($filiter[$key])) {
-                        foreach ($unwantedCharacters as $c) {
-                            if (strpos($filiter[$key], $c) !== false) {
-                                $filiter[$key] = '';
-                            }
-                        }
-                    }
-                    // array
-                    if (is_array($filiter[$key])) {
-                        foreach ($filiter[$key] as $j => $k) {
-                            // string
-                            if (is_string($filiter[$key][$j])) {
-                                foreach ($unwantedCharacters as $c) {
-                                    if (strpos($filiter[$key][$j], $c) !== false) {
-                                        $filiter[$key][$j] = '';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    // Check first layer.
-                    if (is_array($filiter)) {
-                        foreach ($filiter as $k => $v) {
-                            // string
-                            if (is_string($filiter[$k])) {
-                                foreach ($unwantedCharacters as $c) {
-                                    if (strpos($filiter[$k], $c) !== false) {
-                                        $filiter[$k] = '';
-                                    }
-                                }
-                            }
-                            // array
-                            if (is_array($filiter[$k])) {
-                                foreach ($filiter[$k] as $kk => $vv) {
-                                    // string
-                                    if (is_string($filiter[$kk])) {
-                                        foreach ($unwantedCharacters as $c) {
-                                            if (strpos($filiter[$kk], $c) !== false) {
-                                                $filiter[$k][$kk] = '';
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } 
-                    }
-                }
-            } else {
-                if (isset($filiter[$key])) {
-                    // string
-                    if (is_string($filiter[$key])) {
-                        $filiter[$key] = trim(str_replace($unwantedCharacters, '', $filiter[$key]));
-                    }
-                    // array
-                    if (is_array($filiter[$key])) {
-                        foreach ($filiter[$key] as $j => $k) {
-                            if (is_string($filiter[$key][$j])) {
-                                $filiter[$key] = trim(str_replace($unwantedCharacters, '', $filiter[$key]));
-                            }
-                        }
-                    }
-                } else {
-                    // Check first layer.
-                    if (is_array($filiter)) {
-                        foreach ($filiter as $k => $v) {
-                            // string
-                            if (is_string($filiter[$k])) {
-                                $filiter[$k] = trim(str_replace($unwantedCharacters, '', $filiter[$k]));
-                            }
-                            // array
-                            if (is_array($filiter[$k])) {
-                                foreach ($filiter[$k] as $kk => $vv) {
-                                    if (is_string($filiter[$kk])) {
-                                        $filiter[$kk] = trim(str_replace($unwantedCharacters, '', $filiter[$kk]));
-                                    }
-                                }
-                            }
-                        } 
-                    }
-                }
-            }
-        }
-
-        ${$type} = $filiter;
-
-        return $this;
-    }
-
-    /**
      * Set result page's HTML.
      *
      * @param string $content The HTML text.
@@ -991,11 +866,12 @@ class Shieldon
     /**
      * Output result page.
      *
-     * @param int $httpStatus 
+     * @param int $httpStatus
+     * @param bool $echo
      *
      * @echo string
      */
-    public function output(int $httpStatus = 0): string
+    public function output(int $httpStatus = 0, bool $echo = true): string
     {
         $output = '';
 
@@ -1006,7 +882,12 @@ class Shieldon
         } elseif (self::RESPONSE_DENY === $this->result) {
             $type = 'deny';
         } else {
+
+            // @codeCoverageIgnoreStart
+
             return '';
+
+            // @codeCoverageIgnoreEnd
         }
 
         /**
@@ -1046,7 +927,9 @@ class Shieldon
             }
 
             if (file_exists($viewPath)) {
-                define('SHIELDON_VIEW', true);
+                if (! defined('SHIELDON_VIEW')) {
+                    define('SHIELDON_VIEW', true);
+                }
 
                 ob_start();
                 require $viewPath;
@@ -1055,6 +938,8 @@ class Shieldon
             }
         } else {
     
+            // @codeCoverageIgnoreStart
+
             $output = $this->html[$type];
 
             if ('stop' === $type) {
@@ -1072,17 +957,29 @@ class Shieldon
                 // Inject captcha HTML form elements into custom template.
                 $output = str_replace('{{captcha}}', $captchaFormElements, $output);
             }
+
+            // @codeCoverageIgnoreEnd
         }
 
-        if (0 !== $httpStatus) {
-            http_response_code($httpStatus);
-        }
 
         // Remove unused variable notices generated from PHP intelephense.
         unset($langCode, $showCreditLink, $showOnlineInformation, $showLineupInformation);
 
-        echo $output;
-        exit;
+        if ($echo) {
+
+            // @codeCoverageIgnoreStart
+
+            if (0 !== $httpStatus) {
+                http_response_code($httpStatus);
+            }
+
+            echo $output;
+            exit;
+
+            // @codeCoverageIgnoreEnd
+        } else {
+            return $output;
+        }
     }
 
     /**
@@ -1097,16 +994,10 @@ class Shieldon
     {
         $this->driver->init($this->autoCreateDatabase);
 
-        foreach ($this->component as $conponent) {
-
-            $conponent->setIp($this->ip);
-            $conponent->setRdns($this->ipResolvedHostname);
-            $conponent->setStrict($this->strictMode);
-
-            // First of all, check if is a a bad robot already defined in settings.
-            if ($conponent->isDenied()) {
-                return $this->result = self::RESPONSE_DENY;
-            }
+        foreach (array_keys($this->component) as $name) {
+            $this->component[$name]->setIp($this->ip);
+            $this->component[$name]->setRdns($this->ipResolvedHostname);
+            $this->component[$name]->setStrict($this->strictMode);
         }
 
         if ($this->getComponent('Ip')) {
@@ -1128,23 +1019,34 @@ class Shieldon
             }
         }
 
+        foreach ($this->component as $component) {
+
+            // First of all, check if is a a bad robot already defined in settings.
+            if ($component->isDenied()) {
+                return $this->result = self::RESPONSE_DENY;
+            }
+        }
+
         // Looking for rule table.
         $ipRule = $this->driver->get($this->ip, 'rule');
 
         if (! empty($ipRule)) {
-            if ($ipRule['type'] === self::ACTION_ALLOW) {
+            $ruleType = (int) $ipRule['type'];
+
+            if ($ruleType === self::ACTION_ALLOW) {
                 $this->isRuleList = true;
             } else {
-                return $this->result = (int) $ipRule['type'];
+                return $this->result = $ruleType;
             }
         }
 
         if (! $this->isRuleList) {
             if ($this->getComponent('TrustedBot')) {
+ 
                 // We want to put all the allowed robot into the rule list, so that the checking of IP's resolved hostname 
                 // is no more needed for that IP.
                 if ($this->getComponent('TrustedBot')->isAllowed()) {
-                    if ($this->getComponent('TrustedBots')->isGoogle()) {
+                    if ($this->getComponent('TrustedBot')->isGoogle()) {
                         // Add current IP into allowed list, because it is from real Google domain.
                         $this->action(self::ACTION_ALLOW, self::REASON_IS_GOOGLE);
                     } elseif ($this->getComponent('TrustedBot')->isBing()) {
@@ -1198,6 +1100,18 @@ class Shieldon
     }
 
     /**
+     * Disable filitering.
+     *
+     * @return self
+     */
+    public function disableFiltering(): self
+    {
+        $this->enableFiltering = false;
+
+        return $this;
+    }
+
+    /**
      * Get online people count. If enable limitSession.
      *
      * @return integer
@@ -1229,6 +1143,8 @@ class Shieldon
 EOF;
         return $jsString;
     }
+
+
 }
 
 

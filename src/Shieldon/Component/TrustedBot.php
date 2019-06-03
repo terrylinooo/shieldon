@@ -58,6 +58,7 @@ class TrustedBot extends ComponentProvider
             'Yahoo'         => '.yahoo.net',
             'yandex'        => '.yandex.com',
             'Yandex'        => '.yandex.ru',
+            'yAndex'        => '.yandex.net',
             'w3.org'        => '.w3.org',
         ];
 
@@ -73,11 +74,13 @@ class TrustedBot extends ComponentProvider
     {
         if (! empty($this->trustedBotList)) {
             if (! preg_match('/(' . implode('|', array_keys($this->trustedBotList)) . ')/i', $this->userAgentString)) {
+                
                 return false;
             }
 
             // We will check the RDNS record to see if it is in the whitelist.
             if (preg_match('/(' . implode('|', $this->trustedBotList) . ')/i', $this->ipResolvedHostname)) {
+
                 $ip = gethostbyname($this->ipResolvedHostname);
 
                 // If the IP is different as hostname's resolved IP. It is maybe a fake bot.
