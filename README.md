@@ -8,7 +8,7 @@
 
 </div>
 
-Shieldon, a PHP library that provides anti-scraping, XSS filitering and traffic controll for your web application. As if you are using a shield on your web applicaion to fight against bad-behavior bots, crawlers or vulnerability scanning and so on.
+Shieldon, a PHP library that provides anti-scraping and online session controll for your web application. As if you are using a shield on your web applicaion to fight against bad-behavior bots, crawlers or vulnerability scanning and so on.
 
 - Document: https://shield-on-php.github.io
 
@@ -91,4 +91,4 @@ MIT
 
 ## Author
 
-- [Terry Lin](https://terryl.in)
+Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.

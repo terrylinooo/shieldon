@@ -128,6 +128,7 @@ class Shieldon
         'limit_unusual_behavior' => ['cookie' => 5, 'session' => 5, 'referer' => 10],
         'cookie_name'            => 'ssjd',
         'cookie_domain'          => '',
+        'cookie_value'           => '1',
         'lang'                   => 'en',
         'display_credit_link'    => true,
         'display_online_info'    => true,
@@ -1131,6 +1132,7 @@ class Shieldon
     {
         $tmpCookieName = $this->properties['cookie_name'];
         $tmpCookieDomain = $this->properties['cookie_domain'];
+        $tmpCookieValue = $this->properties['cookie_value'];
 
         $jsString = <<<"EOF"
 
@@ -1138,7 +1140,7 @@ class Shieldon
                 var d = new Date();
                 d.setTime(d.getTime()+(7*24*60*60*1000));
                 var expires = "expires="+d.toUTCString();
-                document.cookie = "{$tmpCookieName}=1;domain=.{$tmpCookieDomain};"+expires;
+                document.cookie = "{$tmpCookieName}={$tmpCookieValue};domain=.{$tmpCookieDomain};"+expires;
             </script>
 EOF;
         return $jsString;

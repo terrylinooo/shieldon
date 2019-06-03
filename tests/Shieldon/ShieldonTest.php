@@ -771,12 +771,41 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
     public function testGetSessionCount()
     {
+        $shieldon = new \Shieldon\Shieldon();
+        $reflection = new \ReflectionObject($shieldon);
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
 
+        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
+        $shieldon->setDriver($driver);
+        $shieldon->driver->rebuild();
+
+        $shieldon->limitSession(100, 3600);
+
+        for ($i = 1; $i <= 10; $i++) {
+            $shieldon->setIp(implode('.', [rand(1, 255), rand(1, 255), rand(1, 255), rand(1, 255)]));
+            $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 999999))]);
+            $shieldon->run();
+        }
+
+        // Get how many people online.
+        $sessionCount = $shieldon->getSessionCount();
+
+        $this->assertSame($sessionCount, 10);
     }
 
     public function testOutputJsSnippet()
     {
+        $shieldon = new \Shieldon\Shieldon();
+        $js = $shieldon->outputJsSnippet();
 
+        if (! empty($js)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
     }
 
     public function testDisableFiltering()
