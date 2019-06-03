@@ -94,13 +94,10 @@ class Recaptcha implements CaptchaInterface
     public function form(): string
     {
         $html = '';
-
-        if ('v2' === $this->version) {
+        if ('v3' !== $this->version) {
             $html .= '<script src="https://www.google.com/recaptcha/api.js?hl=' . $this->lang . '"></script>';
             $html .= '<div class="g-recaptcha" data-sitekey="' . $this->key . '"></div>';
-        }
-
-        if ('v3' === $this->version) {
+        } else {
             $html .= '<input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response" value="">';
             $html .= '<script src="https://www.google.com/recaptcha/api.js?render=' . $this->key . '&hl=' . $this->lang . '"></script>';
             $html .= '<script>';
