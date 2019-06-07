@@ -872,4 +872,53 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     {
         $this->testGetSessionCount('mysql');
     }
+
+    /***********************************************
+     * Redis Driver 
+     ***********************************************/
+
+    public function testDetect_redisDriver()
+    {
+        $this->testDetect('redis');
+    }
+
+    public function testAction_redisDriver()
+    {
+        $this->testAction('redis');
+    }
+
+    public function testSessionHandler_redisDriver()
+    {
+        $this->testSessionHandler('redis');
+    }
+
+    public function testSetChannel_redisDriver()
+    {
+        $this->testSetChannel('redis');
+    }
+
+    public function testCaptchaResponse_redisDriver()
+    {
+        $this->testCaptchaResponse('redis');
+    }
+
+    public function testBan_redisDriver()
+    {
+        $this->testBan('redis');
+    }
+
+    public function testUnBan_redisDriver()
+    {
+        $this->testUnBan('redis');
+    }
+
+    public function testRun_redisDriver()
+    {
+        $this->testRun('redis');
+    }
+
+    public function testGetSessionCount_redisDriver()
+    {
+        $this->testGetSessionCount('redis');
+    }
 }

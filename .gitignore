@@ -9,4 +9,4 @@ tests/report
 .hg
 .vscode
 tmp
-cover.xml
+clover.xml

@@ -76,6 +76,10 @@ function getTestingShieldonInstance($driver = 'sqlite')
 
         case 'redis':
 
+            $redisInstance = new \Redis();
+            $redisInstance->connect('127.0.0.1', 6379); 
+            $shieldon->setDriver(new \Shieldon\Driver\RedisDriver($redisInstance));
+
             break;
 
         case 'sqlite':
