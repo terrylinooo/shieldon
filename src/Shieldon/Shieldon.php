@@ -583,6 +583,11 @@ class Shieldon
                 $data['id'] = $this->sessionId;
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
+
+                $microtimesamp = explode(' ', microtime());
+                $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
+                $data['microtimesamp'] = $microtimesamp;
+
                 $this->driver->save($this->sessionId, $data, 'session');
             }
 

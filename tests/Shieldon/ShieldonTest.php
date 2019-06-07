@@ -50,14 +50,9 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($properties['display_lineup_info'], false);
     }
 
-    public function testDetect()
+    public function testDetect($driver = 'sqlite')
     {
-        $shieldon = new \Shieldon\Shieldon();
-
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
+        $shieldon = getTestingShieldonInstance($driver);
 
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
         $shieldon->setComponent(new \Shieldon\Component\Ip());
@@ -227,16 +222,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($ipDetail['flag_empty_referer'], 0);
     }
 
-    public function testAction()
+    public function testAction($driver = 'sqlite')
     {
         // Test 1. Check temporaily denying.
 
-        $shieldon = new \Shieldon\Shieldon();
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
 
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
         $shieldon->setComponent(new \Shieldon\Component\Ip());
@@ -285,24 +275,19 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testSessionHandler()
+    public function testSessionHandler($driver = 'sqlite')
     {
-        $shieldon = new \Shieldon\Shieldon();
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $shieldon = getTestingShieldonInstance($driver);
 
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
         $shieldon->setChannel('test_shieldon_session');
 
         $_limit = 4;
         $shieldon->limitSession($_limit, 300);
         $shieldon->driver->rebuild();
-        
+
         $reflection = new \ReflectionObject($shieldon);
         $methodSessionHandler = $reflection->getMethod('sessionHandler');
         $methodSessionHandler->setAccessible(true);
-
 
         // The first visitor.
         $shieldon->setIp('140.112.172.11');
@@ -383,6 +368,9 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->limitSession($_limit, 1);
         sleep(3);
         $result = $shieldon->run();
+
+
+
         $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
 
         $result = $shieldon->run();
@@ -436,6 +424,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     {
         $shieldon = new \Shieldon\Shieldon();
         $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
         $shieldon->setDriver($driver);
@@ -458,14 +447,9 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($t->getValue($shieldon));
     }
 
-    public function testSetChannel()
+    public function testSetChannel($driver = 'sqlite')
     {
-
-        $shieldon = new \Shieldon\Shieldon();
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
 
         $shieldon->setChannel('unittest');
 
@@ -499,7 +483,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCaptchaResponse()
+    public function testCaptchaResponse($driver = 'sqlite')
     {
         $shieldon = new \Shieldon\Shieldon();
         $shieldon->setCaptcha(new \Shieldon\Captcha\ImageCaptcha());
@@ -511,11 +495,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $result = $shieldon->captchaResponse();
         $this->assertTrue($result);
 
-        $shieldon = new \Shieldon\Shieldon();
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
 
         $shieldon->limitSession(1000, 9999);
         $reflection = new \ReflectionObject($shieldon);
@@ -540,13 +520,9 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testBan()
+    public function testBan($driver = 'sqlite')
     {
-        $shieldon = new \Shieldon\Shieldon();
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
         $shieldon->driver->rebuild();
 
         $shieldon->ban();
@@ -557,13 +533,9 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
     }
 
-    public function testUnBan()
+    public function testUnBan($driver = 'sqlite')
     {
-        $shieldon = new \Shieldon\Shieldon();
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
         $shieldon->driver->rebuild();
         $shieldon->setIp('33.33.33.33');
 
@@ -589,19 +561,14 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testOutput()
+    public function testOutput($driver = 'sqlite')
     {
         $_SERVER['REQUEST_URI'] = '/';
 
-        $shieldon = new \Shieldon\Shieldon();
+        $shieldon = getTestingShieldonInstance($driver);
         $shieldon->setProperty('display_credit_link', false);
         $shieldon->setProperty('display_online_info', false);
         $shieldon->setProperty('display_lineup_info', false);
-
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
         $shieldon->driver->rebuild();
 
         // Limit
@@ -671,14 +638,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testRun()
+    public function testRun($driver = 'sqlite')
     {
         $shieldon = new \Shieldon\Shieldon();
 
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
         $shieldon->driver->rebuild();
 
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
@@ -707,8 +671,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         // Check trusted bots.
 
         // BING
-        $shieldon = new \Shieldon\Shieldon();
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('40.77.169.1', true);
@@ -721,8 +684,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
         // GOOGLE
-        $shieldon = new \Shieldon\Shieldon();
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('66.249.66.1', true);
@@ -735,8 +697,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
         // YAHOO
-        $shieldon = new \Shieldon\Shieldon();
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)';
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('8.12.144.1', true);
@@ -749,8 +710,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
         // OTHER
-        $shieldon = new \Shieldon\Shieldon();
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)';
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('100.43.90.1', true);
@@ -762,25 +722,20 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
-        $shieldon = new \Shieldon\Shieldon();
-        $shieldon->setDriver($driver);
+        $shieldon = getTestingShieldonInstance($driver);
         $shieldon->disableFiltering();
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
     }
 
-    public function testGetSessionCount()
+    public function testGetSessionCount($driver = 'sqlite')
     {
-        $shieldon = new \Shieldon\Shieldon();
+        $shieldon = getTestingShieldonInstance($driver);
+        $shieldon->driver->rebuild();
+
         $reflection = new \ReflectionObject($shieldon);
         $methodSetSessionId = $reflection->getMethod('setSessionId');
         $methodSetSessionId->setAccessible(true);
-
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
-        $shieldon->driver->rebuild();
 
         $shieldon->limitSession(100, 3600);
 
@@ -818,5 +773,103 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $enableFiltering = $t->getValue($shieldon);
 
         $this->assertFalse($enableFiltering);
+    }
+
+    /***********************************************
+     * File Driver 
+     ***********************************************/
+
+    public function testDetect_fileDriver()
+    {
+        $this->testDetect('file');
+    }
+
+    public function testAction_fileDriver()
+    {
+        $this->testAction('file');
+    }
+
+    public function testSessionHandler_fileDriver()
+    {
+        $this->testSessionHandler('file');
+    }
+
+    public function testSetChannel_fileDriver()
+    {
+        $this->testSetChannel('file');
+    }
+
+    public function testCaptchaResponse_fileDriver()
+    {
+        $this->testCaptchaResponse('file');
+    }
+
+    public function testBan_fileDriver()
+    {
+        $this->testBan('file');
+    }
+
+    public function testUnBan_fileDriver()
+    {
+        $this->testUnBan('file');
+    }
+
+    public function testRun_fileDriver()
+    {
+        $this->testRun('file');
+    }
+
+    public function testGetSessionCount_fileDriver()
+    {
+        $this->testGetSessionCount('file');
+    }
+
+    /***********************************************
+     * MySQL Driver 
+     ***********************************************/
+
+    public function testDetect_mysqlDriver()
+    {
+        $this->testDetect('mysql');
+    }
+
+    public function testAction_mysqlDriver()
+    {
+        $this->testAction('mysql');
+    }
+
+    public function testSessionHandler_mysqlDriver()
+    {
+        $this->testSessionHandler('mysql');
+    }
+
+    public function testSetChannel_mysqlDriver()
+    {
+        $this->testSetChannel('mysql');
+    }
+
+    public function testCaptchaResponse_mysqlDriver()
+    {
+        $this->testCaptchaResponse('mysql');
+    }
+
+    public function testBan_mysqlDriver()
+    {
+        $this->testBan('mysql');
+    }
+
+    public function testUnBan_mysqlDriver()
+    {
+        $this->testUnBan('mysql');
+    }
+
+    public function testRun_mysqlDriver()
+    {
+        $this->testRun('mysql');
+    }
+
+    public function testGetSessionCount_mysqlDriver()
+    {
+        $this->testGetSessionCount('mysql');
     }
 }

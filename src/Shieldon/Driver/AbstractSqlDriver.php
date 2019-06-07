@@ -31,13 +31,6 @@ abstract class AbstractSqlDriver extends DriverProvider
     protected $db;
 
     /**
-     * Check if is initialized or not.
-     *
-     * @var bool
-     */
-    protected $isInitialized;
-
-    /**
      * Constructor.
      *
      * @param PDO $pdo
@@ -60,7 +53,7 @@ abstract class AbstractSqlDriver extends DriverProvider
      *
      * @return void
      */
-    public function init($dbCheck = true): void
+    public function DoInitialize($dbCheck = true): void
     {
         if (! $this->isInitialized) {
             if (! empty($this->channel)) {
@@ -163,7 +156,7 @@ abstract class AbstractSqlDriver extends DriverProvider
                 break;
 
             case 'session':
-                $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY time ASC';
+                $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY microtimesamp ASC';
 
                 $query = $this->db->prepare($sql);
                 $query->execute();
@@ -242,9 +235,6 @@ abstract class AbstractSqlDriver extends DriverProvider
             case 'session':
                 $tableName = $this->tableSessions;
                 $logWhere['id'] = $data['id'];
-                $logData['id'] = $data['id'];
-                $logData['ip'] = $ip;
-                $logData['time'] = $data['time'];
                 $logData = $data;
                 break;
         }
@@ -321,6 +311,11 @@ abstract class AbstractSqlDriver extends DriverProvider
             foreach($bind as $k => $v) {
                 if (is_numeric($v)) {
                     $pdoParam = $this->db::PARAM_INT;
+
+                    // Solve problem with bigint.
+                    if ($v >= 2147483647) {
+                        $pdoParam = $this->db::PARAM_STR;
+                    } 
                 } elseif (is_bool($v)) {
                     $pdoParam = $this->db::PARAM_BOOL;
                 } elseif (is_null($v)) {
@@ -367,6 +362,11 @@ abstract class AbstractSqlDriver extends DriverProvider
             foreach($data as $k => $v) {
                 if (is_numeric($v)) {
                     $pdoParam = $this->db::PARAM_INT;
+
+                    // Solve problem with bigint.
+                    if ($v >= 2147483647) {
+                        $pdoParam = $this->db::PARAM_STR;
+                    }
                 } elseif (is_bool($v)) {
                     $pdoParam = $this->db::PARAM_BOOL;
                 } elseif (is_null($v)) {
@@ -469,6 +469,7 @@ abstract class AbstractSqlDriver extends DriverProvider
                     `id` varchar(40) NOT NULL,
                     `ip` varchar(46) NOT NULL,
                     `time` int(10) UNSIGNED NOT NULL,
+                    `microtimesamp` bigint(20) UNSIGNED NOT NULL,
                     PRIMARY KEY (`id`)
                 ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
             ";

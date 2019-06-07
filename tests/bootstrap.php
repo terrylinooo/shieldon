@@ -39,6 +39,57 @@ if (! isset($_SERVER['REMOTE_ADDR'])) {
     $_SERVER['REMOTE_ADDR'] = '127.0.0.127';
 }
 
+/**
+ * Create a Sheildon instance with specific driver.
+ *
+ * @param string $driver
+ *
+ * @return object
+ */
+function getTestingShieldonInstance($driver = 'sqlite')
+{
+    $shieldon = new \Shieldon\Shieldon();
+
+    switch ($driver) {
+
+        case 'file':
+            $shieldon->setDriver(new \Shieldon\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+            break;
+
+        case 'mysql':
+            $db = [
+                'host' => '127.0.0.1',
+                'dbname' => 'shieldon_unittest',
+                'user' => 'shieldon',
+                'pass' => 'taiwan',
+                'charset' => 'utf8',
+            ];
+            
+            $pdoInstance = new \PDO(
+                'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
+                $db['user'],
+                $db['pass']
+            );
+
+            $shieldon->setDriver(new \Shieldon\Driver\MysqlDriver($pdoInstance));
+            break;
+
+        case 'redis':
+
+            break;
+
+        case 'sqlite':
+        default:
+            $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+
+            $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+            $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
+            break;
+    }
+
+    return $shieldon;
+}
+
 require __DIR__ . '/../src/autoload.php';
 
 

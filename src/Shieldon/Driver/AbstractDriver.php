@@ -66,6 +66,14 @@ abstract class AbstractDriver implements DriverInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function init(): void
+    {
+        $this->DoInitialize();
+    }
+
+    /**
      * Implement fetch.
      *
      * @param string $ip The data id of the entry to fetch.
@@ -118,4 +126,11 @@ abstract class AbstractDriver implements DriverInterface
      * @return bool
      */
     abstract protected function doRebuild(): bool;
+
+    /**
+     * Initial data tables.
+     *
+     * @return void
+     */
+    abstract public function DoInitialize(): void;
 }

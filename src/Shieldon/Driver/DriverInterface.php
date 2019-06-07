@@ -67,13 +67,19 @@ interface DriverInterface
      */
     public function delete(string $ip, string $type = 'log'): bool;
 
-
     /**
      * Rebuild data table.
      *
      * @return bool
      */
     public function rebuild(): bool;
+
+    /**
+     * Initial data tables.
+     *
+     * @return void
+     */
+    public function init(): void;
 }
 
 

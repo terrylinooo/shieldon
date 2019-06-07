@@ -10,7 +10,9 @@
 
 namespace Shieldon\Driver;
 
-use InvalidArgumentException;
+use RuntimeException;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use function mkdir;
 use function is_string;
 
@@ -24,14 +26,8 @@ class FileDriver extends DriverProvider
      *
      * @var string
      */
-    protected $directory = '';
+    protected $directory = '/tmp/';
 
-    /**
-     * The filename. Should be IP address.
-     *
-     * @var string
-     */
-    protected $filename = '';
 
     /**
      * The file's extension name'.
@@ -40,61 +36,218 @@ class FileDriver extends DriverProvider
      */
     protected $extension = 'json';
 
+
+    /**
+     * A file that confirms the required dictories have been created.
+     *
+     * @var string
+     */
+    private $checkPoint = 'shieldon_check_exist.txt';
+
     /**
      * Constructor.
      *
-     * @param array $config
+     * @param string $directory
      */
-    public function __construct(array $config)
+    public function __construct(string $directory = '')
     {
-        $parameters = [
-            'directory',
-            'filename',
-            'extension',
-        ];
+        if ('' !== $directory) {
+            $this->directory = $directory;
+        }
+    }
 
-        foreach($parameters as $parameter) {
+    /**
+     * Initialize data tables.
+     *
+     * @param bool $dbCheck This is for creating data tables automatically
+     *                      Turn it off, if you don't want to check data tables every pageview.
+     *
+     * @return void
+     */
+    public function DoInitialize($dbCheck = true): void
+    {
+        if (! $this->isInitialized) {
+            if (! empty($this->channel)) {
+                $this->setChannel($this->channel);
+            }
 
-            if (! empty($config[$parameter])) {
-                $this->{$parameter} = $config[$parameter];
+            // Check the directory where data files write into.
+            if ($this->checkDirectory()) {
+                $this->createDirectory();
             }
         }
 
-        // Check the directory where data files write into.
-        $this->createDirectory();
-        $this->checkDirectory();
+        $this->isInitialized = true;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function doFetch(string $ip): array
+    protected function doFetchAll(string $type = 'log'): array
     {
+        switch ($type) {
 
+            case 'rule':
+            case 'log':
+            case 'session':
+
+                $dir = $this->getDirectory($type);
+
+                $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+                $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+
+                $results = [];
+
+                foreach($files as $file) {
+                    if ($file->isFile()) {
+
+                        $content = json_decode(file_get_contents($file->getPath() . '/' . $file->getFilename()), true);
+
+                        if ($type === 'session') {
+                            $sort = $content['microtimesamp'] . '.' . $file->getFilename(); 
+                        } else {
+                            $sort = $file->getMTime() . '.' . $file->getFilename();
+                        }
+                        $results[$sort] = $content;
+                    }
+                }
+                unset($it, $files);
+
+                // Sort by ascending timesamp (microtimesamp).
+                ksort($results);
+
+                return $results;
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function checkExist(string $ip): bool
+    protected function doFetch(string $ip, string $type = 'log'): array
     {
+        if (! file_exists($this->getFilename($ip, $type))) {
+            return [];
+        }
 
+        switch ($type) {
+
+            case 'rule':
+            case 'session':
+                $fileContent = file_get_contents($this->getFilename($ip, $type));
+                $result = json_decode($fileContent, true);
+
+                if (is_array($result)) {
+                    return $result;
+                }
+                break;
+
+            case 'log':
+                $fileContent = file_get_contents($this->getFilename($ip, $type));
+                $result = json_decode($fileContent, true);
+
+                if (! empty($result['log_data'])) {
+                    return $result['log_data']; 
+                }
+                break;
+        }
+
+        return [];
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function doSave(string $ip, array $data, $expire = 0): bool
+    protected function checkExist(string $ip, string $type = 'log'): bool
     {
+        if (file_exists($this->getFilename($ip, $type))) {
+            return true;
+        }
 
+        return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function doDelete(string $ip): bool
+    protected function doSave(string $ip, array $data, string $type = 'log', $expire = 0): bool
     {
+        switch ($type) {
 
+            case 'rule':
+                $logData = $data;
+                $logData['log_ip'] = $ip;
+                break;
+
+            case 'log':
+                $logData['log_ip'] = $ip;
+                $logData['log_data'] = $data;
+                break;
+
+            case 'session':
+                $logData = $data;
+                break;
+        }
+
+        $result = file_put_contents($this->getFilename($ip, $type), json_encode($logData));
+
+        // Update file time.
+        touch($this->getFilename($ip, $type), time());
+
+        return ($result > 0) ? true : false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function doDelete(string $ip, string $type = 'log'): bool
+    {
+        switch ($type) {
+            case 'rule':
+            case 'log':
+            case 'session':
+                return $this->remove($this->getFilename($ip, $type));
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function doRebuild(): bool
+    {
+        // Those are Shieldon logs directories.
+        $removeDirs = [
+            $this->getDirectory('log'),
+            $this->getDirectory('rule'),
+            $this->getDirectory('session'),
+        ];
+        
+        // Remove them recursively.
+        foreach ($removeDirs as $dir) {
+            if (file_exists($dir)) {
+                $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+                $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+    
+                foreach($files as $file) {
+                    if ($file->isDir()){
+                        rmdir($file->getRealPath());
+                    } else {
+                        unlink($file->getRealPath());
+                    }
+                }
+                unset($it, $files);
+            }
+        }
+
+        // Check if are Shieldon directories removed or not.
+        if (
+            ! is_dir($this->getDirectory('log'))     && 
+            ! is_dir($this->getDirectory('rule'))    && 
+            ! is_dir($this->getDirectory('session'))
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -106,9 +259,34 @@ class FileDriver extends DriverProvider
     {
         $result = false;
 
-        if (! is_dir($this->directory)) {
+        $checkingFile = $this->directory . '/' . $this->channel . '_' . $this->checkPoint;
+
+        if (! file_exists($checkingFile)) {
             $originalUmask = umask(0);
-            $result = @mkdir($this->directory, 0777, true);
+
+            $resultA = $resultB = $resultC = false;
+
+            if (! is_dir($this->getDirectory('log'))) {
+                $resultA = @mkdir($this->getDirectory('log'), 0777, true);
+            } else {
+                $resultA = true;
+            }
+    
+            if (! is_dir($this->getDirectory('rule'))) {
+                $resultB = @mkdir($this->getDirectory('rule'), 0777, true);
+            } else {
+                $resultB = true;
+            }
+    
+            if (! is_dir($this->getDirectory('session'))) {
+                $resultC = @mkdir($this->getDirectory('session'), 0777, true);
+            } else {
+                $resultC = true;
+            }
+
+            if ($resultA && $resultB && $resultC) {
+                file_put_contents($checkingFile, ' ');
+            }
             umask($originalUmask);
         }
 
@@ -122,19 +300,57 @@ class FileDriver extends DriverProvider
      */
     protected function checkDirectory(): bool
     {
-        if (! is_writable($this->directory)) {
+        if (is_dir($this->directory) && ! is_writable($this->directory)) {
             throw new RuntimeException('The directory defined by File Driver must be writable. (' . $this->directory . ')');
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Remove a Shieldon log file.
+     *
+     * @return bool
+     */
+    private function remove(string $logFilePath): bool
+    {
+        if (file_exists($logFilePath)) {
+            return unlink($logFilePath);
+        }
+        return false;
+    }
+
+    /**
+     * Get filename.
+     *
+     * @param string $ip
+     * @param string $type
+     *
+     * @return string
+     */
+    private function getFilename(string $ip, string $type = 'log'): string
+    {
+        switch ($type) {
+            case 'log'    : return $this->directory . '/' . $this->tableLogs       . '/' . $ip . '.' . $this->extension;
+            case 'session': return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
+            case 'rule'   : return $this->directory . '/' . $this->tableRuleList . '/' . $ip . '.' . $this->extension;
         }
     }
 
     /**
-     * Get the filename of the target data file.
+     * Get directory.
      *
+     * @param string $type
      * @return string
      */
-    protected function getFilename()
+    private function getDirectory(string $type = 'log'): string
     {
-       return $this->filename . '.' . $this->extension;
+        switch ($type) {
+            case 'log'    : return $this->directory . '/' . $this->tableLogs;
+            case 'session': return $this->directory . '/' . $this->tableSessions;
+            case 'rule'   : return $this->directory . '/' . $this->tableRuleList;
+        }
     }
 }
 

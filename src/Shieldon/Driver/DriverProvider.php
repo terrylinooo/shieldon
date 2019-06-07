@@ -44,6 +44,13 @@ abstract class DriverProvider extends AbstractDriver
     protected $channel = '';
 
     /**
+     * Check if is initialized or not.
+     *
+     * @var bool
+     */
+    protected $isInitialized;
+
+    /**
      * Set data channel.
      *
      * @param string $channel

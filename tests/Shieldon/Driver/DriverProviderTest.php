@@ -10,6 +10,7 @@
 
 namespace Shieldon\Driver;
 
+
 class DriverProviderTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetChannel()
