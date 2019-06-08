@@ -64,7 +64,7 @@ class FileDriver extends DriverProvider
      *
      * @return void
      */
-    public function DoInitialize($dbCheck = true): void
+    protected function doInitialize($dbCheck = true): void
     {
         if (! $this->isInitialized) {
             if (! empty($this->channel)) {
@@ -85,6 +85,8 @@ class FileDriver extends DriverProvider
      */
     protected function doFetchAll(string $type = 'log'): array
     {
+        $results = [];
+
         switch ($type) {
 
             case 'rule':
@@ -95,8 +97,6 @@ class FileDriver extends DriverProvider
 
                 $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
                 $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-
-                $results = [];
 
                 foreach($files as $file) {
                     if ($file->isFile()) {
@@ -115,9 +115,10 @@ class FileDriver extends DriverProvider
 
                 // Sort by ascending timesamp (microtimesamp).
                 ksort($results);
-
-                return $results;
+            break;
         }
+
+        return $results;
     }
 
     /**
@@ -125,8 +126,10 @@ class FileDriver extends DriverProvider
      */
     protected function doFetch(string $ip, string $type = 'log'): array
     {
+        $results = [];
+
         if (! file_exists($this->getFilename($ip, $type))) {
-            return [];
+            return $results;
         }
 
         switch ($type) {
@@ -134,24 +137,24 @@ class FileDriver extends DriverProvider
             case 'rule':
             case 'session':
                 $fileContent = file_get_contents($this->getFilename($ip, $type));
-                $result = json_decode($fileContent, true);
+                $resultData = json_decode($fileContent, true);
 
-                if (is_array($result)) {
-                    return $result;
+                if (is_array($resultData)) {
+                    $results = $resultData;
                 }
                 break;
 
             case 'log':
                 $fileContent = file_get_contents($this->getFilename($ip, $type));
-                $result = json_decode($fileContent, true);
+                $resultData = json_decode($fileContent, true);
 
-                if (! empty($result['log_data'])) {
-                    return $result['log_data']; 
+                if (! empty($resultData['log_data'])) {
+                    $results = $resultData['log_data']; 
                 }
                 break;
         }
 
-        return [];
+        return $results;
     }
 
     /**
@@ -207,6 +210,8 @@ class FileDriver extends DriverProvider
             case 'session':
                 return $this->remove($this->getFilename($ip, $type));
         }
+
+        return false;
     }
 
     /**
@@ -228,26 +233,38 @@ class FileDriver extends DriverProvider
                 $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
     
                 foreach($files as $file) {
-                    if ($file->isDir()){
+                    if ($file->isDir()) {
+                        // @codeCoverageIgnoreStart
                         rmdir($file->getRealPath());
+                        // @codeCoverageIgnoreEnd
                     } else {
                         unlink($file->getRealPath());
                     }
                 }
                 unset($it, $files);
+
+                if (is_dir($dir)) {
+                    rmdir($dir);
+                }
             }
         }
 
+        $checkingFile = $this->directory . '/' . $this->channel . '_' . $this->checkPoint;
+
+        if (file_exists($checkingFile)) {
+            unlink($checkingFile);
+        }
+
         // Check if are Shieldon directories removed or not.
-        if (
+        $result = (
             ! is_dir($this->getDirectory('log'))     && 
             ! is_dir($this->getDirectory('rule'))    && 
             ! is_dir($this->getDirectory('session'))
-        ) {
-            return true;
-        }
+        );
 
-        return false;
+        $this->doInitialize();
+
+        return $result;
     }
 
     /**
@@ -257,31 +274,23 @@ class FileDriver extends DriverProvider
      */
     protected function createDirectory(): bool
     {
-        $result = false;
+        $resultA = $resultB = $resultC = false;
 
         $checkingFile = $this->directory . '/' . $this->channel . '_' . $this->checkPoint;
 
         if (! file_exists($checkingFile)) {
             $originalUmask = umask(0);
 
-            $resultA = $resultB = $resultC = false;
-
             if (! is_dir($this->getDirectory('log'))) {
                 $resultA = @mkdir($this->getDirectory('log'), 0777, true);
-            } else {
-                $resultA = true;
             }
     
             if (! is_dir($this->getDirectory('rule'))) {
                 $resultB = @mkdir($this->getDirectory('rule'), 0777, true);
-            } else {
-                $resultB = true;
             }
     
             if (! is_dir($this->getDirectory('session'))) {
                 $resultC = @mkdir($this->getDirectory('session'), 0777, true);
-            } else {
-                $resultC = true;
             }
 
             if ($resultA && $resultB && $resultC) {
@@ -290,7 +299,11 @@ class FileDriver extends DriverProvider
             umask($originalUmask);
         }
 
-        return $result;
+        return (
+            ($resultA == $resultB) &&
+            ($resultB == $resultC) &&
+            ($resultC == $resultA)
+        );
     }
 
     /**
@@ -300,9 +313,8 @@ class FileDriver extends DriverProvider
      */
     protected function checkDirectory(): bool
     {
-        if (is_dir($this->directory) && ! is_writable($this->directory)) {
+        if (! is_dir($this->directory) || ! is_writable($this->directory)) {
             throw new RuntimeException('The directory defined by File Driver must be writable. (' . $this->directory . ')');
-            return false;
         }
 
         return true;
@@ -336,6 +348,8 @@ class FileDriver extends DriverProvider
             case 'session': return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
             case 'rule'   : return $this->directory . '/' . $this->tableRuleList . '/' . $ip . '.' . $this->extension;
         }
+
+        return '';
     }
 
     /**
@@ -351,6 +365,8 @@ class FileDriver extends DriverProvider
             case 'session': return $this->directory . '/' . $this->tableSessions;
             case 'rule'   : return $this->directory . '/' . $this->tableRuleList;
         }
+
+        return '';
     }
 }
 

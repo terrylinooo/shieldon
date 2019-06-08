@@ -70,7 +70,7 @@ abstract class AbstractDriver implements DriverInterface
      */
     public function init(): void
     {
-        $this->DoInitialize();
+        $this->doInitialize();
     }
 
     /**
@@ -132,5 +132,5 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return void
      */
-    abstract public function DoInitialize(): void;
+    abstract protected function doInitialize(): void;
 }

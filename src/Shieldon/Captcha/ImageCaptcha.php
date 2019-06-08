@@ -127,9 +127,11 @@ class ImageCaptcha implements CaptchaInterface
      */
     public function form(): string
     {
+        // @codeCoverageIgnoreStart
         if (! extension_loaded('gd')) {
             return '';
         }
+        // @codeCoverageIgnoreEnd
 
         $html = '';
         $base64image = $this->createCaptcha();
@@ -186,9 +188,12 @@ class ImageCaptcha implements CaptchaInterface
         // Create image.
         if (function_exists('imagecreatetruecolor')) {
             $im = imagecreatetruecolor($this->properties['img_width'], $this->properties['img_height']);
+
+        // @codeCoverageIgnoreStart
         } else {
             $im = imagecreate($this->properties['img_width'], $this->properties['img_height']);
         }
+        // @codeCoverageIgnoreEnd
 
         // Assign colors.
         $colors = [];
@@ -243,12 +248,15 @@ class ImageCaptcha implements CaptchaInterface
         if (function_exists('imagejpeg')) {
             $this->imageType = 'jpeg';
             imagejpeg($im);
+        
+        // @codeCoverageIgnoreStart
         } elseif (function_exists('imagepng')) {
             $this->imageType = 'png';
             imagepng($im);
         } else {
             echo '';
         }
+        // @codeCoverageIgnoreEnd
 
         $image_data = ob_get_contents(); 
         ob_end_clean();

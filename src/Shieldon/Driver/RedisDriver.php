@@ -61,7 +61,7 @@ class RedisDriver extends DriverProvider
      *
      * @return void
      */
-    public function DoInitialize($dbCheck = true): void
+    protected function doInitialize($dbCheck = true): void
     {
         if (! $this->isInitialized) {
             if (! empty($this->channel)) {
@@ -77,6 +77,8 @@ class RedisDriver extends DriverProvider
      */
     protected function doFetchAll(string $type = 'log'): array
     {
+        $results = [];
+
         switch ($type) {
 
             case 'rule':
@@ -84,8 +86,6 @@ class RedisDriver extends DriverProvider
             case 'session':
 
                 $keys = $this->redis->keys($this->getNamespace($type) . ':*');
-
-                $results = [];
 
                 foreach($keys as $key) {
                     $content = $this->redis->get($key);
@@ -96,14 +96,15 @@ class RedisDriver extends DriverProvider
                     } else {
                         $sort = $content['log_ip'];
                     }
+
                     $results[$sort] = $content;   
                 }
 
                 // Sort by ascending timesamp (microtimesamp).
                 ksort($results);
-
-                return $results;
         }
+
+        return $results;
     }
 
     /**
@@ -111,8 +112,10 @@ class RedisDriver extends DriverProvider
      */
     protected function doFetch(string $ip, string $type = 'log'): array
     {
+        $results = [];
+
         if (! $this->checkExist($ip, $type)) {
-            return [];
+            return $results;
         }
 
         switch ($type) {
@@ -120,24 +123,22 @@ class RedisDriver extends DriverProvider
             case 'rule':
             case 'session':
                 $content = $this->redis->get($this->getKeyName($ip, $type));
-                $result = json_decode($content, true);
+                $resultData = json_decode($content, true);
 
-                if (is_array($result)) {
-                    return $result;
+                if (is_array($resultData)) {
+                    $results = $resultData;
                 }
-                break;
 
             case 'log':
                 $content = $this->redis->get($this->getKeyName($ip, $type));
-                $result = json_decode($content, true);
+                $resultData = json_decode($content, true);
 
-                if (! empty($result['log_data'])) {
-                    return $result['log_data']; 
+                if (! empty($resultData['log_data'])) {
+                    $results = $resultData['log_data']; 
                 }
-                break;
         }
 
-        return [];
+        return $results;
     }
 
     /**
@@ -151,7 +152,10 @@ class RedisDriver extends DriverProvider
         if (is_bool($isExist)) {
             return $isExist;
         }
+
+        // @codeCoverageIgnoreStart
         return $isExist > 0;
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -183,10 +187,8 @@ class RedisDriver extends DriverProvider
                 json_encode($logData)
             );
         }
-        return $this->redis->set(
-            $this->getKeyName($ip, $type),
-            json_encode($logData)
-        );
+
+        return $this->redis->set($this->getKeyName($ip, $type), json_encode($logData));
     }
 
     /**
@@ -200,6 +202,7 @@ class RedisDriver extends DriverProvider
             case 'session':
                 return $this->redis->delete($this->getKeyName($ip, $type)) >= 0;
         }
+        return false;
     }
 
     /**
@@ -216,7 +219,7 @@ class RedisDriver extends DriverProvider
                 }
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -234,6 +237,7 @@ class RedisDriver extends DriverProvider
             case 'session': return $this->tableSessions . ':' . $ip;
             case 'rule'   : return $this->tableRuleList . ':' . $ip;
         }
+        return '';
     }
 
     /**
@@ -250,5 +254,6 @@ class RedisDriver extends DriverProvider
             case 'session': return $this->tableSessions;
             case 'rule'   : return $this->tableRuleList;
         }
+        return '';
     }
 }

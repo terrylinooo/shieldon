@@ -69,9 +69,11 @@ class SqliteDriver extends AbstractSqlDriver
 
             return true;
 
+        // @codeCoverageIgnoreStart
         } catch (\Exception $e) {
             return false;
         }
+        // @codeCoverageIgnoreEnd
         
     }
 
@@ -89,11 +91,14 @@ class SqliteDriver extends AbstractSqlDriver
         try {
             $result = $this->db->query("SELECT 1 FROM $this->tableLogs LIMIT 1");
 
+        // @codeCoverageIgnoreStart
         } catch (Exception $e) {
 
             // We got an exception == table not found
             return false;
+            
         }
+        // @codeCoverageIgnoreEnd
 
         return ($result !== false);
     }

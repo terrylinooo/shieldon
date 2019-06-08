@@ -53,7 +53,7 @@ abstract class AbstractSqlDriver extends DriverProvider
      *
      * @return void
      */
-    public function DoInitialize($dbCheck = true): void
+    protected function doInitialize($dbCheck = true): void
     {
         if (! $this->isInitialized) {
             if (! empty($this->channel)) {
@@ -73,6 +73,8 @@ abstract class AbstractSqlDriver extends DriverProvider
      */
     protected function doFetch(string $ip, string $type = 'log'): array
     {
+        $results = [];
+
         switch ($type) {
 
             case 'rule':
@@ -81,12 +83,17 @@ abstract class AbstractSqlDriver extends DriverProvider
                     LIMIT 1';
 
                 $query = $this->db->prepare($sql);
-                $query->bindValue(':log_ip', $ip);
+                $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
                 $query->execute();
-                $result = $query->fetch();
+                $resultData = $query->fetch($this->db::FETCH_ASSOC);
 
-                if (is_array($result)) {
-                    return $result;
+                // No data found.
+                if (is_bool($resultData) && ! $resultData) {
+                    $resultData = [];
+                }
+
+                if (is_array($resultData)) {
+                    $results = $resultData;
                 }
                 break;
 
@@ -96,12 +103,17 @@ abstract class AbstractSqlDriver extends DriverProvider
                     LIMIT 1';
 
                 $query = $this->db->prepare($sql);
-                $query->bindValue(':log_ip', $ip);
+                $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
                 $query->execute();
-                $result = $query->fetch();
+                $resultData = $query->fetch($this->db::FETCH_ASSOC);
 
-                if (! empty($result['log_data'])) {
-                    return json_decode($result['log_data'], true); 
+                // No data found.
+                if (is_bool($resultData) && ! $resultData) {
+                    $resultData = [];
+                }
+
+                if (! empty($resultData['log_data'])) {
+                    $results = json_decode($resultData['log_data'], true); 
                 }
                 break;
 
@@ -111,17 +123,22 @@ abstract class AbstractSqlDriver extends DriverProvider
                     LIMIT 1';
 
                 $query = $this->db->prepare($sql);
-                $query->bindValue(':id', $ip);
+                $query->bindValue(':id', $ip, $this->db::PARAM_STR);
                 $query->execute();
-                $result = $query->fetch();
+                $resultData = $query->fetch($this->db::FETCH_ASSOC);
 
-                if (is_array($result)) {
-                    return $result;
+                // No data found.
+                if (is_bool($resultData) && ! $resultData) {
+                    $resultData = [];
+                }
+
+                if (is_array($resultData)) {
+                    $results = $resultData;
                 }
                 break;
         }
 
-        return [];
+        return $results;
     }
 
    /**
@@ -129,6 +146,8 @@ abstract class AbstractSqlDriver extends DriverProvider
      */
     protected function doFetchAll(string $type = 'log'): array
     {
+        $results = [];
+
         switch ($type) {
 
             case 'rule':
@@ -136,10 +155,10 @@ abstract class AbstractSqlDriver extends DriverProvider
 
                 $query = $this->db->prepare($sql);
                 $query->execute();
-                $result = $query->fetchAll($this->db::FETCH_ASSOC);
+                $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
 
-                if (is_array($result)) {
-                    return $result;
+                if (is_array($resultData)) {
+                    $results = $resultData;
                 }
                 break;
 
@@ -148,10 +167,10 @@ abstract class AbstractSqlDriver extends DriverProvider
 
                 $query = $this->db->prepare($sql);
                 $query->execute();
-                $result = $query->fetchAll($this->db::FETCH_ASSOC);
+                $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
 
-                if (is_array($result)) {
-                    return $result;
+                if (is_array($resultData)) {
+                    $results = $resultData;
                 }
                 break;
 
@@ -160,15 +179,15 @@ abstract class AbstractSqlDriver extends DriverProvider
 
                 $query = $this->db->prepare($sql);
                 $query->execute();
-                $result = $query->fetchAll($this->db::FETCH_ASSOC);
+                $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
 
-                if (is_array($result)) {
-                    return $result;
+                if (is_array($resultData)) {
+                    $results = $resultData;
                 }
                 break;
         }
 
-        return [];
+        return $results;
     }
 
     /**
@@ -240,7 +259,6 @@ abstract class AbstractSqlDriver extends DriverProvider
         }
 
         if ($this->checkExist($ip, $type)) {
-            
             return $this->update($tableName, $logData, $logWhere);
         } else {
             return (bool) $this->insert($tableName, $logData);
@@ -253,20 +271,12 @@ abstract class AbstractSqlDriver extends DriverProvider
     protected function doDelete(string $ip, string $type = 'log'): bool
     {
         switch ($type) {
-            case 'rule':
-                $tableName = $this->tableRuleList;
-                return $this->remove($this->tableRuleList, ['log_ip' => $ip]);
-                break;
-
-            case 'log':
-                return $this->remove($this->tableLogs, ['log_ip' => $ip]);
-                break;
-            case 'session':
-                return $this->remove($this->tableSessions, ['id' => $ip]);
-                break;
-            default:
-                break;
+            case 'rule'   : return $this->remove($this->tableRuleList, ['log_ip' => $ip]);
+            case 'log'    : return $this->remove($this->tableLogs,     ['log_ip' => $ip]);
+            case 'session': return $this->remove($this->tableSessions, ['id'     => $ip]);
         }
+
+        return false;
     }
 
     /**
@@ -309,6 +319,9 @@ abstract class AbstractSqlDriver extends DriverProvider
             $bind = array_merge($data, $where);
     
             foreach($bind as $k => $v) {
+
+                // @codeCoverageIgnoreStart
+
                 if (is_numeric($v)) {
                     $pdoParam = $this->db::PARAM_INT;
 
@@ -323,16 +336,21 @@ abstract class AbstractSqlDriver extends DriverProvider
                 } else {
                     $pdoParam = $this->db::PARAM_STR;
                 }
+
+                // @codeCoverageIgnoreEnd
+
                 $query->bindValue(":$k", $bind[$k], $pdoParam);
             }
 
             return $query->execute();
 
+        // @codeCoverageIgnoreStart
+        
         } catch(\Exception $e) {
-            //die($e->getMessage());
+            return false;
         }
 
-        return false;
+        // @codeCoverageIgnoreEnd 
     }
 
     /**
@@ -360,6 +378,9 @@ abstract class AbstractSqlDriver extends DriverProvider
             $query = $this->db->prepare($sql);
 
             foreach($data as $k => $v) {
+
+                // @codeCoverageIgnoreStart
+
                 if (is_numeric($v)) {
                     $pdoParam = $this->db::PARAM_INT;
 
@@ -374,17 +395,21 @@ abstract class AbstractSqlDriver extends DriverProvider
                 } else {
                     $pdoParam = $this->db::PARAM_STR;
                 }
+
+                // @codeCoverageIgnoreEnd
+
                 $query->bindValue(":$k", $data[$k], $pdoParam);
             }
-            $result = $query->execute();
 
-            return $this->db->lastInsertId();
+            return $query->execute();
+
+        // @codeCoverageIgnoreStart
 
         } catch(\Exception $e) {
-            //die($e->getMessage());
+            return false;
         }
 
-        return false;
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -411,6 +436,9 @@ abstract class AbstractSqlDriver extends DriverProvider
             $query = $this->db->prepare($sql);
 
             foreach($where as $k => $v) {
+
+                // @codeCoverageIgnoreStart
+
                 if (is_numeric($v)) {
                     $pdoParam = $this->db::PARAM_INT;
                 } elseif (is_bool($v)) {
@@ -420,16 +448,21 @@ abstract class AbstractSqlDriver extends DriverProvider
                 } else {
                     $pdoParam = $this->db::PARAM_STR;
                 }
+
+                // @codeCoverageIgnoreEnd
+
                 $query->bindValue(":$k", $v, $pdoParam);
             }
 
             return $query->execute();
 
+        // @codeCoverageIgnoreStart
+
         } catch(\Exception $e) {
-            //die($e->getMessage());
+            return false;
         }
 
-        return false;
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -478,9 +511,13 @@ abstract class AbstractSqlDriver extends DriverProvider
 
             return true;
 
+        // @codeCoverageIgnoreStart
+
         } catch (\Exception $e) {
             return false;
         }
+
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -505,9 +542,13 @@ abstract class AbstractSqlDriver extends DriverProvider
 
             return true;
 
+        // @codeCoverageIgnoreStart
+
         } catch (\Exception $e) {
             return false;
         }
+
+        // @codeCoverageIgnoreEnd
     }
 
     /**

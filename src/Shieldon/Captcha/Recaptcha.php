@@ -72,9 +72,11 @@ class Recaptcha implements CaptchaInterface
     
         $ret = curl_exec($ch);
     
+        // @codeCoverageIgnoreStart
         if (curl_errno($ch)) {
             echo 'error:' . curl_error($ch);
         }
+        // @codeCoverageIgnoreEnd
         
         if (isset($ret) && $ret != false) {
             $tmp = json_decode($ret);
