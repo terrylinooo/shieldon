@@ -72,9 +72,7 @@ class FileDriver extends DriverProvider
             }
 
             // Check the directory where data files write into.
-            if ($this->checkDirectory()) {
-                $this->createDirectory();
-            }
+            $this->createDirectory();
         }
 
         $this->isInitialized = true;
@@ -262,7 +260,7 @@ class FileDriver extends DriverProvider
             ! is_dir($this->getDirectory('session'))
         );
 
-        $this->doInitialize();
+        $this->createDirectory();
 
         return $result;
     }

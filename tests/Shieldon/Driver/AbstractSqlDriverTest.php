@@ -87,11 +87,22 @@ class AbstractSqlDriverTest extends \PHPUnit\Framework\TestCase
     public function testDoFetch()
     {
         // Just for code coverage, for the section - session.
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $pdoInstance->setAttribute($pdoInstance::ATTR_ERRMODE, $pdoInstance::ERRMODE_EXCEPTION);
+        $db = [
+            'host' => '127.0.0.1',
+            'dbname' => 'shieldon_unittest',
+            'user' => 'shieldon',
+            'pass' => 'taiwan',
+            'charset' => 'utf8',
+        ];
+        
+        $pdoInstance = new \PDO(
+            'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
+            $db['user'],
+            $db['pass']
+        );
 
         $mockSqlDriver = $this->getMockForAbstractClass('Shieldon\Driver\AbstractSqlDriver', [$pdoInstance]);
+        $mockSqlDriver->init();
         $reflection = new \ReflectionObject($mockSqlDriver);
         $methodDoFetch = $reflection->getMethod('doFetch');
         $methodDoFetch->setAccessible(true);
@@ -102,8 +113,19 @@ class AbstractSqlDriverTest extends \PHPUnit\Framework\TestCase
     public function testDoFetchAll()
     {
         // Just for code coverage, for the section - rule and log.
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $db = [
+            'host' => '127.0.0.1',
+            'dbname' => 'shieldon_unittest',
+            'user' => 'shieldon',
+            'pass' => 'taiwan',
+            'charset' => 'utf8',
+        ];
+        
+        $pdoInstance = new \PDO(
+            'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
+            $db['user'],
+            $db['pass']
+        );
 
         $mockSqlDriver = $this->getMockForAbstractClass('Shieldon\Driver\AbstractSqlDriver', [$pdoInstance]);
         $reflection = new \ReflectionObject($mockSqlDriver);
@@ -116,8 +138,19 @@ class AbstractSqlDriverTest extends \PHPUnit\Framework\TestCase
     public function testDoDelete()
     {
         // Just for code coverage, for the final return - false.
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
-        $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+        $db = [
+            'host' => '127.0.0.1',
+            'dbname' => 'shieldon_unittest',
+            'user' => 'shieldon',
+            'pass' => 'taiwan',
+            'charset' => 'utf8',
+        ];
+        
+        $pdoInstance = new \PDO(
+            'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
+            $db['user'],
+            $db['pass']
+        );
 
         $mockSqlDriver = $this->getMockForAbstractClass('Shieldon\Driver\AbstractSqlDriver', [$pdoInstance]);
         $reflection = new \ReflectionObject($mockSqlDriver);
