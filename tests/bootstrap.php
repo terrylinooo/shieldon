@@ -75,11 +75,37 @@ function getTestingShieldonInstance($driver = 'sqlite')
             break;
 
         case 'redis':
-
             $redisInstance = new \Redis();
             $redisInstance->connect('127.0.0.1', 6379); 
             $shieldon->setDriver(new \Shieldon\Driver\RedisDriver($redisInstance));
+            break;
 
+        case 'memcache':
+            try {
+                $memcacheInstance = new \Memcache();
+                $memcacheInstance->connect('127.0.0.1', 11211);
+            } catch (\Exception $e1) {
+                try {
+                    $memcacheInstance = new \Memcache();
+                    $memcacheInstance->connect('192.168.95.27', 11211);
+                } catch (\Exception $e2) {
+                    die('Cannot connect to Memcache server.');
+                }
+            }
+            $shieldon->setDriver(new \Shieldon\Driver\MemcacheDriver($memcacheInstance));
+            break;
+
+        case 'mongodb':
+            try {
+                $mongoInstance = new \MongoClient('mongodb://127.0.0.1');
+            } catch (\Exception $e1) {
+                try {
+                    $mongoInstance = new \MongoClient('mongodb://192.168.95.27');
+                } catch (\Exception $e2) {
+                    die('Cannot connect to MongoDB.');
+                }
+            }
+            $shieldon->setDriver(new \Shieldon\Driver\MongoDriver($mongoInstance));
             break;
 
         case 'sqlite':
