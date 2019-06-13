@@ -32,7 +32,7 @@ $pdoInstance = new \PDO('sqlite:' . $dbLocation);
 $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
 
 // Set components.
-// This compoent will only allow popular search engline.
+// This component will only allow popular search engline.
 // Other bots will go into the checking process.
 $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
 
