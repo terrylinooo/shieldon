@@ -45,6 +45,11 @@ class Ip extends ComponentProvider
     protected $allowedList = [];
 
     /**
+     * Only allow IPs in allowedList, then deny all.
+     */
+    protected $isDenyAll = false;
+
+    /**
      * Check an IP if it exists in Anti-Scraping allow/deny list.
      *
      * @param string $ip
@@ -82,6 +87,14 @@ class Ip extends ComponentProvider
                 'status' => 'deny',
                 'code' => self::CODE_DENY_IP,
                 'comment' => 'IP is in denied list.',
+            ];
+        }
+
+        if ($this->isDenyAll) {
+            return [
+                'status' => 'deny',
+                'code' => self::CODE_DENY_IP,
+                'comment' => 'Deny all in strict mode.',
             ];
         }
 
@@ -329,5 +342,15 @@ class Ip extends ComponentProvider
     {
         return $this->allowedList;
         
+    }
+
+    /**
+     * Only allow IPs in allowedList, then deny all.
+     *
+     * @return void
+     */
+    public function denyAll(): void
+    {
+        $this->isDenyAll = true;
     }
 }
