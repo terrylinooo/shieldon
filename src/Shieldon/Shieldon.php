@@ -31,9 +31,9 @@ namespace Shieldon;
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Component\ComponentInterface;
 use Shieldon\Captcha\CaptchaInterface;
+use Shieldon\ActionLogger;
 
 use LogicException;
-use UnexpectedValueException;
 
 use function get_class;
 use function gethostbyaddr;
@@ -80,7 +80,7 @@ class Shieldon
     /**
      * Driver for storing data.
      *
-     * @var DriverInterface
+     * @var DriverProvider
      */
     public $driver = null;
 
@@ -90,6 +90,14 @@ class Shieldon
      * @var array
      */
     public $component = [];
+
+
+    /**
+     * Logger instance.
+     *
+     * @var ActionLogger
+     */
+    public $logger = null;
 
     // Shieldon directory.
     private const SHIELDON_DIR = __DIR__;
@@ -660,6 +668,22 @@ class Shieldon
     {
         if ($driver instanceof DriverProvider) {
             $this->driver = $driver;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set a action log logger.
+     *
+     * @param ActionLogger $logger
+     *
+     * @return self
+     */
+    public function setLogger(ActionLogger $logger): self
+    {
+        if ($logger instanceof ActionLogger) {
+            $this->logger = $logger;
         }
 
         return $this;
