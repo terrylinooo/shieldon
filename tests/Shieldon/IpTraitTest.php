@@ -34,13 +34,10 @@ class IpTraitTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('192.168.3.3', $mock->getIp());
     }
 
-    /**
-     * @depends testRdnsProvider
-     */
-    public function testSetRdns($rdns)
+    public function testSetRdns()
     {
         $mock = $this->getMockForTrait('Shieldon\IpTrait');
-        $mock->setRdns($rdns);
+        $mock->setRdns('unitest.local');
 
         $this->assertSame('unitest.local', $mock->getRdns());
     }
@@ -51,10 +48,5 @@ class IpTraitTest extends \PHPUnit\Framework\TestCase
         $mock->setRdns('unitest.local2');
 
         $this->assertSame('unitest.local2', $mock->getRdns());
-    }
-
-    public function testRdnsProvider()
-    {
-        return 'unitest.local';
     }
 }
