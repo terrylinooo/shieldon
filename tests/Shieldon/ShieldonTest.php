@@ -436,6 +436,20 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testSetLogger()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+  
+        $logger = new \Shieldon\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $shieldon->setLogger($logger);
+
+        if ($shieldon->logger === $logger) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
     public function testCreateDatabase()
     {
         $shieldon = new \Shieldon\Shieldon();
