@@ -79,10 +79,7 @@ When an user has been permanently banned.
 
 ![](https://i.imgur.com/7PdjkKV.png)
 
-
-## Case Studies
-
-I have made a WordPress plguin called **[WP Shieldon](https://wordpress.org/plugins/wp-shieldon)**, it is based on Shieldon library. You can check out the [source code](https://github.com/terrylinooo/wp-shieldon) to understand about  how to implement Shieldon in your PHP project.
+I have made a WordPress plguin called [WP Shieldon](https://wordpress.org/plugins/wp-shieldon), it is based on Shieldon library. You can check out the [source code](https://github.com/terrylinooo/wp-shieldon) to understand about how to implement Shieldon in your PHP project.
 
 ## License
 
