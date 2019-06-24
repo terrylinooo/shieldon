@@ -21,7 +21,7 @@ require 'Shieldon/src/autoload.php';
 
 ## How to use
 
-Here is a full example let you know how Shieldon works.
+Here is a full example to let you know how Shieldon works.
 
 ```php
 $shieldon = new \Shieldon\Shieldon();
@@ -32,7 +32,7 @@ $pdoInstance = new \PDO('sqlite:' . $dbLocation);
 $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
 
 // Set components.
-// This component will only allow popular search engline.
+// This component will only allow popular search engine.
 // Other bots will go into the checking process.
 $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
 
@@ -40,7 +40,7 @@ $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
 $shieldon->setChannel('web_project');
 
 // Only allow 10 sessions to view current page.
-// The defailt expire time is 300 seconds.
+// The default expire time is 300 seconds.
 $shieldon->limitSession(10);
 
 // Set a Captcha servie. For example: Google recaptcha.
@@ -68,7 +68,7 @@ if ($result !== $shieldon::RESPONSE_ALLOW) {
 
 ## Screenshot
 
-When the users or robots are trying to view many your web pages at a short period of time, they will temporarily get banned. To get unbanned by solving Catpcha.
+When the users or robots are trying to view many your web pages in a short period of time, they will temporarily get banned. Get unbanned by solving a Catpcha.
 
 ![](https://i.imgur.com/FfG8fTF.png)
 
