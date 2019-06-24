@@ -73,6 +73,15 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(3 , count($t));
         $this->assertEquals('allow' , $t['status']);
         unset($ipComponent, $t);
+
+        // Test 6. Test denyAll
+        $ipComponent = new Ip();
+        $ipComponent->denyAll();
+        $t = $ipComponent->check('127.0.33.1');
+        $this->assertIsArray($t);
+        $this->assertEquals(3 , count($t));
+        $this->assertEquals('deny' , $t['status']);
+        unset($ipComponent, $t);
     }
 
     public function testInRange()
@@ -208,5 +217,18 @@ class IpTest extends \PHPUnit\Framework\TestCase
         if (in_array('127.33.33.35', $t)) {
             $this->assertTrue(true);
         }
+    }
+
+    public function testDenyAll()
+    {
+        $ipComponent = new Ip();
+        $ipComponent->denyAll();
+
+        $reflection = new \ReflectionObject($ipComponent);
+        $t = $reflection->getProperty('isDenyAll');
+        $t->setAccessible(true);
+  
+        $this->assertEquals('isDenyAll' , $t->name);
+        $this->assertTrue($t->getValue($ipComponent));
     }
 }

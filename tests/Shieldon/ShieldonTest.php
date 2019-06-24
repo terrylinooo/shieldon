@@ -228,6 +228,8 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $shieldon = getTestingShieldonInstance($driver);
 
+        $shieldon->setLogger(new \Shieldon\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
         $shieldon->setComponent(new \Shieldon\Component\Ip());
         $shieldon->setComponent(new \Shieldon\Component\UserAgent());

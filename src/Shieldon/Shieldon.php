@@ -481,6 +481,8 @@ class Shieldon
         $ip = $this->ip;
 
         $ipResolvedHostname = $this->ipResolvedHostname;
+
+        $now = time();
     
         if ('' !== $assignIp) {
             $ip = $assignIp;
@@ -493,7 +495,7 @@ class Shieldon
             case self::ACTION_TEMPORARILY_DENY:
                 $logData['log_ip']     = $ip;
                 $logData['ip_resolve'] = $ipResolvedHostname;
-                $logData['time']       = time();
+                $logData['time']       = $now;
                 $logData['type']       = $actionCode;
                 $logData['reason']     = $reasonCode;
 
@@ -508,6 +510,16 @@ class Shieldon
         // Remove logs for this IP address because It already has it's own rule on system.
         // No need to count it anymore.
         $this->driver->delete($ip, 'log');
+
+        if (null !== $this->logger) {
+            $log['ip'] = $ip;
+            $log['session_id'] = $this->sessionId;
+            $log['action_code'] = $actionCode;
+            $log['reason_code'] = $reasonCode;
+            $log['timesamp'] = $now;
+
+            $this->logger->add($log);
+        }
     }
 
     /**

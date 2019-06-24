@@ -149,11 +149,12 @@ class RedisDriver extends DriverProvider
         $isExist = $this->redis->exists($this->getKeyName($ip, $type));
 
         // This function took a single argument and returned TRUE or FALSE in phpredis versions < 4.0.0.
+
+        // @codeCoverageIgnoreStart
         if (is_bool($isExist)) {
             return $isExist;
         }
 
-        // @codeCoverageIgnoreStart
         return $isExist > 0;
         // @codeCoverageIgnoreEnd
     }

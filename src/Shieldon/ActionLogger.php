@@ -52,8 +52,9 @@ class ActionLogger
      * Constructor.
      *
      * @param string $directory
+     * @param string $Ymd
      */
-    public function __construct(string $directory = '')
+    public function __construct(string $directory = '', $Ymd = '')
     {
         if ('' !== $directory) {
             $this->directory = $directory;
@@ -61,7 +62,11 @@ class ActionLogger
 
         $this->checkDirectory();
 
-        $this->file = date('Ymd') . '.' . $this->extension;
+        if ('' === $Ymd) {
+            $Ymd = date('Ymd');
+        }
+
+        $this->file = $Ymd . '.' . $this->extension;
         $this->file_path = $this->directory . '/' . $this->file;
     }
 
@@ -160,8 +165,6 @@ class ActionLogger
         if (file_exists($this->directory)) {
             $it = new RecursiveDirectoryIterator($this->directory, RecursiveDirectoryIterator::SKIP_DOTS);
             $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-
-            echo 'x';
 
             foreach($files as $file) {
                 if ($file->isDir()) {

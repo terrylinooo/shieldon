@@ -38,6 +38,26 @@ class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
         $results = $p->getValue($captchaInstance);
 
         $this->assertSame($results, $config);
+
+        $config = [
+            'colors' => [
+                'background' => [255, 255, 255],
+                'border' => [153, 200, 255],
+                'text' => [20, 153, 255],
+                'grid' => '153'
+            ]
+        ];
+
+        $captchaInstance = new ImageCaptcha($config);
+
+        $reflection = new \ReflectionObject($captchaInstance);
+        $p = $reflection->getProperty('properties');
+        $p->setAccessible(true);
+     
+        $results = $p->getValue($captchaInstance);
+
+        $this->assertSame($results['colors']['text'], [20, 153, 255]);
+        $this->assertSame($results['colors']['grid'], [153, 200, 255]);
     }
 
     public function testResponse()

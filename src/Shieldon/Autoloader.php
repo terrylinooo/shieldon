@@ -9,14 +9,15 @@
  * file that was distributed with this source code.
  */
 
+// @codeCoverageIgnoreStart
+
 namespace Shieldon;
 
 class Autoloader
 {
     private $dir;
-    private $namespace;
+    private $prefix;
 
-    // @codeCoverageIgnoreStart
     public function __construct()
     {
         $this->dir = __DIR__;
@@ -27,7 +28,6 @@ class Autoloader
     {
         spl_autoload_register(array(new self(), 'autoload'), true, false);
     }
-    // @codeCoverageIgnoreEnd
 
     public function autoload($className)
     {
@@ -41,3 +41,5 @@ class Autoloader
         }
     }
 }
+
+// @codeCoverageIgnoreEnd
