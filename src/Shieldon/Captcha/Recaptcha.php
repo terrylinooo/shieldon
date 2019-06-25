@@ -27,9 +27,9 @@ class Recaptcha implements CaptchaInterface
 
     /**
      * Constructor.
-     * 
+     *
      * It will implement default configuration settings here.
-     * 
+     *
      * @array $config
      *
      * @return void
@@ -44,7 +44,7 @@ class Recaptcha implements CaptchaInterface
     }
 
     /**
-     * Reponse the result from Google service server.
+     * Response the result from Google service server.
      *
      * @return bool
      */
@@ -69,15 +69,15 @@ class Recaptcha implements CaptchaInterface
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    
+
         $ret = curl_exec($ch);
-    
+
         // @codeCoverageIgnoreStart
         if (curl_errno($ch)) {
             echo 'error:' . curl_error($ch);
         }
         // @codeCoverageIgnoreEnd
-        
+
         if (isset($ret) && $ret != false) {
             $tmp = json_decode($ret);
             if ($tmp->success == true) {
@@ -110,8 +110,7 @@ class Recaptcha implements CaptchaInterface
             $html .= '    });';
             $html .= '</script>';
         }
-       
+
         return $html;
     }
 }
-

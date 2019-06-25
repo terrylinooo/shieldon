@@ -12,12 +12,12 @@ namespace Shieldon\Captcha;
 
 class Example implements CaptchaInterface
 {
-   
+
     /**
      * Constructor.
-     * 
+     *
      * It will implement default configuration settings here.
-     * 
+     *
      * @array $config
      *
      * @return void
@@ -28,7 +28,7 @@ class Example implements CaptchaInterface
     }
 
     /**
-     * Reponse the result.
+     * Response the result.
      *
      * @return bool
      */
