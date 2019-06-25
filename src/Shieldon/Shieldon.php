@@ -1164,6 +1164,16 @@ class Shieldon
     }
 
     /**
+     * Get Session Id.
+     *
+     * @return string
+     */
+    public function getSessionId(): string
+    {
+        return $this->sessionId;
+    }
+
+    /**
      * Print javascript snippet in your webpages.
      * This snippet generate cookie on client's browser,then we check the cookie to identify the client is a rebot or not.
      *
