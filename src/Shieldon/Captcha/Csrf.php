@@ -28,9 +28,9 @@ class Csrf implements CaptchaInterface
 
     /**
      * Constructor.
-     * 
+     *
      * It will implement default configuration settings here.
-     * 
+     *
      * @array $config
      *
      * @return void
@@ -45,7 +45,7 @@ class Csrf implements CaptchaInterface
     }
 
     /**
-     * Reponse the result.
+     * Response the result.
      *
      * @return bool
      */
