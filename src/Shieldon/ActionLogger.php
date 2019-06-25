@@ -104,6 +104,8 @@ class ActionLogger
      */
     public function get(string $Ymd = ''): array
     {
+        $results = [];
+
         if ('' !== $Ymd) {
             $this->file = $Ymd . '.' . $this->extension;
             $this->file_path = $this->directory . '/' . $this->file;
