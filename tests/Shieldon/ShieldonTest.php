@@ -295,8 +295,15 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setIp('140.112.172.11');
         $methodSetSessionId = $reflection->getMethod('setSessionId');
         $methodSetSessionId->setAccessible(true);
-        $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 999999))]);
+
+        $sessionId = md5(date('YmdHis') . mt_rand(1, 999999));
+        $methodSetSessionId->invokeArgs($shieldon, [$sessionId]);
         $shieldon->run();
+
+        // Test getSessionId
+        $testSessionId = $shieldon->getSessionId();
+
+        $this->assertSame($sessionId, $testSessionId);
 
         $sessionHandlerResult = $methodSessionHandler->invokeArgs($shieldon, [$shieldon::RESPONSE_ALLOW]);
 
