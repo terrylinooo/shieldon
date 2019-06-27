@@ -157,7 +157,7 @@ class ActionLogger
                 $thisDayLogFile = $this->directory . '/' . $date->format('Ymd') . '.' . $this->extension;
 
                 if (file_exists($thisDayLogFile)) {
-                    $logFile .= file_get_contents($this->file_path);
+                    $logFile .= file_get_contents($thisDayLogFile);
                 }
             }
 
