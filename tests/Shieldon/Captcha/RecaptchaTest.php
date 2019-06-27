@@ -10,7 +10,6 @@
 
 namespace Shieldon\Captcha;
 
-
 class RecaptchaTest extends \PHPUnit\Framework\TestCase
 {
     public function test__construct()

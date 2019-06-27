@@ -111,20 +111,22 @@ class ActionLogger
             $this->file_path = $this->directory . '/' . $this->file;
         }
 
-        $logFile = file_get_contents($this->file_path);
-        $logs = explode("\n", $logFile);
-
-        foreach ($logs as $l) {
-            $data = explode(',', $l);
-
-            if (! empty($data[0])) {
-                $results[] = [
-                    'ip'          => $data[0],
-                    'session_id'  => $data[1],
-                    'action_code' => $data[2],
-                    'reason_code' => $data[3],
-                    'timesamp'    => $data[4],
-                ];
+        if (file_exists($this->file_path)) {
+            $logFile = file_get_contents($this->file_path);
+            $logs = explode("\n", $logFile);
+    
+            foreach ($logs as $l) {
+                $data = explode(',', $l);
+    
+                if (! empty($data[0])) {
+                    $results[] = [
+                        'ip'          => $data[0],
+                        'session_id'  => $data[1],
+                        'action_code' => $data[2],
+                        'reason_code' => $data[3],
+                        'timesamp'    => $data[4],
+                    ];
+                }
             }
         }
 
