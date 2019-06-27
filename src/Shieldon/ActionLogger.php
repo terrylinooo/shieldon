@@ -13,6 +13,9 @@ namespace Shieldon;
 use RuntimeException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 use function mkdir;
 
 /**
@@ -98,23 +101,68 @@ class ActionLogger
     /**
      * Get data from log file.
      *
-     * @param string $Ymd The string in Ymd Date format.
-     *
+     * @param string $fromYmd The string in Ymd Date format.
+     * @param string $toYmd   The end date.
      * @return array
      */
-    public function get(string $Ymd = ''): array
+    public function get(string $fromYmd = '', string $toYmd = ''): array
     {
         $results = [];
 
-        if ('' !== $Ymd) {
-            $this->file = $Ymd . '.' . $this->extension;
+        // if $fromYmd is set, overwrite the default one (today).
+        if ('' !== $fromYmd) {
+            $fromYmd = date('Ymd', strtotime($fromYmd));
+
+            $this->file = $fromYmd . '.' . $this->extension;
             $this->file_path = $this->directory . '/' . $this->file;
         }
 
-        if (file_exists($this->file_path)) {
-            $logFile = file_get_contents($this->file_path);
-            $logs = explode("\n", $logFile);
+        if ('' === $toYmd) {
+
+            if (file_exists($this->file_path)) {
+
+                $logFile = file_get_contents($this->file_path);
+                $logs = explode("\n", $logFile);
+        
+                foreach ($logs as $l) {
+                    $data = explode(',', $l);
+        
+                    if (! empty($data[0])) {
+                        $results[] = [
+                            'ip'          => $data[0],
+                            'session_id'  => $data[1],
+                            'action_code' => $data[2],
+                            'reason_code' => $data[3],
+                            'timesamp'    => $data[4],
+                        ];
+                    }
+                }
+            }
+
+        } elseif ('' !== $fromYmd && '' !== $toYmd) {
+
+            // for quering date range.
+            $toYmd = date('Ymd', strtotime($toYmd));
+
+            $begin = new DateTime($fromYmd);
+            $end = new DateTime($toYmd);
+            $end = $end->modify('+1 day'); 
+            
+            $interval = new DateInterval('P1D');
+            $daterange = new DatePeriod($begin, $interval, $end);
+            
+            $logFile = '';
     
+            foreach ($daterange as $date) {
+                $thisDayLogFile = $this->directory . '/' . $date->format('Ymd') . '.' . $this->extension;
+
+                if (file_exists($thisDayLogFile)) {
+                    $logFile .= file_get_contents($this->file_path);
+                }
+            }
+
+            $logs = explode("\n", $logFile);
+
             foreach ($logs as $l) {
                 $data = explode(',', $l);
     

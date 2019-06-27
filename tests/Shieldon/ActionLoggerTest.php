@@ -48,9 +48,11 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
 
         $results = $logger->get('19890604');
 
-        $logger->purgeLogs();
-
         $this->assertEquals($data, $results[1]);
+
+        $results = $logger->get('19890604', date('Ymd'));
+
+        $logger->purgeLogs();
     }
 
     public function testGet() {
