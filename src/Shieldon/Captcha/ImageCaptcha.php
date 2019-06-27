@@ -58,9 +58,9 @@ class ImageCaptcha implements CaptchaInterface
 
     /**
      * Constructor.
-     * 
+     *
      * It will implement default configuration settings here.
-     * 
+     *
      * @array $config
      *
      * @return void
@@ -101,7 +101,7 @@ class ImageCaptcha implements CaptchaInterface
     }
 
     /**
-     * Reponse the result.
+     * Response the result.
      *
      * @return bool
      */
@@ -147,10 +147,10 @@ class ImageCaptcha implements CaptchaInterface
                 box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.08);">';
             $html .= '<img src="data:image/' . $this->imageType . ';base64,' . $base64image . '" style="width: ' . $this->properties['img_width'] . '; height: ' . $this->properties['img_height'] . ';">';
             $html .= '<br /><input type="text" name="shieldon_image_captcha" style="
-                width: 100px; 
-                border: 1px solid rgba(27,31,35,.2); 
-                border-radius: 3px; 
-                background-color: #fafafa; 
+                width: 100px;
+                border: 1px solid rgba(27,31,35,.2);
+                border-radius: 3px;
+                background-color: #fafafa;
                 font-size: 14px;
                 font-weight: bold;
                 line-height: 20px;
@@ -178,7 +178,7 @@ class ImageCaptcha implements CaptchaInterface
         for ($i = 0; $i < $this->properties['word_length']; $i++) {
             $this->word .= $this->properties['pool'][random_int(0, $randMax)];
         }
-                
+
         // Determine angle and position.
         $length	= strlen($this->word);
         $angle	= ($length >= 6) ? mt_rand(-($length - 6), ($length - 6)) : 0;
@@ -232,7 +232,7 @@ class ImageCaptcha implements CaptchaInterface
         $z = (int) ($this->properties['img_width'] / ($length / 3));
         $x = mt_rand(0, $z);
         $y = 0;
-        
+
         for ($i = 0; $i < $length; $i++) {
             $y = mt_rand(0 , $this->properties['img_height'] / 2);
             imagestring($im, 5, $x, $y, $this->word[$i], $colors['text']);
@@ -243,12 +243,12 @@ class ImageCaptcha implements CaptchaInterface
         imagerectangle($im, 0, 0, $this->properties['img_width'] - 1, $this->properties['img_height'] - 1, $colors['border']);
 
         // Generate image in base64 string.
-        ob_start (); 
+        ob_start ();
 
         if (function_exists('imagejpeg')) {
             $this->imageType = 'jpeg';
             imagejpeg($im);
-        
+
         // @codeCoverageIgnoreStart
         } elseif (function_exists('imagepng')) {
             $this->imageType = 'png';
@@ -258,7 +258,7 @@ class ImageCaptcha implements CaptchaInterface
         }
         // @codeCoverageIgnoreEnd
 
-        $image_data = ob_get_contents(); 
+        $image_data = ob_get_contents();
         ob_end_clean();
         imagedestroy($im);
 

@@ -16,7 +16,7 @@ namespace Shieldon\Captcha;
 interface CaptchaInterface
 {
     /**
-     * Reponse the result.
+     * Response the result.
      *
      * @return bool
      */
