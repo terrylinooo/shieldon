@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Shieldon;
+namespace Shieldon\Log;
 
 use RuntimeException;
 use RecursiveDirectoryIterator;
@@ -17,11 +17,22 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 use function mkdir;
+use function umask;
+use function rmdir;
+use function unlink;
+use function file_exists;
+use function file_put_contents;
+use function file_get_contents;
+use function explode;
+use function strtotime;
+use function date;
+use function is_writable;
+use function is_dir;
 
 /**
  * Action Logger only support storing log into files, I don't want to make it complex, that's it.
  */
-class ActionLogger
+class Logger
 {
     /**
      * The directory that data files stored to.

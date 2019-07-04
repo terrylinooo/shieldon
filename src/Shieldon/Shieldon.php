@@ -31,7 +31,7 @@ namespace Shieldon;
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Component\ComponentInterface;
 use Shieldon\Captcha\CaptchaInterface;
-use Shieldon\ActionLogger;
+use Shieldon\Log\ActionLogger;
 
 use LogicException;
 
@@ -76,6 +76,10 @@ class Shieldon
     public const RESPONSE_ALLOW = 1;
     public const RESPONSE_TEMPORARILY_DENY = 2;
     public const RESPONSE_LIMIT = 3;
+
+    public const LOG_PAGEVIEW = 11;
+	public const LOG_BLACKLIST = 98;
+    public const LOG_CAPTCHA = 99;
 
     /**
      * Driver for storing data.
@@ -220,7 +224,6 @@ class Shieldon
      * @var integer
      */
     private $currentWaitNumber = 0;
-
 
     /**
      * Strict mode.
@@ -490,8 +493,8 @@ class Shieldon
         }
 
         switch ($actionCode) {
-            case self::ACTION_ALLOW:
-            case self::ACTION_DENY:
+            case self::ACTION_ALLOW: // acutally not used.
+            case self::ACTION_DENY:  // actually not used.
             case self::ACTION_TEMPORARILY_DENY:
                 $logData['log_ip']     = $ip;
                 $logData['ip_resolve'] = $ipResolvedHostname;
@@ -512,11 +515,35 @@ class Shieldon
         $this->driver->delete($ip, 'log');
 
         if (null !== $this->logger) {
-            $log['ip'] = $ip;
-            $log['session_id'] = $this->sessionId;
+            $log['ip']          = $ip;
+            $log['session_id']  = $this->sessionId;
             $log['action_code'] = $actionCode;
             $log['reason_code'] = $reasonCode;
-            $log['timesamp'] = $now;
+            $log['timesamp']    = $now;
+
+            $this->logger->add($log);
+        }
+    }
+
+    /**
+     * Log
+     *
+     * @param integer $actionCode
+     *
+     * @return void
+     */
+    public function log(int $actionCode): void
+    {
+        if (null !== $this->logger) {
+
+            $log['ip'] = $this->ip;
+
+            // Just want to identify different sessions for the same IP,
+            // so it doesn't matter how many charactors we get.
+            $log['session_id'] = substr($this->sessionId, 0, 4); 
+
+            $log['action_code'] = $actionCode;
+            $log['timesamp'] = time();
 
             $this->logger->add($log);
         }
@@ -826,6 +853,8 @@ class Shieldon
         $this->action(self::ACTION_UNBAN, self::REASON_MANUAL_BAN, $ip);
         $this->result = self::RESPONSE_ALLOW;
 
+        $this->log(self::ACTION_UNBAN);
+
         return $this;
     }
 
@@ -1030,9 +1059,73 @@ class Shieldon
      * Check the rule tables first, if an IP address has been listed.
      * Call function detect() if an IP address is not listed in rule tables.
      *
-     * @return int RESPONSE_CODE
      */
     public function run(): int
+    {
+        $result = $this->_run();
+
+        if ($result !== $this::RESPONSE_ALLOW) {
+
+            if ($this->captchaResponse()) {
+
+                // Unban current session.
+                $this->unban();
+
+                // Because current session is unbanned, we replace its response code to RESPONSE_ALLOW.
+                $result = $this::RESPONSE_ALLOW;
+
+            } else {
+
+                if (null !== $this->logger) {
+
+                    // Current session did not pass the CAPTCHA, it is still stuck in CAPTCHA page.
+                    $actionCode = self::LOG_CAPTCHA;
+
+                    // If current session's respone code is RESPONSE_DENY, record it as `blacklist_count` in our logs.
+                    // It is stuck in warning page, not CAPTCHA.
+                    if ($result === self::RESPONSE_DENY) {
+                        $actionCode = self::LOG_BLACKLIST;
+                    }
+
+                    if ( ! empty( $session_id ) ) {
+                        $log_data['ip']          = $this->getIp();
+                        $log_data['session_id']  = $this->getSessionId();
+                        $log_data['action_code'] = $actionCode;
+                        $log_data['reason_code'] = 0;
+                        $log_data['timesamp']    = time();
+
+                        $this->shieldon->logger->add( $log_data );
+                    }
+                }
+            }
+
+        } else {
+
+            if (null !== $this->logger) {
+
+                // Just count the page view.
+                $log_data['ip']          = $this->getIp();
+                $log_data['session_id']  = $this->getSessionId();
+                $log_data['action_code'] = self::LOG_PAGEVIEW;
+                $log_data['reason_code'] = 0;
+                $log_data['timesamp']    = time();
+
+                $this->logger->add( $log_data );
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Run, run, run!
+     *
+     * Check the rule tables first, if an IP address has been listed.
+     * Call function detect() if an IP address is not listed in rule tables.
+     *
+     * @return int RESPONSE_CODE
+     */
+    private function _run(): int
     {
         $this->driver->init($this->autoCreateDatabase);
 
@@ -1047,7 +1140,9 @@ class Shieldon
             $result = $this->getComponent('Ip')->check();
 
             if (! empty($result)) {
+
                 switch ($result['status']) {
+
                     case 'allow':
                         $resultCode = self::RESPONSE_ALLOW;
                         break;
@@ -1083,25 +1178,35 @@ class Shieldon
         }
 
         if (! $this->isRuleList) {
+
             if ($this->getComponent('TrustedBot')) {
  
                 // We want to put all the allowed robot into the rule list, so that the checking of IP's resolved hostname 
                 // is no more needed for that IP.
                 if ($this->getComponent('TrustedBot')->isAllowed()) {
+
                     if ($this->getComponent('TrustedBot')->isGoogle()) {
+
                         // Add current IP into allowed list, because it is from real Google domain.
                         $this->action(self::ACTION_ALLOW, self::REASON_IS_GOOGLE);
+
                     } elseif ($this->getComponent('TrustedBot')->isBing()) {
+
                         // Add current IP into allowed list, because it is from real Bing domain.
                         $this->action(self::ACTION_ALLOW, self::REASON_IS_BING);
+
                     } elseif ($this->getComponent('TrustedBot')->isYahoo()) {
+
                         // Add current IP into allowed list, because it is from real Yahoo domain.
                         $this->action(self::ACTION_ALLOW, self::REASON_IS_YAHOO);
+
                     } else {
+
                         // Add current IP into allowed list, because you trust it.
                         // You have already defined it in the settings.
                         $this->action(self::ACTION_ALLOW, self::REASON_IS_SEARCH_ENGINE);
                     }
+
                     // Allowed robots not join to our traffic handler.
                     return $this->result = self::RESPONSE_ALLOW;
                 }
@@ -1196,8 +1301,6 @@ class Shieldon
 EOF;
         return $jsString;
     }
-
-
 }
 
 
