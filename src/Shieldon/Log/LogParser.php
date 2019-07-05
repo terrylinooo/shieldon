@@ -82,10 +82,10 @@ class LogParser
 	/**
 	 * Constructer.
 	 */
-    public function __construct(string $directory = '', $Ymd = '')
+    public function __construct(string $directory = '')
     {
         if (! isset($this->logger)) {
-            $this->logger = new Logger($directory, $Ymd);
+            $this->logger = new Logger($directory);
         }
 
 		$this->fields = [
@@ -267,7 +267,19 @@ class LogParser
 				}
 			}
 		}
-    }
+	}
+	
+    /**
+     * Prepare data.
+	 *
+	 * @param string $type Period type.
+	 *
+     * @return void
+     */
+	public function prepare(string $type = 'today'): void
+	{
+		$this->parsePeriodData($type);
+	}
 
     /**
      * Get data
@@ -276,10 +288,8 @@ class LogParser
 	 *
      * @return array
      */
-    public function getPeriodData(string $type = 'today') {
-
-		$this->parsePeriodData($type);
-
+	public function getPeriodData(string $type = 'today')
+	{
 		if (! empty($this->periodDetail[$type])) {
 			return $this->periodDetail[$type];
 		}
@@ -293,7 +303,8 @@ class LogParser
      *
      * @return array
      */
-    public function getIpData(string $type = 'today') {
+	public function getIpData(string $type = 'today')
+	{
 		if (! empty($this->ipDetail[$type])) {
 			return $this->ipDetail[$type];
 		}
@@ -309,8 +320,8 @@ class LogParser
 	 *
 	 * @return void
 	 */
-	private function parse($log, $t, $k) {
-
+	private function parse($log, $t, $k) 
+	{
 		$logActionCode = (int) $log['action_code'];
 		$logIp = $log['ip'];
 		$sessionId = $log['session_id'];

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Shieldon;
+namespace Shieldon\Log;
 
 class ActionLoggerTest extends \PHPUnit\Framework\TestCase
 {
@@ -28,12 +28,11 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
     public function testAdd() 
     {
         $shieldon = new \Shieldon\Shieldon();
-        $logger = new \Shieldon\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon', '19890604');
+        $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon', '19890604');
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = md5((string) time());
         $data['action_code'] = $shieldon::ACTION_TEMPORARILY_DENY;
-        $data['reason_code'] = $shieldon::REASON_EMPTY_REFERER;
         $data['timesamp'] = time();
 
         $logger->add($data);
@@ -41,7 +40,6 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = md5((string) time());
         $data['action_code'] = $shieldon::ACTION_UNBAN;
-        $data['reason_code'] = $shieldon::REASON_MANUAL_BAN;
         $data['timesamp'] = time();
 
         $logger->add($data);
@@ -61,7 +59,7 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
 
     public function testCheckDirectory()
     {
-        $logger = new \Shieldon\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
         $reflection = new \ReflectionObject($logger);
         $methodCreateDirectory = $reflection->getMethod('checkDirectory');

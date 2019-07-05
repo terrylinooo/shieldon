@@ -77,6 +77,7 @@ class Shieldon
     public const RESPONSE_TEMPORARILY_DENY = 2;
     public const RESPONSE_LIMIT = 3;
 
+    public const LOG_LIMIT = 3;
     public const LOG_PAGEVIEW = 11;
 	public const LOG_BLACKLIST = 98;
     public const LOG_CAPTCHA = 99;
@@ -94,7 +95,6 @@ class Shieldon
      * @var array
      */
     public $component = [];
-
 
     /**
      * Logger instance.
@@ -290,10 +290,10 @@ class Shieldon
         $logData['first_time_flag'] = $ipDetail['first_time_flag'];
 
         if (! empty($ipDetail['ip'])) {
-            $logData['ip']             = $this->ip;
-            $logData['session']        = $this->sessionId;
-            $logData['hostname']       = $this->ipResolvedHostname;
-            $logData['last_time']      = $now;
+            $logData['ip']        = $this->ip;
+            $logData['session']   = $this->sessionId;
+            $logData['hostname']  = $this->ipResolvedHostname;
+            $logData['last_time'] = $now;
 
             /*** HTTP_REFERER ***/
 
@@ -397,11 +397,13 @@ class Shieldon
 
             if ($this->enableFrequencyCheck) {
 
-                foreach ($this->properties['time_unit_quota'] as $timeUnit => $valueNotUsed) {
-                    if ($timeUnit === 's') $timeSecond = 1;
-                    if ($timeUnit === 'm') $timeSecond = 60;
-                    if ($timeUnit === 'h') $timeSecond = 3600;
-                    if ($timeUnit === 'd') $timeSecond = 86400;
+                foreach (array_keys($this->properties['time_unit_quota']) as $timeUnit) {
+                    switch ($timeUnit) {
+                        case 's': $timeSecond = 1;     break;
+                        case 'm': $timeSecond = 60;    break;
+                        case 'h': $timeSecond = 3600;  break;
+                        case 'd': $timeSecond = 86400; break;
+                    }
                     if (($now - $ipDetail["first_time_{$timeUnit}"]) >= ($timeSecond + 1)) {
 
                         // For example:
@@ -414,10 +416,12 @@ class Shieldon
                         // If an user's pageview count is more than the time period limit
                         // He or she will get banned.
                         if ($logData["pageviews_{$timeUnit}"] > $this->properties['time_unit_quota'][$timeUnit]) {
-                            if ($timeUnit === 's') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_SECOND);
-                            if ($timeUnit === 'm') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_MINUTE);
-                            if ($timeUnit === 'h') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_HOUR);
-                            if ($timeUnit === 'd') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_DAY);
+                            switch ($timeUnit) {
+                                case 's': $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_SECOND); break;
+                                case 'm': $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_MINUTE); break;
+                                case 'h': $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_HOUR);   break;
+                                case 'd': $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_DAY);    break;
+                            }
                             return self::RESPONSE_TEMPORARILY_DENY;
                         }
                     }
@@ -518,32 +522,7 @@ class Shieldon
             $log['ip']          = $ip;
             $log['session_id']  = $this->sessionId;
             $log['action_code'] = $actionCode;
-            $log['reason_code'] = $reasonCode;
             $log['timesamp']    = $now;
-
-            $this->logger->add($log);
-        }
-    }
-
-    /**
-     * Log
-     *
-     * @param integer $actionCode
-     *
-     * @return void
-     */
-    public function log(int $actionCode): void
-    {
-        if (null !== $this->logger) {
-
-            $log['ip'] = $this->ip;
-
-            // Just want to identify different sessions for the same IP,
-            // so it doesn't matter how many charactors we get.
-            $log['session_id'] = substr($this->sessionId, 0, 4); 
-
-            $log['action_code'] = $actionCode;
-            $log['timesamp'] = time();
 
             $this->logger->add($log);
         }
@@ -1091,7 +1070,6 @@ class Shieldon
                         $log_data['ip']          = $this->getIp();
                         $log_data['session_id']  = $this->getSessionId();
                         $log_data['action_code'] = $actionCode;
-                        $log_data['reason_code'] = 0;
                         $log_data['timesamp']    = time();
 
                         $this->shieldon->logger->add( $log_data );
@@ -1107,7 +1085,6 @@ class Shieldon
                 $log_data['ip']          = $this->getIp();
                 $log_data['session_id']  = $this->getSessionId();
                 $log_data['action_code'] = self::LOG_PAGEVIEW;
-                $log_data['reason_code'] = 0;
                 $log_data['timesamp']    = time();
 
                 $this->logger->add( $log_data );
@@ -1275,6 +1252,10 @@ class Shieldon
      */
     public function getSessionId(): string
     {
+        if ((php_sapi_name() === 'cli')) {
+            return '_php_cli_';
+        }
+
         return $this->sessionId;
     }
 
@@ -1302,5 +1283,3 @@ EOF;
         return $jsString;
     }
 }
-
-
