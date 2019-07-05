@@ -57,7 +57,7 @@ class LogParserTest extends \PHPUnit\Framework\TestCase
          *  LOG_CAPTCHA = 99
          */
 
-        $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon', date('Ymd'));
+        $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
@@ -143,6 +143,7 @@ class LogParserTest extends \PHPUnit\Framework\TestCase
         /**
          * Let's start parsing logs.
          */
+        $parser = new LogParser(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
         
     }

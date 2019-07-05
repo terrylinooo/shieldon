@@ -161,9 +161,9 @@ class LogParser
 	 *
 	 * @param string $type Period type.
 	 *
-	 * @return void
+	 * @return self
 	 */
-	public function parsePeriodData(string $type = 'today')
+	public function parsePeriodData(string $type = 'today'): self
 	{
 		switch ($type) {
 
@@ -172,7 +172,7 @@ class LogParser
 
 				// Set start date and end date.
 				$startDate = date('Ymd', strtotime('yesterday'));
-				$endDate   = date('Ymd', strtotime('yesterday'));
+				$endDate = date('Ymd', strtotime('yesterday'));
 				break;
 	
 			case 'past_seven_days':
@@ -267,6 +267,8 @@ class LogParser
 				}
 			}
 		}
+
+		return $this;
 	}
 	
     /**
@@ -274,11 +276,13 @@ class LogParser
 	 *
 	 * @param string $type Period type.
 	 *
-     * @return void
+     * @return self
      */
-	public function prepare(string $type = 'today'): void
+	public function prepare(string $type = 'today'): self
 	{
 		$this->parsePeriodData($type);
+
+		return $this;
 	}
 
     /**
@@ -312,6 +316,91 @@ class LogParser
 	}
 
 	/**
+	 * Get parsed perid data.
+	 *
+	 * @param string $ip   IP address.
+	 * @param string $type Period type.
+	 *
+	 * @return array
+	 */
+	public function getParsedIpData($ip = '', $type = 'today'): array
+	{
+		if (empty($ip)) {
+			return [];
+		}
+
+		$results['captcha_chart_string']  = '';  // string
+		$results['pageview_chart_string'] = '';  // string
+		$results['captcha_success_count'] = 0;   // integer
+		$results['captcha_failure_count'] = 0;   // integer
+		$results['captcha_count'] = 0;           // integer
+		$results['pageview_count'] = 0;          // integer
+
+		$ipdData = $this->getIpData($type);
+
+		foreach ($ipdData as $ipInfo) {
+
+			if ($ipInfo['ip'] === $ip) {
+				$results['captcha_success_count'] += $ipInfo['captcha_success_count'];
+				$results['captcha_failure_count'] += $ipInfo['captcha_failure_count'];
+				$results['captcha_count'] += $ipInfo['captcha_count'];
+				$results['pageview_count'] += $ipInfo['pageview_count'];
+			}
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Get parsed perid data.
+	 *
+	 * @return array
+	 */
+	public function getParsedPeriodData($type = 'today'): array
+	{
+		$periodData = $this->getPeriodData($type);
+
+		$results['captcha_chart_string']  = ''; // string
+		$results['pageview_chart_string'] = ''; // string
+		$results['captcha_success_count'] = 0;  // integer
+		$results['captcha_failure_count'] = 0;  // integer
+		$results['captcha_count'] = 0;          // integer
+		$results['pageview_count'] = 0;         // integer
+
+		if (! empty($periodData)) {
+
+			$chartCaptcha = [];
+			$chartPageview = [];
+			$chartCaptchaSuccess = [];
+			$chartCaptchaFailure = [];
+			$labels = [];
+
+			foreach ($periodData as $label => $period) {
+				$chartCaptcha[] = $period['captcha_count'];
+				$chartPageview[] = $period['pageview_count'];
+				$chartCaptchaSuccess[] = $period['captcha_success_count'];
+				$chartCaptchaFailure = $period['captcha_failure_count'];
+				$labels[] = $label;
+			}
+
+			$results['captcha_chart_string'] = implode(',', $chartCaptcha);
+			$results['pageview_chart_string']= implode(',', $chartPageview);
+			$results['captcha_success_chart_string'] = implode(',', $chartCaptchaSuccess);
+			$results['captcha_failure_chart_string'] = implode(',', $chartCaptchaFailure);
+			$results['label_chart_string'] = implode(',', $labels);
+		}
+
+		foreach ($periodData as $t) {
+			$results['captcha_success_count'] += $t['captcha_success_count'];
+			$results['captcha_failure_count'] += $t['captcha_failure_count'];
+			$results['captcha_count'] += $t['captcha_count'];
+			$results['pageview_count'] += $t['pageview_count'];
+		}
+
+		return $results;
+	}
+
+	/**
 	 * Parse log data for showing on dashboard.
 	 *
 	 * @param array  $logActionCode The log action code.
@@ -320,7 +409,7 @@ class LogParser
 	 *
 	 * @return void
 	 */
-	private function parse($log, $t, $k) 
+	private function parse($log, $t, $k): void
 	{
 		$logActionCode = (int) $log['action_code'];
 		$logIp = $log['ip'];
