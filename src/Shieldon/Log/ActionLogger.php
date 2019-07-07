@@ -77,7 +77,7 @@ class ActionLogger
         $this->checkDirectory();
 
         if ('' === $Ymd) {
-            $Ymd = date('Ymd');
+            $Ymd = date('Ymd', time());
         }
 
         $this->file = $Ymd . '.' . $this->extension;

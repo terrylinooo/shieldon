@@ -1066,7 +1066,7 @@ class Shieldon
                         $actionCode = self::LOG_BLACKLIST;
                     }
 
-                    if ( ! empty( $session_id ) ) {
+                    if (! empty( $session_id)) {
                         $log_data['ip']          = $this->getIp();
                         $log_data['session_id']  = $this->getSessionId();
                         $log_data['action_code'] = $actionCode;

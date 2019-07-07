@@ -32,13 +32,6 @@ class LogParser
     public const LOG_CAPTCHA = 99;
 
     /**
-     * Undocumented variable
-     *
-     * @var array
-     */
-    protected $periodUnits = [];
-
-    /**
      * Statistic data fields.
      *
      * @var array
@@ -77,7 +70,14 @@ class LogParser
      *
      * @var ActionLogger
      */
-    protected $logger;
+	protected $logger;
+
+	/**
+	 * Period type.
+	 *
+	 * @var string
+	 */
+	protected $type = 'today';
 
 	/**
 	 * Constructer.
@@ -97,8 +97,8 @@ class LogParser
 			'action_temp_ban_count',
 			'action_unban_count',
 			'blacklist_count',
-			'captcha_failure_percent',
-			'captcha_success_percent',
+			'captcha_failure_percentage',
+			'captcha_success_percentage',
         ];
 
 		// range: today ~ now
@@ -159,51 +159,47 @@ class LogParser
 	/**
 	 * Parse specific period of time of data.
 	 *
-	 * @param string $type Period type.
-	 *
 	 * @return self
 	 */
-	public function parsePeriodData(string $type = 'today'): self
+	public function parsePeriodData(): self
 	{
-		switch ($type) {
+		switch ($this->type) {
 
 			case 'yesterday':
-				$this->periodUnits['yesterday'] = $this->periods['yesterday'];
-
 				// Set start date and end date.
 				$startDate = date('Ymd', strtotime('yesterday'));
-				$endDate = date('Ymd', strtotime('yesterday'));
+				$endDate = date('Ymd');
 				break;
 	
 			case 'past_seven_days':
-				$this->periodUnits['past_seven_days'] = $this->periods['past_seven_days'];
 				$startDate = date('Ymd', strtotime('-7 days'));
 				$endDate = date('Ymd');
 				break;
 
 			case 'this_month':
-				$this->periodUnits['this_month'] = $this->periods['this_month'];
 				$startDate = date('Ym') . '01';
 				$endDate = date('Ym') . '31';
 				break;
 
 			case 'last_month':
-				$this->periodUnits['last_month'] = $this->periods['last_month'];
 				$startDate = date('Ym', strtotime('-1 month')) . '01';
 				$endDate = date('Ym', strtotime('-1 month')) . '31';
 				break;
 
-			case 'today':
-				$this->periodUnits['today'] = $this->periods['today'];
-				$this->periodUnits['past_seven_hours'] = $this->periods['past_seven_hours'];
+			case 'past_seven_hours':
 				$startDate = date('Ymd', strtotime('yesterday'));
+				$endDate = date('Ymd');
+				break;
+
+			case 'today':
+				$startDate = date('Ymd');
 				$endDate = date('Ymd');
 				break;
 
 			default:
 
 				// We also accept querying N days data from logs. For example: `past_365_days`.
-				if (preg_match('/past_([0-9]+)_days/', $type, $matches) ) {
+				if (preg_match('/past_([0-9]+)_days/', $this->type, $matches) ) {
 
 					$dayCount = $matches[1];
 					$startDate = date('Ymd', strtotime('-' . $dayCount . ' days'));
@@ -218,7 +214,6 @@ class LogParser
 					];
 
 				} else {
-					$this->periodUnits['today'] = $this->periods['today'];
 					$startDate = date('Ymd');
 					$endDate = date('Ymd');
 				}
@@ -236,16 +231,16 @@ class LogParser
 			// Add a new field `datetime` that original logs don't have.
 			$log['datetime'] = date('Y-m-d H:i:s', $logTimesamp);
 
-			foreach (array_keys($this->periodUnits) as $t) {
+			foreach (array_keys($this->periods) as $t) {
 
-				for ($i = 0; $i < $this->periodUnits[$t]['display_count']; $i++) {
+				for ($i = 0; $i < $this->periods[$t]['display_count']; $i++) {
 
-					$kTimesamp = $this->periodUnits[$t]['timesamp_begin'] + ($i * $this->periodUnits[$t]['period']);
+					$kTimesamp = $this->periods[$t]['timesamp_begin'] + ($i * $this->periods[$t]['period']);
 
 					$detailTimesampBegin = $kTimesamp;
-					$detailTimesampEnd = $kTimesamp + $this->periodUnits[$t]['period'];
+					$detailTimesampEnd = $kTimesamp + $this->periods[$t]['period'];
 
-					$k = date($this->periodUnits[$t]['display_format'], $kTimesamp);
+					$k = date($this->periods[$t]['display_format'], $kTimesamp);
 
 					// Initialize all the counters.
 					foreach ($this->fields as $field) {
@@ -280,7 +275,8 @@ class LogParser
      */
 	public function prepare(string $type = 'today'): self
 	{
-		$this->parsePeriodData($type);
+		$this->type = $type;
+		$this->parsePeriodData($this->type);
 
 		return $this;
 	}
@@ -288,14 +284,12 @@ class LogParser
     /**
      * Get data
 	 *
-	 * @param string $type Period type.
-	 *
      * @return array
      */
-	public function getPeriodData(string $type = 'today')
+	public function getPeriodData()
 	{
-		if (! empty($this->periodDetail[$type])) {
-			return $this->periodDetail[$type];
+		if (! empty($this->periodDetail[$this->type])) {
+			return $this->periodDetail[$this->type];
 		}
         return [];
 	}
@@ -303,14 +297,12 @@ class LogParser
     /**
      * Get data
 	 *
-	 * @param string $type Period type.
-     *
      * @return array
      */
-	public function getIpData(string $type = 'today')
+	public function getIpData()
 	{
-		if (! empty($this->ipDetail[$type])) {
-			return $this->ipDetail[$type];
+		if (! empty($this->ipDetail[$this->type])) {
+			return $this->ipDetail[$this->type];
 		}
         return [];
 	}
@@ -319,32 +311,53 @@ class LogParser
 	 * Get parsed perid data.
 	 *
 	 * @param string $ip   IP address.
-	 * @param string $type Period type.
 	 *
 	 * @return array
 	 */
-	public function getParsedIpData($ip = '', $type = 'today'): array
+	public function getParsedIpData($ip = ''): array
 	{
 		if (empty($ip)) {
 			return [];
 		}
 
-		$results['captcha_chart_string']  = '';  // string
-		$results['pageview_chart_string'] = '';  // string
-		$results['captcha_success_count'] = 0;   // integer
-		$results['captcha_failure_count'] = 0;   // integer
-		$results['captcha_count'] = 0;           // integer
-		$results['pageview_count'] = 0;          // integer
+		$results['captcha_chart_string']  = '';     // string
+		$results['pageview_chart_string'] = '';     // string
+		$results['captcha_success_count'] = 0;      // integer
+		$results['captcha_failure_count'] = 0;      // integer
+		$results['captcha_count'] = 0;              // integer
+		$results['pageview_count'] = 0;             // integer
+		$results['captcha_percentageage'] = 0;      // integer
+		$results['captcha_failure_percentage'] = 0; // integer
+		$results['captcha_success_percentage'] = 0; // integer
 
-		$ipdData = $this->getIpData($type);
+		$results['action_ban_count'] = 0;           // integer
+		$results['action_temp_ban_count'] = 0;      // integer
+		$results['action_unban_count'] = 0;         // integer
+		$results['blacklist_count'] = 0;            // integer
 
-		foreach ($ipdData as $ipInfo) {
+		$ipdData = $this->getIpData();
 
-			if ($ipInfo['ip'] === $ip) {
-				$results['captcha_success_count'] += $ipInfo['captcha_success_count'];
-				$results['captcha_failure_count'] += $ipInfo['captcha_failure_count'];
-				$results['captcha_count'] += $ipInfo['captcha_count'];
-				$results['pageview_count'] += $ipInfo['pageview_count'];
+		if (! empty($ipdData)) {
+
+			foreach ($ipdData as $ipKey => $ipInfo) {
+
+				if ($ipKey === $ip) {
+					$results['captcha_success_count'] += $ipInfo['captcha_success_count'];
+					$results['captcha_failure_count'] += $ipInfo['captcha_failure_count'];
+					$results['captcha_count'] += $ipInfo['captcha_count'];
+					$results['pageview_count'] += $ipInfo['pageview_count'];
+
+					$results['action_ban_count'] += $ipInfo['action_ban_count'];
+					$results['action_temp_ban_count'] += $ipInfo['action_temp_ban_count'];
+					$results['action_unban_count'] += $ipInfo['action_unban_count'];
+					$results['blacklist_count'] += $ipInfo['blacklist_count'];
+				}
+			}
+
+			if ($results['captcha_count'] > 0) {
+				$results['captcha_percentageage'] = (int) (round($results['captcha_count'] / ($results['captcha_count'] + $results['pageview_count']), 2) * 100);
+				$results['captcha_failure_percentage'] = (int) (round($results['captcha_failure_count'] / $results['captcha_count'], 2) * 100);
+				$results['captcha_success_percentage'] = (int) (round($results['captcha_success_count'] / $results['captcha_count'], 2) * 100);
 			}
 		}
 
@@ -356,16 +369,24 @@ class LogParser
 	 *
 	 * @return array
 	 */
-	public function getParsedPeriodData($type = 'today'): array
+	public function getParsedPeriodData(): array
 	{
-		$periodData = $this->getPeriodData($type);
+		$periodData = $this->getPeriodData();
 
-		$results['captcha_chart_string']  = ''; // string
-		$results['pageview_chart_string'] = ''; // string
-		$results['captcha_success_count'] = 0;  // integer
-		$results['captcha_failure_count'] = 0;  // integer
-		$results['captcha_count'] = 0;          // integer
-		$results['pageview_count'] = 0;         // integer
+		$results['captcha_chart_string']  = '';     // string
+		$results['pageview_chart_string'] = '';     // string
+		$results['captcha_success_count'] = 0;      // integer
+		$results['captcha_failure_count'] = 0;      // integer
+		$results['captcha_count'] = 0;              // integer
+		$results['pageview_count'] = 0;             // integer
+		$results['captcha_percentageage'] = 0;      // integer
+		$results['captcha_failure_percentage'] = 0; // integer
+		$results['captcha_success_percentage'] = 0; // integer
+
+		$results['action_ban_count'] = 0;           // integer
+		$results['action_temp_ban_count'] = 0;      // integer
+		$results['action_unban_count'] = 0;         // integer
+		$results['blacklist_count'] = 0;            // integer
 
 		if (! empty($periodData)) {
 
@@ -379,8 +400,18 @@ class LogParser
 				$chartCaptcha[] = $period['captcha_count'];
 				$chartPageview[] = $period['pageview_count'];
 				$chartCaptchaSuccess[] = $period['captcha_success_count'];
-				$chartCaptchaFailure = $period['captcha_failure_count'];
+				$chartCaptchaFailure[] = $period['captcha_failure_count'];
 				$labels[] = $label;
+
+				$results['captcha_success_count'] += $period['captcha_success_count'];
+				$results['captcha_failure_count'] += $period['captcha_failure_count'];
+				$results['captcha_count'] += $period['captcha_count'];
+				$results['pageview_count'] += $period['pageview_count'];
+
+				$results['action_ban_count'] += $period['action_ban_count'];
+				$results['action_temp_ban_count'] += $period['action_temp_ban_count'];
+				$results['action_unban_count'] += $period['action_unban_count'];
+				$results['blacklist_count'] += $period['blacklist_count'];
 			}
 
 			$results['captcha_chart_string'] = implode(',', $chartCaptcha);
@@ -388,13 +419,12 @@ class LogParser
 			$results['captcha_success_chart_string'] = implode(',', $chartCaptchaSuccess);
 			$results['captcha_failure_chart_string'] = implode(',', $chartCaptchaFailure);
 			$results['label_chart_string'] = implode(',', $labels);
-		}
 
-		foreach ($periodData as $t) {
-			$results['captcha_success_count'] += $t['captcha_success_count'];
-			$results['captcha_failure_count'] += $t['captcha_failure_count'];
-			$results['captcha_count'] += $t['captcha_count'];
-			$results['pageview_count'] += $t['pageview_count'];
+			if ($results['captcha_count'] > 0) {
+				$results['captcha_percentageage'] = (int) (round($results['captcha_count'] / ($results['captcha_count'] + $results['pageview_count']), 2) * 100);
+				$results['captcha_failure_percentage'] = (int) (round($results['captcha_failure_count'] / $results['captcha_count'], 2) * 100);
+				$results['captcha_success_percentage'] = (int) (round($results['captcha_success_count'] / $results['captcha_count'], 2) * 100);
+			}
 		}
 
 		return $results;
@@ -412,55 +442,52 @@ class LogParser
 	private function parse($log, $t, $k): void
 	{
 		$logActionCode = (int) $log['action_code'];
-		$logIp = $log['ip'];
+		$ip = $log['ip'];
 		$sessionId = $log['session_id'];
 
-		$this->ipDetail[$t][$logIp]['session_id'][$sessionId ] = 1;
+		$this->ipDetail[$t][$ip]['session_id'][$sessionId ] = 1;
 
 		if ($logActionCode === self::LOG_TEMPORARILY_BAN) {
 			$this->periodDetail[$t][$k]['action_temp_ban_count']++;
-			$this->ipDetail[$t][$logIp]['action_temp_ban_count']++;
+			$this->periodDetail[$t][$k]['captcha_count']++;
+			$this->periodDetail[$t][$k]['captcha_failure_count']++;
+
+			$this->ipDetail[$t][$ip]['action_temp_ban_count']++;
+			$this->ipDetail[$t][$ip]['captcha_count']++;
+			$this->ipDetail[$t][$ip]['captcha_failure_count']++;
 		}
 
 		if ($logActionCode === self::LOG_BAN) {
 			$this->periodDetail[$t][$k]['action_ban_count']++;
-			$this->ipDetail[$t][$logIp]['action_ban_count']++;
+			$this->ipDetail[$t][$ip]['action_ban_count']++;
 		}
 
 		if ($logActionCode === self::LOG_UNBAN) {
 			$this->periodDetail[$t][$k]['action_unban_count']++;
 			$this->periodDetail[$t][$k]['captcha_success_count']++;
-			$this->ipDetail[$t][$logIp]['action_unban_count']++;
-			$this->ipDetail[$t][$logIp]['captcha_success_count']++;
+			$this->periodDetail[$t][$k]['captcha_failure_count']--;
+
+			$this->ipDetail[$t][$ip]['action_unban_count']++;
+			$this->ipDetail[$t][$ip]['captcha_success_count']++;
+			$this->ipDetail[$t][$ip]['captcha_failure_count']--;
 		}
 
 		if ($logActionCode === self::LOG_CAPTCHA) {
 			$this->periodDetail[$t][$k]['captcha_count']++;
-			$this->ipDetail[$t][$logIp ]['captcha_count']++;
+			$this->periodDetail[$t][$k]['captcha_failure_count']++;
+
+			$this->ipDetail[$t][$ip]['captcha_count']++;
+			$this->ipDetail[$t][$ip]['captcha_failure_count']++;
 		}
 
 		if ($logActionCode === self::LOG_BLACKLIST) {
 			$this->periodDetail[$t][$k]['blacklist_count']++;
-			$this->ipDetail[$t][$logIp]['blacklist_count']++;
+			$this->ipDetail[$t][$ip]['blacklist_count']++;
 		}
 
 		if ($logActionCode === self::LOG_PAGEVIEW) {
 			$this->periodDetail[$t][$k]['pageview_count']++;
-			$this->ipDetail[$t][$logIp]['pageview_count']++;
-		}
-
-		if ($this->periodDetail[$t][$k]['captcha_count'] > 0) {
-
-			// captcha_count should be the same as action_temp_ban_count, otherwise others were failed to solve CAPTCHA.
-			$this->periodDetail[$t][$k]['captcha_failure_count'] = $this->periodDetail[$t][$k]['captcha_count'] - $this->periodDetail[$t][$k]['captcha_success_count'];
-			$this->periodDetail[$t][$k]['captcha_failure_percent'] = round($this->periodDetail[$t][$k]['captcha_failure_count'] / $this->periodDetail[$t][$k]['captcha_count'], 2 ) * 100;
-			$this->periodDetail[$t][$k]['captcha_success_percent'] = round($this->periodDetail[$t][$k]['captcha_success_count'] / $this->periodDetail[$t][$k]['captcha_count'], 2 ) * 100;
-			$this->periodDetail[$t][$k]['captcha_percent'] = round($this->ipDetail[$t][$logIp]['captcha_count'] / ($this->ipDetail[$t][$logIp]['captcha_count'] + $this->ipDetail[$t][$logIp]['pageview_count'] ), 2 ) * 100;
-
-			$this->ipDetail[$t][$logIp]['captcha_failure_count'] = $this->ipDetail[$t][$logIp]['captcha_count'] - $this->ipDetail[$t][$logIp]['captcha_success_count'];
-			$this->ipDetail[$t][$logIp]['captcha_failure_percent'] = round($this->ipDetail[$t][$logIp]['captcha_failure_count'] / $this->ipDetail[$t][$logIp]['captcha_count'], 2 ) * 100;
-			$this->ipDetail[$t][$logIp]['captcha_success_percent'] = round($this->ipDetail[$t][$logIp]['captcha_success_count'] / $this->ipDetail[$t][$logIp]['captcha_count'], 2 ) * 100;
-			$this->ipDetail[$t][$logIp]['captcha_percent'] = round($this->ipDetail[$t][$logIp]['captcha_count'] / ($this->ipDetail[$t][$logIp]['captcha_count'] + $this->ipDetail[$t][$logIp]['pageview_count'] ), 2 ) * 100;
+			$this->ipDetail[$t][$ip]['pageview_count']++;
 		}
 	}
 }
