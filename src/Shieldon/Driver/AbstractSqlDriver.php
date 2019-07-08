@@ -253,14 +253,18 @@ abstract class AbstractSqlDriver extends DriverProvider
 
             case 'session':
                 $tableName = $this->tableSessions;
+                
                 $logWhere['id'] = $data['id'];
                 $logData = $data;
                 break;
+
+                
         }
 
         if ($this->checkExist($ip, $type)) {
             return $this->update($tableName, $logData, $logWhere);
         } else {
+            var_dump($logData);
             return (bool) $this->insert($tableName, $logData);
         }
     }

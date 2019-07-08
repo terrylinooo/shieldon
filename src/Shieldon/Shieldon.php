@@ -962,6 +962,7 @@ class Shieldon
 
         // Use default template if there is no custom HTML template.
         if (empty($this->html[$type])) {
+
             $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.phtml';
 
             if (empty($this->properties['display_credit_link'])) {
@@ -980,6 +981,9 @@ class Shieldon
                 if (! defined('SHIELDON_VIEW')) {
                     define('SHIELDON_VIEW', true);
                 }
+
+                $css = require self::SHIELDON_DIR . '/../views/css-default.php';
+                $lang = require self::SHIELDON_DIR . '/../views/lang.php';
 
                 ob_start();
                 require $viewPath;
@@ -1014,6 +1018,7 @@ class Shieldon
 
         // Remove unused variable notices generated from PHP intelephense.
         unset($langCode, $showCreditLink, $showOnlineInformation, $showLineupInformation);
+        unset($css, $lang);
 
         if ($echo) {
 

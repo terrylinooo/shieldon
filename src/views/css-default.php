@@ -2,8 +2,6 @@
 
 $css = <<< EOF
 
-<style>
-
     :selection { background-color: #E13300; color: white; }
     ::-moz-selection { background-color: #E13300; color: white; }
 
@@ -41,10 +39,9 @@ $css = <<< EOF
         padding: 12px 10px 12px 10px;
     }
 
-    #container {
+    .so-container {
         margin: 10px;
         border: 1px solid #D0D0D0;
-
     }
 
     fieldset {
@@ -89,27 +86,25 @@ $css = <<< EOF
         color: #0069ff;
     } 
 
-    .credit {
+    .so-credit {
         padding: 0 10px 10px 10px;
         font-size: 12px;
     }
 
-    .protection-icon {
+    .so-icon {
         padding: 10px;
         text-align: center;
     }
 
-    .protection-icon img {
+    .so-icon img {
         width: 250px;
         height: 250px;
     }
 
-    .infobar {
+    .so-info {
         text-align: center;
         margin: 10px 0;
     }
-
-</style>
 
 EOF;
 
