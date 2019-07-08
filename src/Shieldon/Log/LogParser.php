@@ -82,8 +82,8 @@ class LogParser
 	/**
 	 * Constructer.
 	 */
-    public function __construct(string $directory = '')
-    {
+	public function __construct(string $directory = '') 
+	{
         if (! isset($this->logger)) {
             $this->logger = new Logger($directory);
         }
@@ -97,6 +97,7 @@ class LogParser
 			'action_temp_ban_count',
 			'action_unban_count',
 			'blacklist_count',
+			'session_limit_count',
 			'captcha_failure_percentage',
 			'captcha_success_percentage',
         ];
@@ -121,8 +122,8 @@ class LogParser
 
 		// range: past_seven_hours ~ now
 		$this->periods['past_seven_hours'] = [
-			'timesamp_begin' => strtotime(date('Y-m-d H:00:00', strtotime('-7 hours'))),
-			'timesamp_end'   => strtotime(date('Y-m-d H:00:00', strtotime('-1 hours'))),
+			'timesamp_begin' => strtotime(gmdate('Y-m-d H:00:00', strtotime('-7 hours'))),
+			'timesamp_end'   => strtotime(gmdate('Y-m-d H:00:00', strtotime('-1 hours'))),
 			'display_format' =>'H:00',
 			'display_count'  => 7,
 			'period'         => 3600,
@@ -130,7 +131,7 @@ class LogParser
 
 		// range: past_seven_days ~ today
 		$this->periods['past_seven_days'] = [
-			'timesamp_begin' => strtotime(date('Ymd', strtotime('-7 days'))),
+			'timesamp_begin' => strtotime(gmdate('Ymd', strtotime('-7 days'))),
 			'timesamp_end'   => strtotime('today'),
 			'display_format' => 'D',
 			'display_count'  => 7,
@@ -139,19 +140,19 @@ class LogParser
 
 		// range: last_month ~ today
 		$this->periods['this_month'] = [
-			'timesamp_begin' => strtotime(date('Ym' . '01')),
+			'timesamp_begin' => strtotime(gmdate('Ym' . '01')),
 			'timesamp_end'   => strtotime('today'),
 			'display_format' =>'Y.m.d',
-			'display_count'  => date('j'),
+			'display_count'  => gmdate('j'),
 			'period'         => 86400,   
 		];
 
 		// range: last_month ~ this_month
 		$this->periods['last_month'] = [
-			'timesamp_begin' => strtotime(date('Ym' . '01', strtotime('-1 months'))),
-			'timesamp_end'   => strtotime(date('Ym' . '01')),
+			'timesamp_begin' => strtotime(gmdate('Ym' . '01', strtotime('-1 months'))),
+			'timesamp_end'   => strtotime(gmdate('Ym' . '01')),
 			'display_format' =>'Y.m.d',
-			'display_count'  => date('j', strtotime('-1 months')),
+			'display_count'  => gmdate('j', strtotime('-1 months')),
 			'period'         => 86400,          
 		];
 	}
@@ -193,7 +194,7 @@ class LogParser
 
 			case 'today':
 				$startDate = date('Ymd');
-				$endDate = date('Ymd');
+				$endDate = '';
 				break;
 
 			default:
@@ -215,7 +216,8 @@ class LogParser
 
 				} else {
 					$startDate = date('Ymd');
-					$endDate = date('Ymd');
+					$endDate = '';
+					$this->periods[$this->type] = $this->periods['today'];
 				}
 			// endswitch;
 		}
@@ -231,6 +233,7 @@ class LogParser
 			// Add a new field `datetime` that original logs don't have.
 			$log['datetime'] = date('Y-m-d H:i:s', $logTimesamp);
 
+			
 			foreach (array_keys($this->periods) as $t) {
 
 				for ($i = 0; $i < $this->periods[$t]['display_count']; $i++) {
@@ -276,6 +279,7 @@ class LogParser
 	public function prepare(string $type = 'today'): self
 	{
 		$this->type = $type;
+
 		$this->parsePeriodData($this->type);
 
 		return $this;
@@ -334,6 +338,7 @@ class LogParser
 		$results['action_temp_ban_count'] = 0;      // integer
 		$results['action_unban_count'] = 0;         // integer
 		$results['blacklist_count'] = 0;            // integer
+		$results['session_limit_count'] = 0;        // integer
 
 		$ipdData = $this->getIpData();
 
@@ -351,6 +356,7 @@ class LogParser
 					$results['action_temp_ban_count'] += $ipInfo['action_temp_ban_count'];
 					$results['action_unban_count'] += $ipInfo['action_unban_count'];
 					$results['blacklist_count'] += $ipInfo['blacklist_count'];
+					$results['session_limit_count'] += $ipInfo['session_limit_count'];
 				}
 			}
 
@@ -387,6 +393,7 @@ class LogParser
 		$results['action_temp_ban_count'] = 0;      // integer
 		$results['action_unban_count'] = 0;         // integer
 		$results['blacklist_count'] = 0;            // integer
+		$results['session_limit_count'] = 0;        // integer
 
 		if (! empty($periodData)) {
 
@@ -412,6 +419,7 @@ class LogParser
 				$results['action_temp_ban_count'] += $period['action_temp_ban_count'];
 				$results['action_unban_count'] += $period['action_unban_count'];
 				$results['blacklist_count'] += $period['blacklist_count'];
+				$results['session_limit_count'] += $period['session_limit_count'];
 			}
 
 			$results['captcha_chart_string'] = implode(',', $chartCaptcha);
@@ -488,6 +496,11 @@ class LogParser
 		if ($logActionCode === self::LOG_PAGEVIEW) {
 			$this->periodDetail[$t][$k]['pageview_count']++;
 			$this->ipDetail[$t][$ip]['pageview_count']++;
+		}
+
+		if ($logActionCode === self::LOG_LIMIT) {
+			$this->periodDetail[$t][$k]['session_limit_count']++;
+			$this->ipDetail[$t][$ip]['session_limit_count']++;
 		}
 	}
 }

@@ -160,6 +160,7 @@ class ActionLogger
             $logFile = '';
     
             foreach ($daterange as $date) {
+                
                 $thisDayLogFile = $this->directory . '/' . $date->format('Ymd') . '.' . $this->extension;
 
                 if (file_exists($thisDayLogFile)) {

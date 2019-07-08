@@ -4,7 +4,7 @@
  * @name        Shieldon
  * @author      Terry Lin
  * @link        https://github.com/terrylinooo/shieldon
- * @version     1.2.0
+ * @version     2.0.0
  * @license     MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -416,12 +416,12 @@ class Shieldon
                         // If an user's pageview count is more than the time period limit
                         // He or she will get banned.
                         if ($logData["pageviews_{$timeUnit}"] > $this->properties['time_unit_quota'][$timeUnit]) {
-                            switch ($timeUnit) {
-                                case 's': $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_SECOND); break;
-                                case 'm': $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_MINUTE); break;
-                                case 'h': $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_HOUR);   break;
-                                case 'd': $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_DAY);    break;
-                            }
+
+                            if ($timeUnit === 's') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_SECOND);
+                            if ($timeUnit === 'm') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_MINUTE);
+                            if ($timeUnit === 'h') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_HOUR);
+                            if ($timeUnit === 'd') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_DAY);
+                            
                             return self::RESPONSE_TEMPORARILY_DENY;
                         }
                     }
@@ -830,9 +830,9 @@ class Shieldon
         }
 
         $this->action(self::ACTION_UNBAN, self::REASON_MANUAL_BAN, $ip);
-        $this->result = self::RESPONSE_ALLOW;
+        $this->_log(self::ACTION_UNBAN);
 
-        $this->log(self::ACTION_UNBAN);
+        $this->result = self::RESPONSE_ALLOW;
 
         return $this;
     }
@@ -1043,55 +1043,50 @@ class Shieldon
     {
         $result = $this->_run();
 
-        if ($result !== $this::RESPONSE_ALLOW) {
+        if ($result !== self::RESPONSE_ALLOW) {
 
-            if ($this->captchaResponse()) {
+            // Current session did not pass the CAPTCHA, it is still stuck in CAPTCHA page.
+            $actionCode = self::LOG_CAPTCHA;
 
-                // Unban current session.
-                $this->unban();
-
-                // Because current session is unbanned, we replace its response code to RESPONSE_ALLOW.
-                $result = $this::RESPONSE_ALLOW;
-
-            } else {
-
-                if (null !== $this->logger) {
-
-                    // Current session did not pass the CAPTCHA, it is still stuck in CAPTCHA page.
-                    $actionCode = self::LOG_CAPTCHA;
-
-                    // If current session's respone code is RESPONSE_DENY, record it as `blacklist_count` in our logs.
-                    // It is stuck in warning page, not CAPTCHA.
-                    if ($result === self::RESPONSE_DENY) {
-                        $actionCode = self::LOG_BLACKLIST;
-                    }
-
-                    if (! empty( $session_id)) {
-                        $log_data['ip']          = $this->getIp();
-                        $log_data['session_id']  = $this->getSessionId();
-                        $log_data['action_code'] = $actionCode;
-                        $log_data['timesamp']    = time();
-
-                        $this->shieldon->logger->add( $log_data );
-                    }
-                }
+            // If current session's respone code is RESPONSE_DENY, record it as `blacklist_count` in our logs.
+            // It is stuck in warning page, not CAPTCHA.
+            if ($result === self::RESPONSE_DENY) {
+                $actionCode = self::LOG_BLACKLIST;
             }
+
+            if ($result === self::RESPONSE_LIMIT) {
+                $actionCode = self::LOG_LIMIT;
+            }
+
+            $this->_log($actionCode);
 
         } else {
 
-            if (null !== $this->logger) {
-
-                // Just count the page view.
-                $log_data['ip']          = $this->getIp();
-                $log_data['session_id']  = $this->getSessionId();
-                $log_data['action_code'] = self::LOG_PAGEVIEW;
-                $log_data['timesamp']    = time();
-
-                $this->logger->add( $log_data );
-            }
+            $this->_log(self::LOG_PAGEVIEW);
         }
 
         return $result;
+    }
+
+    /**
+     * Logger.
+     *
+     * @param integer $actionCode
+     *
+     * @return void
+     */
+    private function _log(int $actionCode): void
+    {
+        if (null !== $this->logger) {
+
+            // Just count the page view.
+            $logData['ip']          = $this->getIp();
+            $logData['session_id']  = $this->getSessionId();
+            $logData['action_code'] = $actionCode;
+            $logData['timesamp']    = time();
+
+            $this->logger->add($logData);
+        }
     }
 
     /**
@@ -1252,11 +1247,17 @@ class Shieldon
      */
     public function getSessionId(): string
     {
+        if (! empty($this->sessionId)) {
+            return $this->sessionId;
+        }
+
         if ((php_sapi_name() === 'cli')) {
             return '_php_cli_';
         }
 
+        // @codeCoverageIgnoreStart
         return $this->sessionId;
+        // @codeCoverageIgnoreEnd
     }
 
     /**

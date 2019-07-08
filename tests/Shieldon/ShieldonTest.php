@@ -378,8 +378,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         sleep(3);
         $result = $shieldon->run();
 
-
-
         $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
 
         $result = $shieldon->run();
