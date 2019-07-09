@@ -264,7 +264,6 @@ abstract class AbstractSqlDriver extends DriverProvider
         if ($this->checkExist($ip, $type)) {
             return $this->update($tableName, $logData, $logWhere);
         } else {
-            var_dump($logData);
             return (bool) $this->insert($tableName, $logData);
         }
     }
