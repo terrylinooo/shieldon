@@ -381,6 +381,7 @@ class LogParser
 
 		$results['captcha_chart_string']  = '';     // string
 		$results['pageview_chart_string'] = '';     // string
+		$results['label_chart_string'] = '';        // string
 		$results['captcha_success_count'] = 0;      // integer
 		$results['captcha_failure_count'] = 0;      // integer
 		$results['captcha_count'] = 0;              // integer
@@ -426,7 +427,7 @@ class LogParser
 			$results['pageview_chart_string']= implode(',', $chartPageview);
 			$results['captcha_success_chart_string'] = implode(',', $chartCaptchaSuccess);
 			$results['captcha_failure_chart_string'] = implode(',', $chartCaptchaFailure);
-			$results['label_chart_string'] = implode(',', $labels);
+			$results['label_chart_string'] = "'" . implode("','", $labels) . "'";
 
 			if ($results['captcha_count'] > 0) {
 				$results['captcha_percentageage'] = (int) (round($results['captcha_count'] / ($results['captcha_count'] + $results['pageview_count']), 2) * 100);

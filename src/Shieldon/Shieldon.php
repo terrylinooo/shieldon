@@ -4,7 +4,7 @@
  * @name        Shieldon
  * @author      Terry Lin
  * @link        https://github.com/terrylinooo/shieldon
- * @version     2.0.0
+ * @version     2.0.2
  * @license     MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy

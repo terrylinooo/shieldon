@@ -234,7 +234,7 @@ class LogParserTest extends \PHPUnit\Framework\TestCase
                 $this->assertSame(1, $periodData['session_limit_count']);
                 $this->assertSame('2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['captcha_success_chart_string']);
                 $this->assertSame('3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['captcha_failure_chart_string']);
-                $this->assertSame('12:00 am,01:00 am,02:00 am,03:00 am,04:00 am,05:00 am,06:00 am,07:00 am,08:00 am,09:00 am,10:00 am,11:00 am,12:00 pm,01:00 pm,02:00 pm,03:00 pm,04:00 pm,05:00 pm,06:00 pm,07:00 pm,08:00 pm,09:00 pm,10:00 pm,11:00 pm', $periodData['label_chart_string']);
+                $this->assertSame("'12:00 am','01:00 am','02:00 am','03:00 am','04:00 am','05:00 am','06:00 am','07:00 am','08:00 am','09:00 am','10:00 am','11:00 am','12:00 pm','01:00 pm','02:00 pm','03:00 pm','04:00 pm','05:00 pm','06:00 pm','07:00 pm','08:00 pm','09:00 pm','10:00 pm','11:00 pm'", $periodData['label_chart_string']);
 				break;
 
 			default:

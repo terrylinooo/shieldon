@@ -257,8 +257,6 @@ abstract class AbstractSqlDriver extends DriverProvider
                 $logWhere['id'] = $data['id'];
                 $logData = $data;
                 break;
-
-                
         }
 
         if ($this->checkExist($ip, $type)) {
