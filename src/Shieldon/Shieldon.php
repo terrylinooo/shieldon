@@ -460,9 +460,10 @@ class Shieldon
             // If $ipDetail[ip] is empty.
             // It means that the user is first time visiting our webiste.
 
-            $logData['ip']       = $this->ip;
-            $logData['session']  = $this->sessionId;
-            $logData['hostname'] = $this->ipResolvedHostname;
+            $logData['ip']        = $this->ip;
+            $logData['session']   = $this->sessionId;
+            $logData['hostname']  = $this->ipResolvedHostname;
+            $logData['last_time'] = $now;
 
             foreach ($resetPageviews as $key => $resetStatus) {
                 $logData["first_time_{$key}"] = $now;
