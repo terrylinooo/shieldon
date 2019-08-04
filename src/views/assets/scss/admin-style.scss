@@ -1,0 +1,80 @@
+body {
+	background-color: #f1f1f1;
+	font-size: 13px;
+}
+
+.shieldon-info-bar {
+	clear: both;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: #ffffff;
+
+	.version-info {
+		margin-right: 20px;
+		padding: 10px;
+		background-color: rgba(255, 255, 255, 0);
+	}
+
+	.logo-info {
+		img {
+			height: 60px;
+		}
+	}
+
+	a {
+		text-decoration: none;
+		margin-right: 10px;
+	}
+}
+
+code.tips {
+	border-left: 5px #dddddd solid;
+	border-radius: 3px;
+	margin-top: 10px;
+	display: inline-block;
+	overflow: hidden;
+	background-color: #ffffff;
+	padding: 10px;
+}
+
+.so-databable-heading {
+	margin: 20px 0 20px;
+	font-weight: bold;
+	border-left: 9px #00b38a solid;
+	padding-left: 15px;
+	font-size: 22px;
+}
+
+.so-datatable-description {
+	font-size: 13px;
+	font-weight: normal;
+	color: #91b4a8;
+	margin-bottom: 20px;
+}
+
+.merged-field {
+	border-left: 1px #ffffff solid;
+	border-bottom: 0 !important;
+	font-size: 12px !important;
+	font-weight: 400 !important;
+	text-align: center;
+}
+
+.so-timezone {
+	padding: 10px;
+	text-align: right;
+	font-size: 12px;
+	color: #999999;
+}
+
+.so-sidebar-menu {
+	background-color: #333333;
+	color: #ffffff;
+	min-height: calc(100vh - 60px);
+	overflow: hidden;
+}
+
+
+@import "dashboard";
+@import "datatable";

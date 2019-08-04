@@ -964,7 +964,7 @@ class Shieldon
         // Use default template if there is no custom HTML template.
         if (empty($this->html[$type])) {
 
-            $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.phtml';
+            $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.php';
 
             if (empty($this->properties['display_credit_link'])) {
                 $showCreditLink = false;
