@@ -73,7 +73,77 @@ code.tips {
 	color: #ffffff;
 	min-height: calc(100vh - 60px);
 	overflow: hidden;
+	padding: 0;
+
+	.section-title {
+		margin-top: 25px;
+		margin-bottom: 10px;
+	}
+
+	a {
+		color: #ffffff;
+		padding-left: 30px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+
+	.nav-item {
+		padding: 0 0 0 10px;
+
+		a {
+			&:hover {
+				background-color: #222;
+			}
+		}
+
+		&.active {
+
+			a {
+				color: #333333;
+				font-weight: bold;
+				background-color: #f1f1f1;
+				position: relative;
+
+				&:hover {
+					color: #222222;
+				}
+
+				&:before {
+					display: inline-block;
+					content: '';
+					position: absolute;
+					top: 0;
+					left: 0;
+					border-color: transparent;
+					border-style: solid;
+					border-width: 3px;
+					border-left-color: #333;
+					border-top-color: #333;
+				}
+			}
+		}
+	}
+
+	i {
+		background-color: #ffffff;
+		color: #00b38a;
+		width: 26px;
+		height: 26px;
+		line-height: 26px;
+		text-align: center;
+		border-radius: 50%;
+		font-size: 18px;
+		margin-right: 15px;
+	}
 }
+
+.so-content {
+	padding: 0;
+	border-top: 1px #dddddd solid;
+	border-left: 1px #f1f1f1 solid;
+}
+
+
 
 
 @import "dashboard";

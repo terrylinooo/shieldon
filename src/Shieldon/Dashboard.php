@@ -69,19 +69,48 @@ class Dashboard
 	}
 
 	/**
+	 * Display pages.
+	 *
+	 * @param string $slug
+	 * @return void
+	 */
+	public function page()
+	{
+		$slug = $_GET['so_page'] ?? '';
+
+		switch($slug) {
+
+			case 'session_table':
+				$this->sessionTable();
+				break;
+
+			case 'ip_log_table':
+				$this->ipLogTable();
+				break;
+
+			case 'ip_rule_table':
+				$this->ruleTable();
+				break;
+
+			case 'dashboard_today':
+			case 'dashboard_yesterday':
+			case 'dashboard_past_seven_days':
+			case 'dashboard_this_month':
+			case 'dashboard_last_month':
+			default:
+				$this->dashboard();
+				break;
+		}
+	}
+
+	/**
 	 * Dsiplay dashboard.
 	 *
 	 * @return void
 	 */
 	public function dashboard(): void
 	{
-		$tab = 'today';
-
-		if (! empty($_GET['tab'])) {
-			$tab = htmlspecialchars($_GET['tab']);
-		}
-
-		
+		$tab = $_GET['tab'] ?? 'today';
 
 		switch ($tab) {
 			case 'yesterday':
@@ -109,7 +138,6 @@ class Dashboard
 		$data['page_url'] = $this->url('dashboard');
 
 		$this->renderPage('dashboard/dashboard_' . $type, $data);
-		
 	}
 
 	/**
@@ -174,9 +202,8 @@ class Dashboard
 		$data['rule_list'] = $this->driver->getAll('rule');
 		$data['reason_mapping'] = $reasons;
 		$data['type_mapping'] = $types;
-		$data['last_reset_time'] = '';
 
-		$this->loadView('dashboard/table_rules', $data);
+		$this->renderPage('dashboard/table_rules', $data);
 	}
 
 	/**
@@ -189,9 +216,8 @@ class Dashboard
 	public function ipLogTable(): void
 	{
 		$data['ip_log_list'] = $this->driver->getAll('log');
-		$data['last_reset_time'] = '';
 
-		$this->loadView('dashboard/table_ip_logs', $data);
+		$this->renderPage('dashboard/table_ip_logs', $data);
 	}
 
 	/**
@@ -211,22 +237,14 @@ class Dashboard
 		$data['online_count'] = 0;
 		$data['expires'] = 0;
 
-        $reflection = new \ReflectionObject(self);
-        $t = $reflection->getProperty('isLimitSession');
-        $t->setAccessible(true);
-        $isLimitSession = $t->getValue(self);
+        
+		$data['is_session_limit'] = true;
+		$data['session_limit_count'] = 0;
+		$data['session_limit_period'] = 0;
+		$data['online_count'] = count($data['session_list']);
+		$data['expires'] = (int) $data['session_limit_period'] * 60;
 
-		if (! empty($isLimitSession)) {
-			$data['is_session_limit'] = true;
-			$data['session_limit_count'] = $isLimitSession[0];
-			$data['session_limit_period'] = $isLimitSession[1];
-			$data['online_count'] = count($data['session_list']);
-			$data['expires'] = (int) $data['session_limit_period'] * 60;
-		}
-
-		$data['last_reset_time'] = '';
-
-		$this->loadView('dashboard/table_sessions', $data);
+		$this->renderPage('dashboard/table_sessions', $data);
 	}
 
 	/**
@@ -276,6 +294,7 @@ class Dashboard
 	 */
 	private function renderPage(string $page, array $data)
 	{
+		$content['page_url'] = $this->url();
 		$content['inline_css'] =  file_get_contents(__DIR__ . '/../views/assets/css/admin-style.css');
 		$content['title'] = $data['title'] ?? '';
 		$content['content'] = $this->loadView($page, $data);
@@ -301,7 +320,7 @@ class Dashboard
 		$path = parse_url($httpProtocal . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 		$url = $httpProtocal . $_SERVER['HTTP_HOST'] . $path;
-		$soPage = '?so_page=' . $page;
+		$soPage = (! empty($page)) ? '?so_page=' . $page : '';
 		$soTab = (! empty($tab)) ? '&tab=' . $tab : '';
 
 		return $url . $soPage . $soTab;

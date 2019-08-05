@@ -1,15 +1,38 @@
-<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?'); ?>
-<!doctype html>
+<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?');
+/*
+ * This file is part of the Shieldon package.
+ *
+ * (c) Terry L. <contact@terryl.in>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+function show_active($key) {
+    $page = $_GET['so_page'] ?? '';
+    $tab  = $_GET['tab'] ?? '';
+
+    $currentPage = $page . '_' . $tab;
+
+    if ($currentPage === $key) {
+        echo 'active';
+    }
+}
+
+?><!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.8.3/apexcharts.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
+        
         <script src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.6/fh-3.1.4/kt-2.5.0/r-2.2.2/datatables.min.js"></script>
+
         <?php echo '<style>' . $inline_css . '</style>'; ?>
         <title><?php echo $title; ?></title>
     </head>
@@ -22,12 +45,43 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2 so-sidebar-menu">
-                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item section-title">
+                            <strong class="nav-link"><i class="fas fa-chart-area"></i> Dashboard</strong>
+                        </li>
+                        <li class="nav-item <?php show_active('dashboard_today'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=today">Today</a>
+                        </li>
+                        <li class="nav-item <?php show_active('dashboard_yesterday'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=yesterday">Yesterday</a>
+                        </li>
+                        <li class="nav-item <?php show_active('dashboard_past_seven_days'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=past_seven_days">Last 7 days</a>
+                        </li>
+                        <li class="nav-item <?php show_active('dashboard_this_month'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=this_month">This month</a>
+                        </li>
+                        <li class="nav-item <?php show_active('dashboard_last_month'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=last_month">Last month</a>
+                        </li>
+                        <li class="nav-item section-title">
+                            <strong class="nav-link"><i class="fas fa-table"></i> Data Circle</strong>
+                        </li>
+                        <li class="nav-item <?php show_active('ip_log_table'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=ip_log_table">IP Logs</a>
+                        </li>
+                        <li class="nav-item  <?php show_active('ip_rule_table'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=ip_rule_table">IP Rules</a>
+                        </li>
+                        <li class="nav-item <?php show_active('session_table'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=session_table">Sessions</a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-10 so-content">
                     <?php echo $content; ?>
-                </div><!-- .col-md-10 -->
-            </div><!-- .row -->
-        </div><!-- .container -->
+                </div>
+            </div>
+        </div>
     </body>
 </html>

@@ -1,6 +1,12 @@
-<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?'); ?>
-
-<?php
+<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?');
+/*
+ * This file is part of the Shieldon package.
+ *
+ * (c) Terry L. <contact@terryl.in>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 $timezone = '';
 
@@ -18,7 +24,6 @@ $timezone = '';
 		</div>
 		<div class="so-rule-form">
 			<form method="post">
-				<?php wp_nonce_field('check_form_for_ip_rule', 'so-rule-form'); ?>
 				<input name="ip" type="text" value="" class="regular-text" placeholder="Please fill in an IP address..">
 				<select name="action" class="regular">
 					<option value="none">--- please select ---</option>
@@ -78,10 +83,6 @@ $timezone = '';
 			</tbody>   
 		</table>
 	</div>
-    <div class="so-timezone">
-        <?php printf(__('Current data circle started from %s.', 'wp-shieldon' ), date('Y-m-d H:i:s', $last_reset_time) ); ?><br />
-        Timezone: <?php echo $timezone; ?>
-    </div>
 </div>
 
 <script>

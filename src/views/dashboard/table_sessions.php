@@ -1,6 +1,12 @@
-<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?'); ?>
-
-<?php
+<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?');
+/*
+ * This file is part of the Shieldon package.
+ *
+ * (c) Terry L. <contact@terryl.in>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 $timezone = '';
 
@@ -102,10 +108,6 @@ $timezone = '';
 				<?php endforeach; ?>
 			</tbody>   
 		</table>
-    </div>
-    <div class="so-timezone">
-        <?php printf(__('Current data circle started from %s.', 'wp-shieldon' ), date('Y-m-d H:i:s', $last_reset_time) ); ?><br />
-        Timezone: <?php echo $timezone; ?>
     </div>
 </div>
 

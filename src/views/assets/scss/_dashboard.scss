@@ -98,12 +98,12 @@
 		.board-field {
 			display: flex;
 			width: 50%;
-			
 
 			&.left {
 				padding-top: 20px;
 				justify-content: center;
 				align-items: center;
+				width: 56%;
 			}
 
 			&.right {
@@ -111,6 +111,7 @@
 				justify-content: space-between;
 				align-items: center;
 				align-content: center;
+				width: 44%;
 			}
 
 			.heading {
