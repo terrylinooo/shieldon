@@ -58,26 +58,26 @@ $timezone = '';
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($rule_list as $ip_info ) : ?>
+				<?php foreach($rule_list as $ipInfo) : ?>
 				<tr>
-					<td><?php echo $ip_info['log_ip']; ?></td>
-					<td><?php echo $ip_info['ip_resolve']; ?></td>
+					<td><?php echo $ipInfo['log_ip']; ?></td>
+					<td><?php echo $ipInfo['ip_resolve']; ?></td>
 					<td>
 						<?php 
-							if (! empty($type_mapping[ $ip_info['type'] ]) ) {
-								echo $type_mapping[ $ip_info['type'] ];
+							if (! empty($type_mapping[$ipInfo['type'] ]) ) {
+								echo $type_mapping[$ipInfo['type'] ];
 							}
 						?>
 					</td>
 					<td>
 						<?php
-							if (! empty($reason_mapping[ $ip_info['reason'] ]) ) {
-								echo $reason_mapping[ $ip_info['reason'] ];
+							if (! empty($reason_mapping[$ipInfo['reason'] ]) ) {
+								echo $reason_mapping[$ipInfo['reason'] ];
 							}
 						?>
 					</td>
-					<td><?php echo date('Y-m-d H:i:s', $ip_info['time']); ?></td>
-					<td><button type="button" class="button btn-remove-ip" data-ip="<?php esc_attr_e($ip_info['log_ip']); ?>"><i class="far fa-trash-alt"></i></button></td>
+					<td><?php echo date('Y-m-d H:i:s', $ipInfo['time']); ?></td>
+					<td><button type="button" class="button btn-remove-ip" data-ip="<?php $ipInfo['log_ip']; ?>"><i class="far fa-trash-alt"></i></button></td>
 				</tr>
 				<?php endforeach; ?>
 			</tbody>   
@@ -90,7 +90,7 @@ $timezone = '';
 	$(function() {
 		$('#so-datalog').DataTable({
 			'pageLength': 25,
-			'initComplete': function(settings, json ) {
+			'initComplete': function(settings, json) {
 				$('#so-table-loading').hide();
 				$('#so-table-container').fadeOut(800);
 				$('#so-table-container').fadeIn(800);

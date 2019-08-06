@@ -50,35 +50,35 @@ $timezone = '';
 				</tr>
 			</thead>
 			<tbody>
-                <?php foreach($ip_log_list as $ip_info ) : ?>
-                    <?php $log_data = is_array($ip_info['log_data']) ? $ip_info['log_data'] : json_decode($ip_info['log_data'], true ); ?>
+                <?php foreach($ip_log_list as $ipInfo) : ?>
+                    <?php $logData = is_array($ipInfo['log_data']) ? $ipInfo['log_data'] : json_decode($ipInfo['log_data'], true ); ?>
                     <?php
 
                         $text_warning = '';
 
-                        if ($log_data['pageviews_m'] > 6 || $log_data['pageviews_h'] > 50 || $log_data['pageviews_d'] > 100 ) {
+                        if ($logData['pageviews_m'] > 6 || $logData['pageviews_h'] > 50 || $logData['pageviews_d'] > 100 ) {
                             $text_warning = '<span class="so-text-warning"><i class="fas fa-exclamation-triangle"></i></span>';
                         }
 
-                        if ($log_data['flag_js_cookie'] > 2 || $log_data['flag_multi_session'] > 2 || $log_data['flag_empty_referer'] > 2 ) {
+                        if ($logData['flag_js_cookie'] > 2 || $logData['flag_multi_session'] > 2 || $logData['flag_empty_referer'] > 2 ) {
                             $text_warning = '<span class="so-text-warning"><i class="fas fa-exclamation-triangle"></i></span>';
                         }
 
-                        if ($log_data['flag_js_cookie'] > 3 || $log_data['flag_multi_session'] > 3 || $log_data['flag_empty_referer'] > 3 ) {
+                        if ($logData['flag_js_cookie'] > 3 || $logData['flag_multi_session'] > 3 || $logData['flag_empty_referer'] > 3 ) {
                             $text_warning = '<span class="so-text-danger"><i class="fas fa-exclamation-triangle"></i></span>';
                         }
                     ?>
                     <tr>
-                        <td><?php echo $ip_info['log_ip']; ?><?php echo $text_warning; ?></td>
-                        <td><?php echo $log_data['hostname']; ?></td>
-                        <td><?php echo $log_data['pageviews_s']; ?></td>
-                        <td><?php echo $log_data['pageviews_m']; ?></td>
-                        <td><?php echo $log_data['pageviews_h']; ?></td>
-                        <td><?php echo $log_data['pageviews_d']; ?></td>
-                        <td><?php echo $log_data['flag_js_cookie']; ?></td>
-                        <td><?php echo $log_data['flag_multi_session']; ?></td>
-                        <td><?php echo $log_data['flag_empty_referer']; ?></td>
-                        <td><?php echo date('Y-m-d H:i:s', $log_data['last_time']); ?></td>
+                        <td><?php echo $ipInfo['log_ip']; ?><?php echo $text_warning; ?></td>
+                        <td><?php echo $logData['hostname']; ?></td>
+                        <td><?php echo $logData['pageviews_s']; ?></td>
+                        <td><?php echo $logData['pageviews_m']; ?></td>
+                        <td><?php echo $logData['pageviews_h']; ?></td>
+                        <td><?php echo $logData['pageviews_d']; ?></td>
+                        <td><?php echo $logData['flag_js_cookie']; ?></td>
+                        <td><?php echo $logData['flag_multi_session']; ?></td>
+                        <td><?php echo $logData['flag_empty_referer']; ?></td>
+                        <td><?php echo date('Y-m-d H:i:s', $logData['last_time']); ?></td>
                     </tr>
 				<?php endforeach; ?>
 			</tbody>   
@@ -91,7 +91,7 @@ $timezone = '';
 	$(function() {
 		$('#so-datalog').DataTable({
 			'pageLength': 25,
-			'initComplete': function(settings, json ) {
+			'initComplete': function(settings, json) {
 				$('#so-table-loading').hide();
 				$('#so-table-container').fadeOut(800);
 				$('#so-table-container').fadeIn(800);

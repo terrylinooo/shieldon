@@ -536,7 +536,7 @@ class Shieldon
      *
      * @return ComponentInterface|null
      */
-    protected function getComponent(string $name): ?ComponentInterface
+    protected function getComponent(string $name)
     {
         if (isset($this->component[$name]) && ($this->component[$name] instanceof ComponentInterface)) {
             return $this->component[$name];
@@ -1208,10 +1208,10 @@ class Shieldon
     public function setFilters($settings): self
     {
         $requiredFilters = [
-            'cookie' => true,
-            'session' => true,
+            'cookie'    => true,
+            'session'   => true,
             'frequency' => true,
-            'referer' => true,
+            'referer'   => true,
         ];
 
         foreach ($requiredFilters as $k => $v) {

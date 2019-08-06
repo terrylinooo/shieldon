@@ -71,16 +71,16 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($ip_details as $ip => $ip_info ) : ?>
+				<?php foreach($ip_details as $ip => $ipInfo) : ?>
 				<tr>
 					<td><?php echo $ip; ?></td>
-					<td><?php echo count($ip_info['session_id']); ?></td>
-					<td><?php echo $ip_info['pageview_count']; ?></td>
-					<td><?php echo $ip_info['captcha_success_count']; ?></td>
-					<td><?php echo $ip_info['captcha_failure_count']; ?></td>
-					<td><?php echo $ip_info['captcha_count']; ?></td>
-					<td><?php echo $ip_info['blacklist_count']; ?></td>
-					<td><?php echo $ip_info['session_limit_count']; ?></td>
+					<td><?php echo count($ipInfo['session_id']); ?></td>
+					<td><?php echo $ipInfo['pageview_count']; ?></td>
+					<td><?php echo $ipInfo['captcha_success_count']; ?></td>
+					<td><?php echo $ipInfo['captcha_failure_count']; ?></td>
+					<td><?php echo $ipInfo['captcha_count']; ?></td>
+					<td><?php echo $ipInfo['blacklist_count']; ?></td>
+					<td><?php echo $ipInfo['session_limit_count']; ?></td>
 				</tr>
 				<?php endforeach; ?>
 			</tbody>   

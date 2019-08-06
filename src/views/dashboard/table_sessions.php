@@ -76,33 +76,33 @@ $timezone = '';
 			<tbody>
 
                 <?php $i = 1; ?>
-                <?php foreach($session_list as $key => $session_info ) : ?>
+                <?php foreach($session_list as $key => $sessionInfo) : ?>
                     <?php
 
-                        $remains_time = $expires - (time() - $session_info['time']);
+                        $remainsTime = $expires - (time() - $sessionInfo['time']);
 
-                        if ($remains_time < 1 ) {
-                            $remains_time = 0;
+                        if ($remainsTime < 1 ) {
+                            $remainsTime = 0;
                         }
 
                         if ($i < $session_limit_count ) {
-                            $satus_name = 'Allowable';
+                            $satusName = 'Allowable';
 
-                            if ($remains_time < 1 ) {
-                                $satus_name = 'Expired';
+                            if ($remainsTime < 1 ) {
+                                $satusName = 'Expired';
                             }
                         } else {
-                            $satus_name = 'Waiting';
+                            $satusName = 'Waiting';
                         }
 
                     ?>
                     <tr>
                         <td title="Key: <?php echo $key ?>"><?php echo $i; ?></td>
-                        <td><?php echo $satus_name; ?></td>
-                        <td><?php echo $session_info['id']; ?></td>
-                        <td><?php echo $session_info['ip']; ?></td>
-                        <td><?php echo date('Y-m-d H:i:s', $session_info['time']); ?></td>
-                        <th><?php echo $remains_time; ?></th>
+                        <td><?php echo $satusName; ?></td>
+                        <td><?php echo $sessionInfo['id']; ?></td>
+                        <td><?php echo $sessionInfo['ip']; ?></td>
+                        <td><?php echo date('Y-m-d H:i:s', $sessionInfo['time']); ?></td>
+                        <th><?php echo $remainsTime; ?></th>
                     </tr>
                     <?php $i++; ?>
 				<?php endforeach; ?>
@@ -116,7 +116,7 @@ $timezone = '';
     $(function() {
         $('#so-datalog').DataTable({
             'pageLength': 25,
-            'initComplete': function(settings, json ) {
+            'initComplete': function(settings, json) {
                 $('#so-table-loading').hide();
                 $('#so-table-container').fadeOut(800);
                 $('#so-table-container').fadeIn(800);

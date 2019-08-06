@@ -10,62 +10,55 @@
 
 namespace Shieldon;
 
-use Shieldon\Driver\DriverProvider;
-use Shieldon\Log\LogParser;
+use ReflectionObject;
 
 /**
  * Display a simple statistics dashboard for Shieldon users.
  */
 class Dashboard
 {
-	// Reason codes (allow)
-	const REASON_IS_SEARCH_ENGINE = 100;
-	const REASON_IS_GOOGLE = 101;
-	const REASON_IS_BING = 102;
-	const REASON_IS_YAHOO = 103;
-
-	// Reason codes (deny)
-	const REASON_TOO_MANY_SESSIONS = 1;
-	const REASON_TOO_MANY_ACCESSES = 2;
-	const REASON_EMPTY_JS_COOKIE = 3;
-	const REASON_EMPTY_REFERER = 4;
-
-	const REASON_REACHED_LIMIT_DAY = 11;
-	const REASON_REACHED_LIMIT_HOUR = 12;
-	const REASON_REACHED_LIMIT_MINUTE = 13;
-	const REASON_REACHED_LIMIT_SECOND = 14;
-
-	const REASON_MANUAL_BAN = 99;
-
-	// Action codes.
-	const ACTION_DENY = 0;
-	const ACTION_ALLOW = 1;
-	const ACTION_TEMPORARILY_DENY = 2;
-
 	/**
-	 * Shieldon driver instance.
+	 * Shieldon instance.
 	 *
 	 * @var object
 	 */
-	protected $driver;
+	protected $sheidlon;
 
 	/**
-	 * Shieldon logParser instance.
+	 * LogPaeser instance.
 	 *
 	 * @var object
 	 */
 	protected $parser;
 
+
+	/**
+	 * Error message.
+	 *
+	 * @var string
+	 */
+	private $err = '';
+
 	/**
 	 * Constructor.
 	 *
-	 * @param DriverProvider $driver
-	 * @param LogParser      $logParser
+	 * @param Shieldon $shieldon
 	 */
-	public function __construct(DriverProvider $driver, LogParser $logParser) 
+	public function __construct(Shieldon $shieldon) 
 	{
-		$this->driver = $driver;
-		$this->parser = $logParser;
+		$this->shieldon = $shieldon;
+
+		if (! empty($this->shieldon->logger)) {
+
+			// We need to know where the logs stored in.
+			$logDirectory = $this->shieldon->logger->getDirectory();
+
+			// Load logParser for parsing log files.
+			$this->parser = new \Shieldon\Log\LogParser($logDirectory);
+
+		} else {
+			$this->err = 'ActionLogger is not implemented with Shieldon.';
+		}
 	}
 
 	/**
@@ -79,6 +72,10 @@ class Dashboard
 		$slug = $_GET['so_page'] ?? '';
 
 		switch($slug) {
+
+			case 'op_info':
+				$this->info();
+				break;
 
 			case 'session_table':
 				$this->sessionTable();
@@ -101,6 +98,111 @@ class Dashboard
 				$this->dashboard();
 				break;
 		}
+	}
+
+	/**
+	 * Shieldon operating information.
+	 *
+	 * @return void
+	 */
+	public function info(): void
+	{
+		/*
+		|--------------------------------------------------------------------------
+		| Logger
+		|--------------------------------------------------------------------------
+		|
+		| All logs were recorded by ActionLogger.
+		| Get the summary information from those logs.
+		|
+		*/
+		$loggerInfo = $this->shieldon->logger->getCurrentLoggerInfo();
+
+		$data['logger_started_working_date'] = '';
+		$data['logger_work_days'] = '';
+		$data['logger_total_size'] = '';
+
+		if (! empty($loggerInfo)) {
+
+			$i = 0;
+			ksort($loggerInfo);
+
+			foreach ($loggerInfo as $date => $size) {
+				if (0 === $i) {
+					$data['logger_started_working_date'] = date('Y-m-d', strtotime((string) $date));
+				}
+				$i += (int) $size;
+			}
+
+			$data['logger_work_days'] = count($loggerInfo);
+			$data['logger_total_size'] = round($i / (1024 * 1024), 5) . ' MB';
+		}
+
+		/*
+		|--------------------------------------------------------------------------
+		| Data circle
+		|--------------------------------------------------------------------------
+		|
+		| A data circle includes the primary data tables of Shieldon.
+		| They are ip_log_table, ip_rule_table and session_table.
+		|
+		*/
+
+
+		/*
+		|--------------------------------------------------------------------------
+		| Shieldon status
+		|--------------------------------------------------------------------------
+		|
+		| 1. Components.
+		| 2. Filters.
+		| 3. Configuration.
+		|
+		*/
+
+		$data['components'] = [
+			'Ip'         => (! empty($this->shieldon->component['Ip']))         ? true : false,
+			'TrustedBot' => (! empty($this->shieldon->component['TrustedBot'])) ? true : false,
+			'Header'     => (! empty($this->shieldon->component['Header']))     ? true : false,
+			'Rdns'       => (! empty($this->shieldon->component['Rdns']))       ? true : false,
+			'UserAgent'  => (! empty($this->shieldon->component['UserAgent']))  ? true : false,
+		];
+
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('enableCookieCheck');
+        $t->setAccessible(true);
+		$enableCookieCheck = $t->getValue($this->shieldon);
+
+		$reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('enableSessionCheck');
+        $t->setAccessible(true);
+		$enableSessionCheck = $t->getValue($this->shieldon);
+
+		$reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('enableFrequencyCheck');
+        $t->setAccessible(true);
+		$enableFrequencyCheck = $t->getValue($this->shieldon);
+
+		$reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('enableRefererCheck');
+        $t->setAccessible(true);
+		$enableRefererCheck = $t->getValue($this->shieldon);
+
+		$data['filters'] = [
+			'cookie'    => $enableCookieCheck,
+			'session'   => $enableSessionCheck,
+			'frequency' => $enableFrequencyCheck,
+			'referer'   => $enableRefererCheck,
+		];
+
+		$reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+		$properties = $t->getValue($this->shieldon);
+		
+		$data['configuration'] = $properties;
+
+		$this->renderPage('dashboard/op_info', $data);
 	}
 
 	/**
@@ -154,9 +256,9 @@ class Dashboard
 			$ip = $_POST['ip'];
 			$action = $_POST['action'];
 
-			$actionCode['temporarily_ban'] = self::ACTION_TEMPORARILY_DENY;
-			$actionCode['permanently_ban'] = self::ACTION_DENY;
-			$actionCode['allow'] = self::ACTION_ALLOW;
+			$actionCode['temporarily_ban'] = $this->shieldon::ACTION_TEMPORARILY_DENY;
+			$actionCode['permanently_ban'] = $this->shieldon::ACTION_DENY;
+			$actionCode['allow'] = $this->shieldon::ACTION_ALLOW;
 
 			switch ($action) {
 				case 'temporarily_ban':
@@ -166,40 +268,41 @@ class Dashboard
 					$logData['ip_resolve'] = gethostbyaddr($ip);
 					$logData['time'] = time();
 					$logData['type'] = $actionCode[$action];
-					$logData['reason'] = self::REASON_MANUAL_BAN;
+					$logData['reason'] = $this->shieldon::REASON_MANUAL_BAN;
 
-					$this->driver->save($ip, $logData, 'rule');
+					$this->shieldon->driver->save($ip, $logData, 'rule');
 					break;
 
 				case 'remove':
-					$this->driver->delete($ip, 'rule');
+					$this->shieldon->driver->delete($ip, 'rule');
 					break;
 			}
 		}
 
 		$reasons = [
-			self::REASON_MANUAL_BAN           => 'Added manually by administrator',
-			self::REASON_IS_SEARCH_ENGINE     => 'Search engine bot',
-			self::REASON_IS_GOOGLE            => 'Google bot',
-			self::REASON_IS_BING              => 'Bing bot',
-			self::REASON_IS_YAHOO             => 'Yahoo bot',
-			self::REASON_TOO_MANY_SESSIONS    => 'Too many sessions',
-			self::REASON_TOO_MANY_ACCESSES    => 'Too many accesses',
-			self::REASON_EMPTY_JS_COOKIE      => 'Cannot create JS cookies',
-			self::REASON_EMPTY_REFERER        => 'Empty referrer',
-			self::REASON_REACHED_LIMIT_DAY    => 'Daily limit reached',
-			self::REASON_REACHED_LIMIT_HOUR   => 'Hourly limit reached',
-			self::REASON_REACHED_LIMIT_MINUTE => 'Minutely limit reached',
-			self::REASON_REACHED_LIMIT_SECOND => 'Secondly limit reached',
+			$this->shieldon::REASON_MANUAL_BAN           => 'Added manually by administrator',
+			$this->shieldon::REASON_IS_SEARCH_ENGINE     => 'Search engine bot',
+			$this->shieldon::REASON_IS_GOOGLE            => 'Google bot',
+			$this->shieldon::REASON_IS_BING              => 'Bing bot',
+			$this->shieldon::REASON_IS_YAHOO             => 'Yahoo bot',
+			$this->shieldon::REASON_TOO_MANY_SESSIONS    => 'Too many sessions',
+			$this->shieldon::REASON_TOO_MANY_ACCESSES    => 'Too many accesses',
+			$this->shieldon::REASON_EMPTY_JS_COOKIE      => 'Cannot create JS cookies',
+			$this->shieldon::REASON_EMPTY_REFERER        => 'Empty referrer',
+			$this->shieldon::REASON_REACHED_LIMIT_DAY    => 'Daily limit reached',
+			$this->shieldon::REASON_REACHED_LIMIT_HOUR   => 'Hourly limit reached',
+			$this->shieldon::REASON_REACHED_LIMIT_MINUTE => 'Minutely limit reached',
+			$this->shieldon::REASON_REACHED_LIMIT_SECOND => 'Secondly limit reached',
 		];
 
 		$types = [
-			self::ACTION_DENY             => 'DENY',
-			self::ACTION_ALLOW            => 'ALLOW',
-			self::ACTION_TEMPORARILY_DENY => 'CAPTCHA',
+			$this->shieldon::ACTION_DENY             => 'DENY',
+			$this->shieldon::ACTION_ALLOW            => 'ALLOW',
+			$this->shieldon::ACTION_TEMPORARILY_DENY => 'CAPTCHA',
 		];
 
-		$data['rule_list'] = $this->driver->getAll('rule');
+		$data['rule_list'] = $this->shieldon->driver->getAll('rule');
+
 		$data['reason_mapping'] = $reasons;
 		$data['type_mapping'] = $types;
 
@@ -215,7 +318,7 @@ class Dashboard
 	 */
 	public function ipLogTable(): void
 	{
-		$data['ip_log_list'] = $this->driver->getAll('log');
+		$data['ip_log_list'] = $this->shieldon->driver->getAll('log');
 
 		$this->renderPage('dashboard/table_ip_logs', $data);
 	}
@@ -229,7 +332,7 @@ class Dashboard
 	 */
 	public function sessionTable(): void
 	{
-		$data['session_list'] = $this->driver->getAll('session');
+		$data['session_list'] = $this->shieldon->driver->getAll('session');
 
 		$data['is_session_limit'] = false;
 		$data['session_limit_count'] = 0;

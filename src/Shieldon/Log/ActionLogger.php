@@ -211,6 +211,17 @@ class ActionLogger
         return $result;
     }
 
+
+    /**
+     * Return current log's directory.
+     *
+     * @return string
+     */
+    public function getDirectory(): string
+    {
+        return $this->directory;
+    }
+
     /**
      * Purge all logs and remove log directory.
      *
@@ -239,5 +250,32 @@ class ActionLogger
                 rmdir($this->directory);
             }
         }
+    }
+
+    /**
+     * Get current logger info.
+     *
+     * @return array
+     */
+    public function getCurrentLoggerInfo(): array
+    {
+        $data = [];
+
+        if (file_exists($this->directory)) {
+            $it = new RecursiveDirectoryIterator($this->directory, RecursiveDirectoryIterator::SKIP_DOTS);
+            $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+
+            foreach($files as $file) {
+                if ($file->isFile()) {
+                    $key = $file->getBasename('.log');
+                    $size = $file->getSize();
+
+                    // Data: datetime => file size.
+                    $data[$key] = $size;
+                } 
+            }
+        }
+
+        return $data;
     }
 }

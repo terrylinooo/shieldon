@@ -408,8 +408,9 @@ table.dataTable td {
 
     select {
         margin-left: 0.5em;
-        height: 28px;
-        line-height: 28px;
+        height: 32px;
+        line-height: 32px;
+        border: 1px #dddddd solid;
     }
  
     // Page length options
@@ -426,8 +427,9 @@ table.dataTable td {
  
         input {
             margin-left: 0.5em;
-            height: 28px;
-            line-height: 28px;
+            height: 32px;
+            line-height: 32px;
+            border: 1px #dddddd solid;
         }
     }
  
