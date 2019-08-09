@@ -198,6 +198,13 @@ class Shieldon
     private $isLimitSession = [];
 
     /**
+     * Is current Shieldon is managed by WAF?
+     *
+     * @var bool
+     */
+    private $isWAF = false;
+
+    /**
      * Result.
      *
      * @var int
@@ -256,11 +263,23 @@ class Shieldon
     }
 
     /**
+     * Managed by Web Application Firewall
+     *
+     * @return self
+     */
+    public function managedByWAF(): self
+    {
+        $this->isWAF = true;
+
+        return $this;
+    }
+
+    /**
      * Detect and analyze an user's behavior.
      *
-     * @return bool
+     * @return integer
      */
-    protected function detect()
+    protected function detect(): int
     {
         $now = time();
         $logData = [];

@@ -13,9 +13,9 @@ namespace Shieldon;
 use ReflectionObject;
 
 /**
- * Display a simple statistics dashboard for Shieldon users.
+ * Display a Control Panel UI for developers or administrators.
  */
-class Dashboard
+class ControlPanel
 {
 	/**
 	 * Shieldon instance.
@@ -30,7 +30,6 @@ class Dashboard
 	 * @var object
 	 */
 	protected $parser;
-
 
 	/**
 	 * Error message.
