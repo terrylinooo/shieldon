@@ -22,7 +22,8 @@
     "autoload": {
         "psr-4": {
             "Shieldon\\": "src/Shieldon/"
-        }
+        },
+        "files": ["src/Helpers.php"]
     },
     "autoload-dev": {
         "psr-4": {
