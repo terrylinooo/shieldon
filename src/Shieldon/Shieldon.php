@@ -32,55 +32,58 @@ use Shieldon\Driver\DriverProvider;
 use Shieldon\Component\ComponentInterface;
 use Shieldon\Captcha\CaptchaInterface;
 use Shieldon\Log\ActionLogger;
+use Shieldon\Component\ComponentProvider;
+use function set_shieldon_instance;
 
 use LogicException;
-
 use function get_class;
 use function gethostbyaddr;
 use function session_id;
 use function strrpos;
 use function substr;
-use Shieldon\Component\ComponentProvider;
 
+/**
+ * The primary Shiendon class.
+ */
 class Shieldon
 {
     use IpTrait;
 
     // Reason codes (allow)
-    public const REASON_IS_SEARCH_ENGINE = 100;
-    public const REASON_IS_GOOGLE = 101;
-    public const REASON_IS_BING = 102;
-    public const REASON_IS_YAHOO = 103;
+    const REASON_IS_SEARCH_ENGINE = 100;
+    const REASON_IS_GOOGLE = 101;
+    const REASON_IS_BING = 102;
+    const REASON_IS_YAHOO = 103;
 
     // Reason codes (deny)
-    public const REASON_TOO_MANY_SESSIONS = 1;
-    public const REASON_TOO_MANY_ACCESSES = 2;
-    public const REASON_EMPTY_JS_COOKIE = 3;
-    public const REASON_EMPTY_REFERER = 4;
+    const REASON_TOO_MANY_SESSIONS = 1;
+    const REASON_TOO_MANY_ACCESSES = 2;
+    const REASON_EMPTY_JS_COOKIE = 3;
+    const REASON_EMPTY_REFERER = 4;
 
-    public const REASON_REACHED_LIMIT_DAY = 11;
-    public const REASON_REACHED_LIMIT_HOUR = 12;
-    public const REASON_REACHED_LIMIT_MINUTE = 13;
-    public const REASON_REACHED_LIMIT_SECOND = 14;
+    const REASON_REACHED_LIMIT_DAY = 11;
+    const REASON_REACHED_LIMIT_HOUR = 12;
+    const REASON_REACHED_LIMIT_MINUTE = 13;
+    const REASON_REACHED_LIMIT_SECOND = 14;
 
-    public const REASON_MANUAL_BAN = 99;
+    const REASON_MANUAL_BAN = 99;
 
     // Action codes.
-    public const ACTION_DENY = 0;
-    public const ACTION_ALLOW = 1;
-    public const ACTION_TEMPORARILY_DENY = 2;
-    public const ACTION_UNBAN = 9;
+    const ACTION_DENY = 0;
+    const ACTION_ALLOW = 1;
+    const ACTION_TEMPORARILY_DENY = 2;
+    const ACTION_UNBAN = 9;
 
     // Result codes.
-    public const RESPONSE_DENY = 0;
-    public const RESPONSE_ALLOW = 1;
-    public const RESPONSE_TEMPORARILY_DENY = 2;
-    public const RESPONSE_LIMIT = 3;
+    const RESPONSE_DENY = 0;
+    const RESPONSE_ALLOW = 1;
+    const RESPONSE_TEMPORARILY_DENY = 2;
+    const RESPONSE_LIMIT = 3;
 
-    public const LOG_LIMIT = 3;
-    public const LOG_PAGEVIEW = 11;
-	public const LOG_BLACKLIST = 98;
-    public const LOG_CAPTCHA = 99;
+    const LOG_LIMIT = 3;
+    const LOG_PAGEVIEW = 11;
+	const LOG_BLACKLIST = 98;
+    const LOG_CAPTCHA = 99;
 
     /**
      * Driver for storing data.
@@ -104,7 +107,7 @@ class Shieldon
     public $logger = null;
 
     // Shieldon directory.
-    private const SHIELDON_DIR = __DIR__;
+    const SHIELDON_DIR = __DIR__;
 
     // Most of web crawlers do not render JavaScript, they only get text content they want,
     // so we can check if the cookie can be created by JavaScript.
@@ -246,6 +249,9 @@ class Shieldon
      */
     public function __construct(array $properties = [])
     {
+        // For further and easier use.
+        set_shieldon_instance($this);
+
         $this->referer = $_SERVER['HTTP_REFERER'] ?? '';
 
         $this->setSessionId();
@@ -756,6 +762,9 @@ class Shieldon
             throw new LogicException('setChannel method requires setDriver set first.');
         } else {
             $this->driver->setChannel($channel);
+
+            // For further and easier use.
+            set_shieldon_instance($this, $channel);
         }
 
         return $this;

@@ -29,13 +29,13 @@ class Ip extends ComponentProvider
     /**
      * Constant
      */
-    public const CODE_INVAILD_IP     = 99;
-    public const CODE_DENY_IP        = 11;
-    public const CODE_DENY_IP_RANGE  = 12;
-    public const CODE_DENY_IP_RULE   = 13;
-    public const CODE_ALLOW_IP       = 21;
-    public const CODE_ALLOW_IP_RANGE = 22;
-    public const CODE_ALLOW_IP_RULE  = 23;
+    const CODE_INVAILD_IP     = 99;
+    const CODE_DENY_IP        = 11;
+    const CODE_DENY_IP_RANGE  = 12;
+    const CODE_DENY_IP_RULE   = 13;
+    const CODE_ALLOW_IP       = 21;
+    const CODE_ALLOW_IP_RANGE = 22;
+    const CODE_ALLOW_IP_RULE  = 23;
 
     /**
      * Data pool for hard whitelist.

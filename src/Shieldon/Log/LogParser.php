@@ -21,15 +21,15 @@ use function round;
 class LogParser
 {
     // Log codes. Same as Shieldon action codes.
-    public const LOG_BAN = 0;
-    public const LOG_ALLOW = 1;    
-	public const LOG_TEMPORARILY_BAN = 2;
-	public const LOG_UNBAN = 9;
+    const LOG_BAN = 0;
+    const LOG_ALLOW = 1;    
+	const LOG_TEMPORARILY_BAN = 2;
+	const LOG_UNBAN = 9;
 	
-	public const LOG_LIMIT = 3;
-	public const LOG_PAGEVIEW = 11;
-	public const LOG_BLACKLIST = 98;
-    public const LOG_CAPTCHA = 99;
+	const LOG_LIMIT = 3;
+	const LOG_PAGEVIEW = 11;
+	const LOG_BLACKLIST = 98;
+    const LOG_CAPTCHA = 99;
 
     /**
      * Statistic data fields.
