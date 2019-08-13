@@ -22,7 +22,7 @@ $timezone = '';
 		</div>
 	</div>
 	<div id="so-table-container" class="so-datatables" style="display: none;">
-        <div class="so-databable-heading">
+        <div class="so-datatable-heading">
             IP Log Table
         </div>
 		<div class="so-datatable-description">

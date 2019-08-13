@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the Shieldon package.
  *
@@ -9,10 +8,17 @@
  * file that was distributed with this source code.
  */
 
-// @codeCoverageIgnoreStart
+ // @codeCoverageIgnoreStart
 
 namespace Shieldon;
 
+/**
+ * Autoloader
+ * 
+ * A PRS-4 autoloader for the developers who don't want to use PHP Composer.
+ *
+ * @since 1.0.0
+ */
 class Autoloader
 {
     private $dir;

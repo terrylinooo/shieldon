@@ -13,8 +13,8 @@ namespace Shieldon;
 use function substr;
 use function gethostbyaddr;
 
-/**
- * Ip
+/*
+ * @since 1.0.0
  */
 trait IpTrait
 {

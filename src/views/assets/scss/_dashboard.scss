@@ -272,10 +272,11 @@
 
 .so-rule-form {
 	input, select {
-		height: 28px;
-		line-height: 28px;
 		vertical-align: middle;
 		font-size: 13px;
+		height: 32px;
+		border: 1px #dddddd solid;
+		padding: 0.25rem 0.5rem;
 	}
 
 	.regular-text {

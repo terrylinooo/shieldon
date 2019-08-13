@@ -14,7 +14,7 @@ $timezone = '';
 
 <div class="so-dashboard">
 	<div id="so-rule-table-form" class="so-datatables">
-		<div class="so-databable-heading">
+		<div class="so-datatable-heading">
 			Rule Table<br />
 		</div>
 		<div class="so-datatable-description">

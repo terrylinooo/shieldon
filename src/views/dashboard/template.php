@@ -60,6 +60,12 @@ function showActive(string $key = '')
             <div class="logo-info">
                 <img src="<?php echo logoBase64(); ?>">
             </div>
+            <div class="mode-info">
+                <ul>
+                    <li>Channel: <strong><?php echo $channel_name; ?></strong></li>
+                    <li>Mode:  <strong><?php echo $mode_name; ?></strong></li>
+                </ul>
+            </div>
         </div>
         <div class="container-fluid">
             <div class="row">
@@ -69,10 +75,10 @@ function showActive(string $key = '')
                             <strong class="nav-link"><i class="fas fa-cog"></i> Status</strong>
                         </li>
                         <li class="nav-item <?php showActive('op_info'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=op_info">Operating Info</a>
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=op_info">Overview</a>
                         </li>
                         <li class="nav-item section-title">
-                            <strong class="nav-link"><i class="fas fa-chart-area"></i> Dashboard</strong>
+                            <strong class="nav-link"><i class="fas fa-chart-area"></i> Logs</strong>
                         </li>
                         <li class="nav-item <?php showActive('dashboard_today'); ?>">
                             <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=today">Today</a>

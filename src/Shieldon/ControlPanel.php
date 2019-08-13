@@ -10,10 +10,20 @@
 
 namespace Shieldon;
 
+use Exception;
+use Shieldon\Log\LogParser;
 use ReflectionObject;
+use Shieldon\Driver\MysqlDriver;
+use Shieldon\Driver\FileDriver;
+use Shieldon\Driver\RedisDriver;
+use Shieldon\Driver\SqliteDriver;
 
 /**
+ * ControlPanel
+ * 
  * Display a Control Panel UI for developers or administrators.
+ *
+ * @since 3.0.0
  */
 class ControlPanel
 {
@@ -32,13 +42,6 @@ class ControlPanel
 	protected $parser;
 
 	/**
-	 * Error message.
-	 *
-	 * @var string
-	 */
-	private $err = '';
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Shieldon $shieldon
@@ -53,10 +56,10 @@ class ControlPanel
 			$logDirectory = $this->shieldon->logger->getDirectory();
 
 			// Load logParser for parsing log files.
-			$this->parser = new \Shieldon\Log\LogParser($logDirectory);
+			$this->parser = new LogParser($logDirectory);
 
 		} else {
-			$this->err = 'ActionLogger is not implemented with Shieldon.';
+			throw new Exception('ActionLogger is not implemented with the Shieldon instance.');
 		}
 	}
 
@@ -147,6 +150,10 @@ class ControlPanel
 		|
 		*/
 
+		// Data circle.
+		$data['rule_list'] = $this->shieldon->driver->getAll('rule');
+		$data['ip_log_list'] = $this->shieldon->driver->getAll('log');
+		$data['session_list'] = $this->shieldon->driver->getAll('session');
 
 		/*
 		|--------------------------------------------------------------------------
@@ -201,7 +208,16 @@ class ControlPanel
 		
 		$data['configuration'] = $properties;
 
-		$this->renderPage('dashboard/op_info', $data);
+		$data['driver'] = [
+			'mysql'  => ($this->shieldon->driver instanceof MysqlDriver),
+			'redis'  => ($this->shieldon->driver instanceof RedisDriver),
+			'file'   => ($this->shieldon->driver instanceof FileDriver),
+			'sqlite' => ($this->shieldon->driver instanceof SqliteDriver),
+		];
+
+
+
+		$this->renderPage('dashboard/overview', $data);
 	}
 
 	/**
@@ -237,6 +253,8 @@ class ControlPanel
 		}
 
 		$data['page_url'] = $this->url('dashboard');
+
+
 
 		$this->renderPage('dashboard/dashboard_' . $type, $data);
 	}
@@ -396,6 +414,14 @@ class ControlPanel
 	 */
 	private function renderPage(string $page, array $data)
 	{
+		$channelName = $this->shieldon->driver->getChannel();
+
+		if (empty($channelName)) {
+			$channelName = 'default';
+		}
+		
+		$content['channel_name'] = $channelName;
+		$content['mode_name'] = 'WAF'; // WAF, self-managed
 		$content['page_url'] = $this->url();
 		$content['inline_css'] =  file_get_contents(__DIR__ . '/../views/assets/css/admin-style.css');
 		$content['title'] = $data['title'] ?? '';

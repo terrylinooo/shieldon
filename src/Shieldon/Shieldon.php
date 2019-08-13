@@ -4,7 +4,9 @@
  * @name        Shieldon
  * @author      Terry Lin
  * @link        https://github.com/terrylinooo/shieldon
- * @version     2.0.2
+ * @package     Shieldon
+ * @since       1.0.0
+ * @version     3.0.0
  * @license     MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,7 +35,7 @@ use Shieldon\Component\ComponentInterface;
 use Shieldon\Captcha\CaptchaInterface;
 use Shieldon\Log\ActionLogger;
 use Shieldon\Component\ComponentProvider;
-use function set_shieldon_instance;
+use Shieldon\Instance;
 
 use LogicException;
 use function get_class;
@@ -44,6 +46,9 @@ use function substr;
 
 /**
  * The primary Shiendon class.
+ * 
+ * @since   1.0.0
+ * @version 3.0.0
  */
 class Shieldon
 {
@@ -249,9 +254,6 @@ class Shieldon
      */
     public function __construct(array $properties = [])
     {
-        // For further and easier use.
-        set_shieldon_instance($this);
-
         $this->referer = $_SERVER['HTTP_REFERER'] ?? '';
 
         $this->setSessionId();
@@ -762,9 +764,6 @@ class Shieldon
             throw new LogicException('setChannel method requires setDriver set first.');
         } else {
             $this->driver->setChannel($channel);
-
-            // For further and easier use.
-            set_shieldon_instance($this, $channel);
         }
 
         return $this;
@@ -1228,7 +1227,7 @@ class Shieldon
     }
 
     /**
-     * Set the filters
+     * Set the filters.
      *
      * @param array $settings filter settings
      * @return self
@@ -1247,6 +1246,32 @@ class Shieldon
                 $u = 'enable' . ucfirst($k) . 'Check';
                 $this->{$u} = $settings[$k] ?? false;
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set a filter.
+     *
+     * @param string $filterName
+     * @param bool   $value
+     * @since 3.0.0
+     *
+     * @return self
+     */
+    public function setFilter($filterName, $value): self
+    {
+        $filters = [
+            'cookie',
+            'session',
+            'frequency',
+            'referer',
+        ];
+
+        if (isset($filters[$filterName])) {
+            $u = 'enable' . ucfirst($filterName) . 'Check';
+            $this->{$u} = $value;
         }
 
         return $this;
