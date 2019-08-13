@@ -215,7 +215,15 @@ class ControlPanel
 			'sqlite' => ($this->shieldon->driver instanceof SqliteDriver),
 		];
 
+		$reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('captcha');
+        $t->setAccessible(true);
+		$captcha = $t->getValue($this->shieldon);
 
+		$data['captcha'] = [
+			'recaptcha'    => (isset($captcha['Recaptcha']) ? true : false),
+			'imagecaptcha' => (isset($captcha['ImageCaptcha']) ? true : false),
+		];
 
 		$this->renderPage('dashboard/overview', $data);
 	}

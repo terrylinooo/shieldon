@@ -19,11 +19,89 @@ $timezone = '';
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
+            Data Circle
+            <div class="heading-right">
+                <ul>
+                    <li><span>shieldon_rule_list</span> <strong><?php echo count($rule_list); ?> rows</strong></li>
+                    <li><span>shieldon_logs</span> <strong><?php echo count($ip_log_list); ?> rows</strong></li>
+                    <li><span>shieldon_sessions</span> <strong><?php echo count($session_list); ?> rows</strong></li>
+                </ul>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="filter-status">
+                    <div class="heading">MySQL</div>
+                    <div class="nums">
+                        <?php echo $driver['mysql']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
+                    </div>
+                    <div class="note">SQL database.</div>
+                    <button class="note-code" onclick="openInfoModal(this)" 
+                        data-document="https://shield-on-php.github.io/en/driver/mysql.html" 
+                        data-id="driver-mysql" 
+                        data-title="MySQL">
+                        <i class="fas fa-code"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="filter-status">
+                    <div class="heading">Redis</div>
+                    <div class="nums">
+                        <?php echo $driver['redis']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
+                    </div>
+                    <div class="note">In-memory dadabase.</div>
+                    <button class="note-code" onclick="openInfoModal(this)" 
+                        data-document="https://shield-on-php.github.io/en/driver/redis.html" 
+                        data-id="driver-redis" 
+                        data-title="Redis">
+                        <i class="fas fa-code"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="filter-status">
+                    <div class="heading">File</div>
+                    <div class="nums">
+                        <?php echo $driver['file']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
+                    </div>
+                    <div class="note">File system.</div>
+                    <button class="note-code" onclick="openInfoModal(this)" 
+                        data-document="https://shield-on-php.github.io/en/driver/file.html" 
+                        data-id="driver-file" 
+                        data-title="File System">
+                        <i class="fas fa-code"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="filter-status">
+                    <div class="heading">SQLite</div>
+                    <div class="nums">
+                        <?php echo $driver['sqlite'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
+                    </div>
+                    <div class="note">SQL database.</div>
+                    <button class="note-code" onclick="openInfoModal(this)" 
+                        data-document="https://shield-on-php.github.io/en/driver/sqlite.html" 
+                        data-id="driver-sqlite" 
+                        data-title="SQLite">
+                        <i class="fas fa-code"></i>
+                    </button>
+                </div>
+                   
+            </div>
+        </div>
+    </div>
+</div>
+<div class="so-dashboard">
+    <div class="so-datatables">
+        <div class="so-datatable-heading">
             Filters
         </div>
         <br />
 		<div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">Cookie</div>
                     <div class="nums">
@@ -38,7 +116,7 @@ $timezone = '';
                     </button>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">Session</div>
                     <div class="nums">
@@ -53,7 +131,7 @@ $timezone = '';
                     </button>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">Frequency</div>
                     <div class="nums">
@@ -68,7 +146,7 @@ $timezone = '';
                     </button>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">Referrer</div>
                     <div class="nums">
@@ -93,7 +171,7 @@ $timezone = '';
         </div>
         <br />
 		<div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">IP</div>
                     <div class="nums">
@@ -108,7 +186,7 @@ $timezone = '';
                     </button>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">Trusted Bot</div>
                     <div class="nums">
@@ -123,7 +201,7 @@ $timezone = '';
                     </button>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">Header</div>
                     <div class="nums">
@@ -138,7 +216,7 @@ $timezone = '';
                     </button>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">RDNS</div>
                     <div class="nums">
@@ -153,7 +231,7 @@ $timezone = '';
                     </button>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">User Agent</div>
                     <div class="nums">
@@ -174,87 +252,7 @@ $timezone = '';
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
-            Data Circle
-
-            <div class="heading-right">
-                <ul>
-                    <li><span>rule_list</span> <strong><?php echo count($rule_list); ?></strong></li>
-                    <li><span>logs</span> <strong><?php echo count($ip_log_list); ?></strong></li>
-                    <li><span>sessions</span> <strong><?php echo count($session_list); ?></strong></li>
-                </ul>
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="filter-status">
-                    <div class="heading">MySQL</div>
-                    <div class="nums">
-                        <?php echo $driver['mysql']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
-                    </div>
-                    <div class="note">SQL database.</div>
-                    <button class="note-code" onclick="openInfoModal(this)" 
-                        data-document="https://shield-on-php.github.io/en/driver/mysql.html" 
-                        data-id="driver-mysql" 
-                        data-title="MySQL">
-                        <i class="fas fa-code"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="filter-status">
-                    <div class="heading">Redis</div>
-                    <div class="nums">
-                        <?php echo $driver['redis']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
-                    </div>
-                    <div class="note">In-memory dadabase.</div>
-                    <button class="note-code" onclick="openInfoModal(this)" 
-                        data-document="https://shield-on-php.github.io/en/driver/redis.html" 
-                        data-id="driver-redis" 
-                        data-title="Redis">
-                        <i class="fas fa-code"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="filter-status">
-                    <div class="heading">File</div>
-                    <div class="nums">
-                        <?php echo $driver['file']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
-                    </div>
-                    <div class="note">File system.</div>
-                    <button class="note-code" onclick="openInfoModal(this)" 
-                        data-document="https://shield-on-php.github.io/en/driver/file.html" 
-                        data-id="driver-file" 
-                        data-title="File System">
-                        <i class="fas fa-code"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="filter-status">
-                    <div class="heading">SQLite</div>
-                    <div class="nums">
-                        <?php echo $driver['sqlite'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
-                    </div>
-                    <div class="note">SQL database.</div>
-                    <button class="note-code" onclick="openInfoModal(this)" 
-                        data-document="https://shield-on-php.github.io/en/driver/sqlite.html" 
-                        data-id="driver-sqlite" 
-                        data-title="SQLite">
-                        <i class="fas fa-code"></i>
-                    </button>
-                </div>
-                   
-            </div>
-        </div>
-    </div>
-</div>
-<div class="so-dashboard">
-    <div class="so-datatables">
-        <div class="so-datatable-heading">
             Logger
-
             <div class="heading-right">
                 <ul>
                     <li><span>since</span> <strong><?php echo $logger_started_working_date; ?></strong></li>
@@ -266,17 +264,57 @@ $timezone = '';
 
         <br />
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">Action Logger</div>
                     <div class="nums">
-                        <?php echo $driver['mysql']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
+                        <?php echo $driver['mysql']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
                     <div class="note">Record every visitor's behavior.</div>
                     <button class="note-code" onclick="openInfoModal(this)" 
-                        data-document="https://shield-on-php.github.io/en/driver/mysql.html" 
-                        data-id="driver-mysql" 
-                        data-title="MySQL">
+                        data-document="https://shield-on-php.github.io/en/logs/actionlogger.html" 
+                        data-id="logs-actionlogger" 
+                        data-title="Action Logger">
+                        <i class="fas fa-code"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="so-dashboard">
+    <div class="so-datatables">
+        <div class="so-datatable-heading">
+            Captcha Modules
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="filter-status">
+                    <div class="heading">reCAPTCHA</div>
+                    <div class="nums">
+                        <?php echo $captcha['recaptcha']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
+                    </div>
+                    <div class="note">Provided by Google.</div>
+                    <button class="note-code" onclick="openInfoModal(this)" 
+                        data-document="https://shield-on-php.github.io/en/captcha/recaptcha.html" 
+                        data-id="captcha-recaptcha" 
+                        data-title="reCAPTCHA">
+                        <i class="fas fa-code"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="filter-status">
+                    <div class="heading">Image Captcha</div>
+                    <div class="nums">
+                        <?php echo $captcha['imagecaptcha']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
+                    </div>
+                    <div class="note">A simple text-in-image Captcha.</div>
+                    <button class="note-code" onclick="openInfoModal(this)" 
+                        data-document="https://shield-on-php.github.io/en/captcha/image.html" 
+                        data-id="captcha-image" 
+                        data-title="Image Captcha">
                         <i class="fas fa-code"></i>
                     </button>
                 </div>
@@ -541,6 +579,48 @@ $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
         </code>
     </pre>
 </script>
+
+<script type="text/template" id="logs-actionlogger">
+    <pre>
+        <code class="php">
+// $logDirectory:
+// Absolute path of the directory where the logs will be stored in.
+
+$logger = new \Shieldon\Log\ActionLogger($logDirectory);
+$shieldon->setLogger($logger);
+        </code>
+    </pre>
+</script>
+
+<script type="text/template" id="captcha-recaptcha">
+    <pre>
+        <code class="php">
+$captchaConfig = [
+    'key' => '6LfkOaUUAAAAAH-AlTz3hRQ25SK8kZKb2hDRSwz9',
+    'secret' => '6LfkOaUUAAAAAJddZ6k-1j4hZC1rOqYZ9gLm0WQh',
+];
+
+$captchaInstance = new \Shieldon\Captcha\Recaptcha($captchaConfig);
+$shieldon->setCaptcha($captchaInstance);
+        </code>
+    </pre>
+</script>
+
+<script type="text/template" id="captcha-image">
+    <pre>
+        <code class="php">
+$config = [
+    'word_length' => 6,
+];
+
+$captchaInstance = new \Shieldon\Captcha\ImageCaptcha($config);
+$shieldon->setCaptcha($captchaInstance);
+        </code>
+    </pre>
+</script>
+
+
+
 
 <script>
 
