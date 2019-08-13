@@ -32,7 +32,7 @@ function showActive(string $key = '')
     $page = $_GET['so_page'] ?? '';
     $tab  = $_GET['tab'] ?? '';
 
-    $currentPage = $page . '_' . $tab;
+    $currentPage = $page . (! empty($tab) ? '_' . $tab : '');
 
     if ($currentPage === $key) {
         echo 'active';
@@ -74,9 +74,19 @@ function showActive(string $key = '')
                         <li class="nav-item section-title">
                             <strong class="nav-link"><i class="fas fa-cog"></i> Status</strong>
                         </li>
-                        <li class="nav-item <?php showActive('op_info'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=op_info">Overview</a>
+                        <li class="nav-item <?php showActive('overview'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=overview">Overview</a>
                         </li>
+                        <li class="nav-item section-title">
+                            <strong class="nav-link"><i class="fas fa-fire-alt"></i></i> WAF</strong>
+                        </li>
+                        <li class="nav-item <?php showActive('settings'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=settings">Settings</a>
+                        </li>
+                        <li class="nav-item <?php showActive('firewall'); ?>">
+                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=ip-manager">Firewall</a>
+                        </li>
+
                         <li class="nav-item section-title">
                             <strong class="nav-link"><i class="fas fa-chart-area"></i> Logs</strong>
                         </li>

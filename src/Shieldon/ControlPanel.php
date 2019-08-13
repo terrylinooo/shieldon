@@ -75,8 +75,8 @@ class ControlPanel
 
 		switch($slug) {
 
-			case 'op_info':
-				$this->info();
+			case 'overview':
+				$this->overview();
 				break;
 
 			case 'session_table':
@@ -107,7 +107,7 @@ class ControlPanel
 	 *
 	 * @return void
 	 */
-	public function info(): void
+	public function overview(): void
 	{
 		/*
 		|--------------------------------------------------------------------------
@@ -262,8 +262,6 @@ class ControlPanel
 
 		$data['page_url'] = $this->url('dashboard');
 
-
-
 		$this->renderPage('dashboard/dashboard_' . $type, $data);
 	}
 
@@ -365,10 +363,14 @@ class ControlPanel
 		$data['online_count'] = 0;
 		$data['expires'] = 0;
 
-        
-		$data['is_session_limit'] = true;
-		$data['session_limit_count'] = 0;
-		$data['session_limit_period'] = 0;
+		$reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('isLimitSession');
+        $t->setAccessible(true);
+		$isLimitSession = $t->getValue($this->shieldon);
+
+		$data['is_session_limit'] = (empty($isLimitSession) ? false : true);
+		$data['session_limit_count'] = ($isLimitSession[0] ?? 0);
+		$data['session_limit_period'] = round(($isLimitSession[1] ?? 0) / 60, 0);
 		$data['online_count'] = count($data['session_list']);
 		$data['expires'] = (int) $data['session_limit_period'] * 60;
 

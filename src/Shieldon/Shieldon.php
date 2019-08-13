@@ -201,7 +201,7 @@ class Shieldon
     /**
      * Is to limit traffic? This will recond online sessions.
      *
-     * @var bool
+     * @var array
      */
     private $isLimitSession = [];
 
