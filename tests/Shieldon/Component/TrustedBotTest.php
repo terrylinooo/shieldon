@@ -87,26 +87,37 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     {
         $trustedBotComponent = new TrustedBot();
 
-        $trustedBotComponent->addItem('acer', 'acer-euro.com');
+        $trustedBotComponent->addItem('acer', '.acer-euro.com');
         $list = $trustedBotComponent->getList();
 
-        if (in_array('.acer-euro.com', $list)) {
-            $this->assertTrue(true);
-        } else {
-            $this->assertTrue(false);
-        }
+        $test = $list[count($list)-1];
+
+        $this->assertSame($test['userAgent'] , 'acer');
+        $this->assertSame($test['rdns'] , '.acer-euro.com');
+       
     }
 
     public function testAddList()
     {
         $trustedBotComponent = new TrustedBot();
-        $trustedBotComponent->addList([]);
+        $trustedBotComponent->setList([]);
+        $trustedBotComponent->addList([
+            ['userAgent' => 'hk', 'rdns' => 'free'],
+            ['userAgent' => 'tw', 'rdns' => 'free'],
+        ]);
 
         $reflection = new \ReflectionObject($trustedBotComponent);
         $t = $reflection->getProperty('trustedBotList');
         $t->setAccessible(true);
-  
-        $this->assertSame([] , $t->getValue($trustedBotComponent));
+
+        $v = $t->getValue($trustedBotComponent);
+
+        $testArr = [
+            ['userAgent' => 'hk', 'rdns' => 'free'],
+            ['userAgent' => 'tw', 'rdns' => 'free'],
+        ];
+
+        $this->assertSame($testArr, $v);
     }
 
     public function testIsGoogle()

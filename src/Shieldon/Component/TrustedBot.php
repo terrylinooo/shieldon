@@ -13,6 +13,8 @@ namespace Shieldon\Component;
 use function preg_match;
 use function implode;
 use function gethostbyname;
+use function array_column;
+use function array_unique;
 
 /**
  * TrustedBot
@@ -45,21 +47,72 @@ class TrustedBot extends ComponentProvider
     public function __construct()
     {
         // They are robots we welcome in this whitelist.
+
         $this->trustedBotList = [
-            // User-agent   => RDNS
-            'google'        => '.googlebot.com',
-            'Google.'        => '.google.com',
-            'live'          => '.live.com', 
-            'msn'           => '.msn.com',
-            'ask'           => '.ask.com',
-            'bing'          => '.bing.com',
-            'inktomisearch' => '.inktomisearch.com',
-            'yahoo'         => '.yahoo.com',
-            'Yahoo'         => '.yahoo.net',
-            'yandex'        => '.yandex.com',
-            'Yandex'        => '.yandex.ru',
-            'yAndex'        => '.yandex.net',
-            'w3.org'        => '.w3.org',
+            [
+                'userAgent' => 'google',
+                'rdns'      => '.googlebot.com',
+            ],
+
+            [
+                'userAgent' => 'google',
+                'rdns'      => '.google.com',
+            ],
+
+            [
+                'userAgent' => 'live',
+                'rdns'      => '.live.com',
+            ],
+
+            [
+                'userAgent' => 'msn',
+                'rdns'      => '.msn.com',
+            ],
+
+            [
+                'userAgent' => 'ask',
+                'rdns'      => '.ask.com',
+            ],
+
+            [
+                'userAgent' => 'bing',
+                'rdns'      => '.bing.com',
+            ],
+
+            [
+                'userAgent' => 'inktomisearch',
+                'rdns'      => '.inktomisearch.com',
+            ],
+   
+            [
+                'userAgent' => 'yahoo',
+                'rdns'      => '.yahoo.com',
+            ],
+
+            [
+                'userAgent' => 'yahoo',
+                'rdns'      => '.yahoo.net',
+            ],
+
+            [
+                'userAgent' => 'yandex',
+                'rdns'      => '.yandex.com',
+            ],
+
+            [
+                'userAgent' => 'yandex',
+                'rdns'      => '.yandex.net',
+            ],
+
+            [
+                'userAgent' => 'yandex',
+                'rdns'      => '.yandex.ru',
+            ],
+
+            [
+                'userAgent' => 'w3.org',
+                'rdns'      => '.w3.org',
+            ],
         ];
 
         if (! empty($_SERVER['HTTP_USER_AGENT'])) {
@@ -73,13 +126,18 @@ class TrustedBot extends ComponentProvider
     public function isAllowed(): bool
     {
         if (! empty($this->trustedBotList)) {
-            if (! preg_match('/(' . implode('|', array_keys($this->trustedBotList)) . ')/i', $this->userAgentString)) {
+
+            $userAgent = array_unique(array_column($this->trustedBotList, 'userAgent'));
+
+            if (! preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgentString)) {
                 
                 return false;
             }
 
+            $rdns = array_unique(array_column($this->trustedBotList, 'rdns'));
+
             // We will check the RDNS record to see if it is in the whitelist.
-            if (preg_match('/(' . implode('|', $this->trustedBotList) . ')/i', $this->ipResolvedHostname)) {
+            if (preg_match('/(' . implode('|', $rdns) . ')/i', $this->ipResolvedHostname)) {
 
                 $ip = gethostbyname($this->ipResolvedHostname);
 
@@ -108,7 +166,12 @@ class TrustedBot extends ComponentProvider
      */
     public function addItem(string $userAgentString, string $rdns): void
     {
-        $this->trustedBotList[$userAgentString] = '.' . trim($rdns, '.');
+        $_rdns = '.' . trim($rdns, '.');
+
+        $this->trustedBotList[] = [
+            'userAgent' => $userAgentString,
+            'rdns'      => $_rdns,
+        ];
     }
 
     /**
@@ -120,7 +183,11 @@ class TrustedBot extends ComponentProvider
      */
     public function addList(array $list): void
     {
-        $this->trustedBotList = $list;
+        if (! empty($list[0]['userAgent']) && ! empty($list[0]['rdns']) && 2 === count($list[0])) {
+
+            // Append the new list to the end.
+            $this->trustedBotList = array_merge($this->trustedBotList, $list);
+        }
     }
 
     /**
@@ -153,9 +220,13 @@ class TrustedBot extends ComponentProvider
     public function removeItem(string $string): void
     {
         if (! empty($this->trustedBotList)) {
-            $key = array_search($string, $this->trustedBotList);
-            if (false !==  $key) {
-                unset($this->trustedBotList[$key]);
+            foreach ($this->trustedBotList as $index => $list) {
+                if ($list['userAgent'] === $string) {
+                    unset($this->trustedBotList[$index]);
+                }
+                if ($list['rdns'] === $string) {
+                    unset($this->trustedBotList[$index]);
+                }
             }
         }
     }
