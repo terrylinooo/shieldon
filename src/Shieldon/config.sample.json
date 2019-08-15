@@ -1,0 +1,66 @@
+{
+  "channel_id": "",
+  "driver_type": "file",
+  "drivers": {
+    "file": {
+      "directory_path": "/home/shieldon/file"
+    },
+    "sqlite": {
+      "directory_path": "/home/shieldon/sqlite"
+    },
+    "redis": {
+      "port": 6379,
+      "host": "127.0.0.1",
+      "auth": "12345678"
+    },
+    "mysql": {
+      "host": "127.0.0.1",
+      "dbname": "shieldon",
+      "user": "terry",
+      "pass": "1234",
+      "charsset": "utf8"
+    }
+  },
+  "loggers": {
+    "action": {
+      "directory_path": "/home/shieldon/logs"
+    }
+  },
+  "filters": {
+    "frequency": {
+      "enable": true,
+      "config": {
+        "quota_s": 2,
+        "quota_m": 10,
+        "quota_h": 30,
+        "quota_d": 60
+      }
+    },
+    "cookie": {
+      "enable": false,
+      "config": {
+        "cookie_name": "ssjd",
+        "cookie_domain": "",
+        "quota": 5
+      }
+    },
+    "session": {
+      "enable": false,
+      "config": {
+        "quota": 5
+      }
+    },
+    "referer": {
+      "enable": false,
+      "config": {
+        "quota": 5
+      }
+    }
+  },
+  "ip_source": {
+    "REMOTE_ADDR": true,
+    "HTTP_CF_CONNECTING_IP": false,
+    "HTTP_X_FORWARDED_FOR": false,
+    "HTTP_X_FORWARDED_HOST": false
+  }
+}
