@@ -35,7 +35,7 @@ use Shieldon\Component\ComponentInterface;
 use Shieldon\Captcha\CaptchaInterface;
 use Shieldon\Log\ActionLogger;
 use Shieldon\Component\ComponentProvider;
-use Shieldon\Instance;
+use Shieldon\ManagedFirewall;
 
 use LogicException;
 use function get_class;
@@ -271,13 +271,21 @@ class Shieldon
     }
 
     /**
-     * Managed by Web Application Firewall
+     * Managed by web application firewall.
+     * I made this for lazy people to easy use this library XD.
+     *
+     * @param string $configFilePath The configuration file's absolute path.
+     * @since 3.0.0
      *
      * @return self
      */
-    public function managedByWAF(): self
+    public function setManagedFirewall(string $configFilePath = ''): self
     {
-        $this->isWAF = true;
+        $this->isWaf = true;
+
+        // Hello, let's implement Shieldon into mamaged firewall.
+        // And, you can manage everything in Control Panel.
+        new ManagedFirewall($configFilePath, $this);
 
         return $this;
     }
