@@ -47,20 +47,90 @@
     "session": {
       "enable": false,
       "config": {
-        "quota": 5
+        "quota": 5,
+        "time_buffer": 5
       }
     },
     "referer": {
       "enable": false,
       "config": {
-        "quota": 5
+        "quota": 5,
+        "time_buffer": 5
       }
     }
   },
-  "ip_source": {
+  "components": {
+    "ip": {
+      "enable": true
+    },
+    "trusted_bot": {
+      "enable": true,
+      "strict_mode": false
+    },
+    "header": {
+      "enable": true,
+      "strict_mode": false
+    },
+    "user_agent": {
+      "enable": true,
+      "strict_mode": false
+    },
+    "rdns": {
+      "enable": true,
+      "strict_mode": false
+    }
+  },
+  "captcha_modules": {
+    "recaptcha": {
+      "enable": false,
+      "config": {
+        "site_key": null,
+        "secret_key": null,
+        "version": "v2",
+        "lang": "en-US"
+      }
+    },
+    "image": {
+      "enable": false,
+      "config": {
+        "type": "alnum",
+        "length": 4
+      }
+    }
+  },
+  "ip_variable_source": {
     "REMOTE_ADDR": true,
     "HTTP_CF_CONNECTING_IP": false,
     "HTTP_X_FORWARDED_FOR": false,
     "HTTP_X_FORWARDED_HOST": false
-  }
+  },
+  "online_session_limit": {
+    "enable": true,
+    "config": {
+      "count": 100,
+      "period": 300
+    }
+  },
+  "cronjob": {
+    "reset_circle": {
+      "enable": true,
+      "config": {
+        "period": 86400,
+        "last_update": "2019-01-01 00:00:00"
+      }
+    }
+  },
+  "excluded_urls": [
+    {
+      "url": ""
+    }
+  ],
+  "password_protected_urls": [
+    {
+      "url": "",
+      "username": "",
+      "password": "",
+      "captcha": true
+    }
+  ]
 }
