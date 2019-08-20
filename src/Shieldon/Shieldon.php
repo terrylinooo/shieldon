@@ -150,6 +150,7 @@ class Shieldon
         'cookie_domain'          => '',
         'cookie_value'           => '1',
         'lang'                   => 'en',
+        'xss_protection'         => false,
         'display_credit_link'    => true,
         'display_online_info'    => true,
         'display_lineup_info'    => true,
@@ -204,13 +205,6 @@ class Shieldon
      * @var array
      */
     private $isLimitSession = [];
-
-    /**
-     * Is current Shieldon is managed by WAF?
-     *
-     * @var bool
-     */
-    private $isWAF = false;
 
     /**
      * Result.
@@ -284,26 +278,6 @@ class Shieldon
         $this->currentUrl = $_SERVER['REQUEST_URI'];
 
         $this->setIp('', true);
-    }
-
-    /**
-     * Managed by web application firewall.
-     * I made this for lazy people to easy use this library XD.
-     *
-     * @param string $configFilePath The configuration file's absolute path.
-     * @since 3.0.0
-     *
-     * @return self
-     */
-    public function setManagedFirewall(string $configFilePath = ''): self
-    {
-        $this->isWaf = true;
-
-        // Hello, let's implement Shieldon into mamaged firewall.
-        // And, you can manage everything in Control Panel.
-        new ManagedFirewall($configFilePath, $this);
-
-        return $this;
     }
 
     /**
@@ -1167,6 +1141,13 @@ class Shieldon
             }
         }
 
+        // Prevent XSS attacks.
+        if (! empty($this->properties['xss_protection'])) {
+            if ($this->isXssAttempt) {
+                return $this->result = self::RESPONSE_DENY;
+            }
+        }
+
         foreach (array_keys($this->component) as $name) {
             $this->component[$name]->setIp($this->ip);
             $this->component[$name]->setRdns($this->ipResolvedHostname);
@@ -1396,5 +1377,29 @@ class Shieldon
             </script>
 EOF;
         return $jsString;
+    }
+
+    /**
+     * Check if someone try to Cross-Site scripting your website.
+     *
+     * @return bool
+     */
+    public function isXssAttempt(): bool
+    {
+        $highRiskCharacters = [
+            '"',
+            "'",
+            '<',
+            '>',
+            '://'
+        ];
+
+        foreach ($highRiskCharacters as $c) {
+            if (false !== strpos($this->currentUrl, $c)) {
+                return true;
+            }
+        }
+    
+        return false;
     }
 }
