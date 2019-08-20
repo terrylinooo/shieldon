@@ -125,11 +125,18 @@
       "url": ""
     }
   ],
+  "ip_manager": [
+    {
+      "rule": "allow",
+      "ip": "127.0.0.1",
+      "url": "/"
+    }
+  ],
   "password_protected_urls": [
     {
-      "url": "",
-      "username": "",
-      "password": "",
+      "url": "/admin/",
+      "username": "shieldon_test",
+      "password": "shieldon_test",
       "captcha": true
     }
   ]

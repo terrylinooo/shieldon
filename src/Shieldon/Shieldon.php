@@ -248,6 +248,20 @@ class Shieldon
     private $strictMode = false;
 
     /**
+     * Vistor's current browsering URL.
+     *
+     * @var string
+     */
+    private $currentUrl = '';
+
+    /**
+     * URLs that are excluded from Shieldon's protection.
+     *
+     * @var array
+     */
+    private $excludedUrls = [];
+
+    /**
      * Constructor.
      * 
      * @return void
@@ -1142,6 +1156,15 @@ class Shieldon
     {
         $this->driver->init($this->autoCreateDatabase);
 
+        // Ignore the excluded urls.
+        if (! empty($this->excludedUrls)) {
+            foreach ($this->excludedUrls as $url) {
+                if (0 === strpos($this->currentUrl, $url)) {
+                    return $this->result = self::RESPONSE_ALLOW;
+                }
+            }
+        }
+
         foreach (array_keys($this->component) as $name) {
             $this->component[$name]->setIp($this->ip);
             $this->component[$name]->setRdns($this->ipResolvedHostname);
@@ -1325,6 +1348,28 @@ class Shieldon
         // @codeCoverageIgnoreStart
         return $this->sessionId;
         // @codeCoverageIgnoreEnd
+    }
+
+    /**
+     * Set the URLs you want them to be excluded them from protection.
+     *
+     * @param array $urls
+     * @return self
+     */
+    public function setExcludedUrls(array $urls = []): self
+    {
+        $this->excludedUrls = $urls;
+        return $this;
+    }
+
+    /**
+     * Return current URL.
+     *
+     * @return string
+     */
+    public function getCurrentUrl(): string
+    {
+        return $this->currentUrl;
     }
 
     /**
