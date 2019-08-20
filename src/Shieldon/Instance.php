@@ -38,12 +38,12 @@ class Instance
         if ('' === $channel) {
             $channel = 'channel_not_set';
         }
-    
-        if (isset(self::$instances[$channel])) {
-            return self::$instances[$channel];
+
+        if (! isset(self::$instances[$channel])) {
+            throw new Exception('Shieldon instance not found.');
         }
 
-        return new stdClass();
+        return self::$instances[$channel];
     }
 
     /**

@@ -25,7 +25,7 @@ use Shieldon\Driver\SqliteDriver;
  *
  * @since 3.0.0
  */
-class ControlPanel
+class FirewallControlPanel
 {
 	/**
 	 * Shieldon instance.

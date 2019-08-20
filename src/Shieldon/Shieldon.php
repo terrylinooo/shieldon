@@ -281,6 +281,8 @@ class Shieldon
             $this->setProperties($properties);
         }
 
+        $this->currentUrl = $_SERVER['REQUEST_URI'];
+
         $this->setIp('', true);
     }
 
