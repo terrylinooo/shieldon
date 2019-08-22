@@ -10,15 +10,17 @@
 
 namespace Shieldon\Component;
 
-use function preg_match;
+use Shieldon\IpTrait;
+
 use function implode;
+use function preg_match;
 
 /**
  * UserAgent
  */
 class UserAgent extends ComponentProvider
 {
-    use \Shieldon\IpTrait;
+    use IpTrait;
 
     /**
      * Robot's user-agent text.

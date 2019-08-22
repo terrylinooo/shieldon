@@ -14,7 +14,14 @@ use RuntimeException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use function mkdir;
-use function is_string;
+use function is_writable;
+use function is_dir;
+use function file_put_contents;
+use function file_get_contents;
+use function umask;
+use function unlink;
+use function file_exists;
+use function json_decode;
 
 /**
  * File Driver
@@ -342,8 +349,8 @@ class FileDriver extends DriverProvider
     private function getFilename(string $ip, string $type = 'log'): string
     {
         switch ($type) {
-            case 'log'    : return $this->directory . '/' . $this->tableLogs       . '/' . $ip . '.' . $this->extension;
-            case 'session': return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
+            case 'log'    : return $this->directory . '/' . $this->tableLogs     . '/' . $ip . '.' . $this->extension;
+            case 'session': return $this->directory . '/' . $this->tableSessions . '/' . $ip . '.' . $this->extension;
             case 'rule'   : return $this->directory . '/' . $this->tableRuleList . '/' . $ip . '.' . $this->extension;
         }
 

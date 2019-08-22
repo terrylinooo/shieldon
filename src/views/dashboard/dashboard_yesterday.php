@@ -10,7 +10,7 @@
 ?>
 
 <div class="so-dashboard">
-
+	<?php if (! empty($period_data)) : ?>
 	<div class="so-flex">
 		<div class="so-board">
 			<div class="board-field left">
@@ -35,7 +35,8 @@
 		<div class="so-board area-chart-container">
 			<div id="chart-3"></div>
 		</div>
-    </div>
+	</div>
+	<?php endif; ?>
 	<div class="so-tabs">
 		<ul>
 			<li><a href="<?php echo $page_url; ?>&tab=today">Today</a></li>
@@ -71,6 +72,7 @@
 				</tr>
 			</thead>
 			<tbody>
+				<?php if (! empty($ip_details)) : ?>
 				<?php foreach($ip_details as $ip => $ipInfo) : ?>
 				<tr>
 					<td><?php echo $ip; ?></td>
@@ -83,6 +85,7 @@
 					<td><?php echo $ipInfo['session_limit_count']; ?></td>
 				</tr>
 				<?php endforeach; ?>
+				<?php endif; ?>
 			</tbody>   
 		</table>
 	</div>
@@ -90,6 +93,8 @@
         Timezone: UTC 
     </div>
 </div>
+
+<?php if (! empty($period_data)) : ?>
 
 <script>
 
@@ -245,3 +250,5 @@
 	});
 	
 </script>
+
+<?php endif; ?>

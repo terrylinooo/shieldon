@@ -10,24 +10,25 @@
 
 namespace Shieldon\Log;
 
-use RuntimeException;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use DateTime;
 use DateInterval;
 use DatePeriod;
-use function mkdir;
-use function umask;
-use function rmdir;
-use function unlink;
-use function file_exists;
-use function file_put_contents;
-use function file_get_contents;
-use function explode;
-use function strtotime;
+use DateTime;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RuntimeException;
+
 use function date;
-use function is_writable;
+use function explode;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function is_dir;
+use function is_writable;
+use function mkdir;
+use function rmdir;
+use function strtotime;
+use function umask;
+use function unlink;
 
 /**
  * Action Logger only support storing log into files, I don't want to make it complex, that's it.

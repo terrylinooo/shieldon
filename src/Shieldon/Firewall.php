@@ -12,28 +12,32 @@
 namespace Shieldon;
 
 use Shieldon\Shieldon;
-use Shieldon\Driver\RedisDriver;
-use Shieldon\Driver\FileDriver;
-use Shieldon\Driver\SqliteDriver;
-use Shieldon\Driver\MysqlDriver;
+
+use Shieldon\Component\Header;
+use Shieldon\Component\Ip;
+use Shieldon\Component\Rdns;
 use Shieldon\Component\TrustedBot;
 use Shieldon\Component\UserAgent;
-use Shieldon\Component\Header;
-use Shieldon\Component\Rdns;
-use Shieldon\Component\Ip;
+use Shieldon\Container;
+use Shieldon\Driver\FileDriver;
+use Shieldon\Driver\MysqlDriver;
+use Shieldon\Driver\RedisDriver;
+use Shieldon\Driver\SqliteDriver;
 use Shieldon\Log\ActionLogger;
 
 use PDO;
 use PDOException;
 use Redis;
 use RedisException;
-use Exception;
 
+use function count;
+use function explode;
 use function file_get_contents;
+use function file_put_contents;
 use function json_decode;
-
+use function strpos;
 /**
- * For storing Shieldon instances.
+ * Managed Firewall.
  * 
  * @since 3.0.0
  */
@@ -65,20 +69,47 @@ class Firewall
 	 *
 	 * @var string
 	 */
-	private $configFilePath = '';
+	private $directory = '/tmp';
+
+	/**
+	 * The filename of the configuration file.
+	 *
+	 * @var string
+	 */
+	private $filename = 'shieldon.conf.json';
 
     /**
      * Constructor.
      */
-    public function __construct(string $configFilePath)
+    public function __construct(string $directory)
     {
-        if (! file_exists($configFilePath)) {
-            throw new Exception('Configuration file is missing.');
-        }
+		// Set to container.
+		Container::set('firewall', $this);
 
-        $jsonString = file_get_contents($configFilePath);
+        if ('' !== $directory) {
+			$this->directory = rtrim($directory, '\\/');
+		}
 
-        $this->configuration = json_decode($jsonString, true);
+		if (! is_dir($this->directory)) {
+            $originalUmask = umask(0);
+            @mkdir($this->directory, 0777, true);
+            umask($originalUmask);
+		}
+
+		if (! is_writable($this->directory)) {
+			throw new RuntimeException('The directory usded by Firewall must be writable. (' . $this->directory . ')');
+		}
+
+		$configFilePath = $this->directory . '/' . $this->filename;
+
+		if (! file_exists($configFilePath)) {
+			$jsonString = file_get_contents(__DIR__ . '/config.sample.json');
+		} else {
+			$jsonString = file_get_contents($configFilePath);
+		}
+
+		$this->configuration = json_decode($jsonString, true);
+
 		$this->shieldon = new Shieldon();
 
         $this->setDriver();
@@ -91,6 +122,8 @@ class Firewall
 		$this->setSessionLimit();
 		$this->setCronJob();
 		$this->setExcludedUrls();
+
+		$this->status = $this->getOption('daemon');
 	}
 
 	/**
@@ -100,14 +133,17 @@ class Firewall
 	 */
 	public function run(): void
 	{
-		$result = $this->shieldon->run();
+		if ($this->status) {
+		
+			$result = $this->shieldon->run();
 
-		if ($result !== $this->shieldon::RESPONSE_ALLOW) {
+			if ($result !== $this->shieldon::RESPONSE_ALLOW) {
 
-			if ($this->shieldon->captchaResponse()) {
-				$this->shieldon->unban();
+				if ($this->shieldon->captchaResponse()) {
+					$this->shieldon->unban();
+				}
+				$this->shieldon->output(200);
 			}
-			$this->shieldon->output(200);
 		}
 	}
 
@@ -122,10 +158,7 @@ class Firewall
 
         if ($channelId) {
 			$this->shieldon->setChannel($channelId);
-			\Shieldon\Instance::set($this->shieldon, $channelId);
-        } else {
-			\Shieldon\Instance::set($this->shieldon);
-		}
+        }
     }
 
     /**
@@ -180,7 +213,7 @@ class Firewall
                 $fileSetting = $this->getOption('file', 'drivers');
 
 				if (empty($fileSetting['directory_path'])) {
-                    $fileSetting['directory_path'] = '';
+                    $fileSetting['directory_path'] = $this->directory;
                     $this->status = false;
                 }
 
@@ -249,11 +282,13 @@ class Firewall
      */
     protected function setLogger(): void
     {
-        $loggerSetting = $this->getOption('action', 'loggers');
-
-        if (! empty($loggerSetting['directory_path'])) {
-            $this->shieldon->setLogger(new ActionLogger($loggerSetting['directory_path']));
-        }
+		$loggerSetting = $this->getOption('action', 'loggers');
+		
+		if ($loggerSetting['enable']) {
+			if (! empty($loggerSetting['config']['directory_path'])) {
+				$this->shieldon->setLogger(new ActionLogger($loggerSetting['config']['directory_path']));
+			}
+		}
     }
 
 	/**
@@ -316,10 +351,10 @@ class Firewall
 		if ($frequencySetting['enable']) {
 
 			$frequencyQuota = [
-				'quota_s' => $frequencySetting['config']['quota_s'] ?? 2,
-				'quota_m' => $frequencySetting['config']['quota_m'] ?? 10,
-				'quota_h' => $frequencySetting['config']['quota_h'] ?? 30,
-				'quota_s' => $frequencySetting['config']['quota_d'] ?? 60,
+				's' => $frequencySetting['config']['quota_s'] ?? 2,
+				'm' => $frequencySetting['config']['quota_m'] ?? 10,
+				'h' => $frequencySetting['config']['quota_h'] ?? 30,
+				'd' => $frequencySetting['config']['quota_d'] ?? 60,
 			];
 
 			$this->shieldon->setProperty('time_unit_quota', $frequencyQuota);
@@ -329,9 +364,11 @@ class Firewall
 
 			$cookieName = $cookieSetting['config']['cookie_name'] ?? 'ssjd';
 			$cookieDomain = $cookieSetting['config']['cookie_domain'] ?? '';
+			$cookieValue = $cookieSetting['config']['cookie_value'] ?? '1';
 	
 			$this->shieldon->setProperty('cookie_name', $cookieName);
 			$this->shieldon->setProperty('cookie_domain', $cookieDomain);
+			$this->shieldon->setProperty('cookie_value', $cookieValue);
 		}
 
 		if ($refererSetting['enable']) {
@@ -528,7 +565,7 @@ class Firewall
 
 		foreach ($ipList as $ip) {
 
-			if (0 === strpos($this->current_url, $ip['url']) ) {
+			if (0 === strpos($this->shieldon->getCurrentUrl(), $ip['url']) ) {
 
 				if ('allow' === $ip['rule']) {
 					$allowedList[] = $ip['ip'];
@@ -575,6 +612,7 @@ class Firewall
 	 *
 	 * @param string $arrayLevelString
 	 * @param string $assignValue
+	 *
 	 * @return void
 	 */
 	private function updateOption($arrayLevelString = '', $assignValue = ''): void

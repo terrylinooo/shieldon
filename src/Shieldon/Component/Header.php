@@ -10,12 +10,21 @@
 
 namespace Shieldon\Component;
 
+use Shieldon\IpTrait;
+
+use function implode;
+use function preg_match;
+use function str_replace;
+use function strtolower;
+use function substr;
+use function ucwords;
+
 /**
  * Robot
  */
 class Header extends ComponentProvider
 {
-    use \Shieldon\IpTrait;
+    use IpTrait;
 
     /**
      *  Very common requests from normal users.

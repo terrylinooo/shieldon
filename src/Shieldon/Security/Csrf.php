@@ -9,6 +9,9 @@
  * 
  */
 
+ /**
+  * Cross Site Request Forgery protection.
+  */
 class Csrf
 {
     /**
@@ -24,6 +27,13 @@ class Csrf
 	 * @var string
 	 */
 	protected $name = 'shieldon_csrf_token';
+
+	/**
+	 * Expiration time for CSRF Protection. (seconds)
+	 *
+	 * @var integer
+	 */
+	protected $expire = 7200;
 
     /**
      * Constructor.
@@ -76,6 +86,17 @@ class Csrf
 	}
 
 	/**
+	 * Set expiration time.
+	 *
+	 * @param integer $timesamp
+	 * @return void
+	 */
+	public function setExpirationTime(int $timesamp = 7200): void
+	{
+		$this->expire = $timesamp;
+	}
+
+	/**
 	 * Get CSRF Hash
 	 *
 	 * @return string
@@ -94,7 +115,7 @@ class Csrf
 	{
 		return $this->name;
     }
-    
+ 
 	/**
 	 * Set the hash.
 	 *
@@ -102,8 +123,14 @@ class Csrf
 	 */
 	protected function setHash(): string
 	{
-		$this->hash = md5(uniqid(rand(), true));
-		$_SESSION[$this->name] = $this->hash;
+		$hashTime = $_SESSION[$this->name]['time'] ?? 0;
+		$nowTime = time();
+
+		if (($nowTime - $hashTime) >= $this->expire || 0 === $this->expire) {
+			$this->hash = md5(uniqid(rand(), true));
+			$_SESSION[$this->name]['hash'] = $this->hash;
+			$_SESSION[$this->name]['time'] = time();
+		}
 
 		return $this->hash;
 	}

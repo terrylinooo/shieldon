@@ -10,18 +10,21 @@
 
 namespace Shieldon\Component;
 
-use function preg_match;
-use function implode;
-use function gethostbyname;
+use Shieldon\IpTrait;
+
 use function array_column;
+use function array_merge;
 use function array_unique;
+use function gethostbyname;
+use function implode;
+use function preg_match;
 
 /**
  * TrustedBot
  */
 class TrustedBot extends ComponentProvider
 {
-    use \Shieldon\IpTrait;
+    use IpTrait;
 
     /**
      * Robot's user-agent text.

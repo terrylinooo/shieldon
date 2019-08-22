@@ -10,7 +10,9 @@
 
 namespace Shieldon\Driver;
 
+use Exception;
 use PDO;
+
 /**
  * Sqlite Driver.
  */
@@ -70,7 +72,7 @@ class SqliteDriver extends AbstractSqlDriver
             return true;
 
         // @codeCoverageIgnoreStart
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
         // @codeCoverageIgnoreEnd

@@ -10,26 +10,26 @@
 
 namespace Shieldon\Captcha;
 
-use function random_int;
-use function imagecreatetruecolor;
-use function imagestring;
-use function imagecreate;
-use function imagerectangle;
-use function imagedestroy;
-use function imagecolorallocate;
-use function imagefilledrectangle;
-use function imageline;
-use function imagejpeg;
-use function imagepng;
-use function ob_get_contents;
-use function ob_end_clean;
 use function base64_encode;
-use function function_exists;
-use function password_verify;
-use function password_hash;
 use function cos;
-use function sin;
+use function function_exists;
+use function imagecolorallocate;
+use function imagecreate;
+use function imagecreatetruecolor;
+use function imagedestroy;
+use function imagefilledrectangle;
+use function imagejpeg;
+use function imageline;
+use function imagepng;
+use function imagerectangle;
+use function imagestring;
 use function mt_rand;
+use function ob_end_clean;
+use function ob_get_contents;
+use function password_hash;
+use function password_verify;
+use function random_int;
+use function sin;
 use function strlen;
 
 class ImageCaptcha implements CaptchaInterface

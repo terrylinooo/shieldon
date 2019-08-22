@@ -1,12 +1,13 @@
 {
+  "daemon": true,
   "channel_id": "",
   "driver_type": "file",
   "drivers": {
     "file": {
-      "directory_path": "/home/shieldon/file"
+      "directory_path": ""
     },
     "sqlite": {
-      "directory_path": "/home/shieldon/sqlite"
+      "directory_path": ""
     },
     "redis": {
       "port": 6379,
@@ -23,7 +24,10 @@
   },
   "loggers": {
     "action": {
-      "directory_path": "/home/shieldon/logs"
+      "enable": false,
+      "config": {
+        "directory_path": ""
+      }
     }
   },
   "filters": {
@@ -41,6 +45,7 @@
       "config": {
         "cookie_name": "ssjd",
         "cookie_domain": "",
+        "cookie_value": "1",
         "quota": 5
       }
     },
@@ -111,9 +116,34 @@
       "period": 300
     }
   },
+  "xss_protection": {
+    "request_uri": {
+      "enable": true
+    },
+    "post": {
+      "enable": false
+    },
+    "get": {
+      "enable": false
+    },
+    "cookie": {
+      "enable": false
+    }
+  },
+  "csrf_protection": {
+    "enable": false,
+    "config": {
+      "expire": 7200,
+      "excluded_urls": [
+        {
+          "url": "/ajax/"
+        }
+      ]
+    }
+  },
   "cronjob": {
     "reset_circle": {
-      "enable": true,
+      "enable": false,
       "config": {
         "period": 86400,
         "last_update": "2019-01-01 00:00:00"
@@ -122,7 +152,7 @@
   },
   "excluded_urls": [
     {
-      "url": ""
+      "url": "/tests/"
     }
   ],
   "ip_manager": [

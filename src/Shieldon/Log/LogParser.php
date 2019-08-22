@@ -11,9 +11,10 @@
 namespace Shieldon\Log;
 
 use Shieldon\Log\ActionLogger as Logger;
-use function strtotime;
+
 use function date;
 use function round;
+use function strtotime;
 
 /**
  * Parse the log files that created by ActionLogger

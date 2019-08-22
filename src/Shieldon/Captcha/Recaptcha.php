@@ -10,10 +10,10 @@
 
 namespace Shieldon\Captcha;
 
-use function curl_init;
-use function curl_setopt;
 use function curl_error;
 use function curl_exec;
+use function curl_init;
+use function curl_setopt;
 use function json_decode;
 
 class Recaptcha implements CaptchaInterface

@@ -30,19 +30,26 @@
 
 namespace Shieldon;
 
-use Shieldon\Driver\DriverProvider;
-use Shieldon\Component\ComponentInterface;
 use Shieldon\Captcha\CaptchaInterface;
-use Shieldon\Log\ActionLogger;
+use Shieldon\Component\ComponentInterface;
 use Shieldon\Component\ComponentProvider;
-use Shieldon\ManagedFirewall;
+use Shieldon\Container;
+use Shieldon\Driver\DriverProvider;
+use Shieldon\Log\ActionLogger;
 
 use LogicException;
+
 use function get_class;
 use function gethostbyaddr;
 use function session_id;
 use function strrpos;
+use function strpos;
 use function substr;
+use function ob_start;
+use function ob_end_clean;
+use function php_sapi_name;
+use function str_replace;
+use function time;
 
 /**
  * The primary Shiendon class.
@@ -262,6 +269,9 @@ class Shieldon
      */
     public function __construct(array $properties = [])
     {
+        // Set to container.
+        Container::set('shieldon', $this);
+
         $this->referer = $_SERVER['HTTP_REFERER'] ?? '';
 
         $this->setSessionId();
@@ -275,6 +285,7 @@ class Shieldon
             $this->setProperties($properties);
         }
 
+        // Get current session's browsing position.
         $this->currentUrl = $_SERVER['REQUEST_URI'];
 
         $this->setIp('', true);
@@ -1143,7 +1154,7 @@ class Shieldon
 
         // Prevent XSS attacks.
         if (! empty($this->properties['xss_protection'])) {
-            if ($this->isXssAttempt) {
+            if ($this->detectXssAttempt) {
                 return $this->result = self::RESPONSE_DENY;
             }
         }
@@ -1384,7 +1395,7 @@ EOF;
      *
      * @return bool
      */
-    public function isXssAttempt(): bool
+    public function detectXssAttempt(): bool
     {
         $highRiskCharacters = [
             '"',

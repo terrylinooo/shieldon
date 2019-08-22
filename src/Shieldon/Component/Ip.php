@@ -10,21 +10,26 @@
 
 namespace Shieldon\Component;
 
+use Shieldon\IpTrait;
+
 use function base_convert;
+use function count;
+use function explode;
 use function filter_var;
 use function in_array;
-use function strpos;
-use function explode;
-use function substr_count;
+use function ip2long;
 use function pow;
 use function str_pad;
+use function strpos;
+use function substr_count;
+use function unpack;
 
 /**
  * Ip
  */
 class Ip extends ComponentProvider
 {
-    use \Shieldon\IpTrait;
+    use IpTrait;
 
     /**
      * Constant
@@ -179,10 +184,10 @@ class Ip extends ComponentProvider
             $ip = $this->decimalIpv6($ip);
 
             $pieces = explode('/', $ipRange, 2);
-            $left_piece = $pieces[0];
+            $leftPiece = $pieces[0];
 
             // Extract out the main IP pieces
-            $ipPieces = explode('::', $left_piece, 2);
+            $ipPieces = explode('::', $leftPiece, 2);
             $mainIpPiece = $ipPieces[0];
             $lastIpPiece = $ipPieces[1];
 
@@ -201,7 +206,7 @@ class Ip extends ComponentProvider
             $size = count($mainIpPieces);
 
             if (trim($lastIpPiece) !== '') {
-                $last_piece = str_pad($lastIpPiece, 4, '0', STR_PAD_LEFT);
+                $lastPiece = str_pad($lastIpPiece, 4, '0', STR_PAD_LEFT);
 
                 // Build the full form of the IPV6 address considering the last IP block set
                 for ($i = $size; $i < 7; $i++) {
@@ -209,7 +214,7 @@ class Ip extends ComponentProvider
                     $last[$i] = 'ffff';
                 }
 
-                $mainIpPieces[7] = $last_piece;
+                $mainIpPieces[7] = $lastPiece;
     
             } else {
 

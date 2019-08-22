@@ -17,6 +17,9 @@
  * file that was distributed with this source code.
  */
 
+ /**
+  * Cross-Site Scripting protection.
+  */
 class Xss {
 
     /**

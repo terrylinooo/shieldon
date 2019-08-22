@@ -10,13 +10,13 @@
 
 namespace Shieldon;
 
-use Exception;
-use Shieldon\Log\LogParser;
-use ReflectionObject;
-use Shieldon\Driver\MysqlDriver;
 use Shieldon\Driver\FileDriver;
+use Shieldon\Driver\MysqlDriver;
 use Shieldon\Driver\RedisDriver;
 use Shieldon\Driver\SqliteDriver;
+use Shieldon\Log\LogParser;
+
+use ReflectionObject;
 
 /**
  * ControlPanel
@@ -25,7 +25,7 @@ use Shieldon\Driver\SqliteDriver;
  *
  * @since 3.0.0
  */
-class FirewallControlPanel
+class Panel
 {
 	/**
 	 * Shieldon instance.
@@ -40,6 +40,13 @@ class FirewallControlPanel
 	 * @var object
 	 */
 	protected $parser;
+
+	/**
+	 * Messages.
+	 *
+	 * @var array
+	 */
+	protected $messages = [];
 
 	/**
 	 * Constructor.
@@ -59,7 +66,11 @@ class FirewallControlPanel
 			$this->parser = new LogParser($logDirectory);
 
 		} else {
-			throw new Exception('ActionLogger is not implemented with the Shieldon instance.');
+
+			array_push($this->messages, [
+				'type' => 'error',
+				'text' => 'ActionLogger is not implemented with the Shieldon instance.',
+			]);
 		}
 	}
 
@@ -67,6 +78,7 @@ class FirewallControlPanel
 	 * Display pages.
 	 *
 	 * @param string $slug
+	 *
 	 * @return void
 	 */
 	public function page()
@@ -118,7 +130,10 @@ class FirewallControlPanel
 		| Get the summary information from those logs.
 		|
 		*/
-		$loggerInfo = $this->shieldon->logger->getCurrentLoggerInfo();
+
+		if (! empty($this->shieldon->logger)) {
+			$loggerInfo = $this->shieldon->logger->getCurrentLoggerInfo();
+		}
 
 		$data['logger_started_working_date'] = '';
 		$data['logger_work_days'] = '';
@@ -250,14 +265,21 @@ class FirewallControlPanel
 				$type = 'today';
 		}
 
-		$this->parser->prepare($type);
+		$data['ip_details'] = [];
+		$data['period_data'] = [];
 
-		$data['ip_details'] = $this->parser->getIpData();
-		$data['period_data'] = $this->parser->getParsedPeriodData();
+		$data['past_seven_hour'] = [];
 
-		if ('today' === $type ) {
-			$this->parser->prepare('past_seven_hours');
-			$data['past_seven_hour'] = $this->parser->getParsedPeriodData();
+		if (! empty($this->parser)) {
+			$this->parser->prepare($type);
+
+			$data['ip_details'] = $this->parser->getIpData();
+			$data['period_data'] = $this->parser->getParsedPeriodData();
+	
+			if ('today' === $type ) {
+				$this->parser->prepare('past_seven_hours');
+				$data['past_seven_hour'] = $this->parser->getParsedPeriodData();
+			}
 		}
 
 		$data['page_url'] = $this->url('dashboard');
@@ -420,6 +442,7 @@ class FirewallControlPanel
 	 *
 	 * @param string $page
 	 * @param array $data
+	 *
 	 * @return void
 	 */
 	private function renderPage(string $page, array $data)
@@ -445,6 +468,7 @@ class FirewallControlPanel
 	 *
 	 * @param string $page Page tab.
 	 * @param string $tab  Tab.
+	 *
 	 * @return string
 	 */
 	private function url(string $page = '', string $tab = '')

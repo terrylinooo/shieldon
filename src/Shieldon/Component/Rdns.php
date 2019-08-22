@@ -10,15 +10,18 @@
 
 namespace Shieldon\Component;
 
-use function preg_match;
+use Shieldon\IpTrait;
+
+use function gethostbyname;
 use function implode;
+use function preg_match;
 
 /**
  * Robot
  */
 class Rdns extends ComponentProvider
 {
-    use \Shieldon\IpTrait;
+    use IpTrait;
 
     /**
      * Constructor.
