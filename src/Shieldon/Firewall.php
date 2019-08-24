@@ -76,7 +76,7 @@ class Firewall
 	 *
 	 * @var string
 	 */
-	private $filename = 'shieldon.conf.json';
+	private $filename = 'config.firewall.json';
 
     /**
      * Constructor.
@@ -103,7 +103,7 @@ class Firewall
 		$configFilePath = $this->directory . '/' . $this->filename;
 
 		if (! file_exists($configFilePath)) {
-			$jsonString = file_get_contents(__DIR__ . '/config.sample.json');
+			$jsonString = file_get_contents(__DIR__ . '/../config/firewall.json');
 		} else {
 			$jsonString = file_get_contents($configFilePath);
 		}
@@ -112,15 +112,26 @@ class Firewall
 
 		$this->shieldon = new Shieldon();
 
-        $this->setDriver();
+		$this->shieldon->managedByFirewall();
+
+		$this->setDriver();
+		
 		$this->setChannel();
+
 		$this->setIpSource();
+
 		$this->setLogger();
+
 		$this->setFilters();
+
 		$this->setComponents();
+
 		$this->setCaptchas();
+
 		$this->setSessionLimit();
+
 		$this->setCronJob();
+
 		$this->setExcludedUrls();
 
 		$this->status = $this->getOption('daemon');
@@ -145,6 +156,16 @@ class Firewall
 				$this->shieldon->output(200);
 			}
 		}
+	}
+
+	/**
+	 * Get the Shieldon instance.
+	 *
+	 * @return object
+	 */
+	public function getShieldonInstance()
+	{
+		return $this->shieldon;
 	}
 
     /**

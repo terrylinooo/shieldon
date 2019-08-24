@@ -25,7 +25,7 @@ class Container
     private static $instances = [];
 
     /**
-     * Finds an entry of the container by its identifier and returns it.
+     * Find an entry of the container by its identifier and returns it.
      *
      * @param string $id Identifier of the entry to look for.
      *
@@ -39,8 +39,8 @@ class Container
     }
 
     /**
-     * Returns true if the container can return an entry for the given identifier.
-     * Returns false otherwise.
+     * Return true if the container can return an entry for the given identifier.
+     * Return false otherwise.
      *
      * @param string $id Identifier of the entry to look for.
      *
@@ -52,7 +52,7 @@ class Container
     }
 
     /**
-     * Sets an entry into container.
+     * Set an entry into container.
      *
      * @param object $id    Identifier of the entry to look for.
      * @param mixed  $entry Entry.
@@ -65,7 +65,7 @@ class Container
     }
 
     /**
-     * Unsets an entry of the Container.
+     * Unset an entry of the Container.
      *
      * @param string $id Identifier of the entry to look for.
      *

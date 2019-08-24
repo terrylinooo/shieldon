@@ -10,11 +10,13 @@
 
 namespace Shieldon;
 
+use Shieldon\Firewall;
 use Shieldon\Driver\FileDriver;
 use Shieldon\Driver\MysqlDriver;
 use Shieldon\Driver\RedisDriver;
 use Shieldon\Driver\SqliteDriver;
 use Shieldon\Log\LogParser;
+use Shieldon\Shieldon;
 
 use ReflectionObject;
 
@@ -49,13 +51,27 @@ class Panel
 	protected $messages = [];
 
 	/**
+	 * self: Shieldon | managed: Firewall
+	 *
+	 * @var string
+	 */
+	protected $mode = 'self';
+
+	/**
 	 * Constructor.
 	 *
-	 * @param Shieldon $shieldon
+	 * @param object $instance Shieldon | Firewall
 	 */
-	public function __construct(Shieldon $shieldon) 
+	public function __construct(object $instance) 
 	{
-		$this->shieldon = $shieldon;
+		if ($instance instanceof Shieldon) {
+			$this->mode = 'self';
+			$this->shieldon = $instance;
+
+		} elseif ($instance instanceof Firewall) {
+			$this->mode = 'managed';
+			$this->shieldon = $instance->getShieldonInstance();
+		}
 
 		if (! empty($this->shieldon->logger)) {
 
@@ -89,6 +105,10 @@ class Panel
 
 			case 'overview':
 				$this->overview();
+				break;
+
+			case 'setting':
+				$this->setting();
 				break;
 
 			case 'session_table':
@@ -240,7 +260,7 @@ class Panel
 			'imagecaptcha' => (isset($captcha['ImageCaptcha']) ? true : false),
 		];
 
-		$this->renderPage('dashboard/overview', $data);
+		$this->renderPage('panel/overview', $data);
 	}
 
 	/**
@@ -284,7 +304,7 @@ class Panel
 
 		$data['page_url'] = $this->url('dashboard');
 
-		$this->renderPage('dashboard/dashboard_' . $type, $data);
+		$this->renderPage('panel/log_' . $type, $data);
 	}
 
 	/**
@@ -351,7 +371,7 @@ class Panel
 		$data['reason_mapping'] = $reasons;
 		$data['type_mapping'] = $types;
 
-		$this->renderPage('dashboard/table_rules', $data);
+		$this->renderPage('panel/table_rules', $data);
 	}
 
 	/**
@@ -365,7 +385,7 @@ class Panel
 	{
 		$data['ip_log_list'] = $this->shieldon->driver->getAll('log');
 
-		$this->renderPage('dashboard/table_ip_logs', $data);
+		$this->renderPage('panel/table_ip_logs', $data);
 	}
 
 	/**
@@ -396,7 +416,7 @@ class Panel
 		$data['online_count'] = count($data['session_list']);
 		$data['expires'] = (int) $data['session_limit_period'] * 60;
 
-		$this->renderPage('dashboard/table_sessions', $data);
+		$this->renderPage('panel/table_sessions', $data);
 	}
 
 	/**
@@ -438,7 +458,7 @@ class Panel
 	}
 
 	/**
-	 * Undocumented function
+	 * Render the web page.
 	 *
 	 * @param string $page
 	 * @param array $data
@@ -452,15 +472,15 @@ class Panel
 		if (empty($channelName)) {
 			$channelName = 'default';
 		}
-		
+
 		$content['channel_name'] = $channelName;
-		$content['mode_name'] = 'WAF'; // WAF, self-managed
+		$content['mode_name'] = $this->mode; // WAF, self-managed
 		$content['page_url'] = $this->url();
 		$content['inline_css'] =  file_get_contents(__DIR__ . '/../views/assets/css/admin-style.css');
 		$content['title'] = $data['title'] ?? '';
 		$content['content'] = $this->loadView($page, $data);
 
-		$this->loadView('dashboard/template', $content, true);
+		$this->loadView('panel/template', $content, true);
 	}
 
 	/**

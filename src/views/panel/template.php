@@ -70,52 +70,59 @@ function showActive(string $key = '')
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2 so-sidebar-menu">
-                    <ul class="nav flex-column">
-                        <li class="nav-item section-title">
-                            <strong class="nav-link"><i class="fas fa-cog"></i> Status</strong>
+                    <ul class="nav flex-column shield-menu">
+                        <li>
+                            <a href="#"><i class="fas fa-cog"></i> Status</a>
+                            <ul class="child-menu">
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=overview">Overview</a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="nav-item <?php showActive('overview'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=overview">Overview</a>
+                        <li>
+                            <a><i class="fas fa-fire-alt"></i> WAF</a>
+                            <ul class="child-menu">
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=settings">Settings</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip-manager">Firewall</a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="nav-item section-title">
-                            <strong class="nav-link"><i class="fas fa-fire-alt"></i></i> WAF</strong>
+                        <li>
+                            <a><i class="fas fa-chart-area"></i> Logs</a>
+                            <ul class="child-menu">
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=today">Today</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=yesterday">Yesterday</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=past_seven_days">Last 7 days</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=this_month">This month</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=last_month">Last month</a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="nav-item <?php showActive('settings'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=settings">Settings</a>
-                        </li>
-                        <li class="nav-item <?php showActive('firewall'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=ip-manager">Firewall</a>
-                        </li>
-
-                        <li class="nav-item section-title">
-                            <strong class="nav-link"><i class="fas fa-chart-area"></i> Logs</strong>
-                        </li>
-                        <li class="nav-item <?php showActive('dashboard_today'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=today">Today</a>
-                        </li>
-                        <li class="nav-item <?php showActive('dashboard_yesterday'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=yesterday">Yesterday</a>
-                        </li>
-                        <li class="nav-item <?php showActive('dashboard_past_seven_days'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=past_seven_days">Last 7 days</a>
-                        </li>
-                        <li class="nav-item <?php showActive('dashboard_this_month'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=this_month">This month</a>
-                        </li>
-                        <li class="nav-item <?php showActive('dashboard_last_month'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=dashboard&tab=last_month">Last month</a>
-                        </li>
-                        <li class="nav-item section-title">
-                            <strong class="nav-link"><i class="fas fa-table"></i> Data Circle</strong>
-                        </li>
-                        <li class="nav-item <?php showActive('ip_log_table'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=ip_log_table">IP Logs</a>
-                        </li>
-                        <li class="nav-item  <?php showActive('ip_rule_table'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=ip_rule_table">IP Rules</a>
-                        </li>
-                        <li class="nav-item <?php showActive('session_table'); ?>">
-                            <a class="nav-link" href="<?php echo $page_url; ?>?so_page=session_table">Sessions</a>
+                        <li>
+                            <a><i class="fas fa-table"></i> Data Circle</a>
+                            <ul class="child-menu">
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_log_table">IP Logs</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_rule_table">IP Rules</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=session_table">Sessions</a>
+                                </li>
+                             </ul>
                         </li>
                     </ul>
                 </div>
@@ -124,5 +131,15 @@ function showActive(string $key = '')
                 </div>
             </div>
         </div>
+        <script>
+
+            var currentUrl = window.location.href.split('#')[0];
+
+            $('.so-sidebar-menu').find('a[href="' + currentUrl + '"]').parent('li').addClass('active');
+            $('.so-sidebar-menu').find('a').filter(function () {
+                return this.href == currentUrl;
+            }).parent('li').addClass('active').parents('ul').slideDown().parent().addClass('active');
+
+        </script>
     </body>
 </html>

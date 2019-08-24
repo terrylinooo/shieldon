@@ -263,6 +263,13 @@ class Shieldon
     private $excludedUrls = [];
 
     /**
+     * Is Shieldon instance managed by Firewall?
+     *
+     * @var bool
+     */
+    private $isFirewall = false;
+
+    /**
      * Constructor.
      * 
      * @return void
@@ -1412,5 +1419,15 @@ EOF;
         }
     
         return false;
+    }
+
+    /**
+     * Tell Shieldon that it is managed by Firewall.
+     *
+     * @return void
+     */
+    public function managedByFirewall(): void
+    {
+        $this->isFirewall = true;
     }
 }
