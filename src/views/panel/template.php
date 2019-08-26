@@ -70,10 +70,10 @@ function showActive(string $key = '')
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2 so-sidebar-menu">
-                    <ul class="nav flex-column shield-menu">
+                    <ul class="nav flex-column parent-menu">
                         <li>
                             <a href="#"><i class="fas fa-cog"></i> Status</a>
-                            <ul class="child-menu">
+                            <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=overview">Overview</a>
                                 </li>
@@ -81,7 +81,7 @@ function showActive(string $key = '')
                         </li>
                         <li>
                             <a><i class="fas fa-fire-alt"></i> WAF</a>
-                            <ul class="child-menu">
+                            <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=settings">Settings</a>
                                 </li>
@@ -92,7 +92,7 @@ function showActive(string $key = '')
                         </li>
                         <li>
                             <a><i class="fas fa-chart-area"></i> Logs</a>
-                            <ul class="child-menu">
+                            <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=today">Today</a>
                                 </li>
@@ -112,7 +112,7 @@ function showActive(string $key = '')
                         </li>
                         <li>
                             <a><i class="fas fa-table"></i> Data Circle</a>
-                            <ul class="child-menu">
+                            <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=ip_log_table">IP Logs</a>
                                 </li>
@@ -133,12 +133,29 @@ function showActive(string $key = '')
         </div>
         <script>
 
-            var currentUrl = window.location.href.split('#')[0];
+            $(function() {
 
-            $('.so-sidebar-menu').find('a[href="' + currentUrl + '"]').parent('li').addClass('active');
-            $('.so-sidebar-menu').find('a').filter(function () {
-                return this.href == currentUrl;
-            }).parent('li').addClass('active').parents('ul').slideDown().parent().addClass('active');
+                var currentUrl = window.location.href.split('#')[0];
+
+                $('.so-sidebar-menu').find('a[href="' + currentUrl + '"]').parent('li').addClass('active');
+                $('.so-sidebar-menu').find('a').filter(function () {
+                    return this.href == currentUrl;
+                }).parent('li').addClass('active').parents('ul').slideDown().parent().addClass('current-page');
+
+                $('.so-sidebar-menu a').click(function () {
+                    if ($(this).parent('li').hasClass('active')) {
+                        $(this).parent().removeClass('active');
+                        if ($(this).closest('ul').hasClass('child-menu')) {
+                            $(this).closest('ul').slideUp(500);
+                        }
+                    } else {
+                        $(this).parent('li').addClass('active').parents('ul').slideDown(500).parent().addClass('active');
+                    }
+                    
+                });
+
+            });
+
 
         </script>
     </body>

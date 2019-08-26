@@ -135,6 +135,18 @@ class Panel
 	}
 
 	/**
+	 * Setting page.
+	 *
+	 * @return void
+	 */
+	public function setting(): void
+	{
+		$data = [];
+	
+		$this->renderPage('panel/setting', $data);
+	}
+
+	/**
 	 * Shieldon operating information.
 	 *
 	 * @return void
@@ -155,9 +167,9 @@ class Panel
 			$loggerInfo = $this->shieldon->logger->getCurrentLoggerInfo();
 		}
 
-		$data['logger_started_working_date'] = '';
-		$data['logger_work_days'] = '';
-		$data['logger_total_size'] = '';
+		$data['logger_started_working_date'] = 'No record';
+		$data['logger_work_days'] = '0 day';
+		$data['logger_total_size'] = '0 MB';
 
 		if (! empty($loggerInfo)) {
 

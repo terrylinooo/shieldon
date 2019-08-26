@@ -19,7 +19,7 @@ use function strtotime;
 /**
  * Parse the log files that created by ActionLogger
  */
-class LogParser
+final class LogParser
 {
     // Log codes. Same as Shieldon action codes.
     const LOG_BAN = 0;
