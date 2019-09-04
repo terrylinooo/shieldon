@@ -10,13 +10,7 @@
 
 namespace Shieldon\Driver;
 
-use Exception;
 use PDO;
-
-use function is_array;
-use function is_bool;
-use function is_numeric;
-
 /**
  * Abstract Mysql Driver.
  */
@@ -59,7 +53,7 @@ abstract class AbstractSqlDriver extends DriverProvider
      *
      * @return void
      */
-    protected function doInitialize($dbCheck = true): void
+    protected function doInitialize(bool $dbCheck = true): void
     {
         if (! $this->isInitialized) {
             if (! empty($this->channel)) {
@@ -353,7 +347,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
         
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             return false;
         }
 
@@ -412,7 +406,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
 
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             return false;
         }
 
@@ -429,8 +423,8 @@ abstract class AbstractSqlDriver extends DriverProvider
      */
     private function remove(string $table, array $where): bool
     {
-        $placeholder = [];
 
+        $placeholder = [];
         foreach($where as $k => $v) {
             $placeholder[] = "`$k` = :$k";
         }
@@ -465,7 +459,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
 
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             return false;
         }
 
@@ -520,7 +514,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 
@@ -551,7 +545,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 

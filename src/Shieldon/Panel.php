@@ -107,7 +107,7 @@ class Panel
 				$this->overview();
 				break;
 
-			case 'setting':
+			case 'settings':
 				$this->setting();
 				break;
 
@@ -128,8 +128,11 @@ class Panel
 			case 'dashboard_past_seven_days':
 			case 'dashboard_this_month':
 			case 'dashboard_last_month':
-			default:
 				$this->dashboard();
+				break;
+
+			default:
+				header('Location: ' . $this->url('settings'));
 				break;
 		}
 	}

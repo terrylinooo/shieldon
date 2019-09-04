@@ -1,12 +1,23 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of the Shieldon package.
+ * This file is part of the Shieldon Firewall package, an enhanced package for Shieldon library.
+ * It's lincese is exactly defferent to Shieldon package, pelase read the license 
+ * information below.
  *
  * (c) Terry L. <contact@terryl.in>
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- * 
+ * @author     Terry L. <contact@terryl.in>
+ * @package    Shieldon
+ * @subpackage Shieldon Firewall
+ * @link       https://shieldon.io
+ * @license    Free to use when reserving the credit link, see explanation below.
+ *
+ *                                  *** License ***
+ *
+ * Shieldon Firewall is free for both personal and commercial use If the Shieldon's credit link 
+ * is displayed on every Shieldon-generated pages such as CAPTCHA page、password protection page 
+ * and so on. If you are willing to remove the credit link, please purchase a commercail license 
+ * from https://shieldon.io to support use make it better.
  */
 
 namespace Shieldon;
@@ -36,6 +47,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function json_decode;
 use function strpos;
+
 /**
  * Managed Firewall.
  * 

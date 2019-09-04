@@ -261,7 +261,6 @@ $timezone = '';
                 </ul>
             </div>
         </div>
-
         <br />
         <div class="row">
             <div class="col-sm-3">

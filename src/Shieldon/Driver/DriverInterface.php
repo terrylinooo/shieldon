@@ -76,10 +76,12 @@ interface DriverInterface
 
     /**
      * Initial data tables.
+     * 
+     * @param bool $dbCheck This is for creating data tables automatically
      *
      * @return void
      */
-    public function init(): void;
+    public function init(bool $dbCheck = true): void;
 }
 
 

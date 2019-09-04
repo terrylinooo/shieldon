@@ -68,9 +68,9 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      */
-    public function init(): void
+    public function init(bool $dbCheck = true): void
     {
-        $this->doInitialize();
+        $this->doInitialize($dbCheck);
     }
 
     /**
@@ -129,8 +129,10 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * Initial data tables.
+     * 
+     * @param bool $dbCheck
      *
      * @return void
      */
-    abstract protected function doInitialize(): void;
+    abstract protected function doInitialize(bool $dbCheck = true): void;
 }

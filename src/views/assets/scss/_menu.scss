@@ -20,20 +20,18 @@
     }
 }
 
-
-
 .nav {
-
 	&.parent-menu > li {
 		position: relative;
 		display: block;
 		cursor: pointer;
 		> a {
-		
+			text-decoration: none;
+
 			&:hover {
 				color: #F2F5F7 !important;
-				text-decoration: none;
 				background: transparent;
+				text-decoration: none;
 			}
 		}
 	}
@@ -77,7 +75,6 @@
 						border-right: 7px solid #f1f1f1; 
 					}
 				}
-				
 			}
 
 			padding-left: 36px;
@@ -85,6 +82,7 @@
 
 		> li > a {
 			color: #E7E7E7;
+			text-decoration: none;
 			font-weight: 500;
 		}
 		li li {
