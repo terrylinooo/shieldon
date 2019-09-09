@@ -57,6 +57,16 @@ class Panel
 	 */
 	protected $mode = 'self';
 
+
+	/**
+	 * Check Page availability.
+	 *
+	 * @var array
+	 */
+	protected $pageAvailability = [
+		'logs' => false,
+	];
+
 	/**
 	 * Constructor.
 	 *
@@ -80,6 +90,8 @@ class Panel
 
 			// Load logParser for parsing log files.
 			$this->parser = new LogParser($logDirectory);
+
+			$this->pageAvailability['logs'] = true;
 
 		} else {
 
@@ -123,11 +135,7 @@ class Panel
 				$this->ruleTable();
 				break;
 
-			case 'dashboard_today':
-			case 'dashboard_yesterday':
-			case 'dashboard_past_seven_days':
-			case 'dashboard_this_month':
-			case 'dashboard_last_month':
+			case 'dashboard':
 				$this->dashboard();
 				break;
 
@@ -310,12 +318,14 @@ class Panel
 
 			$data['ip_details'] = $this->parser->getIpData();
 			$data['period_data'] = $this->parser->getParsedPeriodData();
-	
+
 			if ('today' === $type ) {
 				$this->parser->prepare('past_seven_hours');
 				$data['past_seven_hour'] = $this->parser->getParsedPeriodData();
 			}
 		}
+
+		$data['page_availability'] = $this->pageAvailability['logs'];
 
 		$data['page_url'] = $this->url('dashboard');
 
