@@ -46,14 +46,22 @@
 			<li class="is-active"><a href="?tab=last_month">Last month</a></li>
 		</ul>
 	</div>
-	<div id="so-table-loading" class="so-datatables">
-		<div class="lds-css ng-scope">
-			<div class="lds-ripple">
-				<div></div>
-				<div></div>
+
+	<?php if ($page_availability) : ?>
+		<div id="so-table-loading" class="so-datatables">
+			<div class="lds-css ng-scope">
+				<div class="lds-ripple">
+					<div></div>
+					<div></div>
+				</div>
 			</div>
 		</div>
-	</div>
+	<?php else : ?>
+		<div class="alert alert-danger">
+			Sorry, you have to implement ActionLogger to use this function.
+		</div>
+	<?php endif; ?>
+
 	<div id="so-table-container" class="so-datatables" style="display: none;">
 		<table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
 			<thead>

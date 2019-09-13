@@ -265,7 +265,15 @@ code.tips {
 	}
 }
 
+.form-control {
+	border-radius: 2px !important;
+}
 
 @import "dashboard";
 @import "datatable";
 @import "menu";
+@import "tab";
+@import "toggle";
+@import "setting-page";
+@import "background";
+@import "radio-checkbox";

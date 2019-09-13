@@ -57,7 +57,6 @@ class Panel
 	 */
 	protected $mode = 'self';
 
-
 	/**
 	 * Check Page availability.
 	 *
@@ -66,6 +65,13 @@ class Panel
 	protected $pageAvailability = [
 		'logs' => false,
 	];
+
+	/**
+	 * The Firewall's configuration.
+	 *
+	 * @var array
+	 */
+	protected $configuration = [];
 
 	/**
 	 * Constructor.
@@ -81,6 +87,7 @@ class Panel
 		} elseif ($instance instanceof Firewall) {
 			$this->mode = 'managed';
 			$this->shieldon = $instance->getShieldonInstance();
+			$this->configuration = $instance->getConfiguration();
 		}
 
 		if (! empty($this->shieldon->logger)) {
@@ -153,7 +160,7 @@ class Panel
 	public function setting(): void
 	{
 		$data = [];
-	
+
 		$this->renderPage('panel/setting', $data);
 	}
 
@@ -445,6 +452,122 @@ class Panel
 	}
 
 	/**
+	 * Get a variable from configuration.
+	 *
+	 * @param string $field 
+	 *
+	 * @return mixed
+	 */
+	protected function getConfig(string $field)
+	{
+		$v = explode('.', $field);
+		$c = count($v);
+
+		switch ($c) {
+			case 1:
+				return $this->configuration[$v[0]];
+				break;
+			case 2:
+				return $this->configuration[$v[0]][$v[1]];
+				break;
+
+			case 3:
+				return $this->configuration[$v[0]][$v[1]][$v[2]];
+				break;
+
+			case 4:
+				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]];
+				break;
+
+			case 5:
+				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]];
+				break;
+		}
+		return '';
+	}
+
+	/**
+	 * Echo the setting string to the template.
+	 *
+	 * @param string $field
+	 * @return string
+	 */
+	protected function _(string $field)
+	{
+		if (is_string($this->getConfig($field)) || is_numeric($this->getConfig($field))) {
+			echo $this->getConfig($field);
+		}
+	}
+
+	/**
+	 * Set a variable to the configuration.
+	 *
+	 * @param string $field
+	 * @param mixed  $value
+	 * @return void
+	 */
+	protected function setConfig(string $field, $value)
+	{
+		$v = explode('.', $field);
+		$c = count($v);
+
+		switch ($c) {
+			case 1:
+				$this->configuration[$v[0]] = $value;
+				break;
+			case 2:
+				$this->configuration[$v[0]][$v[1]] = $value;
+				break;
+
+			case 3:
+				$this->configuration[$v[0]][$v[1]][$v[2]] = $value;
+				break;
+
+			case 4:
+				$this->configuration[$v[0]][$v[1]][$v[2]][$v[3]] = $value;
+				break;
+
+			case 5:
+				$this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]] = $value;
+				break;
+		}
+	}
+
+	/**
+	 * Use on HTML checkbox and radio elements.
+	 *
+	 * @param string $value
+	 * @param mixed $valueChecked
+	 *
+	 * @return void
+	 */
+	protected function checked(string $value, $valueChecked): void
+	{
+		if ($this->getConfig($value) === $valueChecked) {
+			echo 'checked';
+		} else {
+			echo '';
+		}
+	}
+
+	/**
+	 * Use on HTML select elemets.
+	 *
+	 * @param string $value
+	 * @param mixed $valueChecked
+	 *
+	 * @return void
+	 */
+	protected function selected(string $value, $valueChecked): void
+	{
+		if ($this->getConfig($value) === $valueChecked) {
+			echo 'selected';
+		} else {
+			echo '';
+		}
+	}
+
+	/**
 	 * Load view file.
 	 *
 	 * @param string $page
@@ -480,6 +603,22 @@ class Panel
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Include a view file.
+	 *
+	 * @param string $page
+	 *
+	 * @return void
+	 */
+	private function _include(string $page)
+	{
+		if (! defined('SHIELDON_VIEW')) {
+			define('SHIELDON_VIEW', true);
+		}
+
+		require __DIR__ . '/../views/' . $page . '.php';
 	}
 
 	/**

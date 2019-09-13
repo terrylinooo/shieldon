@@ -11,17 +11,69 @@
 $timezone = '';
 
 ?>
+<form method="post">
 
-<div class="so-dashboard">
-    <div class="so-datatables">
-        <div class="so-datatable-heading">
-            Data Circle
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-sm-12">
+<div class="so-setting-page">
+	<div class="so-tab">
+		<?php $this->_include('panel/setting/tab'); ?>
+			
+		<section id="content1" class="tab-section">
+			<?php $this->_include('panel/setting/daemon'); ?>
+		</section>
 
-            </div>
-        </div>
-    </div>
+		<section id="content2" class="tab-section">
+			<?php $this->_include('panel/setting/components'); ?>
+		</section>
+
+		<section id="content3" class="tab-section">
+			<?php $this->_include('panel/setting/filters'); ?>
+		</section>
+
+		<section id="content4" class="tab-section">
+			<?php $this->_include('panel/setting/captchas'); ?>
+		</section>
+	</div>
+	<div class="d-flex justify-content-center py-2">
+		<button type="submit" class="btn btn-enter"><i class="fas fa-fire-alt"></i> SAVE</button>
+	</div>
 </div>
+
+</form>
+
+<script>
+
+	$(function() {
+
+		var checkToggleStatus = function() {
+			$('.toggle-block').each(function() {
+				var target = $(this).attr('data-target');
+
+				if (this.checked) {
+					$('[data-parent="' + target + '"]').fadeIn(500);
+				} else {
+					$('[data-parent="' + target + '"]').hide();
+				}
+			});
+		};
+
+		var dataDriverFiles = function() {
+			let value = $('input[name="data_driver"]:checked').val();
+			$('.data-driver-options').hide();
+			$('.data-driver-options-' + value).fadeIn(500);
+		};
+
+		$('.data-driver-options').hide();
+
+		checkToggleStatus();
+		dataDriverFiles();
+
+		$('.toggle-block').change(function() {
+			checkToggleStatus();
+		});
+
+		$('input[name="data_driver"]').change(function() {
+			dataDriverFiles();
+		});
+	});
+
+</script>

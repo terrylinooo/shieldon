@@ -1,174 +1,174 @@
 
 {
-  "daemon": true,
-  "channel_id": "",
-  "driver_type": "file",
-  "drivers": {
-    "file": {
-      "directory_path": ""
-    },
-    "sqlite": {
-      "directory_path": ""
-    },
-    "redis": {
-      "port": 6379,
-      "host": "127.0.0.1",
-      "auth": "12345678"
-    },
-    "mysql": {
-      "host": "127.0.0.1",
-      "dbname": "shieldon",
-      "user": "terry",
-      "pass": "1234",
-      "charsset": "utf8"
-    }
-  },
-  "loggers": {
-    "action": {
-      "enable": false,
-      "config": {
-        "directory_path": ""
-      }
-    }
-  },
-  "filters": {
-    "frequency": {
-      "enable": true,
-      "config": {
-        "quota_s": 2,
-        "quota_m": 10,
-        "quota_h": 30,
-        "quota_d": 60
-      }
-    },
-    "cookie": {
-      "enable": false,
-      "config": {
-        "cookie_name": "ssjd",
-        "cookie_domain": "",
-        "cookie_value": "1",
-        "quota": 5
-      }
-    },
-    "session": {
-      "enable": false,
-      "config": {
-        "quota": 5,
-        "time_buffer": 5
-      }
-    },
-    "referer": {
-      "enable": false,
-      "config": {
-        "quota": 5,
-        "time_buffer": 5
-      }
-    }
-  },
-  "components": {
-    "ip": {
-      "enable": true
-    },
-    "trusted_bot": {
-      "enable": true,
-      "strict_mode": false
-    },
-    "header": {
-      "enable": true,
-      "strict_mode": false
-    },
-    "user_agent": {
-      "enable": true,
-      "strict_mode": false
-    },
-    "rdns": {
-      "enable": true,
-      "strict_mode": false
-    }
-  },
-  "captcha_modules": {
-    "recaptcha": {
-      "enable": false,
-      "config": {
-        "site_key": null,
-        "secret_key": null,
-        "version": "v2",
-        "lang": "en-US"
-      }
-    },
-    "image": {
-      "enable": false,
-      "config": {
-        "type": "alnum",
-        "length": 4
-      }
-    }
-  },
-  "ip_variable_source": {
-    "REMOTE_ADDR": true,
-    "HTTP_CF_CONNECTING_IP": false,
-    "HTTP_X_FORWARDED_FOR": false,
-    "HTTP_X_FORWARDED_HOST": false
-  },
-  "online_session_limit": {
-    "enable": true,
-    "config": {
-      "count": 100,
-      "period": 300
-    }
-  },
-  "xss_protection": {
-    "request_uri": {
-      "enable": true
-    },
-    "post": {
-      "enable": false
-    },
-    "get": {
-      "enable": false
-    },
-    "cookie": {
-      "enable": false
-    }
-  },
-  "csrf_protection": {
-    "enable": false,
-    "config": {
-      "expire": 7200,
-      "excluded_urls": [
-        {
-          "url": "/ajax/"
-        }
-      ]
-    }
-  },
-  "cronjob": {
-    "reset_circle": {
-      "enable": false,
-      "config": {
-        "period": 86400,
-        "last_update": "2019-01-01 00:00:00"
-      }
-    }
-  },
-  "excluded_urls": [
-    {
-      "url": "/tests/"
-    }
-  ],
-  "ip_manager": [
-    {
-      "rule": "allow",
-      "ip": "127.0.0.1",
-      "url": "/"
-    }
-  ],
-  "password_protected_urls": [
-    {
-      "url": "/admin/",
-      "username": "shieldon_test",
-      "password": "shieldon_test",
-      "captcha": true
-    }
-  ]
+	"daemon": true,
+	"channel_id": "",
+	"driver_type": "file",
+	"drivers": {
+		"file": {
+			"directory_path": ""
+		},
+		"sqlite": {
+			"directory_path": ""
+		},
+		"redis": {
+			"port": 6379,
+			"host": "127.0.0.1",
+			"auth": ""
+		},
+		"mysql": {
+			"host": "127.0.0.1",
+			"dbname": "shieldon_db",
+			"user": "shieldon_user",
+			"pass": "1234",
+			"charset": "utf8"
+		}
+	},
+	"loggers": {
+		"action": {
+			"enable": false,
+			"config": {
+				"directory_path": ""
+			}
+		}
+	},
+	"filters": {
+		"frequency": {
+			"enable": true,
+			"config": {
+				"quota_s": 2,
+				"quota_m": 10,
+				"quota_h": 30,
+				"quota_d": 60
+			}
+		},
+		"cookie": {
+			"enable": false,
+			"config": {
+				"cookie_name": "ssjd",
+				"cookie_domain": "",
+				"cookie_value": "1",
+				"quota": 5
+			}
+		},
+		"session": {
+			"enable": false,
+			"config": {
+				"quota": 5,
+				"time_buffer": 5
+			}
+		},
+		"referer": {
+			"enable": false,
+			"config": {
+				"quota": 5,
+				"time_buffer": 5
+			}
+		}
+	},
+	"components": {
+		"ip": {
+			"enable": true
+		},
+		"trusted_bot": {
+			"enable": true,
+			"strict_mode": false
+		},
+		"header": {
+			"enable": true,
+			"strict_mode": false
+		},
+		"user_agent": {
+			"enable": true,
+			"strict_mode": false
+		},
+		"rdns": {
+			"enable": true,
+			"strict_mode": false
+		}
+	},
+	"captcha_modules": {
+		"recaptcha": {
+			"enable": false,
+			"config": {
+				"site_key": null,
+				"secret_key": null,
+				"version": "v2",
+				"lang": "en-US"
+			}
+		},
+		"image": {
+			"enable": false,
+			"config": {
+				"type": "alnum",
+				"length": 4
+			}
+		}
+	},
+	"ip_variable_source": {
+		"REMOTE_ADDR": true,
+		"HTTP_CF_CONNECTING_IP": false,
+		"HTTP_X_FORWARDED_FOR": false,
+		"HTTP_X_FORWARDED_HOST": false
+	},
+	"online_session_limit": {
+		"enable": true,
+		"config": {
+			"count": 100,
+			"period": 300
+		}
+	},
+	"xss_protection": {
+		"request_uri": {
+			"enable": true
+		},
+		"post": {
+			"enable": false
+		},
+		"get": {
+			"enable": false
+		},
+		"cookie": {
+			"enable": false
+		}
+	},
+	"csrf_protection": {
+		"enable": false,
+		"config": {
+			"expire": 7200,
+			"excluded_urls": [
+				{
+					"url": "/ajax/"
+				}
+			]
+		}
+	},
+	"cronjob": {
+		"reset_circle": {
+			"enable": false,
+			"config": {
+				"period": 86400,
+				"last_update": "2019-01-01 00:00:00"
+			}
+		}
+	},
+	"excluded_urls": [
+		{
+			"url": "/tests/"
+		}
+	],
+	"ip_manager": [
+		{
+			"rule": "allow",
+			"ip": "127.0.0.1",
+			"url": "/"
+		}
+	],
+	"password_protected_urls": [
+		{
+			"url": "/admin/",
+			"username": "shieldon_test",
+			"password": "shieldon_test",
+			"captcha": true
+		}
+	]
 }

@@ -175,9 +175,19 @@ class Firewall
 	 *
 	 * @return object
 	 */
-	public function getShieldonInstance()
+	public function getShieldonInstance(): object
 	{
 		return $this->shieldon;
+	}
+
+	/**
+	 * Get the configuation settings.
+	 *
+	 * @return array
+	 */
+	public function getConfiguration(): array
+	{
+		return $this->configuration;
 	}
 
     /**

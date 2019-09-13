@@ -80,13 +80,13 @@ function showActive(string $key = '')
                             </ul>
                         </li>
                         <li>
-                            <a><i class="fas fa-fire-alt"></i> WAF</a>
+                            <a><i class="fas fa-fire-alt"></i> Firewall</a>
                             <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=settings">Settings</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip-manager">Firewall</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip-manager">IP Manager</a>
                                 </li>
                             </ul>
                         </li>

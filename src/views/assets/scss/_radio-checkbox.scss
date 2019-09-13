@@ -1,0 +1,289 @@
+
+.radio-style {
+
+	margin: 5px;
+	
+	.radio-label {
+		display: inline-block !important;
+	}
+    
+
+	&.disabled {
+		color: #aaaaaa !important;
+	}
+
+	&.inline-block {
+		display: inline-block;
+	}
+ 
+	input[type="radio"] {
+		position: absolute;
+		opacity: 0;
+
+		+ .radio-label {
+		    height: 20px;
+            line-height: 20px;
+            cursor: pointer;
+
+		    > span {
+			    height: 20px;
+			    line-height: 20px;
+			    color: #a40000;
+			    vertical-align: bottom;
+		    }
+
+		    &:before {
+				content: '';
+				background: #f4f4f4;
+				border-radius: 100%;
+				border: 1px solid #b4b4b4;
+				display: inline-block;
+				width: 20px;
+				height: 20px;
+				position: relative;
+				top: 0px;
+				margin-right: 1em;
+				vertical-align: top;
+				cursor: pointer;
+				text-align: center;
+				-webkit-transition: all 250ms ease;
+				transition: all 250ms ease;
+		    }
+
+		    &:empty {
+				&:before {
+					margin-right: 0;
+				}
+			}
+		}
+
+		&:checked {
+			+ .radio-label {
+				&:before {
+					background-color: #3197EE;
+					box-shadow: inset 0 0 0 4px #f4f4f4;
+				}
+			}
+		}
+
+		&:focus {
+			+ .radio-label {
+
+				&:before {
+					outline: none;
+					border-color: #3197EE;
+				}
+			}
+		}
+
+		&:disabled {
+			+ .radio-label {
+				&:before {
+					box-shadow: inset 0 0 0 4px #f4f4f4;
+					border-color: #f1f1f1;
+					background: #f1f1f1;
+				}
+			}
+
+			label {
+				text-decoration-line: line-through;
+			}
+		}
+	}
+}
+
+.checkbox-style {
+	min-width: 20px;
+	position: relative;
+
+	span {
+		position: absolute;
+		top: 0px;
+		left: 25px;
+		height: 20px;
+		line-height: 20px;
+	}
+
+	&.inline-block {
+		display: inline-block !important;
+		margin: 5px;
+
+		span {
+			position: relative !important;
+			top: -1px !important;
+			left: 5px !important;
+			height: 20px;
+			line-height: 20px;
+			margin-right: 5px;
+		}
+	}
+
+	&.checkbox-sm {
+		label {
+			width: 16px !important;
+			height: 16px !important;
+			border-radius: 3px !important;
+
+			&:after {
+				width: 10px;
+				height: 6px;
+				top: 3px;
+				left: 2px;
+			}
+		}
+		span {
+			top: -4px !important;
+			height: 16px !important;
+			line-height: 16px !important;
+		}
+	}
+
+
+	&.center {
+		margin: 20px auto;
+		width: 20px !important;
+	}
+
+	label {
+		width: 20px;
+		height: 20px;
+		cursor: pointer;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: #f1f1f1;
+		border-radius: 4px;
+		border: 1px solid #b4b4b4;
+
+		&:after {
+			content: '';
+			width: 10px;
+			height: 6px;
+			position: absolute;
+			top: 5px;
+			left: 4px;
+			border: 3px solid #3197EE;
+			border-top: none;
+			border-right: none;
+			background: transparent;
+			opacity: 0;
+			-webkit-transform: rotate(-45deg);
+			transform: rotate(-45deg);
+		}
+	}
+
+	input[type=checkbox] {
+		visibility: hidden;
+
+		&:checked {
+			+ label {
+				&:after {
+					opacity: 1;
+				}
+			}
+		}
+	}
+
+	&.checkbox-style-red {
+		input[type=checkbox] {
+			&:checked {
+				+ label {
+					background: #f13c37;
+					border: 1px solid #e2342f;
+					&:after {
+						border: 3px solid #ffffff;
+						border-top: none;
+						border-right: none;
+						background: transparent;
+						opacity: 1;
+					}
+				}
+			}
+		}
+	}
+
+	&.checkbox-style-green {
+		input[type=checkbox] {
+			&:checked {
+				+ label {
+					background: #28bf68;
+					border: 1px solid #1fad5b;
+					&:after {
+						border: 3px solid #ffffff;
+						border-top: none;
+						border-right: none;
+						background: transparent;
+						opacity: 1;
+					}
+				}
+			}
+		}
+	}
+
+	&.checkbox-style-blue {
+		input[type=checkbox] {
+			&:checked {
+				+ label {
+					background: #3498dc;
+					border: 1px solid #2d83be;
+					&:after {
+						border: 3px solid #ffffff;
+						border-top: none;
+						border-right: none;
+						background: transparent;
+						opacity: 1;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+$dark: #292929;
+$light: #efefef;
+$red: #D91E18;
+$green: #2ECC71;
+$blue: #0084d0;
+
+.button-wrap {
+	position: relative;
+}
+
+.button-label {
+	display: inline-block;
+	padding: 1em 2em;
+	margin: 0.5em;
+	cursor: pointer;
+	color: $dark;
+	border-radius: 0.25em;
+	background: #efefef;
+	box-shadow: 0 3px 10px rgba(0,0,0,0.2), inset 0 -3px 0 rgba(0,0,0,0.22);
+	transition: 0.3s;
+	user-select: none;
+	font-size: 1em;
+	font-family: "Lato", sans-serif;
+
+	&:hover {
+		background: darken($light, 10%);
+		color: darken($dark, 10%);
+		box-shadow: 0 3px 10px rgba(0,0,0,0.2), inset 0 -3px 0 rgba(0,0,0,0.32);
+	}
+	&:active {
+		transform: translateY(2px);
+		box-shadow: 0 3px 10px rgba(0,0,0,0.2), inset 0px -1px 0 rgba(0,0,0,0.22); 
+	}
+}
+
+.radio-label {
+	display: none;
+}
+
+.radio-label:checked + .button-label {
+	background: $blue;
+	color: $light;
+	&:hover {
+		background: darken($blue, 5%);
+		color: darken($light, 5%);
+	}
+}
