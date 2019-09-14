@@ -190,6 +190,26 @@ class Firewall
 		return $this->configuration;
 	}
 
+	/**
+	 * Get the directory where the data stores.
+	 *
+	 * @return string
+	 */
+	public function getDirectory(): string
+	{
+		return $this->directory;
+	}
+
+	/**
+	 * Get the filename where the configuration saves.
+	 *
+	 * @return string
+	 */
+	public function getFileName(): string
+	{
+		return $this->filename;
+	}
+
     /**
      * Set the channel ID.
      *

@@ -159,7 +159,9 @@ class Panel
 	 */
 	public function setting(): void
 	{
-		$data = [];
+		$tab = $_POST['tab'] ?? 'daemon';
+
+		$data['tab'] = $tab;
 
 		$this->renderPage('panel/setting', $data);
 	}
@@ -537,16 +539,25 @@ class Panel
 	 * Use on HTML checkbox and radio elements.
 	 *
 	 * @param string $value
-	 * @param mixed $valueChecked
+	 * @param mixed  $valueChecked
+	 * @param bool   $isConfig
 	 *
 	 * @return void
 	 */
-	protected function checked(string $value, $valueChecked): void
+	protected function checked(string $value, $valueChecked, bool $isConfig = true): void
 	{
-		if ($this->getConfig($value) === $valueChecked) {
-			echo 'checked';
+		if ($isConfig) {
+			if ($this->getConfig($value) === $valueChecked) {
+				echo 'checked';
+			} else {
+				echo '';
+			}
 		} else {
-			echo '';
+			if ($value === $valueChecked) {
+				echo 'checked';
+			} else {
+				echo '';
+			}
 		}
 	}
 

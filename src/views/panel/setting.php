@@ -37,6 +37,7 @@ $timezone = '';
 		<button type="submit" class="btn btn-enter"><i class="fas fa-fire-alt"></i> SAVE</button>
 	</div>
 </div>
+<input type="hidden" name="tab" value="daemon">
 
 </form>
 
@@ -73,6 +74,10 @@ $timezone = '';
 
 		$('input[name="data_driver"]').change(function() {
 			dataDriverFiles();
+		});
+
+		$('input[name="tabs"]').change(function() {
+			$('input[name="tab"]').val($(this).val());
 		});
 	});
 

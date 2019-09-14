@@ -88,6 +88,13 @@ function showActive(string $key = '')
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=ip-manager">IP Manager</a>
                                 </li>
+                                <!--
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=excluded-urls">Excluded URLs</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=xss-protection">XSS Protection</a>
+                                </li>-->
                             </ul>
                         </li>
                         <li>

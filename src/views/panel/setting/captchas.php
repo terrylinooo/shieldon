@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 ?>
-<div class="section-title bg-glass mt-3">
+<div class="section-title bg-glass">
     <h2>reCAPTCHA</h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
@@ -32,6 +32,7 @@
             <td class="r1">Site Key</td>
             <td class="r2">
                 <input type="text" name="captcha_modules_recaptcha_config_site_key" class="form-control form-control-sm col-sm-3" value="<?php $this->_('captcha_modules.recaptcha.config.site_key'); ?>"><br />
+                <p>Enter Google reCaptcha site key for your webiste.</p>
             </td>
         </tr>
     </table>
@@ -42,6 +43,7 @@
             <td class="r1">Secret Key</td>
             <td class="r2">
                 <input type="text" name="captcha_modules_recaptcha_config_secret_key" class="form-control form-control-sm col-sm-3" value="<?php $this->_('captcha_modules.recaptcha.config.secret_key'); ?>"><br />
+                <p>Enter Google reCahptcha secret key for your webiste.</p>
             </td>
         </tr>
     </table>
@@ -66,6 +68,7 @@
                                     v3
                                 </label> 
                             </div>
+                            <p>Please use corresponding key for that version you choose, otherwise it won't work.</p>
                         </div>
                     </div>
                 </div>
@@ -80,6 +83,7 @@
             <td class="r1">Language Code</td>
             <td class="r2">
                 <input type="text" name="captcha_modules_recaptcha_config_lang" class="form-control form-control-sm col-sm-3" value="<?php $this->_('captcha_modules.recaptcha.config.lang'); ?>"><br />
+                <p>ISO 639 - ISO 3166 code. For example, zh-TW stands for Tranditional Chinese of Taiwan.</p>
             </td>
         </tr>
     </table>
@@ -91,7 +95,7 @@
     <h2>Image</h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="checkbox" name="captcha_modules_image_enable" class="toggle-block" value="on" data-target="captcha-image-section" <?php $this->checked('captcha_modules.recaptcha.enable', true); ?> />
+            <input type="checkbox" name="captcha_modules_image_enable" class="toggle-block" value="on" data-target="captcha-image-section" <?php $this->checked('captcha_modules.image.enable', true); ?> />
             <span class="switch-left"><i class="fas fa-check"></i></span>
             <span class="switch-right"><i class="fas fa-times"></i></span>
         </label>
@@ -106,7 +110,7 @@
                     <div ckass="row">
                         <div class="col-sm-12">
                             <div class="radio-style">
-                                <input name="captcha_modules_image_config_type" value="album" type="radio" id="captcha-image-album" <?php $this->checked('captcha_modules.image.config.type', 'album'); ?> /> 
+                                <input name="captcha_modules_image_config_type" value="album" type="radio" id="captcha-image-album" <?php $this->checked('captcha_modules.image.config.type', 'alnum'); ?> /> 
                                 <label for="captcha-image-album" class="radio-label">
                                     Alpha-numeric string with lower and uppercase characters.
                                 </label> 
