@@ -2,7 +2,7 @@
 
 ![](https://i.imgur.com/G4xpugB.png)
 
-[![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=master)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://img.shields.io/codecov/c/github/terrylinooo/shieldon.svg)](https://codecov.io/gh/terrylinooo/shieldon) ![PHP from Packagist](https://img.shields.io/packagist/php-v/terrylinooo/shieldon.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Financial Contributors on Open Collective](https://opencollective.com/shieldon/all/badge.svg?label=financial+contributors)](https://opencollective.com/shieldon) [![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=master)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://img.shields.io/codecov/c/github/terrylinooo/shieldon.svg)](https://codecov.io/gh/terrylinooo/shieldon) ![PHP from Packagist](https://img.shields.io/packagist/php-v/terrylinooo/shieldon.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Shieldon, a PHP library that provides anti-scraping and online session control for your web application. As if you are using a shield on your web applicaion to fight against bad-behavior bots, crawlers or vulnerability scanning and so on.
 
@@ -81,6 +81,36 @@ When an user has been permanently banned.
 ![](https://i.imgur.com/7PdjkKV.png)
 
 I have made a WordPress plugin called [WP Shieldon](https://wordpress.org/plugins/wp-shieldon), it is based on Shieldon library. You can check out the [source code](https://github.com/terrylinooo/wp-shieldon) to understand about how to implement Shieldon in your PHP project.
+
+## Contributors
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/terrylinooo/shieldon/graphs/contributors"><img src="https://opencollective.com/shieldon/contributors.svg?width=890&button=false" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/shieldon/contribute)]
+
+#### Individuals
+
+<a href="https://opencollective.com/shieldon"><img src="https://opencollective.com/shieldon/individuals.svg?width=890"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/shieldon/contribute)]
+
+<a href="https://opencollective.com/shieldon/organization/0/website"><img src="https://opencollective.com/shieldon/organization/0/avatar.svg"></a>
+<a href="https://opencollective.com/shieldon/organization/1/website"><img src="https://opencollective.com/shieldon/organization/1/avatar.svg"></a>
+<a href="https://opencollective.com/shieldon/organization/2/website"><img src="https://opencollective.com/shieldon/organization/2/avatar.svg"></a>
+<a href="https://opencollective.com/shieldon/organization/3/website"><img src="https://opencollective.com/shieldon/organization/3/avatar.svg"></a>
+<a href="https://opencollective.com/shieldon/organization/4/website"><img src="https://opencollective.com/shieldon/organization/4/avatar.svg"></a>
+<a href="https://opencollective.com/shieldon/organization/5/website"><img src="https://opencollective.com/shieldon/organization/5/avatar.svg"></a>
+<a href="https://opencollective.com/shieldon/organization/6/website"><img src="https://opencollective.com/shieldon/organization/6/avatar.svg"></a>
+<a href="https://opencollective.com/shieldon/organization/7/website"><img src="https://opencollective.com/shieldon/organization/7/avatar.svg"></a>
+<a href="https://opencollective.com/shieldon/organization/8/website"><img src="https://opencollective.com/shieldon/organization/8/avatar.svg"></a>
+<a href="https://opencollective.com/shieldon/organization/9/website"><img src="https://opencollective.com/shieldon/organization/9/avatar.svg"></a>
 
 ## License
 
