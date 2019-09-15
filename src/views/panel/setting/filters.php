@@ -12,7 +12,8 @@
     <h2>Frequency</h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="checkbox" name="filters_frequency_enable" class="toggle-block" value="on" data-target="filters-frequency-section" <?php $this->checked('filters.frequency.enable', true); ?> />
+            <input type="hidden" name="filters__frequency__enable" value="off" />
+            <input type="checkbox" name="filters__frequency__enable" class="toggle-block" value="on" data-target="filters-frequency-section" <?php $this->checked('filters.frequency.enable', true); ?> />
             <span class="switch-left"><i class="fas fa-check"></i></span>
             <span class="switch-right"><i class="fas fa-times"></i></span>
         </label>
@@ -29,28 +30,28 @@
         <tr>
             <td class="r1">Secondly Limit</td>
             <td class="r2">
-                <input type="text" name="filters_frequency_config.quota_s" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_s'); ?>"><br />
+                <input type="text" name="filters__frequency__config__quota_s" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_s'); ?>"><br />
                 <p>Page views per vistor per second.</p>
             </td>
         </tr>
         <tr>
             <td class="r1">Minutely Limit</td>
             <td class="r2">
-                <input type="text" name="filters_frequency_config.quota_m" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_m'); ?>"><br />
+                <input type="text" name="filters__frequency__config__quota_m" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_m'); ?>"><br />
                 <p>Page views per vistor per minute.</p>
             </td>
         </tr>
         <tr>
             <td class="r1">Hourly Limit</td>
             <td class="r2">
-                <input type="text" name="filters_frequency_config.quota_h" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_h'); ?>"><br />
+                <input type="text" name="filters__frequency__config__quota_h" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_h'); ?>"><br />
                 <p>Page views per vistor per hour.</p>
             </td>
         </tr>
         <tr>
             <td class="r1">Daily Limit</td>
             <td class="r2">
-                <input type="text" name="filters_frequency_config.quota_d" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_d'); ?>"><br />
+                <input type="text" name="filters__frequency__config__quota_d" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_d'); ?>"><br />
                 <p>Page views per vistor per day.</p>
             </td>
         </tr>
@@ -62,7 +63,8 @@
     <h2>Cookie</h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="checkbox" name="filters_cookie_enable" class="toggle-block" value="on" data-target="filters-cookie-section" <?php $this->checked('filters.cookie.enable', true); ?> />
+            <input type="hidden" name="filters__cookie__enable" value="off" />
+            <input type="checkbox" name="filters__cookie__enable" class="toggle-block" value="on" data-target="filters-cookie-section" <?php $this->checked('filters.cookie.enable', true); ?> />
             <span class="switch-left"><i class="fas fa-check"></i></span>
             <span class="switch-right"><i class="fas fa-times"></i></span>
         </label>
@@ -81,7 +83,7 @@
         <tr>
             <td class="r1">Quota</td>
             <td class="r2">
-                <input type="text" name="filters_cookie_config_quota" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.quota'); ?>"><br />
+                <input type="text" name="filters__cookie__config__quota" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.quota'); ?>"><br />
                 <p>A visitor reached this limit will get banned temporarily.</p>
             </td>
         </tr>
@@ -92,7 +94,7 @@
         <tr>
             <td class="r1">Cookie Name</td>
             <td class="r2">
-                <input type="text" name="filters_cookie_config_cookie_name" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_name'); ?>"><br />
+                <input type="text" name="filters__cookie__config__cookie_name" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_name'); ?>"><br />
                 <p>English characters only.</p>
             </td>
         </tr>
@@ -103,7 +105,7 @@
         <tr>
             <td class="r1">Cookie Value</td>
             <td class="r2">
-                <input type="text" name="filters_cookie_config_cookie_value" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_value'); ?>"><br />
+                <input type="text" name="filters__cookie__config__cookie_value" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_value'); ?>"><br />
                 <p>English characters only.</p>
             </td>
         </tr>
@@ -114,7 +116,7 @@
         <tr>
             <td class="r1">Cookie Domain</td>
             <td class="r2">
-                <input type="text" name="filters_cookie_config_cookie_domain" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_domain'); ?>"><br />
+                <input type="text" name="filters__cookie__config__cookie_domain" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_domain'); ?>"><br />
                 <p>Just leave it blank.</p>
             </td>
         </tr>
@@ -126,7 +128,8 @@
     <h2>Session</h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="checkbox" name="filters_session_enable" class="toggle-block" value="on" data-target="filters-session-section" <?php $this->checked('filters.session.enable', true); ?> />
+            <input type="hidden" name="filters__session__enable" value="off" />
+            <input type="checkbox" name="filters__session__enable" class="toggle-block" value="on" data-target="filters-session-section" <?php $this->checked('filters.session.enable', true); ?> />
             <span class="switch-left"><i class="fas fa-check"></i></span>
             <span class="switch-right"><i class="fas fa-times"></i></span>
         </label>
@@ -145,7 +148,7 @@
         <tr>
             <td class="r1">Quota</td>
             <td class="r2">
-                <input type="text" name="filters_session_config_quota" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.session.config.quota'); ?>"><br />
+                <input type="text" name="filters__session__config__quota" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.session.config.quota'); ?>"><br />
                 <p>A visitor reached this limit will get banned temporarily.</p>
             </td>
         </tr>
@@ -156,7 +159,7 @@
         <tr>
             <td class="r1">Buffered Time</td>
             <td class="r2">
-                <input type="text" name="filters_session_config_time_buffer" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.session.config.time_buffer'); ?>"><br />
+                <input type="text" name="filters__session__config__time_buffer" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.session.config.time_buffer'); ?>"><br />
                 <p>Start using this filter after n seconds after the first time visiting your website.</p>
             </td>
         </tr>
@@ -168,7 +171,8 @@
     <h2>Referer</h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="checkbox" name="filters_referer_enable" class="toggle-block" value="on" data-target="filters-referer-section" <?php $this->checked('filters.referer.enable', true); ?> />
+            <input type="hidden" name="filters__referer__enable" value="off" />
+            <input type="checkbox" name="filters__referer__enable" class="toggle-block" value="on" data-target="filters-referer-section" <?php $this->checked('filters.referer.enable', true); ?> />
             <span class="switch-left"><i class="fas fa-check"></i></span>
             <span class="switch-right"><i class="fas fa-times"></i></span>
         </label>
@@ -187,7 +191,7 @@
         <tr>
             <td class="r1">Quota</td>
             <td class="r2">
-                <input type="text" name="filters_session_config_quota" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.referer.config.quota'); ?>"><br />
+                <input type="text" name="filters__session__config__quota" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.referer.config.quota'); ?>"><br />
                 <p>A visitor reached this limit will get banned temporarily.</p>
             </td>
         </tr>
@@ -198,7 +202,7 @@
         <tr>
             <td class="r1">Buffered Time</td>
             <td class="r2">
-                <input type="text" name="filters_referer_config_time_buffer" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.referer.config.time_buffer'); ?>"><br />
+                <input type="text" name="filters__referer__config__time_buffer" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.referer.config.time_buffer'); ?>"><br />
                 <p>Start using this filter after n seconds after the first time visiting your website.</p>
             </td>
         </tr>

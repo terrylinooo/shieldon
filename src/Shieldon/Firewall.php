@@ -35,6 +35,7 @@ use Shieldon\Driver\MysqlDriver;
 use Shieldon\Driver\RedisDriver;
 use Shieldon\Driver\SqliteDriver;
 use Shieldon\Log\ActionLogger;
+use Shieldon\FirewallTrait;
 
 use PDO;
 use PDOException;
@@ -55,40 +56,7 @@ use function strpos;
  */
 class Firewall
 {
-    /**
-     * Shieldon instance.
-     *
-     * @var object
-     */
-    private $shieldon;
-
-    /**
-     * Configuration data of Shieldon.
-     *
-     * @var array
-     */
-    protected $configuration;
-
-    /**
-     * If status is false and then Sheldon will stop working.
-     *
-     * @var boolean
-     */
-	private $status = true;
-	
-	/**
-	 * The configuation file's path.
-	 *
-	 * @var string
-	 */
-	private $directory = '/tmp';
-
-	/**
-	 * The filename of the configuration file.
-	 *
-	 * @var string
-	 */
-	private $filename = 'config.firewall.json';
+	use FirewallTrait;
 
     /**
      * Constructor.
@@ -168,46 +136,6 @@ class Firewall
 				$this->shieldon->output(200);
 			}
 		}
-	}
-
-	/**
-	 * Get the Shieldon instance.
-	 *
-	 * @return object
-	 */
-	public function getShieldonInstance(): object
-	{
-		return $this->shieldon;
-	}
-
-	/**
-	 * Get the configuation settings.
-	 *
-	 * @return array
-	 */
-	public function getConfiguration(): array
-	{
-		return $this->configuration;
-	}
-
-	/**
-	 * Get the directory where the data stores.
-	 *
-	 * @return string
-	 */
-	public function getDirectory(): string
-	{
-		return $this->directory;
-	}
-
-	/**
-	 * Get the filename where the configuration saves.
-	 *
-	 * @return string
-	 */
-	public function getFileName(): string
-	{
-		return $this->filename;
 	}
 
     /**
@@ -324,8 +252,8 @@ class Firewall
                             . $mysqlSetting['host']   . ';dbname=' 
                             . $mysqlSetting['dbname'] . ';charset=' 
                             . $mysqlSetting['charset']
-						, $mysqlSetting['user']
-						, $mysqlSetting['pass']
+						, (string) $mysqlSetting['user']
+						, (string) $mysqlSetting['pass']
 					);
 
 					// Use MySQL data driver.

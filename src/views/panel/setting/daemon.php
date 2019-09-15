@@ -12,6 +12,7 @@
     <h2>Enable</h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
+            <input type="hidden" name="daemon" value="off" />
             <input type="checkbox" name="daemon" class="toggle-block" value="on" data-target="daemon-section" <?php $this->checked('daemon', true); ?> />
             <span class="switch-left"><i class="fas fa-check"></i></span>
             <span class="switch-right"><i class="fas fa-times"></i></span>
@@ -26,13 +27,13 @@
                 <p>Start protecting your website by implementing Shieldon. This plugin only works when this option is enabled.</p>
                 <div>
                     <div class="button-wrap">
-                        <input class="radio-label" type="radio" name="data_driver" id="driver-file" value="file" <?php $this->checked('driver_type', 'file'); ?> />
+                        <input class="radio-label" type="radio" name="driver_type" id="driver-file" value="file" <?php $this->checked('driver_type', 'file'); ?> />
                         <label class="button-label" for="driver-file">File System</label>
-                        <input class="radio-label" type="radio" name="data_driver" id="driver-mysql" value="mysql" <?php $this->checked('driver_type', 'mysql'); ?> />
+                        <input class="radio-label" type="radio" name="driver_type" id="driver-mysql" value="mysql" <?php $this->checked('driver_type', 'mysql'); ?> />
                         <label class="button-label" for="driver-mysql">MySQL</label>
-                        <input class="radio-label" type="radio" name="data_driver" id="driver-redis" value="redis" <?php $this->checked('driver_type', 'redis'); ?> />
+                        <input class="radio-label" type="radio" name="driver_type" id="driver-redis" value="redis" <?php $this->checked('driver_type', 'redis'); ?> />
                         <label class="button-label" for="driver-redis">Redis</label>
-                        <input class="radio-label" type="radio" name="data_driver" id="driver-sqlite" value="sqlite" <?php $this->checked('driver_type', 'sqlite'); ?> />
+                        <input class="radio-label" type="radio" name="driver_type" id="driver-sqlite" value="sqlite" <?php $this->checked('driver_type', 'sqlite'); ?> />
                         <label class="button-label" for="driver-sqlite">SQLite</label>
                     </div>
                 </div>
@@ -50,7 +51,7 @@
                             <div class="row">
                                 <div class="col-sm-7 py-2">
                                     <label>Directory</label>
-                                    <input type="text" name="drivers_file_directory_path" class="form-control form-control-sm" value="<?php $this->_('drivers.file.directory_path'); ?>">
+                                    <input type="text" name="drivers__file__directory_path" class="form-control form-control-sm" value="<?php $this->_('drivers.file.directory_path'); ?>">
                                     <br />
                                     <p>Please fill in the absolute path of the directory where you store the data.</p>
                                 </div>
@@ -67,23 +68,23 @@
                             <div class="row">
                                 <div class="col-sm-3 py-2">
                                     <label>Host</label>
-                                    <input type="text" name="drivers_mysql_host" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.host'); ?>">
+                                    <input type="text" name="drivers__mysql__host" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.host'); ?>">
                                 </div>
                                 <div class="col-sm-3 py-2">
                                     <label>DB Name</label>
-                                    <input type="text" name="drivers_mysql_dbname" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.dbname'); ?>">
+                                    <input type="text" name="drivers__mysql__dbname" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.dbname'); ?>">
                                 </div>
                                 <div class="col-sm-3 py-2">
                                     <label>User</label>
-                                    <input type="text" name="drivers_mysql_user" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.user'); ?>">
+                                    <input type="text" name="drivers__mysql__user" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.user'); ?>">
                                 </div>
                                 <div class="col-sm-3 py-2">
                                     <label>Password</label>
-                                    <input type="text" name="drivers_mysql_pass" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.pass'); ?>">
+                                    <input type="text" name="drivers__mysql__pass" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.pass'); ?>">
                                 </div>
                                 <div class="col-sm-3 py-2">
                                     <label>Charset</label>
-                                    <input type="text" name="drivers_mysql_charset" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.charset'); ?>">
+                                    <input type="text" name="drivers__mysql__charset" class="form-control form-control-sm" value="<?php $this->_('drivers.mysql.charset'); ?>">
                                 </div>
                             </div>
                         </div>
@@ -98,15 +99,15 @@
                             <div class="row">
                                 <div class="col-sm-3 py-2">
                                     <label>Host</label>
-                                    <input type="text" name="drivers_redis_host" class="form-control form-control-sm" value="<?php $this->_('drivers.redis.host'); ?>">
+                                    <input type="text" name="drivers__redis__host" class="form-control form-control-sm" value="<?php $this->_('drivers.redis.host'); ?>">
                                 </div>
                                 <div class="col-sm-3 py-2">
                                     <label>Port</label>
-                                    <input type="text" name="drivers_redis_port" class="form-control form-control-sm" value="<?php $this->_('drivers.redis.port'); ?>">
+                                    <input type="text" name="drivers__redis__port" class="form-control form-control-sm" value="<?php $this->_('drivers.redis.port'); ?>">
                                 </div>
                                 <div class="col-sm-3 py-2">
                                     <label>Auth</label>
-                                    <input type="text" name="drivers_redis_auth" class="form-control form-control-sm" value="<?php $this->_('drivers.redis.auth'); ?>"><br />
+                                    <input type="text" name="drivers__redis__auth" class="form-control form-control-sm" value="<?php $this->_('drivers.redis.auth'); ?>"><br />
                                     <p>Required only if a password is needed.</p>
                                 </div>
                             </div>
@@ -122,7 +123,7 @@
                             <div class="row">
                                 <div class="col-sm-7 py-2">
                                     <label>Directory</label>
-                                    <input type="text" name="drivers_sqlite_directory_path" class="form-control form-control-sm" value="<?php $this->_('drivers.sqlite.directory_path'); ?>">
+                                    <input type="text" name="drivers__sqlite__directory_path" class="form-control form-control-sm" value="<?php $this->_('drivers.sqlite.directory_path'); ?>">
                                     <br />
                                     <p>Please fill in the absolute path of the directory where you store the data.</p>
                                 </div>
@@ -144,7 +145,8 @@
                     <div ckass="row">
                         <div class="col-sm-12">
                             <label class="rocker rocker-sm">
-                                <input type="checkbox" name="cronjob_reset_circle_enable" class="toggle-block" value="on" <?php $this->checked('cronjob.reset_circle.enable', true); ?>>
+                                <input type="hidden" name="cronjob__reset_circle__enable" value="off" />
+                                <input type="checkbox" name="cronjob__reset_circle__enable" class="toggle-block" value="on" <?php $this->checked('cronjob.reset_circle.enable', true); ?>>
                                 <span class="switch-left"><i class="fas fa-check"></i></span>
                                 <span class="switch-right"><i class="fas fa-times"></i></span>
                             </label>
@@ -204,7 +206,8 @@
     <h2>Session Limit</h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="checkbox" name="daemon" class="toggle-block" value="on" data-target="online-session-limit-section" <?php $this->checked('online_session_limit.enable', true); ?> />
+            <input type="hidden" name="online_session_limit__enable" value="off" />
+            <input type="checkbox" name="online_session_limit__enable" class="toggle-block" value="on" data-target="online-session-limit-section" <?php $this->checked('online_session_limit.enable', true); ?> />
             <span class="switch-left"><i class="fas fa-check"></i></span>
             <span class="switch-right"><i class="fas fa-times"></i></span>
         </label>
@@ -219,7 +222,7 @@
         <tr>
             <td class="r1">Online Limit</td>
             <td class="r2">
-                <input type="text" name="online_session_limit_config_count" class="form-control form-control-sm col-sm-3" value="<?php $this->_('online_session_limit.config.count'); ?>"><br />
+                <input type="text" name="online_session_limit__config__count" class="form-control form-control-sm col-sm-3" value="<?php $this->_('online_session_limit.config.count'); ?>"><br />
                 <p>The maximum online user limit.</p>
             </td>
         </tr>
@@ -230,7 +233,7 @@
         <tr>
             <td class="r1">Keep Alive Period</td>
             <td class="r2">
-                <input type="text" name="online_session_limit_config_period" class="form-control form-control-sm col-sm-3" value="<?php $this->_('online_session_limit.config.period'); ?>"><br />
+                <input type="text" name="online_session_limit__config__period" class="form-control form-control-sm col-sm-3" value="<?php $this->_('online_session_limit.config.period'); ?>"><br />
                 <p>Unit: minute.</p>
             </td>
         </tr>

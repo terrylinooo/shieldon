@@ -58,7 +58,7 @@ $timezone = '';
 		};
 
 		var dataDriverFiles = function() {
-			let value = $('input[name="data_driver"]:checked').val();
+			let value = $('input[name="driver_type"]:checked').val();
 			$('.data-driver-options').hide();
 			$('.data-driver-options-' + value).fadeIn(500);
 		};
@@ -72,7 +72,7 @@ $timezone = '';
 			checkToggleStatus();
 		});
 
-		$('input[name="data_driver"]').change(function() {
+		$('input[name="driver_type"]').change(function() {
 			dataDriverFiles();
 		});
 

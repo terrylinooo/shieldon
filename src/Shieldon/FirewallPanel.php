@@ -17,24 +17,20 @@ use Shieldon\Driver\RedisDriver;
 use Shieldon\Driver\SqliteDriver;
 use Shieldon\Log\LogParser;
 use Shieldon\Shieldon;
+use Shieldon\FirewallTrait;
 
 use ReflectionObject;
 
 /**
- * ControlPanel
+ * Firewall's Control Panel
  * 
  * Display a Control Panel UI for developers or administrators.
  *
  * @since 3.0.0
  */
-class Panel
+class FirewallPanel
 {
-	/**
-	 * Shieldon instance.
-	 *
-	 * @var object
-	 */
-	protected $sheidlon;
+	use FirewallTrait;
 
 	/**
 	 * LogPaeser instance.
@@ -67,13 +63,6 @@ class Panel
 	];
 
 	/**
-	 * The Firewall's configuration.
-	 *
-	 * @var array
-	 */
-	protected $configuration = [];
-
-	/**
 	 * Constructor.
 	 *
 	 * @param object $instance Shieldon | Firewall
@@ -85,9 +74,11 @@ class Panel
 			$this->shieldon = $instance;
 
 		} elseif ($instance instanceof Firewall) {
-			$this->mode = 'managed';
-			$this->shieldon = $instance->getShieldonInstance();
+			$this->mode          = 'managed';
+			$this->shieldon      = $instance->getShieldon();
 			$this->configuration = $instance->getConfiguration();
+			$this->directory     = $instance->getDirectory();
+			$this->filename      = $instance->getFilename();
 		}
 
 		if (! empty($this->shieldon->logger)) {
@@ -159,9 +150,12 @@ class Panel
 	 */
 	public function setting(): void
 	{
-		$tab = $_POST['tab'] ?? 'daemon';
+		$data[] = [];
 
-		$data['tab'] = $tab;
+		if (isset($_POST['tab'])) {
+			unset($_POST['tab']);
+			$this->saveConfig();
+		}
 
 		$this->renderPage('panel/setting', $data);
 	}
@@ -532,6 +526,155 @@ class Panel
 			case 5:
 				$this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]] = $value;
 				break;
+		}
+	}
+
+	/**
+	 * Save the configuration settings to the JSON file.
+	 *
+	 * @return void
+	 */
+	public function saveConfig()
+	{
+		$configFilePath = $this->directory . '/' . $this->filename;
+
+		if (empty($_POST) || ! is_array($_POST)) {
+			return;
+		}
+
+		foreach ($_POST as $postKey => $postData) {
+			if (is_string($postData)) {
+				if ($postData === 'on') {
+					$this->setConfig(str_replace('__', '.', $postKey), true);
+				} elseif ($postData === 'off') {
+					$this->setConfig(str_replace('__', '.', $postKey), false);
+				} else {
+					if ($postKey === 'ip_variable_source') {
+						$this->setConfig('ip_variable_source.REMOTE_ADDR', false);
+						$this->setConfig('ip_variable_source.HTTP_CF_CONNECTING_IP', false);
+						$this->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', false);
+						$this->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', false);
+						$this->setConfig('ip_variable_source.' . $postData, true);
+					} else {
+						if (is_numeric($postData)) {
+							$this->setConfig(str_replace('__', '.', $postKey), (int) $postData);
+						} else  {
+							$this->setConfig(str_replace('__', '.', $postKey), $postData);
+						}
+					}
+				}
+			}
+		}
+
+		//  Start checking the availibility of the data driver settings.
+		$isDataDriverFailed = false;
+
+		switch ($this->configuration['driver_type']) {
+
+			case 'mysql':
+	
+				if (class_exists('PDO')) {
+					$db = [
+						'host'    => $this->getConfig['drivers.mysql.host'],
+						'dbname'  => $this->getConfig['drivers.mysql.dbname'],
+						'user'    => $this->getConfig['drivers.mysql.user'],
+						'pass'    => $this->getConfig['drivers.mysql.pass'],
+						'charset' => $this->getConfig['drivers.mysql.charset'],
+					];
+
+					try {
+						$pdo = new \PDO(
+							'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
+							(string) $db['user'],
+							(string) $db['pass']
+						);
+					} catch(\PDOException $e) {
+						$isDataDriverFailed = true;
+					}
+				} else {
+					$isDataDriverFailed = true;
+				}
+
+				break;
+
+			case 'sqlite':
+
+				$sqliteDir = rtrim($this->getConfig['drivers.sqlite.directory_path'], '\\/ ');
+
+				if (empty($sqliteDir)) {
+					$sqliteDir = $this->directory;
+					$sqliteFilePath = $this->directory . '/shieldon.sqlite3';
+					$this->setConfig('drivers.sqlite.directory_path', $this->directory);
+				} else {
+					$sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
+					$this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
+				}
+				
+				if (! file_exists($sqliteFilePath)) {
+					if (! is_dir($sqliteDir)) {
+						$originalUmask = umask(0);
+						@mkdir($sqliteDir, 0777, true);
+						umask($originalUmask);
+					}
+				}
+
+				if (class_exists('PDO')) {
+					try {
+						$pdo = new \PDO('sqlite:' . $sqliteFilePath);
+					} catch(\PDOException $e) {
+						$isDataDriverFailed = true;
+					}
+				} else {
+					$isDataDriverFailed = true;
+				}
+
+				break;
+
+			case 'redis':
+
+				if (class_exists('Redis')) {
+					try {
+						$redis = new \Redis();
+						$redis->connect(
+							(string) $this->getConfig['drivers.redis.host'], 
+							(int)    $this->getConfig['drivers.redis.port']
+						);
+					} catch(\RedisException $e) {
+						$isDataDriverFailed = true;
+					}
+				} else {
+					$isDataDriverFailed = true;
+				}
+
+				break;
+
+			case 'file':
+			default:
+
+				$fileDir = rtrim($this->getConfig['drivers.file.directory_path'], '\\/ ');
+
+				if (empty($fileDir)) {
+					$fileDir = $this->directory;
+					$this->setConfig('drivers.file.directory_path', $this->directory);
+				} else {
+					$this->setConfig('drivers.file.directory_path', $fileDir);
+				}
+
+				if (! is_dir($fileDir)) {
+					$originalUmask = umask(0);
+					@mkdir($fileDir, 0777, true);
+					umask($originalUmask);
+				}
+
+				if (is_writable($fileDir)) {
+					$isDataDriverFailed = true;
+				}
+			// endswitch
+		}
+
+		// Only update settings while data driver is correctly connected.
+		if (! $isDataDriverFailed) {
+			file_put_contents($configFilePath, json_encode($this->configuration));
 		}
 	}
 
