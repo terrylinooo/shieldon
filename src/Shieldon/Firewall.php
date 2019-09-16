@@ -24,6 +24,8 @@ namespace Shieldon;
 
 use Shieldon\Shieldon;
 
+use Shieldon\Captcha\ImageCaptcha;
+use Shieldon\Captcha\Recaptcha;
 use Shieldon\Component\Header;
 use Shieldon\Component\Ip;
 use Shieldon\Component\Rdns;
@@ -225,7 +227,7 @@ class Firewall
 				try {
 					
 					// Specific the sqlite file location.
-					$sqliteLocation = $sqliteSetting . '/shieldon.sqlite3';
+					$sqliteLocation = $sqliteSetting['directory_path'] . '/shieldon.sqlite3';
 
 					// Create a PDO instance.
 					$pdoInstance = new PDO('sqlite:' . $sqliteLocation);
@@ -274,7 +276,7 @@ class Firewall
     protected function setLogger(): void
     {
 		$loggerSetting = $this->getOption('action', 'loggers');
-		
+
 		if ($loggerSetting['enable']) {
 			if (! empty($loggerSetting['config']['directory_path'])) {
 				$this->shieldon->setLogger(new ActionLogger($loggerSetting['config']['directory_path']));

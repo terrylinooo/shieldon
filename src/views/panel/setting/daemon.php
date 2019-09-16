@@ -141,18 +141,12 @@
             <td class="r1">Reset Data Cycle</td>
             <td class="r2">
                 <p>Clear all logs everyday 0:00 a.m. automatically. Turning this option on will improve performace.</p>
-                <div class="container">
-                    <div ckass="row">
-                        <div class="col-sm-12">
-                            <label class="rocker rocker-sm">
-                                <input type="hidden" name="cronjob__reset_circle__enable" value="off" />
-                                <input type="checkbox" name="cronjob__reset_circle__enable" class="toggle-block" value="on" <?php $this->checked('cronjob.reset_circle.enable', true); ?>>
-                                <span class="switch-left"><i class="fas fa-check"></i></span>
-                                <span class="switch-right"><i class="fas fa-times"></i></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
+                <label class="rocker rocker-sm">
+                    <input type="hidden" name="cronjob__reset_circle__enable" value="off" />
+                    <input type="checkbox" name="cronjob__reset_circle__enable" class="toggle-block" value="on" <?php $this->checked('cronjob.reset_circle.enable', true); ?>>
+                    <span class="switch-left"><i class="fas fa-check"></i></span>
+                    <span class="switch-right"><i class="fas fa-times"></i></span>
+                </label>
             </td>
         </tr>
     </table>
@@ -235,6 +229,31 @@
             <td class="r2">
                 <input type="text" name="online_session_limit__config__period" class="form-control form-control-sm col-sm-3" value="<?php $this->_('online_session_limit.config.period'); ?>"><br />
                 <p>Unit: minute.</p>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-------------------------------------------------------------------------------------------------------------->
+<div class="section-title bg-glass">
+    <h2>Logs</h2>
+    <div class="toggle-container">
+        <label class="rocker rocker-md">
+            <input type="hidden" name="loggers__action__enable" value="off" />
+            <input type="checkbox" name="loggers__action__enable" class="toggle-block" value="on" data-target="logger-action-section" <?php $this->checked('loggers.action.enable', true); ?> />
+            <span class="switch-left"><i class="fas fa-check"></i></span>
+            <span class="switch-right"><i class="fas fa-times"></i></span>
+        </label>
+    </div>
+</div>
+<div class="section-body my-0" data-parent="logger-action-section">
+    <table class="setting-table">
+        <tr>
+            <td class="r1">Action Logger</td>
+            <td class="r2">
+                <label>Directory</label>
+                <input type="text" name="loggers__action__config__directory_path" class="form-control form-control-sm col-sm-7" value="<?php $this->_('loggers.action.config.directory_path'); ?>">
+                <br />
+                <p>Please fill in the absolute path of the directory where you store the data.</p>
             </td>
         </tr>
     </table>

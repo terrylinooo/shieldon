@@ -93,26 +93,29 @@ class FileDriver extends DriverProvider
 
                 $dir = $this->getDirectory($type);
 
-                $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
-                $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-
-                foreach($files as $file) {
-                    if ($file->isFile()) {
-
-                        $content = json_decode(file_get_contents($file->getPath() . '/' . $file->getFilename()), true);
-
-                        if ($type === 'session') {
-                            $sort = $content['microtimesamp'] . '.' . $file->getFilename(); 
-                        } else {
-                            $sort = $file->getMTime() . '.' . $file->getFilename();
+                if (is_dir($dir)) {
+                    $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+                    $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+    
+                    foreach($files as $file) {
+                        if ($file->isFile()) {
+    
+                            $content = json_decode(file_get_contents($file->getPath() . '/' . $file->getFilename()), true);
+    
+                            if ($type === 'session') {
+                                $sort = $content['microtimesamp'] . '.' . $file->getFilename(); 
+                            } else {
+                                $sort = $file->getMTime() . '.' . $file->getFilename();
+                            }
+                            $results[$sort] = $content;
                         }
-                        $results[$sort] = $content;
                     }
+                    unset($it, $files);
+    
+                    // Sort by ascending timesamp (microtimesamp).
+                    ksort($results);
                 }
-                unset($it, $files);
 
-                // Sort by ascending timesamp (microtimesamp).
-                ksort($results);
             break;
         }
 

@@ -112,8 +112,8 @@
                     <div ckass="row">
                         <div class="col-sm-12">
                             <div class="radio-style">
-                                <input name="captcha_modules__image__config__type" value="album" type="radio" id="captcha-image-album" <?php $this->checked('captcha_modules.image.config.type', 'alnum'); ?> /> 
-                                <label for="captcha-image-album" class="radio-label">
+                                <input name="captcha_modules__image__config__type" value="alnum" type="radio" id="captcha-image-alnum" <?php $this->checked('captcha_modules.image.config.type', 'alnum'); ?> /> 
+                                <label for="captcha-image-alnum" class="radio-label">
                                     Alpha-numeric string with lower and uppercase characters.
                                 </label> 
                             </div>

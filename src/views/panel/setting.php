@@ -38,6 +38,7 @@ $timezone = '';
 	</div>
 </div>
 <input type="hidden" name="tab" value="daemon">
+<input type="hidden" name="managed_by" value="firewall">
 
 </form>
 

@@ -599,16 +599,14 @@ class FirewallPanel
 
 			case 'sqlite':
 
-				$sqliteDir = rtrim($this->getConfig['drivers.sqlite.directory_path'], '\\/ ');
+				$sqliteDir = rtrim($this->getConfig('drivers.sqlite.directory_path'), '\\/ ');
 
 				if (empty($sqliteDir)) {
-					$sqliteDir = $this->directory;
-					$sqliteFilePath = $this->directory . '/shieldon.sqlite3';
-					$this->setConfig('drivers.sqlite.directory_path', $this->directory);
-				} else {
-					$sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
-					$this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
+					$sqliteDir = $this->directory . '/data_driver_sqlite';
 				}
+
+				$sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
+				$this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
 				
 				if (! file_exists($sqliteFilePath)) {
 					if (! is_dir($sqliteDir)) {
@@ -625,6 +623,10 @@ class FirewallPanel
 						$isDataDriverFailed = true;
 					}
 				} else {
+					$isDataDriverFailed = true;
+				}
+
+				if (! is_writable($sqliteFilePath)) {
 					$isDataDriverFailed = true;
 				}
 
@@ -651,14 +653,14 @@ class FirewallPanel
 			case 'file':
 			default:
 
-				$fileDir = rtrim($this->getConfig['drivers.file.directory_path'], '\\/ ');
+				$fileDir = rtrim($this->getConfig('drivers.file.directory_path'), '\\/ ');
 
 				if (empty($fileDir)) {
-					$fileDir = $this->directory;
-					$this->setConfig('drivers.file.directory_path', $this->directory);
-				} else {
+					$fileDir = $this->directory . '/data_driver_file';
 					$this->setConfig('drivers.file.directory_path', $fileDir);
 				}
+
+				$this->setConfig('drivers.file.directory_path', $fileDir);
 
 				if (! is_dir($fileDir)) {
 					$originalUmask = umask(0);
@@ -666,10 +668,32 @@ class FirewallPanel
 					umask($originalUmask);
 				}
 
-				if (is_writable($fileDir)) {
+				if (! is_writable($fileDir)) {
 					$isDataDriverFailed = true;
 				}
 			// endswitch
+		}
+
+		// Check Action Logger settings.
+		$enableActionLogger = $this->getConfig('loggers.action.enable');
+		$actionLogDir = rtrim($this->getConfig('loggers.action.config.directory_path'), '\\/ ');
+
+		if ($enableActionLogger) {
+			if (empty($actionLoggerDir)) {
+				$actionLogDir = $this->directory . '/action_logs';
+			}
+
+			$this->setConfig('loggers.action.config.directory_path', $actionLogDir);
+	
+			if (! is_dir($actionLogDir)) {
+				$originalUmask = umask(0);
+				@mkdir($actionLogDir, 0777, true);
+				umask($originalUmask);
+			}
+	
+			if (! is_writable($actionLogDir)) {
+				$isDataDriverFailed = true;
+			}
 		}
 
 		// Only update settings while data driver is correctly connected.
