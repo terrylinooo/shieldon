@@ -1,6 +1,6 @@
 
 {
-	"daemon": true,
+	"daemon": false,
 	"channel_id": "",
 	"driver_type": "file",
 	"drivers": {
