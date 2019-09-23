@@ -63,38 +63,33 @@ class Firewall
     /**
      * Constructor.
      */
-    public function __construct(string $directory)
+    public function __construct($source)
     {
 		// Set to container.
 		Container::set('firewall', $this);
 
-        if ('' !== $directory) {
-			$this->directory = rtrim($directory, '\\/');
-		}
-
-		if (! is_dir($this->directory)) {
-            $originalUmask = umask(0);
-            @mkdir($this->directory, 0777, true);
-            umask($originalUmask);
-		}
-
-		if (! is_writable($this->directory)) {
-			throw new RuntimeException('The directory usded by Firewall must be writable. (' . $this->directory . ')');
-		}
-
-		$configFilePath = $this->directory . '/' . $this->filename;
-
-		if (! file_exists($configFilePath)) {
-			$jsonString = file_get_contents(__DIR__ . '/../config/firewall.json');
-		} else {
-			$jsonString = file_get_contents($configFilePath);
-		}
-
-		$this->configuration = json_decode($jsonString, true);
-
 		$this->shieldon = new Shieldon();
 
-		$this->shieldon->managedByFirewall();
+		if (is_string($source)) {
+			$this->directory = rtrim($source, '\\/');
+			$configFilePath = $this->directory . '/' . $this->filename;
+
+			if (! file_exists($configFilePath)) {
+				$jsonString = file_get_contents(__DIR__ . '/../config.json');
+			} else {
+				$jsonString = file_get_contents($configFilePath);
+			}
+
+			// Identify the configration is from firewall-generated JSON config file.
+			$this->configuration = json_decode($jsonString, true);
+			$this->shieldon->managedBy('managed');
+
+		} elseif (is_array($source)) {
+
+			// Identify the configration is from PHP config file.
+			$this->configuration = $source;
+			$this->shieldon->managedBy('config');
+		}
 
 		$this->setDriver();
 		

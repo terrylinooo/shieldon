@@ -98,6 +98,8 @@ class FirewallPanel
 				'text' => 'ActionLogger is not implemented with the Shieldon instance.',
 			]);
 		}
+
+		$this->httpAuth();
 	}
 
 	/**
@@ -177,8 +179,11 @@ class FirewallPanel
 		|
 		*/
 
+		$data['action_logger'] = false;
+
 		if (! empty($this->shieldon->logger)) {
 			$loggerInfo = $this->shieldon->logger->getCurrentLoggerInfo();
+			$data['action_logger'] = true;
 		}
 
 		$data['logger_started_working_date'] = 'No record';
@@ -848,6 +853,29 @@ class FirewallPanel
 		$soTab = (! empty($tab)) ? '&tab=' . $tab : '';
 
 		return $url . $soPage . $soTab;
+	}
+
+	/**
+	 * Prompt an authorization login.
+	 *
+	 * @return void
+	 */
+	private function httpAuth()
+	{
+		$admin = $this->getConfig('admin');
+
+		if (! isset($_SERVER['PHP_AUTH_USER']) || ! isset($_SERVER['PHP_AUTH_PW'])) {
+            header('WWW-Authenticate: Basic realm=" "');
+            header('HTTP/1.0 401 Unauthorized');
+            die('Permission required.');
+		}
+		
+		if ($_SERVER['PHP_AUTH_USER'] === $admin['user'] && $_SERVER['PHP_AUTH_PW'] === $admin['pass']) {
+			// Nothing to do.
+		} else {
+            header('HTTP/1.0 401 Unauthorized');
+            die('Permission required.');
+		}
 	}
 }
 

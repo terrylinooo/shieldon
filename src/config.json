@@ -1,6 +1,10 @@
 
 {
 	"daemon": false,
+	"admin": {
+		"user": "shieldon_user",
+		"pass": "$2y$10$A1UmDUIh.CzHTLLNEeA/CeohTB4Jot2QDdh5zb4qB6WFv0YsTP6/q"
+	},
 	"channel_id": "",
 	"driver_type": "file",
 	"drivers": {
@@ -118,18 +122,10 @@
 		}
 	},
 	"xss_protection": {
-		"request_uri": {
-			"enable": true
-		},
-		"post": {
-			"enable": false
-		},
-		"get": {
-			"enable": false
-		},
-		"cookie": {
-			"enable": false
-		}
+		"request_uri": true,
+		"post": true,
+		"get": true,
+		"cookie": true
 	},
 	"csrf_protection": {
 		"enable": false,

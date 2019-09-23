@@ -1,4 +1,15 @@
 <?php
+/*
+ * This file is part of the Shieldon package.
+ *
+ * (c) Terry L. <contact@terryl.in>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ * 
+ * Notice: This file is a simple file for configuration, copy this file
+ * to your framework's config directory.
+ */
 
 return [
 
@@ -13,6 +24,23 @@ return [
     */
 
     'daemon' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Firewall Administor
+    |--------------------------------------------------------------------------
+    |
+    | The users who can login Shieldon Firewall's control panel.
+    | Deault: shieldon_user / shieldon_pass
+    | This is a basic protection. Please change the user and password instead 
+    | of a complex and strong one.
+    |
+    */
+
+    'admin' => [
+        'user' => 'shieldon_user',
+        'pass' => '$2y$10$A1UmDUIh.CzHTLLNEeA/CeohTB4Jot2QDdh5zb4qB6WFv0YsTP6/q',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -269,22 +297,10 @@ return [
     */
 
     'xss_protection' => [
-
-        'request_uri' => [
-            'enable' => true,
-        ],
-
-        'post' => [
-            'enable' => false,
-        ],
-
-        'get' => [
-            'enable' => false,
-        ],
-
-        'cookie' => [
-            'enable' => false,
-        ],
+        'request_uri' => true,
+        'post'        => false,
+        'get'         => false,
+        'cookie'      => false,
     ],
 
     /*

@@ -267,7 +267,7 @@ $timezone = '';
                 <div class="filter-status">
                     <div class="heading">Action Logger</div>
                     <div class="nums">
-                        <?php echo $driver['mysql']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
+                        <?php echo $data['action_logger']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
                     <div class="note">Record every visitor's behavior.</div>
                     <button class="note-code" onclick="openInfoModal(this)" 

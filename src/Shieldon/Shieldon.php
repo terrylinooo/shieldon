@@ -174,7 +174,7 @@ class Shieldon
         'cookie_domain'          => '',
         'cookie_value'           => '1',
         'lang'                   => 'en',
-        'xss_protection'         => false,
+        'uri_xss_protection'     => false,
         'display_credit_link'    => true,
         'display_online_info'    => true,
         'display_lineup_info'    => true,
@@ -269,6 +269,7 @@ class Shieldon
      * Vistor's current browsering URL.
      *
      * @var string
+     * @since 3.0.0
      */
     private $currentUrl = '';
 
@@ -276,15 +277,17 @@ class Shieldon
      * URLs that are excluded from Shieldon's protection.
      *
      * @var array
+     * @since 3.0.0
      */
     private $excludedUrls = [];
 
     /**
-     * Is Shieldon instance managed by Firewall?
+     * Which type of configuration source that Shieldon firewall managed?
      *
-     * @var bool
+     * @var string
+     * @since 3.0.0
      */
-    private $isFirewall = false;
+    private $firewallType = 'self'; // managed | config | self | demo
 
     /**
      * Constructor.
@@ -685,6 +688,32 @@ class Shieldon
         }
 
         return self::RESPONSE_ALLOW;
+    }
+
+    /**
+     * Check if someone try to Cross-Site scripting your website.
+     *
+     * @since 3.0.0
+     *
+     * @return bool
+     */
+    protected function detectXss(): bool
+    {
+        $highRiskCharacters = [
+            '"',
+            "'",
+            '<',
+            '>',
+            '://'
+        ];
+
+        foreach ($highRiskCharacters as $c) {
+            if (false !== strpos($this->currentUrl, $c)) {
+                return true;
+            }
+        }
+    
+        return false;
     }
 
     // @codeCoverageIgnoreStart
@@ -1177,8 +1206,8 @@ class Shieldon
         }
 
         // Prevent XSS attacks.
-        if (! empty($this->properties['xss_protection'])) {
-            if ($this->detectXssAttempt) {
+        if (! empty($this->properties['uri_xss_protection'])) {
+            if ($this->detectXss) {
                 return $this->result = self::RESPONSE_DENY;
             }
         }
@@ -1278,7 +1307,8 @@ class Shieldon
     /**
      * Set the filters.
      *
-     * @param array $settings filter settings
+     * @param array $settings filter settings.
+     *
      * @return self
      */
     public function setFilters($settings): self
@@ -1372,6 +1402,8 @@ class Shieldon
      * Set the URLs you want them to be excluded them from protection.
      *
      * @param array $urls
+     * @since 3.0.0
+     *
      * @return self
      */
     public function setExcludedUrls(array $urls = []): self
@@ -1382,6 +1414,8 @@ class Shieldon
 
     /**
      * Return current URL.
+     *
+     * @since 3.0.0
      *
      * @return string
      */
@@ -1415,36 +1449,17 @@ EOF;
     }
 
     /**
-     * Check if someone try to Cross-Site scripting your website.
-     *
-     * @return bool
-     */
-    public function detectXssAttempt(): bool
-    {
-        $highRiskCharacters = [
-            '"',
-            "'",
-            '<',
-            '>',
-            '://'
-        ];
-
-        foreach ($highRiskCharacters as $c) {
-            if (false !== strpos($this->currentUrl, $c)) {
-                return true;
-            }
-        }
-    
-        return false;
-    }
-
-    /**
-     * Tell Shieldon that it is managed by Firewall.
+     * Tell Shieldon what type is that Shieldon.
+     * 
+     * @param $type Type.
+     * @since 3.0.0
      *
      * @return void
      */
-    public function managedByFirewall(): void
+    public function managedBy(string $type = ''): void
     {
-        $this->isFirewall = true;
+        if (in_array($type, ['managed', 'config', 'demo'])) {
+            $this->firewallType = $type;
+        }
     }
 }
