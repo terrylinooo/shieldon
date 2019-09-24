@@ -3,7 +3,7 @@
 	"daemon": false,
 	"admin": {
 		"user": "shieldon_user",
-		"pass": "$2y$10$A1UmDUIh.CzHTLLNEeA/CeohTB4Jot2QDdh5zb4qB6WFv0YsTP6/q"
+		"pass": "$2y$10$x/celAC.L8xBn1UPPq619uG6ZGKoA6yfbjxtAJqAAtB.yLjU3S3Fu"
 	},
 	"channel_id": "",
 	"driver_type": "file",
@@ -154,17 +154,16 @@
 	],
 	"ip_manager": [
 		{
+			"url": "/",
 			"rule": "allow",
-			"ip": "127.0.0.1",
-			"url": "/"
+			"ip": "127.0.0.1"
 		}
 	],
-	"password_protected_urls": [
+	"www_authenticate": [
 		{
 			"url": "/admin/",
-			"username": "shieldon_test",
-			"password": "shieldon_test",
-			"captcha": true
+			"user": "wp_shieldon_admin",
+			"pass": "wp_shieldon_pass"
 		}
 	]
 }

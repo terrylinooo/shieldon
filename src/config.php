@@ -39,7 +39,7 @@ return [
 
     'admin' => [
         'user' => 'shieldon_user',
-        'pass' => '$2y$10$A1UmDUIh.CzHTLLNEeA/CeohTB4Jot2QDdh5zb4qB6WFv0YsTP6/q',
+        'pass' => '$2y$10$x/celAC.L8xBn1UPPq619uG6ZGKoA6yfbjxtAJqAAtB.yLjU3S3Fu',
     ],
 
     /*
@@ -366,32 +366,33 @@ return [
     |--------------------------------------------------------------------------
     |
     | IP manager is provided by IP component.
+    | Please notice that it will match all URLs begin with the url fields.
     |
     */
 
     'ip_manager' => [
         [
+            'url'  => '/',
 			'rule' => 'allow',
 			'ip'   => '127.0.0.1',
-			'url'  => '/',
         ],
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Password-protection URLs
+    | WWW-Authenticate
     |--------------------------------------------------------------------------
     |
-    | The URLs below are protected by password.
+    | Basic authenticate. For more detail:
+    | https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate
     |
     */
 
-    'ip_manager' => [
+    'www_authenticate' => [
         [
-            'url'      => '/',
-            'username' => 'shieldon_test',
-            'password' => 'shieldon_test',
-			'captcha'  => true,
+            'url'  => '/wp-admin',
+            'user' => 'wp_shieldon_admin',
+            'pass' => 'wp_shieldon_pass',
         ],
     ],
 

@@ -26,23 +26,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- *
- ************************************************************************
- * 
- * @subpackage Shieldon Firewall
- * @namespace  Shieldon\Firewall
- * @link       https://shieldon.io
- * @license    Free to use when reserving the credit link, see explanation below.
- *
- *                                  *** License ***
- * Shieldon Firewall package is an enhanced package for Shieldon library.
- * It's lincese is exactly defferent to Shieldon package, pelase read the license 
- * information below.
- *
- * Shieldon Firewall is free for both personal and commercial use If the Shieldon's credit link 
- * is displayed on every Shieldon-generated pages such as CAPTCHA page、password protection page 
- * and so on. If you are willing to remove the credit link, please buy a commercail license 
- * from https://shieldon.io
  */
 
 namespace Shieldon;

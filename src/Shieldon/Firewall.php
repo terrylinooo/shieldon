@@ -1,23 +1,11 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of the Shieldon Firewall package, an enhanced package for Shieldon library.
- * It's lincese is exactly defferent to Shieldon package, pelase read the license 
- * information below.
+ * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
- * @author     Terry L. <contact@terryl.in>
- * @package    Shieldon
- * @subpackage Shieldon Firewall
- * @link       https://shieldon.io
- * @license    Free to use when reserving the credit link, see explanation below.
- *
- *                                  *** License ***
- *
- * Shieldon Firewall is free for both personal and commercial use If the Shieldon's credit link 
- * is displayed on every Shieldon-generated pages such as CAPTCHA page、password protection page 
- * and so on. If you are willing to remove the credit link, please purchase a commercail license 
- * from https://shieldon.io to support use make it better.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Shieldon;
@@ -536,9 +524,12 @@ class Firewall
 	protected function setExcludedUrls() 
 	{
 		$excludedUrls = $this->getOption('excluded_urls');
-		$list = array_column($excludedUrls, 'url');
 
-		$this->shieldon->setExcludedUrls($list);
+		if (! empty($excludedUrls)) {
+			$list = array_column($excludedUrls, 'url');
+
+			$this->shieldon->setExcludedUrls($list);
+		}
 	}
 
 	/**
@@ -551,16 +542,18 @@ class Firewall
 		$allowedList = [];
 		$deniedList = [];
 
-		foreach ($ipList as $ip) {
+		if (! empty($ipList)) {
+			foreach ($ipList as $ip) {
 
-			if (0 === strpos($this->shieldon->getCurrentUrl(), $ip['url']) ) {
-
-				if ('allow' === $ip['rule']) {
-					$allowedList[] = $ip['ip'];
-				}
-
-				if ('deny' === $ip['rule']) {
-					$deniedList[] = $ip['ip'];
+				if (0 === strpos($this->shieldon->getCurrentUrl(), $ip['url']) ) {
+	
+					if ('allow' === $ip['rule']) {
+						$allowedList[] = $ip['ip'];
+					}
+	
+					if ('deny' === $ip['rule']) {
+						$deniedList[] = $ip['ip'];
+					}
 				}
 			}
 		}

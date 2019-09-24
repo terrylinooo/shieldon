@@ -234,7 +234,7 @@
     </table>
 </div>
 <!-------------------------------------------------------------------------------------------------------------->
-<div class="section-title bg-glass">
+<div class="section-title bg-glass mt-3">
     <h2>Logs</h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">

@@ -123,6 +123,14 @@ class FirewallPanel
 				$this->setting();
 				break;
 
+			case 'ip_manager':
+				$this->ipManager();
+				break;
+
+			case 'exclusion':
+				$this->exclusion();
+				break;
+
 			case 'session_table':
 				$this->sessionTable();
 				break;
@@ -292,6 +300,110 @@ class FirewallPanel
 		];
 
 		$this->renderPage('panel/overview', $data);
+	}
+
+	/**
+	 * IP manager.
+	 *
+	 * @return void
+	 */
+	public function ipManager()
+	{
+		if (isset($_POST['ip']) && filter_var(explode('/', $_POST['ip'])[0], FILTER_VALIDATE_IP)) {
+
+			$url = $_POST['url'];
+			$ip = $_POST['ip'];
+			$rule = $_POST['action'];
+			$order = (int) $_POST['order'];
+
+			if ($order > 0) {
+				$order--;
+			}
+
+			$ipList = $this->getConfig('ip_manager');
+
+			if ('allow' === $rule || 'deny' === $rule) {
+
+				$newIpList = [];
+
+				if (! empty($ipList)) {
+					foreach ($ipList as $i => $ipInfo) {
+						$key = $i + 1;
+						if ($order === $i) {
+							$newIpList[$key] = $ipInfo;
+
+							$newIpList[$i]['url'] = $url;
+							$newIpList[$i]['ip'] = $ip;
+							$newIpList[$i]['rule'] = $rule;
+						} else {
+							$newIpList[$key] = $ipInfo;
+						}
+					}
+				} else {
+					$newIpList[0]['url'] = $url;
+					$newIpList[0]['ip'] = $ip;
+					$newIpList[0]['rule'] = $rule;
+				}
+
+				$newIpList = array_values($newIpList);
+
+				$this->setConfig('ip_manager', $newIpList);
+			}
+
+			if ('remove' === $rule) {
+				unset($ipList[$order]);
+				$ipList = array_values($ipList);
+				$this->setConfig('ip_manager', $ipList);
+			}
+
+			$this->saveConfig();
+		}
+
+		$data['ip_list'] = $this->getConfig('ip_manager');
+
+		$this->renderPage('panel/ip_manager', $data);
+	}
+
+	/**
+	 * Exclude the URLs that they don't need protection.
+	 *
+	 * @return void
+	 */
+	public function exclusion(): void
+	{
+		if (isset($_POST['url'])) {
+
+			$url = $_POST['url'];
+			$action = $_POST['action'];
+
+			$excludedUrls = $this->getConfig('excluded_urls');
+
+			if ('add' === $action) {
+				if (! array_search($url, $excludedUrls)) {
+					array_push($excludedUrls, ['url' => $url]);
+				}
+			}
+
+			if ('remove' === $action) {
+				if (! empty($url)) {
+					foreach ($excludedUrls as $i => $excludedUrl) {
+						if ($url === $excludedUrl['url']) {
+							unset($excludedUrls[$i]);
+						}
+					}
+				} 
+
+				$excludedUrls = array_values($excludedUrls);
+			}
+
+			$this->setConfig('excluded_urls', $excludedUrls);
+
+			$this->saveConfig();
+		}
+
+		$data['exclusion_list'] = $this->getConfig('excluded_urls');
+
+		$this->renderPage('panel/exclusion', $data);
 	}
 
 	/**
@@ -865,14 +977,15 @@ class FirewallPanel
 		$admin = $this->getConfig('admin');
 
 		if (! isset($_SERVER['PHP_AUTH_USER']) || ! isset($_SERVER['PHP_AUTH_PW'])) {
-            header('WWW-Authenticate: Basic realm=" "');
+            header('WWW-Authenticate: Basic realm=""');
             header('HTTP/1.0 401 Unauthorized');
             die('Permission required.');
 		}
-		
-		if ($_SERVER['PHP_AUTH_USER'] === $admin['user'] && $_SERVER['PHP_AUTH_PW'] === $admin['pass']) {
-			// Nothing to do.
-		} else {
+
+		if (
+			$admin['user'] === $_SERVER['PHP_AUTH_USER'] && 
+			password_verify($_SERVER['PHP_AUTH_PW'], $admin['pass'])
+		) {} else {
             header('HTTP/1.0 401 Unauthorized');
             die('Permission required.');
 		}

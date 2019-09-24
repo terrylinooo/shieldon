@@ -86,15 +86,17 @@ function showActive(string $key = '')
                                     <a href="<?php echo $page_url; ?>?so_page=settings">Settings</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip-manager">IP Manager</a>
-                                </li>
-                                <!--
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=excluded-urls">Excluded URLs</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_manager">IP Manager</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=xss-protection">XSS Protection</a>
-                                </li>-->
+                                    <a href="<?php echo $page_url; ?>?so_page=xss_protection">XSS Protection</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=www_protection">Authentication</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=exclusion">Exclusion</a>
+                                </li>
                             </ul>
                         </li>
                         <li>
@@ -158,11 +160,8 @@ function showActive(string $key = '')
                     } else {
                         $(this).parent('li').addClass('active').parents('ul').slideDown(500).parent().addClass('active');
                     }
-                    
                 });
-
             });
-
 
         </script>
     </body>

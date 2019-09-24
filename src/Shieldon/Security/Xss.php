@@ -2,8 +2,6 @@
 /*
  * Original code is from the Secruity class of Codeigniter 2 framework.
  * For more information, please check out the author section blow:
- * 
- * Security Class
  *
  * @package		CodeIgniter
  * @author		EllisLab Dev Team
