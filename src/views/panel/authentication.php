@@ -22,23 +22,24 @@ $timezone = '';
 		</div>
 		<div class="so-rule-form">
 			<form method="post">
-				<div class="form-group">
-					<label for="url-path" class="col-sm-2 col-form-label text-right">URL Path</label>
-					<input name="url" type="text" value="" id="url-path" class="regular-text">
-					<span class="form-text text-muted offset-sm-2">e.g. <code>/wp-admin/</code></span>
+				<div class="d-inline-block align-top">
+					<label for="url-path">URL Path</label><br />
+					<input name="url" type="text" value="" id="url-path" class="regular-text"><br />
+					<span class="form-text text-muted">e.g. <code>/wp-admin/</code></span>
 				</div>
-				<div class="form-group">
-					<label for="ip-address" class="col-sm-2 col-form-label text-right">Username</label>
-					<input name="ip" type="text" value="" id="ip-address" class="regular-text ">
+				<div class="d-inline-block align-top">
+					<label for="username">Username</label><br />
+					<input name="user" type="text" value="" id="username" class="regular-text">
 				</div>
-				<div class="form-group">
-					<label for="ip-address" class="col-sm-2 col-form-label text-right">Password</label>
-					<input name="ip" type="text" value="" id="ip-address" class="regular-text ">
+				<div class="d-inline-block align-top">
+					<label for="password">Password</label><br />
+					<input name="pass" type="text" value="" id="password" class="regular-text">
 				</div>
-				<div class="form-group">
-					<div class="col-sm-2 offset-sm-2">
-						<input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="Submit">
-					</div>
+				<div class="d-inline-block align-top">
+					<label>&nbsp;</label><br />
+					<input type="hidden" name="action" value="add">
+					<input type="hidden" name="order" value="">
+					<input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="Submit">
 				</div>
 			</form>
 		</div>
@@ -56,23 +57,23 @@ $timezone = '';
 		<table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
 			<thead>
 				<tr>
-                    <th>Order</th>
                     <th>URL Path</th>
-					<th>IP</th>
-					<th>Rule</th>
+					<th>Username</th>
+					<th>Password (encrypted)</th>
 					<th>Remove</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($ip_list as $i => $ipInfo) : ?>
+				<?php if (! empty($authentication_list)) : ?>
+				<?php foreach($authentication_list as $i => $authInfo) : ?>
 				<tr>
-                    <td><?php echo $i + 1; ?></td>
-                    <td><?php echo $ipInfo['url']; ?></td>
-					<td><?php echo $ipInfo['ip']; ?></td>
-					<td><?php echo $ipInfo['rule']; ?></td>
-					<td><button type="button" class="button btn-remove-ip" data-ip="<?php echo $ipInfo['ip']; ?>" data-order="<?php echo ($i + 1); ?>"><i class="far fa-trash-alt"></i></button></td>
+                    <td><?php echo $authInfo['url']; ?></td>
+					<td><?php echo $authInfo['user']; ?></td>
+					<td><?php echo $authInfo['pass']; ?></td>
+					<td><button type="button" class="button btn-remove-ip" data-order="<?php echo $i; ?>"><i class="far fa-trash-alt"></i></button></td>
 				</tr>
 				<?php endforeach; ?>
+				<?php endif; ?>
 			</tbody>   
 		</table>
 	</div>
@@ -92,9 +93,7 @@ $timezone = '';
 
 		$('.so-dashboard').on('click', '.btn-remove-ip', function() {
             var order = $(this).attr('data-order');
-            var ip = $(this).attr('data-ip');
 
-            $('[name=ip]').val(ip);
 			$('[name=order]').val(order);
 			$('[name=action]').val('remove');
 			$('#btn-add-rule').trigger('click');

@@ -18,8 +18,8 @@
  /**
   * Cross-Site Scripting protection.
   */
-class Xss {
-
+class Xss
+{
     /**
      * Random Hash for protecting URLs.
      *

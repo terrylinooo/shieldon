@@ -123,10 +123,24 @@
 	},
 	"xss_protection": {
 		"request_uri": true,
-		"post": true,
-		"get": true,
-		"cookie": true
+		"post": false,
+		"get": false,
+		"cookie": false
 	},
+	"xss_protected_list": [
+		{
+			"type": "get",
+			"variable": "_test"
+		},
+		{
+			"type": "post",
+			"variable": "_test"
+		},
+		{
+			"type": "cookie",
+			"variable": "_test"
+		}
+	],
 	"csrf_protection": {
 		"enable": false,
 		"config": {
@@ -163,7 +177,7 @@
 		{
 			"url": "/admin/",
 			"user": "wp_shieldon_admin",
-			"pass": "wp_shieldon_pass"
+			"pass": "$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq"
 		}
 	]
 }

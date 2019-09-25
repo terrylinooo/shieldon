@@ -288,7 +288,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | XSS protection. (Not ready.)
+    | XSS protection.
     |--------------------------------------------------------------------------
     |
     | Googling "XSS" to understand who it is and how can we do.
@@ -303,6 +303,22 @@ return [
         'cookie'      => false,
     ],
 
+    'xss_protected_list' => [
+        [
+			'type' => 'get',
+			'variable' => '_test',
+        ],
+
+        [
+			'type' => 'post',
+			'variable' => '_test',
+        ],
+
+        [
+			'type' => 'cookie',
+			'variable' => '_test',
+        ],
+    ],
     /*
     |--------------------------------------------------------------------------
     | CSRF protection. (Not ready.)
@@ -392,7 +408,7 @@ return [
         [
             'url'  => '/wp-admin',
             'user' => 'wp_shieldon_admin',
-            'pass' => 'wp_shieldon_pass',
+            'pass' => '$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq',
         ],
     ],
 

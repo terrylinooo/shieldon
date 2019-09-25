@@ -28,15 +28,9 @@ $timezone = '';
 					<span class="form-text text-muted">e.g. <code>/url-path/</code></span>
 				</div>
 				<div class="d-inline-block align-top">
-					<label for="action">Action</label><br />
-					<select id="action" name="action" class="regular">
-						<option value="no">--- Please select ---</option>
-						<option value="add">Add</option>
-						<option value="remove">Remove</option>
-					</select>
-				</div>
-				<div class="d-inline-block align-top">
 					<label>&nbsp;</label><br />
+					<input type="hidden" name="action" value="add">
+					<input type="hidden" name="order" value="">
 					<input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="Submit">
 				</div>
 			</form>
@@ -60,12 +54,14 @@ $timezone = '';
 				</tr>
 			</thead>
 			<tbody>
+				<?php if (! empty($exclusion_list)) : ?>
 				<?php foreach($exclusion_list as $i => $urlInfo) : ?>
 				<tr>
                     <td><?php echo $urlInfo['url']; ?></td>
-					<td><button type="button" class="button btn-remove-ip" data-url="<?php echo $urlInfo['url']; ?>"><i class="far fa-trash-alt"></i></button></td>
+					<td><button type="button" class="button btn-remove-ip" data-order="<?php echo $i; ?>"><i class="far fa-trash-alt"></i></button></td>
 				</tr>
 				<?php endforeach; ?>
+				<?php endif; ?>
 			</tbody>   
 		</table>
 	</div>
@@ -84,9 +80,9 @@ $timezone = '';
 		});
 
 		$('.so-dashboard').on('click', '.btn-remove-ip', function() {
-            var url = $(this).attr('data-url');
+            var order = $(this).attr('data-order');
 
-			$('[name=url]').val(url);
+			$('[name=order]').val(order);
 			$('[name=action]').val('remove');
 			$('#btn-add-rule').trigger('click');
 		});

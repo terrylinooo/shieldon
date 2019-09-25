@@ -131,6 +131,14 @@ class FirewallPanel
 				$this->exclusion();
 				break;
 
+			case 'authentication':
+				$this->authentication();
+				break;
+
+			case 'xss_protection':
+				$this->xssProtection();
+				break;
+
 			case 'session_table':
 				$this->sessionTable();
 				break;
@@ -348,13 +356,17 @@ class FirewallPanel
 				$newIpList = array_values($newIpList);
 
 				$this->setConfig('ip_manager', $newIpList);
-			}
 
-			if ('remove' === $rule) {
+			} elseif ('remove' === $rule) {
 				unset($ipList[$order]);
 				$ipList = array_values($ipList);
 				$this->setConfig('ip_manager', $ipList);
 			}
+
+			if (isset($_POST['url']))    unset($_POST['url']);
+			if (isset($_POST['ip']))     unset($_POST['ip']);
+			if (isset($_POST['action'])) unset($_POST['action']);
+			if (isset($_POST['order']))  unset($_POST['order']);
 
 			$this->saveConfig();
 		}
@@ -373,30 +385,28 @@ class FirewallPanel
 	{
 		if (isset($_POST['url'])) {
 
-			$url = $_POST['url'];
-			$action = $_POST['action'];
+			$url = $_POST['url'] ?? '';
+			$action = $_POST['action'] ?? '';
+			$order = (int) $_POST['order'];
 
 			$excludedUrls = $this->getConfig('excluded_urls');
 
 			if ('add' === $action) {
-				if (! array_search($url, $excludedUrls)) {
-					array_push($excludedUrls, ['url' => $url]);
-				}
-			}
+				array_push($excludedUrls, [
+					'url' => $url
+				]);
 
-			if ('remove' === $action) {
-				if (! empty($url)) {
-					foreach ($excludedUrls as $i => $excludedUrl) {
-						if ($url === $excludedUrl['url']) {
-							unset($excludedUrls[$i]);
-						}
-					}
-				} 
+			} elseif ('remove' === $action) {
+				unset($excludedUrls[$order]);
 
 				$excludedUrls = array_values($excludedUrls);
 			}
 
 			$this->setConfig('excluded_urls', $excludedUrls);
+
+			if (isset($_POST['url']))    unset($_POST['url']);
+			if (isset($_POST['action'])) unset($_POST['action']);
+			if (isset($_POST['order']))  unset($_POST['order']);
 
 			$this->saveConfig();
 		}
@@ -404,6 +414,102 @@ class FirewallPanel
 		$data['exclusion_list'] = $this->getConfig('excluded_urls');
 
 		$this->renderPage('panel/exclusion', $data);
+	}
+
+	/**
+	 * WWW-Authenticate.
+	 *
+	 * @return void
+	 */
+	public function authentication(): void
+	{
+		if (isset($_POST['url']) && isset($_POST['user']) && isset($_POST['pass'])) {
+
+			$url = $_POST['url'] ?? '';
+			$user = $_POST['user'] ?? '';
+			$pass = $_POST['pass'] ?? '';
+			$action = $_POST['action'] ?? '';
+			$order = (int) $_POST['order'];
+
+			$authenticatedList = $this->getConfig('www_authenticate');
+
+			if ('add' === $action) {
+				array_push($authenticatedList, [
+					'url' => $url,
+					'user' => $user,
+					'pass' => password_hash($pass, PASSWORD_BCRYPT),
+				]);
+
+			} elseif ('remove' === $action) {
+				unset($authenticatedList[$order]);
+				$authenticatedList = array_values($authenticatedList);
+			}
+
+			$this->setConfig('www_authenticate', $authenticatedList);
+
+			if (isset($_POST['url']))    unset($_POST['url']);
+			if (isset($_POST['user']))   unset($_POST['user']);
+			if (isset($_POST['pass']))   unset($_POST['pass']);
+			if (isset($_POST['action'])) unset($_POST['action']);
+			if (isset($_POST['order']))  unset($_POST['order']);
+
+			$this->saveConfig();
+		}
+
+		$data['authentication_list'] = $this->getConfig('www_authenticate');
+
+		$this->renderPage('panel/authentication', $data);
+	}
+
+
+	/**
+	 * XSS Protection.
+	 *
+	 * @return void
+	 */
+	public function xssProtection(): void
+	{
+		if (isset($_POST['xxs'])) {
+			unset($_POST['xxs']);
+
+			$type = $_POST['type'] ?? '';
+			$variable = $_POST['variable'] ?? '';
+			$action = $_POST['action'] ?? '';
+			$order = (int) $_POST['order'];
+			
+			$xssProtectedList = $this->getConfig('xss_protected_list');
+
+			if ('add' === $action) {
+
+				switch ($type) {
+					case 'POST':
+					case 'GET':
+					case 'COOKIE':
+						array_push($xssProtectedList, ['type' => $type, 'variable' => $variable]);
+						break;
+
+					default:
+					// endswitch.
+				}
+
+			} elseif ('remove' === $xssProtectedList) {
+				unset($xssProtectedList[$order]);
+				$xssProtectedList = array_values($xssProtectedList);
+			}
+
+			$this->setConfig('xss_protected_list', $$xssProtectedList);
+
+			if (isset($_POST['type']))     unset($_POST['type']);
+			if (isset($_POST['variable'])) unset($_POST['variable']);
+			if (isset($_POST['action']))   unset($_POST['action']);
+			if (isset($_POST['order']))    unset($_POST['order']);
+
+			$this->saveConfig();
+		}
+
+		$data['xss_protected_list'] = $this->getConfig('xss_protected_list');
+
+		$this->renderPage('panel/xss_protection', $data);
 	}
 
 	/**
@@ -578,22 +684,22 @@ class FirewallPanel
 
 		switch ($c) {
 			case 1:
-				return $this->configuration[$v[0]];
+				return $this->configuration[$v[0]] ?? '';
 				break;
 			case 2:
-				return $this->configuration[$v[0]][$v[1]];
+				return $this->configuration[$v[0]][$v[1]] ?? '';
 				break;
 
 			case 3:
-				return $this->configuration[$v[0]][$v[1]][$v[2]];
+				return $this->configuration[$v[0]][$v[1]][$v[2]] ?? '';
 				break;
 
 			case 4:
-				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]];
+				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]] ?? '';
 				break;
 
 			case 5:
-				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]];
+				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]] ?? '';
 				break;
 		}
 		return '';
