@@ -9,6 +9,8 @@
  * 
  */
 
+namespace Shieldon\Security;
+
  /**
   * Cross Site Request Forgery protection.
   */

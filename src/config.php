@@ -297,7 +297,6 @@ return [
     */
 
     'xss_protection' => [
-        'request_uri' => true,
         'post'        => false,
         'get'         => false,
         'cookie'      => false,

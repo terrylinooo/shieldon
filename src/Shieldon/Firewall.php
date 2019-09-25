@@ -25,7 +25,10 @@ use Shieldon\Driver\MysqlDriver;
 use Shieldon\Driver\RedisDriver;
 use Shieldon\Driver\SqliteDriver;
 use Shieldon\Log\ActionLogger;
+use Shieldon\Security\Xss;
+use Shieldon\Security\httpAuthentication;
 use Shieldon\FirewallTrait;
+
 
 use PDO;
 use PDOException;
@@ -98,6 +101,10 @@ class Firewall
 		$this->setCronJob();
 
 		$this->setExcludedUrls();
+
+		$this->setXssProtection();
+
+		$this->setAuthentication();
 
 		$this->status = $this->getOption('daemon');
 	}
@@ -521,7 +528,7 @@ class Firewall
 	 *
 	 * @return void
 	 */
-	protected function setExcludedUrls() 
+	protected function setExcludedUrls(): void
 	{
 		$excludedUrls = $this->getOption('excluded_urls');
 
@@ -529,6 +536,101 @@ class Firewall
 			$list = array_column($excludedUrls, 'url');
 
 			$this->shieldon->setExcludedUrls($list);
+		}
+	}
+
+	/**
+	 * Set XSS protection.
+	 *
+	 * @return void
+	 */
+	protected function setXssProtection(): void
+	{
+		$xssProtectionOptions = $this->getOption('xss_protection');
+
+		$this->shieldon->setProperty('uri_xss_protection', $xssProtectionOptions['request_uri']);
+
+		$xssFilter = new Xss();
+
+		if ($xssProtectionOptions['post']) {
+			$this->shieldon->setClosure('xss_post', function() use ($xssFilter) {
+				if (! empty($_POST)) {
+					foreach ($_POST as $k => $v) {
+						$_POST[$k] = $xssFilter->clean($_POST[$k]);
+					}
+				}
+			});
+		}
+
+		if ($xssProtectionOptions['get']) {
+			$this->shieldon->setClosure('xss_get', function() use ($xssFilter) {
+				if (! empty($_GET)) {
+					foreach ($_GET as $k => $v) {
+						$_GET[$k] = $xssFilter->clean($_GET[$k]);
+					}
+				}
+			});
+		}
+
+		if ($xssProtectionOptions['cookie']) {
+			$this->shieldon->setClosure('xss_cookie', function() use ($xssFilter) {
+				if (! empty($_COOKIE)) {
+					foreach ($_GET as $k => $v) {
+						$_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
+					}
+				}
+			});
+		}
+
+		$xssProtectedList = $this->getOption('xss_protected_list');
+
+		if (! empty($xssProtectedList)) {
+			foreach ($xssProtectedList as $v) {
+				$k = $v['variable'] ?? 'undefined';
+
+				switch ($v['type']) {
+					case 'get':
+						if (! empty($_GET[$k])) {
+							$_GET[$k] = $xssFilter->clean($_GET[$k]);
+						}
+						break;
+
+					case 'post':
+						if (! empty($_POST[$k])) {
+							$_POST[$k] = $xssFilter->clean($_POST[$k]);
+						}
+						break;
+
+					case 'cookie':
+						if (! empty($_COOKIE[$k])) {
+							$_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
+						}
+						break;
+
+					default:
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * WWW-Athentication.
+	 *
+	 * @return void
+	 */
+	protected function setAuthentication(): void
+	{
+		$authenticateList = $this->getOption('www_authenticate');
+
+		if (! empty($authenticateList)) {
+
+			$authHandler = new httpAuthentication();
+
+			$this->shieldon->setClosure('www_authenticate', function() use ($authHandler, $authenticateList) {
+				$authHandler->set($authenticateList);
+				$authHandler->check();
+			});
 		}
 	}
 

@@ -476,7 +476,14 @@ class FirewallPanel
 			$variable = $_POST['variable'] ?? '';
 			$action = $_POST['action'] ?? '';
 			$order = (int) $_POST['order'];
-			
+
+			// Check variable name. Should be mixed with a-zA-Z and underscore.
+			if (! ctype_alnum(str_replace('_', '', $variable))) {
+
+				// Ignore the `add` process.
+				$action = 'undefined';
+			}
+
 			$xssProtectedList = $this->getConfig('xss_protected_list');
 
 			if (empty($xssProtectedList)) {

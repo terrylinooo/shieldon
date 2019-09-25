@@ -38,6 +38,7 @@ use Shieldon\Driver\DriverProvider;
 use Shieldon\Log\ActionLogger;
 
 use LogicException;
+use Closure;
 
 use function get_class;
 use function gethostbyaddr;
@@ -97,6 +98,9 @@ class Shieldon
 	const LOG_BLACKLIST = 98;
     const LOG_CAPTCHA = 99;
 
+    // Shieldon directory.
+    const SHIELDON_DIR = __DIR__;
+
     /**
      * Driver for storing data.
      *
@@ -118,35 +122,63 @@ class Shieldon
      */
     public $logger = null;
 
-    // Shieldon directory.
-    const SHIELDON_DIR = __DIR__;
+    /**
+     * The closure functions that will be executed in this->run()
+     *
+     * @var array
+     */
+    private $closures = [];
 
-    // Most of web crawlers do not render JavaScript, they only get text content they want,
-    // so we can check if the cookie can be created by JavaScript.
-    // This is hard to prevent headless browser robots, but it can stop probably 70% poor robots.
+    /**
+     * Most of web crawlers do not render JavaScript, they only get text content they want,
+     * so we can check if the cookie can be created by JavaScript.
+     * This is hard to prevent headless browser robots, but it can stop probably 70% poor robots.
+     *
+     * @var boolean
+     */
     private $enableCookieCheck = false;
 
-    // Every unique user has an unique session, but if an user creates different sessions in every connection..
-    // that means the user's browser doesn't support cookie.
-    // It is almost impossible that modern browsers don't support cookie, so we suspect the user is a robot or web crawler,
-    // that is why we need session cookie check.
+    /**
+     * Every unique user has an unique session, but if an user creates different sessions in every connection..
+     * that means the user's browser doesn't support cookie.
+     * It is almost impossible that modern browsers don't support cookie, so we suspect the user is a robot or web crawler,
+     * that is why we need session cookie check.
+     *
+     * @var boolean
+     */
     private $enableSessionCheck = true;
 
-    // Check how many pageviews an user made in a short period time.
-    // For example, limit an user can only view 30 pages in 60 minutes.
+    /**
+     * Check how many pageviews an user made in a short period time.
+     * For example, limit an user can only view 30 pages in 60 minutes.
+     *
+     * @var boolean
+     */
     private $enableFrequencyCheck = true;
 
-    // Even we can't get HTTP_REFERER information from users come from Google search,
-    // but if an user checks any internal link on your website, the user's browser will generate HTTP_REFERER information.
-    // If an user view many pages on your website without HTTP_REFERER information, that means the user is a web crawler 
-    // and it directly downloads your web pages.
+    /**
+     * Even we can't get HTTP_REFERER information from users come from Google search,
+     * but if an user checks any internal link on your website, the user's browser will generate HTTP_REFERER information.
+     * If an user view many pages on your website without HTTP_REFERER information, that means the user is a web crawler
+     * and it directly downloads your web pages.
+     *
+     * @var boolean
+     */
     private $enableRefererCheck = true;
 
-    // If you don't want Shieldon to detect bad robots or crawlers, you can set it FALSE;
-    // In this case AntiScriping can still deny users by querying rule table (in MySQL, or Redis, etc.) and $denyIpPool (Array)
+    /**
+     * If you don't want Shieldon to detect bad robots or crawlers, you can set it FALSE;
+     * In this case AntiScriping can still deny users by querying rule table (in MySQL, or Redis, etc.) and $denyIpPool (Array)
+     *
+     * @var boolean
+     */
     private $enableFiltering = true;
 
-    // default settings
+    /**
+     * default settings
+     *
+     * @var array
+     */
     private $properties = [
         'time_unit_quota'        => ['s' => 2, 'm' => 10, 'h' => 30, 'd' => 60],
         'time_reset_limit'       => 3600,
@@ -157,7 +189,6 @@ class Shieldon
         'cookie_domain'          => '',
         'cookie_value'           => '1',
         'lang'                   => 'en',
-        'uri_xss_protection'     => false,
         'display_credit_link'    => true,
         'display_online_info'    => true,
         'display_lineup_info'    => true,
@@ -176,14 +207,14 @@ class Shieldon
      *
      * @var string
      */
-    protected $referer = '';
+    private $referer = '';
 
     /**
      * Container for captcha addons.
      *
      * @var Interface
      */
-    protected $captcha = [];
+    private $captcha = [];
 
     /**
      * Html output.
@@ -197,7 +228,7 @@ class Shieldon
      *
      * @var string
      */
-    protected $sessionId = null;
+    private $sessionId = null;
 
     /**
      * Is this IP in the rule list?
@@ -673,32 +704,6 @@ class Shieldon
         return self::RESPONSE_ALLOW;
     }
 
-    /**
-     * Check if someone try to Cross-Site scripting your website.
-     *
-     * @since 3.0.0
-     *
-     * @return bool
-     */
-    protected function detectXss(): bool
-    {
-        $highRiskCharacters = [
-            '"',
-            "'",
-            '<',
-            '>',
-            '://'
-        ];
-
-        foreach ($highRiskCharacters as $c) {
-            if (false !== strpos($this->currentUrl, $c)) {
-                return true;
-            }
-        }
-    
-        return false;
-    }
-
     // @codeCoverageIgnoreStart
 
     /**
@@ -1119,6 +1124,20 @@ class Shieldon
      */
     public function run(): int
     {
+        // Ignore the excluded urls.
+        if (! empty($this->excludedUrls)) {
+            foreach ($this->excludedUrls as $url) {
+                if (0 === strpos($this->currentUrl, $url)) {
+                    return $this->result = self::RESPONSE_ALLOW;
+                }
+            }
+        }
+
+        // Execute closure functions.
+        foreach ($this->closures as $closure) {
+            $closure();
+        }
+
         $result = $this->_run();
 
         if ($result !== self::RESPONSE_ALLOW) {
@@ -1178,22 +1197,6 @@ class Shieldon
     private function _run(): int
     {
         $this->driver->init($this->autoCreateDatabase);
-
-        // Ignore the excluded urls.
-        if (! empty($this->excludedUrls)) {
-            foreach ($this->excludedUrls as $url) {
-                if (0 === strpos($this->currentUrl, $url)) {
-                    return $this->result = self::RESPONSE_ALLOW;
-                }
-            }
-        }
-
-        // Prevent XSS attacks.
-        if (! empty($this->properties['uri_xss_protection'])) {
-            if ($this->detectXss) {
-                return $this->result = self::RESPONSE_DENY;
-            }
-        }
 
         foreach (array_keys($this->component) as $name) {
             $this->component[$name]->setIp($this->ip);
@@ -1392,6 +1395,22 @@ class Shieldon
     public function setExcludedUrls(array $urls = []): self
     {
         $this->excludedUrls = $urls;
+        return $this;
+    }
+
+    /**
+     * Set a closure function.
+     *
+     * @param string  $key
+     * @param Closure $closure
+     * @since 3.0.0
+     *
+     * @return self
+     */
+    public function setClosure(string $key, Closure $closure): self
+    {
+        $this->closures[$key] = $closure;
+
         return $this;
     }
 

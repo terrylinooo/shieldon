@@ -15,6 +15,8 @@
  * file that was distributed with this source code.
  */
 
+namespace Shieldon\Security;
+
  /**
   * Cross-Site Scripting protection.
   */
@@ -103,15 +105,17 @@ class Xss
      * harvested from examining vulnerabilities in other programs:
      * http://ha.ckers.org/xss.html
      *
-     * @param  mixed  string or array
-     * @param  bool
-     * @return string
+     * @param mixed $str     string or array
+     * @param bool  $isImage Is checking for an image?
+     *
+     * @return mixed array|string
      */
-    public function clean($str, bool $isImage = false): string
+    public function clean($str, bool $isImage = false)
     {
         // Is the string an array?
         if (is_array($str)) {
-            while (list($key) = each($str)) {
+  
+            foreach ($str as $key => $value) {
                 $str[$key] = $this->clean($str[$key]);
             }
 
@@ -353,8 +357,8 @@ class Xss
 		 */
         if ($isImage) {
 			return ($str === $convertedString);
-		}
-
+        }
+    
         return $str;
     }
 
@@ -362,6 +366,7 @@ class Xss
      * Check if an image contains XSS code.
      *
      * @param string $str Image content.
+     *
      * @return bool
      */
     public function checkImage(string $str): bool
@@ -375,6 +380,7 @@ class Xss
      *
      * @param string $str
      * @param bool   $urlEncoded
+     *
      * @return string
      */
     protected function removeInvisibleCharacters($str, $urlEncoded = true): string
@@ -411,7 +417,8 @@ class Xss
     {
         if ($this->hash == '') {
             mt_srand();
-            $this->hash = md5(time() + mt_rand(0, 1999999999));
+            $rand = time() + mt_rand(0, 1999999999);
+            $this->hash = md5((string) $rand);
         }
 
         return $this->hash;
@@ -428,9 +435,10 @@ class Xss
      * correctly.  html_entity_decode() does not convert entities without
      * semicolons, so we are left with our own little solution here. Bummer.
      *
-     * @param	string
-     * @param	string
-     * @return	string
+     * @param string $str
+     * @param string $charset
+     *
+     * @return string
      */
     public function entityDecode(string $str, string $charset = 'UTF-8'): string
     {
@@ -500,6 +508,7 @@ class Xss
      *
      * @param string $str
      * @param bool   $relativePath
+     *
      * @return string
      */
     public function sanitizeFilename(string $str, bool $relativePath = false): string
@@ -545,6 +554,7 @@ class Xss
      * things like j a v a s c r i p t
      *
      * @param array $matches
+     *
      * @return string
      */
     protected function compactExplodedWords(array $matches): string
@@ -557,7 +567,8 @@ class Xss
      *
      * Callback function for clean() to remove naughty HTML elements
      *
-     * @param array
+     * @param array $matches
+     *
      * @return string
      */
     protected function sanitizeNaughtyHtml(array $matches): string
@@ -646,6 +657,7 @@ class Xss
      * PHP 5.2+ on link-heavy strings
      *
      * @param array $match
+     *
      * @return string
      */
     protected function jsLinkRemoval(array $match): string
@@ -670,6 +682,7 @@ class Xss
      * PHP 5.2+ on image tag heavy strings
      *
      * @param array $match
+     *
      * @return string
      */
     protected function jsImgRemoval(array $match): string
@@ -691,6 +704,7 @@ class Xss
      * Used as a callback for XSS Clean
      *
      * @param array
+     *
      * @return string
      */
     protected function convertAttribute(array $match): string
@@ -704,6 +718,7 @@ class Xss
      * Filters tag attributes for consistency and safety
      *
      * @param string $str
+     *
      * @return string
      */
     protected function filterAttributes(string $str): string
@@ -725,6 +740,7 @@ class Xss
      * Used as a callback for XSS Clean
      *
      * @param array $match
+     *
      * @return string
      */
     protected function decodeEntity(array $match): string
@@ -742,11 +758,12 @@ class Xss
     }
 
     /**
-     * Do Never Allowed
+     * Do Never Allowed.
      *
      * A utility function for clean()
      *
      * @param string $str
+     *
      * @return string
      */
     protected function doNeverAllowed(string $str): string

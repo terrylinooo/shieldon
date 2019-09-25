@@ -15,7 +15,7 @@ $timezone = '';
 <div class="so-dashboard">
 	<div id="so-rule-table-form" class="so-datatables">
 		<div class="so-datatable-heading">
-            Authorization<br />
+            Authentication<br />
 		</div>
 		<div class="so-datatable-description">
             The HTTP WWW-Authenticate response header defines the authentication method that should be used to gain access to a resource.<br />

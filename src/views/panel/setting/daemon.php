@@ -14,8 +14,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="daemon" value="off" />
             <input type="checkbox" name="daemon" class="toggle-block" value="on" data-target="daemon-section" <?php $this->checked('daemon', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
@@ -144,8 +144,8 @@
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="cronjob__reset_circle__enable" value="off" />
                     <input type="checkbox" name="cronjob__reset_circle__enable" class="toggle-block" value="on" <?php $this->checked('cronjob.reset_circle.enable', true); ?>>
-                    <span class="switch-left"><i class="fas fa-check"></i></span>
-                    <span class="switch-right"><i class="fas fa-times"></i></span>
+                    <span class="switch-left">ON</span>
+                    <span class="switch-right">OFF</span>
                 </label>
             </td>
         </tr>
@@ -202,8 +202,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="online_session_limit__enable" value="off" />
             <input type="checkbox" name="online_session_limit__enable" class="toggle-block" value="on" data-target="online-session-limit-section" <?php $this->checked('online_session_limit.enable', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
@@ -240,8 +240,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="loggers__action__enable" value="off" />
             <input type="checkbox" name="loggers__action__enable" class="toggle-block" value="on" data-target="logger-action-section" <?php $this->checked('loggers.action.enable', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>

@@ -14,8 +14,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="components__ip__enable" value="off" />
             <input type="checkbox" name="components__ip__enable" class="toggle-block" value="on" data-target="component-ip-section" <?php $this->checked('components.ip.enable', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
@@ -37,8 +37,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="components__trusted_bot__enable" value="off" />
             <input type="checkbox" name="components__trusted_bot__enable" class="toggle-block" value="on" data-target="component-trustedbot-section" <?php $this->checked('online_session_limit.enable', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
@@ -59,8 +59,8 @@
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="components__trusted_bot__strict_mode" value="off" />
                     <input type="checkbox" name="components__trusted_bot__strict_mode" class="toggle-block" value="on" <?php $this->checked('components.trusted_bot.strict_mode', true); ?>>
-                    <span class="switch-left"><i class="fas fa-check"></i></span>
-                    <span class="switch-right"><i class="fas fa-times"></i></span>
+                    <span class="switch-left">ON</span>
+                    <span class="switch-right">OFF</span>
                 </label>
                 <p>IP resolved hostname and IP address must match.</p>
             </td>
@@ -75,8 +75,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="components__header__enable" value="off" />
             <input type="checkbox" name="components__header__enable" class="toggle-block" value="on" data-target="component-header-section" <?php $this->checked('components.header.enable', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
@@ -96,8 +96,8 @@
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="components__header__strict_mode" value="off" />
                     <input type="checkbox" name="components__header__strict_mode" class="toggle-block" value="on" <?php $this->checked('components.header.strict_mode', true); ?>>
-                    <span class="switch-left"><i class="fas fa-check"></i></span>
-                    <span class="switch-right"><i class="fas fa-times"></i></span>
+                    <span class="switch-left">ON</span>
+                    <span class="switch-right">OFF</span>
                 </label>
                 <p>Deny all vistors without common header information.</p>
                 
@@ -113,8 +113,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="components__user_agent__enable" value="off" />
             <input type="checkbox" name="components__user_agent__enable" class="toggle-block" value="on" data-target="component-user-agent-section" <?php $this->checked('components.user_agent.enable', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
@@ -134,8 +134,8 @@
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="components__user_agent__strict_mode" value="off" />
                     <input type="checkbox" name="components__user_agent__strict_mode" class="toggle-block" value="on" <?php $this->checked('components.user_agent.strict_mode', true); ?>>
-                    <span class="switch-left"><i class="fas fa-check"></i></span>
-                    <span class="switch-right"><i class="fas fa-times"></i></span>
+                    <span class="switch-left">ON</span>
+                    <span class="switch-right">OFF</span>
                 </label>
                 <p>Visitors with empty user-agent information will be blocked.</p>
             </td>
@@ -150,8 +150,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="components__rdns__enable" value="off" />
             <input type="checkbox" name="components__rdns__enable" class="toggle-block" value="on" data-target="component-rdns-section" <?php $this->checked('components.rdns.enable', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
@@ -171,8 +171,8 @@
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="components__rdns__strict_mode" value="off" />
                     <input type="checkbox" name="components__rdns__strict_mode" class="toggle-block" value="on" <?php $this->checked('components.rdns.strict_mode', true); ?>>
-                    <span class="switch-left"><i class="fas fa-check"></i></span>
-                    <span class="switch-right"><i class="fas fa-times"></i></span>
+                    <span class="switch-left">ON</span>
+                    <span class="switch-right">OFF</span>
                 </label>
                 <p>
                     Visitors with empty RDNS record will be blocked.<br />

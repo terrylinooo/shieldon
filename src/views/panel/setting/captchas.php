@@ -14,8 +14,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="captcha_modules__recaptcha__enable" value="off" />
             <input type="checkbox" name="captcha_modules__recaptcha__enable" class="toggle-block" value="on" data-target="captcha-recaptcha-section" <?php $this->checked('captcha_modules.recaptcha.enable', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
@@ -98,8 +98,8 @@
         <label class="rocker rocker-md">
             <input type="hidden" name="captcha_modules__image__enable" value="off" />
             <input type="checkbox" name="captcha_modules__image__enable" class="toggle-block" value="on" data-target="captcha-image-section" <?php $this->checked('captcha_modules.image.enable', true); ?> />
-            <span class="switch-left"><i class="fas fa-check"></i></span>
-            <span class="switch-right"><i class="fas fa-times"></i></span>
+            <span class="switch-left">ON</span>
+            <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>

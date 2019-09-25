@@ -22,31 +22,17 @@ $timezone = '';
         </div>
 
         <div class="so-setting-page">
-
             <table class="setting-table">
                 <form method="post">
                 <tr>
-                    <td class="r1">REQUEST_URI</td>
-                    <td class="r2">
-                        <br />
-                        <label class="rocker rocker-sm">
-                            <input type="hidden" name="xss_protection__request_uri" value="off" />
-                            <input type="checkbox" name="xss_protection__request_uri" class="toggle-block" value="on" <?php $this->checked('xss_protection.request_uri', true); ?>>
-                            <span class="switch-left"><i class="fas fa-check"></i></span>
-                            <span class="switch-right"><i class="fas fa-times"></i></span>
-                        </label>
-                        <p>Deny potential injection string on URL.</p>
-                    </td>
-                </tr>
-                <tr class="border-top">
                     <td class="r1">POST</td>
                     <td class="r2">
                         <br />
                         <label class="rocker rocker-sm">
                             <input type="hidden" name="xss_protection__post" value="off" />
                             <input type="checkbox" name="xss_protection__post" class="toggle-block" value="on" <?php $this->checked('xss_protection.post', true); ?>>
-                            <span class="switch-left"><i class="fas fa-check"></i></span>
-                            <span class="switch-right"><i class="fas fa-times"></i></span>
+                            <span class="switch-left">ON</span>
+                            <span class="switch-right">OFF</span>
                         </label>
                         <p>Eradicate all POST method variables.</p>
                     </td>
@@ -58,8 +44,8 @@ $timezone = '';
                         <label class="rocker rocker-sm">
                             <input type="hidden" name="xss_protection__get" value="off" />
                             <input type="checkbox" name="xss_protection__get" class="toggle-block" value="on" <?php $this->checked('xss_protection.get', true); ?>>
-                            <span class="switch-left"><i class="fas fa-check"></i></span>
-                            <span class="switch-right"><i class="fas fa-times"></i></span>
+                            <span class="switch-left">ON</span>
+                            <span class="switch-right">OFF</span>
                         </label>
                         <p>Eradicate all GET method variables.</p>
                     </td>
@@ -71,8 +57,8 @@ $timezone = '';
                         <label class="rocker rocker-sm">
                             <input type="hidden" name="xss_protection__cookie" value="off" />
                             <input type="checkbox" name="xss_protection__cookie" class="toggle-block" value="on" <?php $this->checked('xss_protection.cookie', true); ?>>
-                            <span class="switch-left"><i class="fas fa-check"></i></span>
-                            <span class="switch-right"><i class="fas fa-times"></i></span>
+                            <span class="switch-left">ON</span>
+                            <span class="switch-right">OFF</span>
                         </label>
                         <p>Eradicate all COOKIE method variables.</p>
                     </td>
