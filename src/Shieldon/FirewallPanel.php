@@ -469,8 +469,8 @@ class FirewallPanel
 	 */
 	public function xssProtection(): void
 	{
-		if (isset($_POST['xxs'])) {
-			unset($_POST['xxs']);
+		if (isset($_POST['xss'])) {
+			unset($_POST['xss']);
 
 			$type = $_POST['type'] ?? '';
 			$variable = $_POST['variable'] ?? '';
@@ -479,12 +479,16 @@ class FirewallPanel
 			
 			$xssProtectedList = $this->getConfig('xss_protected_list');
 
+			if (empty($xssProtectedList)) {
+				$xssProtectedList = [];
+			}
+
 			if ('add' === $action) {
 
 				switch ($type) {
-					case 'POST':
-					case 'GET':
-					case 'COOKIE':
+					case 'post':
+					case 'get':
+					case 'cookie':
 						array_push($xssProtectedList, ['type' => $type, 'variable' => $variable]);
 						break;
 
@@ -497,7 +501,7 @@ class FirewallPanel
 				$xssProtectedList = array_values($xssProtectedList);
 			}
 
-			$this->setConfig('xss_protected_list', $$xssProtectedList);
+			$this->setConfig('xss_protected_list', $xssProtectedList);
 
 			if (isset($_POST['type']))     unset($_POST['type']);
 			if (isset($_POST['variable'])) unset($_POST['variable']);

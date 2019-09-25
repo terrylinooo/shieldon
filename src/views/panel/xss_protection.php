@@ -21,10 +21,8 @@ $timezone = '';
             Prevent Cross site scripting (XSS) attacks.<br />
         </div>
 
-        
         <div class="so-setting-page">
 
-            
             <table class="setting-table">
                 <form method="post">
                 <tr>
@@ -79,9 +77,13 @@ $timezone = '';
                         <p>Eradicate all COOKIE method variables.</p>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="2">
-
+                <tr class="border-top">
+                    <td></td>
+                    <td class="py-3">
+                        <input type="hidden" name="xss" value="page">
+                        <input type="hidden" name="order" value="">
+                        <input type="submit" name="submit" id="btn-update" class="btn btn-info" value="Update">&nbsp;&nbsp;
+                        <span class="text-muted">Update the above settings</span>
                     </td>
                 </tr>
                 </form>
@@ -108,6 +110,7 @@ $timezone = '';
                                 <label>&nbsp;</label><br />
                                 <input type="hidden" name="action" value="add">
                                 <input type="hidden" name="order" value="">
+                                <input type="hidden" name="xss" value="page">
                                 <input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="Submit">
                             </div>
                         </div>
@@ -132,7 +135,8 @@ $timezone = '';
 			<thead>
 				<tr>
                     <th>Type</th>
-					<th>Variable</th>
+                    <th>Variable</th>
+                    <th>Remove</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -153,6 +157,7 @@ $timezone = '';
 <script>
 
 	$(function() {
+        
 		$('#so-datalog').DataTable({
 			'pageLength': 25,
 			'initComplete': function(settings, json) {
