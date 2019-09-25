@@ -109,7 +109,7 @@ class FirewallPanel
 	 *
 	 * @return void
 	 */
-	public function page()
+	public function entry()
 	{
 		$slug = $_GET['so_page'] ?? '';
 

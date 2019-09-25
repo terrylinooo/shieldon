@@ -4,10 +4,24 @@
 
 [![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=master)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://img.shields.io/codecov/c/github/terrylinooo/shieldon.svg)](https://codecov.io/gh/terrylinooo/shieldon) ![PHP from Packagist](https://img.shields.io/packagist/php-v/terrylinooo/shieldon.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Shieldon, a PHP library that provides anti-scraping and online session control for your web application. As if you are using a shield on your web applicaion to fight against bad-behavior bots, crawlers or vulnerability scanning and so on.
+Shieldon is a Web Application Firewall (WAF) for PHP community. 
 
+- Website: https://shieldon.io
 - Document: https://shield-on-php.github.io
-- Version: 2.0.0
+- Version: 3.0.0
+
+## Features
+
+- SEO friendly.
+- Basic Http-type DDOS protection.
+- Anti-scraping.
+- Cross-site scripting (XSS) protection.
+- Online session control.
+- Interrupting vulnerability scanning.
+- Eradicating brute force attacks.
+- IP manager.
+- Protecting pages via WWW-Authenticate.
+- Detailed statistics and charts.
 
 ## Install
 
@@ -22,7 +36,61 @@ require 'Shieldon/src/autoload.php';
 
 ## How to use
 
-Here is a full example to let you know how Shieldon works.
+---
+
+### Managed by Firewall Panel
+
+Implementing Shieldon Firewall on your Web Application is pretty easy by using Firewall Panel, and I highly recommend you choose this way.
+
+#### Step 1
+
+Place this code section in a beginning section of your project.
+The beginning section might be the `index.php`<sub>(1)</sub>, `Middleware` or `Parent Controller`.
+
+<sup>(1)</sup> index.php is the entry point for all requests entering your application in most frameworks such as Laravel, CodeIgniter, Slim, WordPress and more.
+
+```php
+// Notice that this directory must be writable.
+$writableDirectory = APPPATH . 'cache/shieldon_firewall';
+
+// Initialize Fireall instane.
+$firewall = new \Shieldon\Firewall($writableDirectory);
+```
+
+#### Step 2
+
+```php
+// Get Firewall instance from Shieldon Container.
+$firewall = \Shieldon\Container::get('firewall');
+
+// After setting up all settings nicely in Firewall Panel, 
+// Shieldon will start watching all requests come to your Web Application.
+$firewall->run();
+```
+
+#### Step 3
+
+Put the code on the Controller and the URL that only you know.
+Although it has a basic login protection.
+
+```php
+// Get Firewall instance from Shieldon Container.
+$firewall = \Shieldon\Container::get('firewall');
+
+// Get into the Firewall Panel.
+$controlPanel = new \Shieldon\FirewallPanel($firewall);
+$controlPanel->entry();
+```
+
+![](https://i.imgur.com/rkqR5mv.png)
+
+The default login username and password are `wp_shieldon_user` and `wp_shieldon_pass`.
+You have set up the settings to make Shieldon work.
+
+---
+### Managed by yourself
+
+Here is a full example to let you know how Shieldon works and then you can manually implement Shieldon on your Web Application.
 
 ```php
 $shieldon = new \Shieldon\Shieldon();

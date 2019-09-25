@@ -1,7 +1,7 @@
 {
     "name": "terrylinooo/shieldon",
-    "description": "Anti-scraping, XSS filtering and traffic controll on Web application layer.",
-    "keywords": ["anti-scraping", "xss-filter", "web-security"],
+    "description": "Web application firewall for PHP.",
+    "keywords": ["firewall", "web-application-firewall", "anti-scraping", "xss-filter", "xss-protection", "web-security", "www-authenticate"],
     "homepage": "https://github.com/terrylinooo/shieldon",
     "license": "MIT",
     "authors": [
@@ -14,7 +14,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8"
