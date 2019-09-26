@@ -89,4 +89,73 @@ trait FirewallTrait
 	{
 		return $this->filename;
 	}
+
+	/**
+	 * Get a variable from configuration.
+	 *
+	 * @param string $field 
+	 *
+	 * @return mixed
+	 */
+	public function getConfig(string $field)
+	{
+		$v = explode('.', $field);
+		$c = count($v);
+
+		switch ($c) {
+			case 1:
+				return $this->configuration[$v[0]] ?? '';
+				break;
+			case 2:
+				return $this->configuration[$v[0]][$v[1]] ?? '';
+				break;
+
+			case 3:
+				return $this->configuration[$v[0]][$v[1]][$v[2]] ?? '';
+				break;
+
+			case 4:
+				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]] ?? '';
+				break;
+
+			case 5:
+				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]] ?? '';
+				break;
+		}
+		return '';
+	}
+
+	/**
+	 * Set a variable to the configuration.
+	 *
+	 * @param string $field
+	 * @param mixed  $value
+	 * @return void
+	 */
+	public function setConfig(string $field, $value)
+	{
+		$v = explode('.', $field);
+		$c = count($v);
+
+		switch ($c) {
+			case 1:
+				$this->configuration[$v[0]] = $value;
+				break;
+			case 2:
+				$this->configuration[$v[0]][$v[1]] = $value;
+				break;
+
+			case 3:
+				$this->configuration[$v[0]][$v[1]][$v[2]] = $value;
+				break;
+
+			case 4:
+				$this->configuration[$v[0]][$v[1]][$v[2]][$v[3]] = $value;
+				break;
+
+			case 5:
+				$this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]] = $value;
+				break;
+		}
+	}
 }

@@ -66,7 +66,13 @@ class Firewall
 			$configFilePath = $this->directory . '/' . $this->filename;
 
 			if (! file_exists($configFilePath)) {
+
 				$jsonString = file_get_contents(__DIR__ . '/../config.json');
+
+				if (defined('PHPUNIT_TEST')) {
+					$jsonString = file_get_contents(__DIR__ . '/../../tests/config.json');
+				}
+				
 			} else {
 				$jsonString = file_get_contents($configFilePath);
 			}
@@ -82,8 +88,18 @@ class Firewall
 			$this->shieldon->managedBy('config');
 		}
 
+		$this->setup();
+	}
+
+	/**
+	 * Setup everything we need.
+	 *
+	 * @return void
+	 */
+	public function setup(): void
+	{
 		$this->setDriver();
-		
+
 		$this->setChannel();
 
 		$this->setIpSource();
@@ -122,10 +138,12 @@ class Firewall
 
 			if ($result !== $this->shieldon::RESPONSE_ALLOW) {
 
+				// @codeCoverageIgnoreStart
 				if ($this->shieldon->captchaResponse()) {
 					$this->shieldon->unban();
 				}
 				$this->shieldon->output(200);
+				// @codeCoverageIgnoreEnd
 			}
 		}
 	}
@@ -155,7 +173,7 @@ class Firewall
 
 		switch ($driverType) {
 
-            case 'reids':
+            case 'redis':
             
                 $redisSetting = $this->getOption('redis', 'drivers');
 
@@ -183,11 +201,13 @@ class Firewall
 					// Use Redis data driver.
 					$this->shieldon->setDriver(new RedisDriver($redis));
 
+				// @codeCoverageIgnoreStart
 				} catch(RedisException $e) {
                     $this->status = false;
 
 					echo $e->getMessage();
 				}
+				// @codeCoverageIgnoreEnd
 
 				break;
 
@@ -225,9 +245,11 @@ class Firewall
 					// Use Sqlite data driver.
 					$this->shieldon->setDriver(new SqliteDriver($pdoInstance));
 	
+				// @codeCoverageIgnoreStart
 				} catch(PDOException $e) {
 					echo $e->getMessage();
 				}
+				// @codeCoverageIgnoreEnd
 
 				break;
 
@@ -251,9 +273,11 @@ class Firewall
 					// Use MySQL data driver.
 					$this->shieldon->setDriver(new MysqlDriver($pdoInstance));
 
+				// @codeCoverageIgnoreStart
 				} catch(PDOException $e) {
 					echo $e->getMessage();
-                }
+				}
+				// @codeCoverageIgnoreEnd
             // end switch.
 		}
     }
@@ -300,7 +324,10 @@ class Firewall
 
 		// Fallback.
 		} else {
+
+			// @codeCoverageIgnoreStart
 			$this->shieldon->setIp($_SERVER['REMOTE_ADDR']);
+			// @codeCoverageIgnoreEnd
 		}
     }
 
@@ -395,7 +422,7 @@ class Firewall
 
 			// Deny all vistors without common header information.
 			if ($headerSetting['strict_mode']) {
-				$componentHeader->setStrict( true );
+				$componentHeader->setStrict(true);
 			}
 
 			$this->shieldon->setComponent($componentHeader);
@@ -406,7 +433,7 @@ class Firewall
 
 			// Deny all vistors without user-agent information.
 			if ($userAgentSetting['strict_mode']) {
-				$componentUserAgent->setStrict( true );
+				$componentUserAgent->setStrict(true);
 			}
 
 			$this->shieldon->setComponent($componentUserAgent);
@@ -418,7 +445,7 @@ class Firewall
 			// Visitors with empty RDNS record will be blocked.
             // IP resolved hostname (RDNS) and IP address must conform with each other.
 			if ($rdnsSetting['strict_mode']) {
-				$componentRdns->setStrict( true );
+				$componentRdns->setStrict(true);
 			}
 
 			$this->shieldon->setComponent($componentRdns);
@@ -509,13 +536,16 @@ class Firewall
 			if (! empty($lastResetTime) ) {
 				$lastResetTime = strtotime($lastResetTime);
 			} else {
+				// @codeCoverageIgnoreStart
 				$lastResetTime = strtotime(date('Y-m-d 00:00:00'));
+				// @codeCoverageIgnoreEnd
 			}
 
 			if (($nowTime - $lastResetTime) > $cronjobSetting['config']['period']) {
 
 				// Update new reset time.
-				$this->updateOption('cronjob.reset_circle.config.last_update', $lastResetTime);
+				$this->setConfig('cronjob.reset_circle.config.last_update', date('Y-m-d 00:00:00' , $lastResetTime));
+				$this->updateConfig();
 
 				// Remove all logs.
 				$this->shieldon->driver->rebuild();
@@ -548,14 +578,12 @@ class Firewall
 	{
 		$xssProtectionOptions = $this->getOption('xss_protection');
 
-		$this->shieldon->setProperty('uri_xss_protection', $xssProtectionOptions['request_uri']);
-
 		$xssFilter = new Xss();
 
 		if ($xssProtectionOptions['post']) {
 			$this->shieldon->setClosure('xss_post', function() use ($xssFilter) {
 				if (! empty($_POST)) {
-					foreach ($_POST as $k => $v) {
+					foreach (array_keys($_POST) as $k) {
 						$_POST[$k] = $xssFilter->clean($_POST[$k]);
 					}
 				}
@@ -565,7 +593,7 @@ class Firewall
 		if ($xssProtectionOptions['get']) {
 			$this->shieldon->setClosure('xss_get', function() use ($xssFilter) {
 				if (! empty($_GET)) {
-					foreach ($_GET as $k => $v) {
+					foreach (array_keys($_GET) as $k) {
 						$_GET[$k] = $xssFilter->clean($_GET[$k]);
 					}
 				}
@@ -575,7 +603,7 @@ class Firewall
 		if ($xssProtectionOptions['cookie']) {
 			$this->shieldon->setClosure('xss_cookie', function() use ($xssFilter) {
 				if (! empty($_COOKIE)) {
-					foreach ($_GET as $k => $v) {
+					foreach (array_keys($_COOKIE) as $k) {
 						$_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
 					}
 				}
@@ -585,34 +613,41 @@ class Firewall
 		$xssProtectedList = $this->getOption('xss_protected_list');
 
 		if (! empty($xssProtectedList)) {
-			foreach ($xssProtectedList as $v) {
-				$k = $v['variable'] ?? 'undefined';
+		
+			$this->shieldon->setClosure('xss_protection', function() use ($xssFilter, $xssProtectedList) {
 
-				switch ($v['type']) {
-					case 'get':
-						if (! empty($_GET[$k])) {
-							$_GET[$k] = $xssFilter->clean($_GET[$k]);
-						}
-						break;
+				foreach ($xssProtectedList as $v) {
+					$k = $v['variable'] ?? 'undefined';
+	
+					switch ($v['type']) {
 
-					case 'post':
-						if (! empty($_POST[$k])) {
-							$_POST[$k] = $xssFilter->clean($_POST[$k]);
-						}
-						break;
+						case 'get':
 
-					case 'cookie':
-						if (! empty($_COOKIE[$k])) {
-							$_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
-						}
-						break;
+							if (! empty($_GET[$k])) {
+								$_GET[$k] = $xssFilter->clean($_GET[$k]);
+							}
+							break;
+	
+						case 'post':
+	
+							if (! empty($_POST[$k])) {
+								$_POST[$k] = $xssFilter->clean($_POST[$k]);
+							}
+							break;
+	
+						case 'cookie':
 
-					default:
+							if (! empty($_COOKIE[$k])) {
+								$_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
+							}
+							break;
+	
+						default:
+					}
 				}
-			}
+			});
 		}
 	}
-
 
 	/**
 	 * WWW-Athentication.
@@ -671,6 +706,9 @@ class Firewall
 
 	/**
      * Get options from the configuration file.
+	 * 
+	 * This method is same as `$this->getConfig()` but returning value from array directly, 
+	 * saving a `explode()` process.
      *
      * @param string $option
      * @param string $section
@@ -691,56 +729,24 @@ class Firewall
 	}
 
 	/**
-	 * Save data to the configuration variable.
-	 *
-	 * @param string $arrayLevelString
-	 * @param string $assignValue
-	 *
-	 * @return void
-	 */
-	private function updateOption($arrayLevelString = '', $assignValue = ''): void
-	{
-		$i = explode('.', $arrayLevelString);
-		$count = count($i);
-		$isUpdateFile = true;
-
-		switch ($count) {
-			case 1:
-				$this->configuration[$i[0]] = $assignValue;
-				break;
-
-			case 2:
-				$this->configuration[$i[0]][$i[1]] = $assignValue;
-				break;
-
-			case 3:
-				$this->configuration[$i[0]][$i[1]][$i[2]] = $assignValue;
-				break;
-
-			case 4:
-				$this->configuration[$i[0]][$i[1]][$i[2]][$i[3]] = $assignValue;
-				break;
-
-			case 5:
-				$this->configuration[$i[0]][$i[1]][$i[2]][$i[3]][$i[4]] = $assignValue;
-				break;
-
-			default:
-				$isUpdateFile = false;
-		}
-
-		if ($isUpdateFile) {
-			$this->updateConfigurationFile();
-		}
-	}
-
-	/**
 	 * Update configuration file.
 	 *
 	 * @return void
 	 */
-	private function updateConfigurationFile()
+	private function updateConfig()
 	{
-		file_put_contents($this->configFilePath, json_encode($this->configuration));
+		$configFilePath = $this->directory . '/' . $this->filename;
+
+		if (! file_exists($configFilePath)) {
+			if (! is_dir($this->directory)) {
+				// @codeCoverageIgnoreStart
+				$originalUmask = umask(0);
+				@mkdir($this->directory, 0777, true);
+				umask($originalUmask);
+				// @codeCoverageIgnoreEnd
+			}
+		}
+
+		file_put_contents($configFilePath, json_encode($this->configuration));
 	}
 }

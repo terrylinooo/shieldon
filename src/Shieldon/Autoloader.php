@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
- // @codeCoverageIgnoreStart
+// @codeCoverageIgnoreStart
 
 namespace Shieldon;
 

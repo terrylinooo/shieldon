@@ -1,6 +1,6 @@
 
 {
-	"daemon": false,
+	"daemon": true,
 	"admin": {
 		"user": "shieldon_user",
 		"pass": "$2y$10$x/celAC.L8xBn1UPPq619uG6ZGKoA6yfbjxtAJqAAtB.yLjU3S3Fu"
@@ -21,15 +21,15 @@
 		},
 		"mysql": {
 			"host": "127.0.0.1",
-			"dbname": "shieldon_db",
-			"user": "shieldon_user",
-			"pass": "1234",
+			"dbname": "shieldon_unittest",
+			"user": "shieldon",
+			"pass": "taiwan",
 			"charset": "utf8"
 		}
 	},
 	"loggers": {
 		"action": {
-			"enable": false,
+			"enable": true,
 			"config": {
 				"directory_path": ""
 			}
@@ -46,7 +46,7 @@
 			}
 		},
 		"cookie": {
-			"enable": false,
+			"enable": true,
 			"config": {
 				"cookie_name": "ssjd",
 				"cookie_domain": "",
@@ -55,14 +55,14 @@
 			}
 		},
 		"session": {
-			"enable": false,
+			"enable": true,
 			"config": {
 				"quota": 5,
 				"time_buffer": 5
 			}
 		},
 		"referer": {
-			"enable": false,
+			"enable": true,
 			"config": {
 				"quota": 5,
 				"time_buffer": 5
@@ -75,24 +75,24 @@
 		},
 		"trusted_bot": {
 			"enable": true,
-			"strict_mode": false
+			"strict_mode": true
 		},
 		"header": {
 			"enable": true,
-			"strict_mode": false
+			"strict_mode": true
 		},
 		"user_agent": {
 			"enable": true,
-			"strict_mode": false
+			"strict_mode": true
 		},
 		"rdns": {
 			"enable": true,
-			"strict_mode": false
+			"strict_mode": true
 		}
 	},
 	"captcha_modules": {
 		"recaptcha": {
-			"enable": false,
+			"enable": true,
 			"config": {
 				"site_key": null,
 				"secret_key": null,
@@ -101,7 +101,7 @@
 			}
 		},
 		"image": {
-			"enable": false,
+			"enable": true,
 			"config": {
 				"type": "alnum",
 				"length": 4
@@ -122,9 +122,9 @@
 		}
 	},
 	"xss_protection": {
-		"post": false,
-		"get": false,
-		"cookie": false
+		"post": true,
+		"get": true,
+		"cookie": true
 	},
 	"xss_protected_list": [
 		{
@@ -159,7 +159,7 @@
 	},
 	"cronjob": {
 		"reset_circle": {
-			"enable": false,
+			"enable": true,
 			"config": {
 				"period": 86400,
 				"last_update": "2019-01-01 00:00:00"
@@ -176,6 +176,11 @@
 			"url": "/",
 			"rule": "allow",
 			"ip": "127.0.0.1"
+		},
+		{
+			"url": "/",
+			"rule": "deny",
+			"ip": "123.100.1.1"
 		}
 	],
 	"www_authenticate": [

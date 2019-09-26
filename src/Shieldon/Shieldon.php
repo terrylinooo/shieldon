@@ -328,7 +328,7 @@ class Shieldon
 
         // Get current session's browsing position.
         $this->currentUrl = $_SERVER['REQUEST_URI'];
-
+    
         $this->setIp('', true);
     }
 

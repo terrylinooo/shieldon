@@ -99,8 +99,12 @@ class FirewallPanel
 			]);
 		}
 
-		$this->httpAuth();
+		if ($this->mode !== 'self') {
+			$this->httpAuth();
+		}
 	}
+
+	 // @codeCoverageIgnoreStart
 
 	/**
 	 * Display pages.
@@ -682,93 +686,11 @@ class FirewallPanel
 	}
 
 	/**
-	 * Get a variable from configuration.
-	 *
-	 * @param string $field 
-	 *
-	 * @return mixed
-	 */
-	protected function getConfig(string $field)
-	{
-		$v = explode('.', $field);
-		$c = count($v);
-
-		switch ($c) {
-			case 1:
-				return $this->configuration[$v[0]] ?? '';
-				break;
-			case 2:
-				return $this->configuration[$v[0]][$v[1]] ?? '';
-				break;
-
-			case 3:
-				return $this->configuration[$v[0]][$v[1]][$v[2]] ?? '';
-				break;
-
-			case 4:
-				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]] ?? '';
-				break;
-
-			case 5:
-				return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]] ?? '';
-				break;
-		}
-		return '';
-	}
-
-	/**
-	 * Echo the setting string to the template.
-	 *
-	 * @param string $field
-	 * @return string
-	 */
-	protected function _(string $field)
-	{
-		if (is_string($this->getConfig($field)) || is_numeric($this->getConfig($field))) {
-			echo $this->getConfig($field);
-		}
-	}
-
-	/**
-	 * Set a variable to the configuration.
-	 *
-	 * @param string $field
-	 * @param mixed  $value
-	 * @return void
-	 */
-	protected function setConfig(string $field, $value)
-	{
-		$v = explode('.', $field);
-		$c = count($v);
-
-		switch ($c) {
-			case 1:
-				$this->configuration[$v[0]] = $value;
-				break;
-			case 2:
-				$this->configuration[$v[0]][$v[1]] = $value;
-				break;
-
-			case 3:
-				$this->configuration[$v[0]][$v[1]][$v[2]] = $value;
-				break;
-
-			case 4:
-				$this->configuration[$v[0]][$v[1]][$v[2]][$v[3]] = $value;
-				break;
-
-			case 5:
-				$this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]] = $value;
-				break;
-		}
-	}
-
-	/**
 	 * Save the configuration settings to the JSON file.
 	 *
 	 * @return void
 	 */
-	public function saveConfig()
+	protected function saveConfig()
 	{
 		$configFilePath = $this->directory . '/' . $this->filename;
 
@@ -937,6 +859,19 @@ class FirewallPanel
 	}
 
 	/**
+	 * Echo the setting string to the template.
+	 *
+	 * @param string $field
+	 * @return string
+	 */
+	protected function _(string $field)
+	{
+		if (is_string($this->getConfig($field)) || is_numeric($this->getConfig($field))) {
+			echo $this->getConfig($field);
+		}
+	}
+
+	/**
 	 * Use on HTML checkbox and radio elements.
 	 *
 	 * @param string $value
@@ -1052,7 +987,6 @@ class FirewallPanel
 		$content['channel_name'] = $channelName;
 		$content['mode_name'] = $this->mode; // WAF, self-managed
 		$content['page_url'] = $this->url();
-		$content['inline_css'] =  file_get_contents(__DIR__ . '/../views/assets/css/admin-style.css');
 		$content['title'] = $data['title'] ?? '';
 		$content['content'] = $this->loadView($page, $data);
 
@@ -1107,5 +1041,7 @@ class FirewallPanel
             die('Permission required.');
 		}
 	}
+
+	// @codeCoverageIgnoreEnd
 }
 

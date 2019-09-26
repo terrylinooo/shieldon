@@ -61,6 +61,7 @@ class httpAuthentication
     public function __construct(array $protectedUrlList = [])
     {
         $this->currentUrl = $_SERVER['REQUEST_URI'];
+
         $this->set($protectedUrlList);
     }
 

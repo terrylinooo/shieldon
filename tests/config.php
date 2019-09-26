@@ -246,7 +246,7 @@ return [
         'image' => [
 			'enable' => false,
 			'config' => [
-				'type'   =>  'alnum', // // alnum, alpha, numeric
+				'type'   =>  'alnum', // alnum, alpha, numeric
 				'length' => 4
             ],
         ],
@@ -318,30 +318,6 @@ return [
 			'variable' => '_test',
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | DDOS protection.
-    |--------------------------------------------------------------------------
-    |
-    | Block users permanently while they never solve any CAPTCHA many times.
-    | You can block they by Shieldon or by IPTABLE, UTW, etc...
-    |
-    |   iptables -A INPUT -s %s -j DROP
-    |   ufw deny from %s to any
-    |
-    */
-
-    'ddos_protection' => [
-        'enable' => false,
-        'config' => [
-            'attacks' => 10,
-            'handler' => [
-                'type' => 'shieldon' // shieldon, iptable, utw (Ubuntu firewall).
-            ],
-        ],
-    ],
-
     /*
     |--------------------------------------------------------------------------
     | CSRF protection. (Not ready.)
