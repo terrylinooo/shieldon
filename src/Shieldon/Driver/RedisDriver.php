@@ -201,7 +201,7 @@ class RedisDriver extends DriverProvider
             case 'rule':
             case 'log':
             case 'session':
-                return $this->redis->delete($this->getKeyName($ip, $type)) >= 0;
+                return $this->redis->del($this->getKeyName($ip, $type)) >= 0;
         }
         return false;
     }
@@ -216,7 +216,7 @@ class RedisDriver extends DriverProvider
 
             if (! empty($keys)) {
                 foreach($keys as $key) {
-                    $this->redis->delete($key);
+                    $this->redis->del($key);
                 }
             }
         }
