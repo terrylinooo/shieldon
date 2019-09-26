@@ -73,7 +73,7 @@ class Container
      */
     public static function unset(string $id): void
     {
-        self::$instance[$id] = null;
-        unset(self::$instance[$id]);
+        self::$instances[$id] = null;
+        unset(self::$instances[$id]);
     }
 }

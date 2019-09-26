@@ -141,6 +141,7 @@ trait FirewallTrait
 			case 1:
 				$this->configuration[$v[0]] = $value;
 				break;
+
 			case 2:
 				$this->configuration[$v[0]][$v[1]] = $value;
 				break;

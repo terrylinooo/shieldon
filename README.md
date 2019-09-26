@@ -6,29 +6,38 @@
 
 Shieldon is a Web Application Firewall (WAF) for PHP community. 
 
-- Website: https://shieldon.io
-- Document: https://shield-on-php.github.io
-- Version: 3.0.0
+- Document: https://shield-on-php.github.io (v2)
+- V3 document site is coming soon.
+- **Version: 3.0.0-rc1**
 
 ## Features
 
 - SEO friendly.
 - Basic Http-type DDOS protection.
 - Anti-scraping.
-- Cross-site scripting (XSS) protection.
 - Online session control.
+- Cross-site scripting (XSS) protection.
 - Interrupting vulnerability scanning.
 - Eradicating brute force attacks.
 - IP manager.
 - Protecting pages via WWW-Authenticate.
 - Detailed statistics and charts.
+- ?
 
 ## Install
 
 Use PHP Composer:
+
 ```php
+// 3.x RC version.
+composer require terrylinooo/shieldon:3.0.0-rc1
+```
+
+```php
+// Stable 2.x
 composer require terrylinooo/shieldon
 ```
+
 Or, download it and include the Shieldon autoloader.
 ```php
 require 'Shieldon/src/autoload.php';
@@ -38,11 +47,9 @@ require 'Shieldon/src/autoload.php';
 
 ---
 
-### Managed by Firewall Panel
-
 Implementing Shieldon Firewall on your Web Application is pretty easy by using Firewall Panel, and I highly recommend you choose this way.
 
-#### Step 1
+### Step 1
 
 Place this code section in a beginning section of your project.
 The beginning section might be the `index.php`<sub>(1)</sub>, `Middleware` or `Parent Controller`.
@@ -88,7 +95,10 @@ The default login username and password are `wp_shieldon_user` and `wp_shieldon_
 You have set up the settings to make Shieldon work.
 
 ---
-### Managed by yourself
+
+## v2.0
+
+The previous version of Shieldon is a library with the public API methods , allowing you design your own WAF.
 
 Here is a full example to let you know how Shieldon works and then you can manually implement Shieldon on your Web Application.
 
@@ -135,7 +145,7 @@ if ($result !== $shieldon::RESPONSE_ALLOW) {
 
 ```
 
-## Screenshot
+###  Screenshot
 
 When the users or robots are trying to view many your web pages in a short period of time, they will temporarily get banned. Get unbanned by solving a Catpcha.
 

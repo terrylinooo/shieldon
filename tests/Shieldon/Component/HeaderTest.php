@@ -50,6 +50,8 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
     {
         $headerComponent = new Header();
 
+        unset($_SERVER);
+
         $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
         $_SERVER['HTTP_TEST_VAR2'] = 'This is a testt string.';
 

@@ -193,9 +193,12 @@ class Firewall
 					// Create a Redis instance.
 					$redis = new Redis();
                     $redis->connect($host, $port);
-                    
+
                     if (! empty($redisSetting['auth'])) {
-                        $redis->auth($redisSetting['auth']);  
+
+						// @codeCoverageIgnoreStart
+						$redis->auth($redisSetting['auth']);
+						// @codeCoverageIgnoreEnd
                     }
 
 					// Use Redis data driver.

@@ -13,7 +13,7 @@ namespace Shieldon;
 
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {
-    public function test_get()
+    public function testAll()
     {
         $firewall = new \Shieldon\Firewall(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
@@ -24,5 +24,15 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         } else {
             $this->assertTrue(false);
         }
+
+        $typo = \Shieldon\Container::get('firewall_typo');
+        $this->assertEquals($typo, null);
+
+        $result = \Shieldon\Container::has('firewall');
+        $this->assertTrue($result);
+
+        \Shieldon\Container::unset('firewall');
+        $result = \Shieldon\Container::has('firewall');
+        $this->assertFalse($result);
     }
 }

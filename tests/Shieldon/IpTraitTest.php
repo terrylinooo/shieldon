@@ -42,7 +42,6 @@ class IpTraitTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('unitest.local', $mock->getRdns());
     }
 
-
     public function testGetRdns()
     {
         $mock = $this->getMockForTrait('Shieldon\IpTrait');
