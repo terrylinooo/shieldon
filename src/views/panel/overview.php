@@ -100,7 +100,7 @@ $timezone = '';
             Filters
         </div>
         <br />
-		<div class="row">
+        <div class="row">
             <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">Cookie</div>
@@ -170,7 +170,7 @@ $timezone = '';
             Components
         </div>
         <br />
-		<div class="row">
+        <div class="row">
             <div class="col-sm-3">
                 <div class="filter-status">
                     <div class="heading">IP</div>

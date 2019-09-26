@@ -171,7 +171,7 @@ class Xss
         $str = str_replace("\t", ' ', $str);
 
         // Capture converted string for later comparison
-		$convertedString = $str;
+        $convertedString = $str;
 
         // Remove Strings that are never allowed
         $str = $this->doNeverAllowed($str);
@@ -346,17 +346,17 @@ class Xss
         // something got through the above filters
         $str = $this->doNeverAllowed($str);
 
-		/*
-		 * Images are Handled in a Special Way
-		 * - Essentially, we want to know that after all of the character
-		 * conversion is done whether any unwanted, likely XSS, code was found.
-		 * If not, we return TRUE, as the image is clean.
-		 * However, if the string post-conversion does not matched the
-		 * string post-removal of XSS, then it fails, as there was unwanted XSS
-		 * code found and removed/changed during processing.
-		 */
+        /*
+         * Images are Handled in a Special Way
+         * - Essentially, we want to know that after all of the character
+         * conversion is done whether any unwanted, likely XSS, code was found.
+         * If not, we return TRUE, as the image is clean.
+         * However, if the string post-conversion does not matched the
+         * string post-removal of XSS, then it fails, as there was unwanted XSS
+         * code found and removed/changed during processing.
+         */
         if ($isImage) {
-			return ($str === $convertedString);
+            return ($str === $convertedString);
         }
     
         return $str;

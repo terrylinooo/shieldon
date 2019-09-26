@@ -599,11 +599,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->setAccessible(true);
         $methodSetSessionId->invokeArgs($shieldon, [md5('hello, this is an unit test!')]);
 
-		$shieldon->limitSession(1, 30000);
+        $shieldon->limitSession(1, 30000);
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
         $result = $shieldon->run();
-		if ($result === $shieldon::RESPONSE_LIMIT) {
+        if ($result === $shieldon::RESPONSE_LIMIT) {
             $output = $shieldon->output(0, false);
 
             if (strpos($output, 'Please line up') !== false) {
@@ -618,7 +618,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->ban('33.33.33.33');
         $result = $shieldon->run();
 
-		if ($result === $shieldon::RESPONSE_DENY) {
+        if ($result === $shieldon::RESPONSE_DENY) {
             $output = $shieldon->output(0, false);
 
             if (strpos($output, 'Access denied') !== false) {
@@ -668,8 +668,8 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
         $shieldon->setComponent(new \Shieldon\Component\Ip());
-		$shieldon->setComponent(new \Shieldon\Component\Header());
-		$shieldon->setComponent(new \Shieldon\Component\UserAgent());
+        $shieldon->setComponent(new \Shieldon\Component\Header());
+        $shieldon->setComponent(new \Shieldon\Component\UserAgent());
         $shieldon->setComponent(new \Shieldon\Component\Rdns());
         
         // By default, it will block this session because of no common header information

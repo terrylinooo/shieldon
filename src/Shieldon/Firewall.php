@@ -49,104 +49,104 @@ use function strpos;
  */
 class Firewall
 {
-	use FirewallTrait;
+    use FirewallTrait;
 
     /**
      * Constructor.
      */
     public function __construct($source)
     {
-		// Set to container.
-		Container::set('firewall', $this);
+        // Set to container.
+        Container::set('firewall', $this);
 
-		$this->shieldon = new Shieldon();
+        $this->shieldon = new Shieldon();
 
-		if (is_string($source)) {
-			$this->directory = rtrim($source, '\\/');
-			$configFilePath = $this->directory . '/' . $this->filename;
+        if (is_string($source)) {
+            $this->directory = rtrim($source, '\\/');
+            $configFilePath = $this->directory . '/' . $this->filename;
 
-			if (! file_exists($configFilePath)) {
+            if (! file_exists($configFilePath)) {
 
-				$jsonString = file_get_contents(__DIR__ . '/../config.json');
+                $jsonString = file_get_contents(__DIR__ . '/../config.json');
 
-				if (defined('PHPUNIT_TEST')) {
-					$jsonString = file_get_contents(__DIR__ . '/../../tests/config.json');
-				}
-				
-			} else {
-				$jsonString = file_get_contents($configFilePath);
-			}
+                if (defined('PHPUNIT_TEST')) {
+                    $jsonString = file_get_contents(__DIR__ . '/../../tests/config.json');
+                }
+                
+            } else {
+                $jsonString = file_get_contents($configFilePath);
+            }
 
-			// Identify the configration is from firewall-generated JSON config file.
-			$this->configuration = json_decode($jsonString, true);
-			$this->shieldon->managedBy('managed');
+            // Identify the configration is from firewall-generated JSON config file.
+            $this->configuration = json_decode($jsonString, true);
+            $this->shieldon->managedBy('managed');
 
-		} elseif (is_array($source)) {
+        } elseif (is_array($source)) {
 
-			// Identify the configration is from PHP config file.
-			$this->configuration = $source;
-			$this->shieldon->managedBy('config');
-		}
+            // Identify the configration is from PHP config file.
+            $this->configuration = $source;
+            $this->shieldon->managedBy('config');
+        }
 
-		$this->setup();
-	}
+        $this->setup();
+    }
 
-	/**
-	 * Setup everything we need.
-	 *
-	 * @return void
-	 */
-	public function setup(): void
-	{
-		$this->setDriver();
+    /**
+     * Setup everything we need.
+     *
+     * @return void
+     */
+    public function setup(): void
+    {
+        $this->setDriver();
 
-		$this->setChannel();
+        $this->setChannel();
 
-		$this->setIpSource();
+        $this->setIpSource();
 
-		$this->setLogger();
+        $this->setLogger();
 
-		$this->setFilters();
+        $this->setFilters();
 
-		$this->setComponents();
+        $this->setComponents();
 
-		$this->setCaptchas();
+        $this->setCaptchas();
 
-		$this->setSessionLimit();
+        $this->setSessionLimit();
 
-		$this->setCronJob();
+        $this->setCronJob();
 
-		$this->setExcludedUrls();
+        $this->setExcludedUrls();
 
-		$this->setXssProtection();
+        $this->setXssProtection();
 
-		$this->setAuthentication();
+        $this->setAuthentication();
 
-		$this->status = $this->getOption('daemon');
-	}
+        $this->status = $this->getOption('daemon');
+    }
 
-	/**
-	 * Just, run!
-	 *
-	 * @return void
-	 */
-	public function run(): void
-	{
-		if ($this->status) {
-		
-			$result = $this->shieldon->run();
+    /**
+     * Just, run!
+     *
+     * @return void
+     */
+    public function run(): void
+    {
+        if ($this->status) {
+        
+            $result = $this->shieldon->run();
 
-			if ($result !== $this->shieldon::RESPONSE_ALLOW) {
+            if ($result !== $this->shieldon::RESPONSE_ALLOW) {
 
-				// @codeCoverageIgnoreStart
-				if ($this->shieldon->captchaResponse()) {
-					$this->shieldon->unban();
-				}
-				$this->shieldon->output(200);
-				// @codeCoverageIgnoreEnd
-			}
-		}
-	}
+                // @codeCoverageIgnoreStart
+                if ($this->shieldon->captchaResponse()) {
+                    $this->shieldon->unban();
+                }
+                $this->shieldon->output(200);
+                // @codeCoverageIgnoreEnd
+            }
+        }
+    }
 
     /**
      * Set the channel ID.
@@ -158,7 +158,7 @@ class Firewall
         $channelId = $this->getOption('channel_id');
 
         if ($channelId) {
-			$this->shieldon->setChannel($channelId);
+            $this->shieldon->setChannel($channelId);
         }
     }
 
@@ -171,13 +171,13 @@ class Firewall
     {
         $driverType = $this->getOption('driver_type');
 
-		switch ($driverType) {
+        switch ($driverType) {
 
             case 'redis':
             
                 $redisSetting = $this->getOption('redis', 'drivers');
 
-				try {
+                try {
 
                     $host = '127.0.0.1';
                     $port = 6379;
@@ -190,99 +190,99 @@ class Firewall
                         $port = $redisSetting['port'];
                     }
 
-					// Create a Redis instance.
-					$redis = new Redis();
+                    // Create a Redis instance.
+                    $redis = new Redis();
                     $redis->connect($host, $port);
 
                     if (! empty($redisSetting['auth'])) {
 
-						// @codeCoverageIgnoreStart
-						$redis->auth($redisSetting['auth']);
-						// @codeCoverageIgnoreEnd
+                        // @codeCoverageIgnoreStart
+                        $redis->auth($redisSetting['auth']);
+                        // @codeCoverageIgnoreEnd
                     }
 
-					// Use Redis data driver.
-					$this->shieldon->setDriver(new RedisDriver($redis));
+                    // Use Redis data driver.
+                    $this->shieldon->setDriver(new RedisDriver($redis));
 
-				// @codeCoverageIgnoreStart
-				} catch(RedisException $e) {
+                // @codeCoverageIgnoreStart
+                } catch(RedisException $e) {
                     $this->status = false;
 
-					echo $e->getMessage();
-				}
-				// @codeCoverageIgnoreEnd
+                    echo $e->getMessage();
+                }
+                // @codeCoverageIgnoreEnd
 
-				break;
+                break;
 
             case 'file':
             
                 $fileSetting = $this->getOption('file', 'drivers');
 
-				if (empty($fileSetting['directory_path'])) {
+                if (empty($fileSetting['directory_path'])) {
                     $fileSetting['directory_path'] = $this->directory;
                     $this->status = false;
                 }
 
-				// Use File data driver.
-				$this->shieldon->setDriver(new FileDriver($fileSetting['directory_path']));
+                // Use File data driver.
+                $this->shieldon->setDriver(new FileDriver($fileSetting['directory_path']));
 
-				break;
+                break;
 
             case 'sqlite':
             
                 $sqliteSetting = $this->getOption('sqlite', 'drivers');
 
-				if (empty($sqliteSetting['directory_path'])) {
+                if (empty($sqliteSetting['directory_path'])) {
                     $sqliteSetting['directory_path'] = '';
                     $this->status = false;
                 }
 
-				try {
-					
-					// Specific the sqlite file location.
-					$sqliteLocation = $sqliteSetting['directory_path'] . '/shieldon.sqlite3';
+                try {
+                    
+                    // Specific the sqlite file location.
+                    $sqliteLocation = $sqliteSetting['directory_path'] . '/shieldon.sqlite3';
 
-					// Create a PDO instance.
-					$pdoInstance = new PDO('sqlite:' . $sqliteLocation);
+                    // Create a PDO instance.
+                    $pdoInstance = new PDO('sqlite:' . $sqliteLocation);
 
-					// Use Sqlite data driver.
-					$this->shieldon->setDriver(new SqliteDriver($pdoInstance));
-	
-				// @codeCoverageIgnoreStart
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-				}
-				// @codeCoverageIgnoreEnd
+                    // Use Sqlite data driver.
+                    $this->shieldon->setDriver(new SqliteDriver($pdoInstance));
+    
+                // @codeCoverageIgnoreStart
+                } catch(PDOException $e) {
+                    echo $e->getMessage();
+                }
+                // @codeCoverageIgnoreEnd
 
-				break;
+                break;
 
-			case 'mysql':
-			default:
+            case 'mysql':
+            default:
 
                 $mysqlSetting = $this->getOption('mysql', 'drivers');
 
-				try {
+                try {
 
-					// Create a PDO instance.
-					$pdoInstance = new PDO(
+                    // Create a PDO instance.
+                    $pdoInstance = new PDO(
                         'mysql:host=' 
                             . $mysqlSetting['host']   . ';dbname=' 
                             . $mysqlSetting['dbname'] . ';charset=' 
                             . $mysqlSetting['charset']
-						, (string) $mysqlSetting['user']
-						, (string) $mysqlSetting['pass']
-					);
+                        , (string) $mysqlSetting['user']
+                        , (string) $mysqlSetting['pass']
+                    );
 
-					// Use MySQL data driver.
-					$this->shieldon->setDriver(new MysqlDriver($pdoInstance));
+                    // Use MySQL data driver.
+                    $this->shieldon->setDriver(new MysqlDriver($pdoInstance));
 
-				// @codeCoverageIgnoreStart
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-				}
-				// @codeCoverageIgnoreEnd
+                // @codeCoverageIgnoreStart
+                } catch(PDOException $e) {
+                    echo $e->getMessage();
+                }
+                // @codeCoverageIgnoreEnd
             // end switch.
-		}
+        }
     }
 
     /**
@@ -292,46 +292,46 @@ class Firewall
      */
     protected function setLogger(): void
     {
-		$loggerSetting = $this->getOption('action', 'loggers');
+        $loggerSetting = $this->getOption('action', 'loggers');
 
-		if ($loggerSetting['enable']) {
-			if (! empty($loggerSetting['config']['directory_path'])) {
-				$this->shieldon->setLogger(new ActionLogger($loggerSetting['config']['directory_path']));
-			}
-		}
+        if ($loggerSetting['enable']) {
+            if (! empty($loggerSetting['config']['directory_path'])) {
+                $this->shieldon->setLogger(new ActionLogger($loggerSetting['config']['directory_path']));
+            }
+        }
     }
 
-	/**
-	 * If you use CDN, please choose the real IP source.
-	 *
-	 * @return void
-	 */
+    /**
+     * If you use CDN, please choose the real IP source.
+     *
+     * @return void
+     */
     protected function setIpSource(): void
     {
-		$ipSourceType = $this->getOption('ip_variable_source');
+        $ipSourceType = $this->getOption('ip_variable_source');
 
-		if ($ipSourceType['REMOTE_ADDR']) {
-			$this->shieldon->setIp($_SERVER['REMOTE_ADDR']);
+        if ($ipSourceType['REMOTE_ADDR']) {
+            $this->shieldon->setIp($_SERVER['REMOTE_ADDR']);
 
-		// Cloudflare
-		} elseif ($ipSourceType['HTTP_CF_CONNECTING_IP']) {
-			$this->shieldon->setIp($_SERVER['HTTP_CF_CONNECTING_IP']);
+        // Cloudflare
+        } elseif ($ipSourceType['HTTP_CF_CONNECTING_IP']) {
+            $this->shieldon->setIp($_SERVER['HTTP_CF_CONNECTING_IP']);
 
-		// Google Cloud CDN, Google Load-balancer, AWS.
-		} elseif ($ipSourceType['HTTP_X_FORWARDED_FOR']) {
-			$this->shieldon->setIp($_SERVER['HTTP_X_FORWARDED_FOR']);
+        // Google Cloud CDN, Google Load-balancer, AWS.
+        } elseif ($ipSourceType['HTTP_X_FORWARDED_FOR']) {
+            $this->shieldon->setIp($_SERVER['HTTP_X_FORWARDED_FOR']);
 
-		// KeyCDN, or other CDN providers not listed here.
-		} elseif ($ipSourceType['HTTP_X_FORWARDED_HOST']) {
-			$this->shieldon->setIp($_SERVER['HTTP_X_FORWARDED_HOST']);
+        // KeyCDN, or other CDN providers not listed here.
+        } elseif ($ipSourceType['HTTP_X_FORWARDED_HOST']) {
+            $this->shieldon->setIp($_SERVER['HTTP_X_FORWARDED_HOST']);
 
-		// Fallback.
-		} else {
+        // Fallback.
+        } else {
 
-			// @codeCoverageIgnoreStart
-			$this->shieldon->setIp($_SERVER['REMOTE_ADDR']);
-			// @codeCoverageIgnoreEnd
-		}
+            // @codeCoverageIgnoreStart
+            $this->shieldon->setIp($_SERVER['REMOTE_ADDR']);
+            // @codeCoverageIgnoreEnd
+        }
     }
 
     /**
@@ -341,56 +341,56 @@ class Firewall
      */
     protected function setFilters(): void
     {
-		$sessionSetting = $this->getOption('session', 'filters');
-		$cookieSetting = $this->getOption('cookie', 'filters');
-		$refererSetting = $this->getOption('referer', 'filters');
-		$frequencySetting = $this->getOption('frequency', 'filters');
+        $sessionSetting = $this->getOption('session', 'filters');
+        $cookieSetting = $this->getOption('cookie', 'filters');
+        $refererSetting = $this->getOption('referer', 'filters');
+        $frequencySetting = $this->getOption('frequency', 'filters');
 
-		$filterConfig = [
-			'session'   => $sessionSetting['enable'],
-			'cookie'    => $cookieSetting['enable'],
-			'referer'   => $refererSetting['enable'],
-			'frequency' => $frequencySetting['enable'],
-		];
+        $filterConfig = [
+            'session'   => $sessionSetting['enable'],
+            'cookie'    => $cookieSetting['enable'],
+            'referer'   => $refererSetting['enable'],
+            'frequency' => $frequencySetting['enable'],
+        ];
 
-		$this->shieldon->setFilters($filterConfig);
+        $this->shieldon->setFilters($filterConfig);
 
-		$this->shieldon->setProperty('limit_unusual_behavior', [
-			'session' => $sessionSetting['config']['quota'] ?? 5,
-			'cookie'  => $cookieSetting['config']['quota'] ?? 5,
-			'referer' => $refererSetting['config']['quota'] ?? 5,
-		]);
+        $this->shieldon->setProperty('limit_unusual_behavior', [
+            'session' => $sessionSetting['config']['quota'] ?? 5,
+            'cookie'  => $cookieSetting['config']['quota'] ?? 5,
+            'referer' => $refererSetting['config']['quota'] ?? 5,
+        ]);
 
-		if ($frequencySetting['enable']) {
+        if ($frequencySetting['enable']) {
 
-			$frequencyQuota = [
-				's' => $frequencySetting['config']['quota_s'] ?? 2,
-				'm' => $frequencySetting['config']['quota_m'] ?? 10,
-				'h' => $frequencySetting['config']['quota_h'] ?? 30,
-				'd' => $frequencySetting['config']['quota_d'] ?? 60,
-			];
+            $frequencyQuota = [
+                's' => $frequencySetting['config']['quota_s'] ?? 2,
+                'm' => $frequencySetting['config']['quota_m'] ?? 10,
+                'h' => $frequencySetting['config']['quota_h'] ?? 30,
+                'd' => $frequencySetting['config']['quota_d'] ?? 60,
+            ];
 
-			$this->shieldon->setProperty('time_unit_quota', $frequencyQuota);
-		}
+            $this->shieldon->setProperty('time_unit_quota', $frequencyQuota);
+        }
 
-		if ($cookieSetting['enable']) {
+        if ($cookieSetting['enable']) {
 
-			$cookieName = $cookieSetting['config']['cookie_name'] ?? 'ssjd';
-			$cookieDomain = $cookieSetting['config']['cookie_domain'] ?? '';
-			$cookieValue = $cookieSetting['config']['cookie_value'] ?? '1';
-	
-			$this->shieldon->setProperty('cookie_name', $cookieName);
-			$this->shieldon->setProperty('cookie_domain', $cookieDomain);
-			$this->shieldon->setProperty('cookie_value', $cookieValue);
-		}
+            $cookieName = $cookieSetting['config']['cookie_name'] ?? 'ssjd';
+            $cookieDomain = $cookieSetting['config']['cookie_domain'] ?? '';
+            $cookieValue = $cookieSetting['config']['cookie_value'] ?? '1';
+    
+            $this->shieldon->setProperty('cookie_name', $cookieName);
+            $this->shieldon->setProperty('cookie_domain', $cookieDomain);
+            $this->shieldon->setProperty('cookie_value', $cookieValue);
+        }
 
-		if ($refererSetting['enable']) {
-			$this->shieldon->setProperty('interval_check_referer', $refererSetting['config']['time_buffer']);
-		}
+        if ($refererSetting['enable']) {
+            $this->shieldon->setProperty('interval_check_referer', $refererSetting['config']['time_buffer']);
+        }
 
-		if ($sessionSetting['enable']) {
-			$this->shieldon->setProperty('interval_check_session', $sessionSetting['config']['time_buffer']);
-		}
+        if ($sessionSetting['enable']) {
+            $this->shieldon->setProperty('interval_check_session', $sessionSetting['config']['time_buffer']);
+        }
     }
 
     /**
@@ -400,59 +400,59 @@ class Firewall
      */
     protected function setComponents(): void
     {
-		$ipSetting = $this->getOption('ip', 'components');
-		$rdnsSetting = $this->getOption('rdns', 'components');
-		$headerSetting = $this->getOption('header', 'components');
-		$userAgentSetting = $this->getOption('user_agent', 'components');
-		$trustedBotSetting = $this->getOption('trusted_bot', 'components');
+        $ipSetting = $this->getOption('ip', 'components');
+        $rdnsSetting = $this->getOption('rdns', 'components');
+        $headerSetting = $this->getOption('header', 'components');
+        $userAgentSetting = $this->getOption('user_agent', 'components');
+        $trustedBotSetting = $this->getOption('trusted_bot', 'components');
 
-		if ($ipSetting['enable']) {
-			$componentIp = new Ip();
-			$this->shieldon->setComponent($componentIp);
-			$this->ipManager();
-		}
+        if ($ipSetting['enable']) {
+            $componentIp = new Ip();
+            $this->shieldon->setComponent($componentIp);
+            $this->ipManager();
+        }
 
-		if ($trustedBotSetting['enable']) {
-			$componentTrustedBot = new TrustedBot();
+        if ($trustedBotSetting['enable']) {
+            $componentTrustedBot = new TrustedBot();
 
-			// This component will only allow popular search engline.
-			// Other bots will go into the checking process.
-			$this->shieldon->setComponent($componentTrustedBot);
-		}
+            // This component will only allow popular search engline.
+            // Other bots will go into the checking process.
+            $this->shieldon->setComponent($componentTrustedBot);
+        }
 
-		if ($headerSetting['enable']) {
-			$componentHeader = new Header();
+        if ($headerSetting['enable']) {
+            $componentHeader = new Header();
 
-			// Deny all vistors without common header information.
-			if ($headerSetting['strict_mode']) {
-				$componentHeader->setStrict(true);
-			}
+            // Deny all vistors without common header information.
+            if ($headerSetting['strict_mode']) {
+                $componentHeader->setStrict(true);
+            }
 
-			$this->shieldon->setComponent($componentHeader);
-		}
+            $this->shieldon->setComponent($componentHeader);
+        }
 
-		if ($userAgentSetting['enable']) {
-			$componentUserAgent = new UserAgent();
+        if ($userAgentSetting['enable']) {
+            $componentUserAgent = new UserAgent();
 
-			// Deny all vistors without user-agent information.
-			if ($userAgentSetting['strict_mode']) {
-				$componentUserAgent->setStrict(true);
-			}
+            // Deny all vistors without user-agent information.
+            if ($userAgentSetting['strict_mode']) {
+                $componentUserAgent->setStrict(true);
+            }
 
-			$this->shieldon->setComponent($componentUserAgent);
-		}
+            $this->shieldon->setComponent($componentUserAgent);
+        }
 
-		if ($rdnsSetting['enable']) {
-			$componentRdns = new Rdns();
+        if ($rdnsSetting['enable']) {
+            $componentRdns = new Rdns();
 
-			// Visitors with empty RDNS record will be blocked.
+            // Visitors with empty RDNS record will be blocked.
             // IP resolved hostname (RDNS) and IP address must conform with each other.
-			if ($rdnsSetting['strict_mode']) {
-				$componentRdns->setStrict(true);
-			}
+            if ($rdnsSetting['strict_mode']) {
+                $componentRdns->setStrict(true);
+            }
 
-			$this->shieldon->setComponent($componentRdns);
-		}
+            $this->shieldon->setComponent($componentRdns);
+        }
     }
 
     /**
@@ -462,44 +462,44 @@ class Firewall
      */
     protected function setCaptchas(): void
     {
-		$recaptchaSetting = $this->getOption('recaptcha', 'captcha_modules');
-		$imageSetting = $this->getOption('image', 'captcha_modules');
+        $recaptchaSetting = $this->getOption('recaptcha', 'captcha_modules');
+        $imageSetting = $this->getOption('image', 'captcha_modules');
 
-		if ($recaptchaSetting['enable']) {
+        if ($recaptchaSetting['enable']) {
 
-			$googleRecaptcha = [
-				'key'     => $recaptchaSetting['config']['site_key'],
-				'secret'  => $recaptchaSetting['config']['secret_key'],
-				'version' => $recaptchaSetting['config']['version'],
-				'lang'    => $recaptchaSetting['config']['lang'],
-			];
+            $googleRecaptcha = [
+                'key'     => $recaptchaSetting['config']['site_key'],
+                'secret'  => $recaptchaSetting['config']['secret_key'],
+                'version' => $recaptchaSetting['config']['version'],
+                'lang'    => $recaptchaSetting['config']['lang'],
+            ];
 
-			$this->shieldon->setCaptcha(new Recaptcha($googleRecaptcha));
-		}
+            $this->shieldon->setCaptcha(new Recaptcha($googleRecaptcha));
+        }
 
-		if ($imageSetting['enable']) {
+        if ($imageSetting['enable']) {
 
-			$type = $imageSetting['config']['type'] ?? 'alnum';
-			$length = $imageSetting['config']['length'] ?? 8;
+            $type = $imageSetting['config']['type'] ?? 'alnum';
+            $length = $imageSetting['config']['length'] ?? 8;
 
-			switch ($type) {
-				case 'numeric':
-					$imageCaptchaConfig['pool'] = '0123456789';
-					break;
+            switch ($type) {
+                case 'numeric':
+                    $imageCaptchaConfig['pool'] = '0123456789';
+                    break;
 
-				case 'alpha':
-					$imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyz';
-					break;
+                case 'alpha':
+                    $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyz';
+                    break;
 
-				case 'alnum':
-				default:
-					$imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			}
+                case 'alnum':
+                default:
+                    $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            }
 
-			$imageCaptchaConfig['word_length'] = $length;
+            $imageCaptchaConfig['word_length'] = $length;
 
-			$this->shieldon->setCaptcha(new ImageCaptcha($imageCaptchaConfig));
-		}
+            $this->shieldon->setCaptcha(new ImageCaptcha($imageCaptchaConfig));
+        }
     }
 
     /**
@@ -509,209 +509,209 @@ class Firewall
      */
     protected function setSessionLimit(): void
     {
-		$sessionLimitSetting = $this->getOption('online_session_limit');
+        $sessionLimitSetting = $this->getOption('online_session_limit');
 
         if ($sessionLimitSetting['enable']) {
 
-			$onlineUsers = $sessionLimitSetting['config']['count'] ?? 100;
-			$alivePeriod = $sessionLimitSetting['config']['period'] ?? 300;
+            $onlineUsers = $sessionLimitSetting['config']['count'] ?? 100;
+            $alivePeriod = $sessionLimitSetting['config']['period'] ?? 300;
 
-			$this->shieldon->limitSession($onlineUsers, $alivePeriod);
-		}
+            $this->shieldon->limitSession($onlineUsers, $alivePeriod);
+        }
     }
 
-	/**
-	 * Set the cron job.
-	 * This is triggered by the pageviews, not system cron job.
-	 *
-	 * @return void
-	 */
-	private function setCronJob(): void 
-	{
-		$cronjobSetting = $this->getOption('reset_circle', 'cronjob');
+    /**
+     * Set the cron job.
+     * This is triggered by the pageviews, not system cron job.
+     *
+     * @return void
+     */
+    private function setCronJob(): void 
+    {
+        $cronjobSetting = $this->getOption('reset_circle', 'cronjob');
 
-		if ($cronjobSetting['enable']) {
+        if ($cronjobSetting['enable']) {
 
-			$nowTime = time();
+            $nowTime = time();
 
-			$lastResetTime = $cronjobSetting['config']['last_update'];
+            $lastResetTime = $cronjobSetting['config']['last_update'];
 
-			if (! empty($lastResetTime) ) {
-				$lastResetTime = strtotime($lastResetTime);
-			} else {
-				// @codeCoverageIgnoreStart
-				$lastResetTime = strtotime(date('Y-m-d 00:00:00'));
-				// @codeCoverageIgnoreEnd
-			}
+            if (! empty($lastResetTime) ) {
+                $lastResetTime = strtotime($lastResetTime);
+            } else {
+                // @codeCoverageIgnoreStart
+                $lastResetTime = strtotime(date('Y-m-d 00:00:00'));
+                // @codeCoverageIgnoreEnd
+            }
 
-			if (($nowTime - $lastResetTime) > $cronjobSetting['config']['period']) {
+            if (($nowTime - $lastResetTime) > $cronjobSetting['config']['period']) {
 
-				// Update new reset time.
-				$this->setConfig('cronjob.reset_circle.config.last_update', date('Y-m-d 00:00:00' , $lastResetTime));
-				$this->updateConfig();
+                // Update new reset time.
+                $this->setConfig('cronjob.reset_circle.config.last_update', date('Y-m-d 00:00:00' , $lastResetTime));
+                $this->updateConfig();
 
-				// Remove all logs.
-				$this->shieldon->driver->rebuild();
-			}
-		}
-	}
+                // Remove all logs.
+                $this->shieldon->driver->rebuild();
+            }
+        }
+    }
 
-	/**
-	 * Set the URLs that want to be excluded from Shieldon protection.
-	 *
-	 * @return void
-	 */
-	protected function setExcludedUrls(): void
-	{
-		$excludedUrls = $this->getOption('excluded_urls');
+    /**
+     * Set the URLs that want to be excluded from Shieldon protection.
+     *
+     * @return void
+     */
+    protected function setExcludedUrls(): void
+    {
+        $excludedUrls = $this->getOption('excluded_urls');
 
-		if (! empty($excludedUrls)) {
-			$list = array_column($excludedUrls, 'url');
+        if (! empty($excludedUrls)) {
+            $list = array_column($excludedUrls, 'url');
 
-			$this->shieldon->setExcludedUrls($list);
-		}
-	}
+            $this->shieldon->setExcludedUrls($list);
+        }
+    }
 
-	/**
-	 * Set XSS protection.
-	 *
-	 * @return void
-	 */
-	protected function setXssProtection(): void
-	{
-		$xssProtectionOptions = $this->getOption('xss_protection');
+    /**
+     * Set XSS protection.
+     *
+     * @return void
+     */
+    protected function setXssProtection(): void
+    {
+        $xssProtectionOptions = $this->getOption('xss_protection');
 
-		$xssFilter = new Xss();
+        $xssFilter = new Xss();
 
-		if ($xssProtectionOptions['post']) {
-			$this->shieldon->setClosure('xss_post', function() use ($xssFilter) {
-				if (! empty($_POST)) {
-					foreach (array_keys($_POST) as $k) {
-						$_POST[$k] = $xssFilter->clean($_POST[$k]);
-					}
-				}
-			});
-		}
+        if ($xssProtectionOptions['post']) {
+            $this->shieldon->setClosure('xss_post', function() use ($xssFilter) {
+                if (! empty($_POST)) {
+                    foreach (array_keys($_POST) as $k) {
+                        $_POST[$k] = $xssFilter->clean($_POST[$k]);
+                    }
+                }
+            });
+        }
 
-		if ($xssProtectionOptions['get']) {
-			$this->shieldon->setClosure('xss_get', function() use ($xssFilter) {
-				if (! empty($_GET)) {
-					foreach (array_keys($_GET) as $k) {
-						$_GET[$k] = $xssFilter->clean($_GET[$k]);
-					}
-				}
-			});
-		}
+        if ($xssProtectionOptions['get']) {
+            $this->shieldon->setClosure('xss_get', function() use ($xssFilter) {
+                if (! empty($_GET)) {
+                    foreach (array_keys($_GET) as $k) {
+                        $_GET[$k] = $xssFilter->clean($_GET[$k]);
+                    }
+                }
+            });
+        }
 
-		if ($xssProtectionOptions['cookie']) {
-			$this->shieldon->setClosure('xss_cookie', function() use ($xssFilter) {
-				if (! empty($_COOKIE)) {
-					foreach (array_keys($_COOKIE) as $k) {
-						$_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
-					}
-				}
-			});
-		}
+        if ($xssProtectionOptions['cookie']) {
+            $this->shieldon->setClosure('xss_cookie', function() use ($xssFilter) {
+                if (! empty($_COOKIE)) {
+                    foreach (array_keys($_COOKIE) as $k) {
+                        $_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
+                    }
+                }
+            });
+        }
 
-		$xssProtectedList = $this->getOption('xss_protected_list');
+        $xssProtectedList = $this->getOption('xss_protected_list');
 
-		if (! empty($xssProtectedList)) {
-		
-			$this->shieldon->setClosure('xss_protection', function() use ($xssFilter, $xssProtectedList) {
+        if (! empty($xssProtectedList)) {
+        
+            $this->shieldon->setClosure('xss_protection', function() use ($xssFilter, $xssProtectedList) {
 
-				foreach ($xssProtectedList as $v) {
-					$k = $v['variable'] ?? 'undefined';
-	
-					switch ($v['type']) {
+                foreach ($xssProtectedList as $v) {
+                    $k = $v['variable'] ?? 'undefined';
+    
+                    switch ($v['type']) {
 
-						case 'get':
+                        case 'get':
 
-							if (! empty($_GET[$k])) {
-								$_GET[$k] = $xssFilter->clean($_GET[$k]);
-							}
-							break;
-	
-						case 'post':
-	
-							if (! empty($_POST[$k])) {
-								$_POST[$k] = $xssFilter->clean($_POST[$k]);
-							}
-							break;
-	
-						case 'cookie':
+                            if (! empty($_GET[$k])) {
+                                $_GET[$k] = $xssFilter->clean($_GET[$k]);
+                            }
+                            break;
+    
+                        case 'post':
+    
+                            if (! empty($_POST[$k])) {
+                                $_POST[$k] = $xssFilter->clean($_POST[$k]);
+                            }
+                            break;
+    
+                        case 'cookie':
 
-							if (! empty($_COOKIE[$k])) {
-								$_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
-							}
-							break;
-	
-						default:
-					}
-				}
-			});
-		}
-	}
+                            if (! empty($_COOKIE[$k])) {
+                                $_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
+                            }
+                            break;
+    
+                        default:
+                    }
+                }
+            });
+        }
+    }
 
-	/**
-	 * WWW-Athentication.
-	 *
-	 * @return void
-	 */
-	protected function setAuthentication(): void
-	{
-		$authenticateList = $this->getOption('www_authenticate');
+    /**
+     * WWW-Athentication.
+     *
+     * @return void
+     */
+    protected function setAuthentication(): void
+    {
+        $authenticateList = $this->getOption('www_authenticate');
 
-		if (! empty($authenticateList)) {
+        if (! empty($authenticateList)) {
 
-			$authHandler = new httpAuthentication();
+            $authHandler = new httpAuthentication();
 
-			$this->shieldon->setClosure('www_authenticate', function() use ($authHandler, $authenticateList) {
-				$authHandler->set($authenticateList);
-				$authHandler->check();
-			});
-		}
-	}
+            $this->shieldon->setClosure('www_authenticate', function() use ($authHandler, $authenticateList) {
+                $authHandler->set($authenticateList);
+                $authHandler->check();
+            });
+        }
+    }
 
-	/**
-	 * IP manager.
-	 */
-	protected function ipManager()
-	{
-		$ipList = $this->getOption('ip_manager');
+    /**
+     * IP manager.
+     */
+    protected function ipManager()
+    {
+        $ipList = $this->getOption('ip_manager');
 
-		$allowedList = [];
-		$deniedList = [];
+        $allowedList = [];
+        $deniedList = [];
 
-		if (! empty($ipList)) {
-			foreach ($ipList as $ip) {
+        if (! empty($ipList)) {
+            foreach ($ipList as $ip) {
 
-				if (0 === strpos($this->shieldon->getCurrentUrl(), $ip['url']) ) {
-	
-					if ('allow' === $ip['rule']) {
-						$allowedList[] = $ip['ip'];
-					}
-	
-					if ('deny' === $ip['rule']) {
-						$deniedList[] = $ip['ip'];
-					}
-				}
-			}
-		}
+                if (0 === strpos($this->shieldon->getCurrentUrl(), $ip['url']) ) {
+    
+                    if ('allow' === $ip['rule']) {
+                        $allowedList[] = $ip['ip'];
+                    }
+    
+                    if ('deny' === $ip['rule']) {
+                        $deniedList[] = $ip['ip'];
+                    }
+                }
+            }
+        }
 
-		if (! empty($allowedList)) {
-			$this->shieldon->component['Ip']->setAllowedList($allowedList);
-		}
+        if (! empty($allowedList)) {
+            $this->shieldon->component['Ip']->setAllowedList($allowedList);
+        }
 
-		if (! empty($deniedList)) {
-			$this->shieldon->component['Ip']->setDeniedList($deniedList);
-		}
-	}
+        if (! empty($deniedList)) {
+            $this->shieldon->component['Ip']->setDeniedList($deniedList);
+        }
+    }
 
-	/**
+    /**
      * Get options from the configuration file.
-	 * 
-	 * This method is same as `$this->getConfig()` but returning value from array directly, 
-	 * saving a `explode()` process.
+     * 
+     * This method is same as `$this->getConfig()` but returning value from array directly, 
+     * saving a `explode()` process.
      *
      * @param string $option
      * @param string $section
@@ -729,27 +729,27 @@ class Firewall
         }
 
         return false;
-	}
+    }
 
-	/**
-	 * Update configuration file.
-	 *
-	 * @return void
-	 */
-	private function updateConfig()
-	{
-		$configFilePath = $this->directory . '/' . $this->filename;
+    /**
+     * Update configuration file.
+     *
+     * @return void
+     */
+    private function updateConfig()
+    {
+        $configFilePath = $this->directory . '/' . $this->filename;
 
-		if (! file_exists($configFilePath)) {
-			if (! is_dir($this->directory)) {
-				// @codeCoverageIgnoreStart
-				$originalUmask = umask(0);
-				@mkdir($this->directory, 0777, true);
-				umask($originalUmask);
-				// @codeCoverageIgnoreEnd
-			}
-		}
+        if (! file_exists($configFilePath)) {
+            if (! is_dir($this->directory)) {
+                // @codeCoverageIgnoreStart
+                $originalUmask = umask(0);
+                @mkdir($this->directory, 0777, true);
+                umask($originalUmask);
+                // @codeCoverageIgnoreEnd
+            }
+        }
 
-		file_put_contents($configFilePath, json_encode($this->configuration));
-	}
+        file_put_contents($configFilePath, json_encode($this->configuration));
+    }
 }

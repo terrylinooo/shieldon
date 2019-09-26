@@ -151,9 +151,9 @@ return [
             'enable' => false,
             'config' => [
                 'cookie_name'   => 'ssjd',
-				'cookie_domain' => '',
-				'cookie_value'  => '1',
-				'quota'         => 5,
+                'cookie_domain' => '',
+                'cookie_value'  => '1',
+                'quota'         => 5,
             ],
         ],
 
@@ -229,25 +229,25 @@ return [
     |
     */
 
-	'captcha_modules' => [
+    'captcha_modules' => [
 
         // Google reCAPTCHA.
-		'recaptcha' => [
-			'enable' => false,
-			'config' => [
-				'site_key'   => null,
-				'secret_key' => null,
-				'version'    => 'v2',
-				'lang'       => 'en-US'
+        'recaptcha' => [
+            'enable' => false,
+            'config' => [
+                'site_key'   => null,
+                'secret_key' => null,
+                'version'    => 'v2',
+                'lang'       => 'en-US'
             ],
         ],
 
         // A very simple image CAPTCHA.
         'image' => [
-			'enable' => false,
-			'config' => [
-				'type'   =>  'alnum', // alnum, alpha, numeric
-				'length' => 4
+            'enable' => false,
+            'config' => [
+                'type'   =>  'alnum', // alnum, alpha, numeric
+                'length' => 4
             ],
         ],
     ],
@@ -263,9 +263,9 @@ return [
 
     'ip_variable_source' => [
         'REMOTE_ADDR'           => true,
-		'HTTP_CF_CONNECTING_IP' =>  false,
-		'HTTP_X_FORWARDED_FOR'  =>  false,
-		'HTTP_X_FORWARDED_HOST' =>  false
+        'HTTP_CF_CONNECTING_IP' =>  false,
+        'HTTP_X_FORWARDED_FOR'  =>  false,
+        'HTTP_X_FORWARDED_HOST' =>  false
     ],
 
     /*
@@ -304,18 +304,18 @@ return [
 
     'xss_protected_list' => [
         [
-			'type' => 'get',
-			'variable' => '_test',
+            'type' => 'get',
+            'variable' => '_test',
         ],
 
         [
-			'type' => 'post',
-			'variable' => '_test',
+            'type' => 'post',
+            'variable' => '_test',
         ],
 
         [
-			'type' => 'cookie',
-			'variable' => '_test',
+            'type' => 'cookie',
+            'variable' => '_test',
         ],
     ],
     /*
@@ -388,8 +388,8 @@ return [
     'ip_manager' => [
         [
             'url'  => '/',
-			'rule' => 'allow',
-			'ip'   => '127.0.0.1',
+            'rule' => 'allow',
+            'ip'   => '127.0.0.1',
         ],
     ],
 

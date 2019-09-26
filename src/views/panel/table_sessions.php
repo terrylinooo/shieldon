@@ -14,66 +14,66 @@ $timezone = '';
 
 <div class="so-dashboard">
     <div class="so-flex">
-		<div class="so-board">
-			<div class="board-field left icon icon-1">
+        <div class="so-board">
+            <div class="board-field left icon icon-1">
                 <i class="fas fa-clipboard-check"></i>
-			</div>
-			<div class="board-field right">
-				<div class="heading">Limit</div>
-				<div class="nums"><?php echo $session_limit_count; ?></div>
-				<div class="note">Online session limit.</div>
-			</div>
+            </div>
+            <div class="board-field right">
+                <div class="heading">Limit</div>
+                <div class="nums"><?php echo $session_limit_count; ?></div>
+                <div class="note">Online session limit.</div>
+            </div>
         </div>
 
-		<div class="so-board">
-			<div class="board-field left icon icon-2">
+        <div class="so-board">
+            <div class="board-field left icon icon-2">
                 <i class="far fa-clock"></i>
-			</div>
-			<div class="board-field right">
-				<div class="heading">Period</div>
-				<div class="nums"><?php echo number_format($session_limit_period ); ?></div>
-				<div class="note">Keep-alive period. (minutes)</div>
-			</div>
-		</div>
-		<div class="so-board">
-			<div class="board-field left icon icon-3">
+            </div>
+            <div class="board-field right">
+                <div class="heading">Period</div>
+                <div class="nums"><?php echo number_format($session_limit_period ); ?></div>
+                <div class="note">Keep-alive period. (minutes)</div>
+            </div>
+        </div>
+        <div class="so-board">
+            <div class="board-field left icon icon-3">
                 <i class="fas fa-street-view"></i>
-			</div>
-			<div class="board-field right">
-				<div class="heading">Online</div>
-				<div class="nums"><?php echo number_format($online_count ); ?></div>
-				<div class="note">Online session amount.</div>
-			</div>
-		</div>
+            </div>
+            <div class="board-field right">
+                <div class="heading">Online</div>
+                <div class="nums"><?php echo number_format($online_count ); ?></div>
+                <div class="note">Online session amount.</div>
+            </div>
+        </div>
     </div>
-	<div id="so-table-loading" class="so-datatables">
-		<div class="lds-css ng-scope">
-			<div class="lds-ripple">
-				<div></div>
-				<div></div>
-			</div>
-		</div>
-	</div>
-	<div id="so-table-container" class="so-datatables" style="display: none;">
-		<div class="so-datatable-heading">
+    <div id="so-table-loading" class="so-datatables">
+        <div class="lds-css ng-scope">
+            <div class="lds-ripple">
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+    <div id="so-table-container" class="so-datatables" style="display: none;">
+        <div class="so-datatable-heading">
             Session Table
         </div>
-		<div class="so-datatable-description">
+        <div class="so-datatable-description">
             Read-time logs for <strong>Online Session Controll</strong>. All processes are automatic and instant, you can ignore that.<br />
-			Notice this is only working when you have enabled that function.
-		</div>
-		<table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
-			<thead>
-				<tr>
+            Notice this is only working when you have enabled that function.
+        </div>
+        <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
+            <thead>
+                <tr>
                     <th>Priority</th>
                     <th>Status</th>
-					<th>Session ID</th>
-					<th>IP</th>
+                    <th>Session ID</th>
+                    <th>IP</th>
                     <th>Time</th>
                     <th>Remain seconds</th>
-				</tr>
-			</thead>
-			<tbody>
+                </tr>
+            </thead>
+            <tbody>
 
                 <?php $i = 1; ?>
                 <?php foreach($session_list as $key => $sessionInfo) : ?>
@@ -105,9 +105,9 @@ $timezone = '';
                         <th><?php echo $remainsTime; ?></th>
                     </tr>
                     <?php $i++; ?>
-				<?php endforeach; ?>
-			</tbody>   
-		</table>
+                <?php endforeach; ?>
+            </tbody>   
+        </table>
     </div>
 </div>
 

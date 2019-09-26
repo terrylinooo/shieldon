@@ -13,11 +13,11 @@ $timezone = '';
 ?>
 
 <div class="so-dashboard">
-	<div id="so-rule-table-form" class="so-datatables">
-		<div class="so-datatable-heading">
-			XSS Protection<br />
-		</div>
-		<div class="so-datatable-description">
+    <div id="so-rule-table-form" class="so-datatables">
+        <div class="so-datatable-heading">
+            XSS Protection<br />
+        </div>
+        <div class="so-datatable-description">
             Prevent Cross site scripting (XSS) attacks.<br />
         </div>
 
@@ -106,60 +106,60 @@ $timezone = '';
                 </tr>
             </table>
         </div>
-	</div>
-	<br />
-	<div id="so-table-loading" class="so-datatables">
-		<div class="lds-css ng-scope">
-			<div class="lds-ripple">
-				<div></div>
-				<div></div>
-			</div>
-		</div>
-	</div>
-	<div id="so-table-container" class="so-datatables" style="display: none;">
-		<table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
-			<thead>
-				<tr>
+    </div>
+    <br />
+    <div id="so-table-loading" class="so-datatables">
+        <div class="lds-css ng-scope">
+            <div class="lds-ripple">
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+    <div id="so-table-container" class="so-datatables" style="display: none;">
+        <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
+            <thead>
+                <tr>
                     <th>Type</th>
                     <th>Variable</th>
                     <th>Remove</th>
-				</tr>
-			</thead>
-			<tbody>
+                </tr>
+            </thead>
+            <tbody>
                 <?php if (! empty($xss_protected_list)) : ?>
-				<?php foreach($xss_protected_list as $i => $info) : ?>
-				<tr>
+                <?php foreach($xss_protected_list as $i => $info) : ?>
+                <tr>
                     <td><?php echo $info['type']; ?></td>
                     <td><?php echo $info['variable']; ?></td>
-					<td><button type="button" class="button btn-remove-ip" data-order="<?php echo $i; ?>"><i class="far fa-trash-alt"></i></button></td>
-				</tr>
+                    <td><button type="button" class="button btn-remove-ip" data-order="<?php echo $i; ?>"><i class="far fa-trash-alt"></i></button></td>
+                </tr>
                 <?php endforeach; ?>
                 <?php endif; ?>
-			</tbody>   
-		</table>
-	</div>
+            </tbody>   
+        </table>
+    </div>
 </div>
 
 <script>
 
-	$(function() {
+    $(function() {
         
-		$('#so-datalog').DataTable({
-			'pageLength': 25,
-			'initComplete': function(settings, json) {
-				$('#so-table-loading').hide();
-				$('#so-table-container').fadeOut(800);
-				$('#so-table-container').fadeIn(800);
-			}
-		});
+        $('#so-datalog').DataTable({
+            'pageLength': 25,
+            'initComplete': function(settings, json) {
+                $('#so-table-loading').hide();
+                $('#so-table-container').fadeOut(800);
+                $('#so-table-container').fadeIn(800);
+            }
+        });
 
-		$('.so-dashboard').on('click', '.btn-remove-ip', function() {
+        $('.so-dashboard').on('click', '.btn-remove-ip', function() {
             var order = $(this).attr('data-order');
 
-			$('[name=order]').val(order);
-			$('[name=action]').val('remove');
-			$('#btn-add-rule').trigger('click');
-		});
-	});
+            $('[name=order]').val(order);
+            $('[name=action]').val('remove');
+            $('#btn-add-rule').trigger('click');
+        });
+    });
 
 </script>

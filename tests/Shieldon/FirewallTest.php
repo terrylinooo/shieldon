@@ -190,6 +190,6 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->setAccessible(true);
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 1000))]);
 
-		$firewall->run();
+        $firewall->run();
     }
 }
