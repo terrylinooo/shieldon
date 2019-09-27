@@ -8,7 +8,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP community.
 
 - Document: https://shield-on-php.github.io (v2)
 - V3 document site is coming soon.
-- **Version: 3.0.0-rc1**
+- **Version: 3.0.0-rc2**
 
 ## Features
 
@@ -47,6 +47,8 @@ Implementing Shieldon Firewall on your Web Application is pretty easy by using F
 
 
 ## Laravel 5, 6
+
+For Laravel lovers, you can choose Middleware or Bootstrap to implement Shieldon Firewall on your Web application.
 
 ### Middleware
 
@@ -122,6 +124,8 @@ $firewall->run();
 ```
 
 #### (2) Route
+
+Define a route for the Firewall Panel.
 
 ```
 Route::any('/your/secret/place/', function() {
