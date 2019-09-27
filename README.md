@@ -103,7 +103,7 @@ Add `firewall` middleware to any route you would like to protect.
 ### Bootstrap
 
 #### (1) Before Initializing $app
-In your `bootstrap/app.php`, after `<?php`, add the follwing code.
+In your `bootstrap/app.php`, after `<?php`, add the following code.
 ```php
 /*
 |--------------------------------------------------------------------------

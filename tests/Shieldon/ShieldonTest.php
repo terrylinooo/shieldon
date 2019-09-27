@@ -524,6 +524,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->setAccessible(true);
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(2001, 3000))]);
         $result = $shieldon->run();
+        $_POST['shieldon_captcha'] = 'ok';
         $result = $shieldon->captchaResponse();
         $this->assertTrue($result);
     }
