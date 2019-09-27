@@ -30,7 +30,7 @@ Use PHP Composer:
 
 ```php
 // 3.x RC version.
-composer require terrylinooo/shieldon:3.0.0-rc1
+composer require terrylinooo/shieldon:3.0.0-rc2
 ```
 
 ```php
