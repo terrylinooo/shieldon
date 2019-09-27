@@ -51,6 +51,11 @@ class Csrf implements CaptchaInterface
      */
     public function response(): bool
     {
+        // Prevent detecting POST method on RESTful frameworks.
+        if (isset($_POST[$this->name])) {
+            unset($_POST[$this->name]);
+        }
+
         return true;
     }
 

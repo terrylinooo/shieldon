@@ -117,6 +117,9 @@ class ImageCaptcha implements CaptchaInterface
             $flag = true;
         }
 
+        // Prevent detecting POST method on RESTful frameworks.
+        unset($_POST['shieldon_image_captcha']);
+
         return $flag;
     }
 

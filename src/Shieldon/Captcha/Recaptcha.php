@@ -85,6 +85,11 @@ class Recaptcha implements CaptchaInterface
             }
         }
 
+        // Prevent detecting POST method on RESTful frameworks.
+        if (isset($_POST['g-recaptcha-response'])) {
+            unset($_POST['g-recaptcha-response']);
+        }
+
         return $flag;
     }
 
