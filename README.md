@@ -67,6 +67,7 @@ $firewall->shieldon->setCaptcha(new \Shieldon\Captcha\Csrf([
     'value' => csrf_token(),
 ]));
 
+$firewall->restful();
 $firewall->run();
 ```
 
@@ -100,8 +101,38 @@ Add `firewall` middleware to any route you would like to protect.
 
 ### Bootstrap
 
-...
+#### (1) Before Initializing $app
+In your `bootstrap/app.php`, after `<?php`, add the follwing code.
+```php
+/*
+|--------------------------------------------------------------------------
+| Run The Shieldon Firewall
+|--------------------------------------------------------------------------
+|
+| Shieldon Firewall will watch all HTTP requests coming to your website.
+| Running Shieldon Firewall before initializing Laravel will avoid possible
+| conflicts with Laravel's built-in functions.
+*/
 
+// Notice that this directory must be writable.
+$firewallstorage = __DIR__ . '/../storage/shieldon';
+$firewall = new \Shieldon\Firewall($firewallstorage);
+$firewall->restful();
+$firewall->run();
+```
+
+#### (2) Route
+
+```
+Route::any('/your/secret/place/', function() {
+    $firewall = \Shieldon\Container::get('firewall');
+    $controlPanel = new \Shieldon\FirewallPanel($firewall);
+    $controlPanel->csrf('_token', csrf_token());
+    $controlPanel->entry();
+});
+```
+
+If you adopt this way, Shieldon Firewall will run in Global scope. But no worry, you can set up the exclusion list for the URLs you want Shieldon Firewall ignore them.
 
 ### Other Frameworks
 
