@@ -62,6 +62,15 @@ class FirewallPanel
         'logs' => false,
     ];
 
+
+    /**
+     * see $this->csrf()
+     *
+     * @var string
+     */
+    protected $csrfKey = '';
+    protected $csrfToken = '';
+
     /**
      * Constructor.
      *
@@ -162,6 +171,36 @@ class FirewallPanel
             default:
                 header('Location: ' . $this->url('settings'));
                 break;
+        }
+
+        if (isset($_GET)) unset($_GET);
+        if (isset($_POST)) unset($_POST);
+    }
+
+    /**
+     * Most popular PHP framework has a built-in CSRF protection such as Laravel.
+     * We need to pass the CSRF token for our form actions.
+     *
+     * @param string $name
+     * @param string $value
+     *
+     * @return void
+     */
+    public function csrf(string $name = '', string $value = ''): void
+    {
+        $this->csrfKey = $name;
+        $this->csrfToken = $value;
+    }
+
+    /**
+     * Output HTML input element with CSRF token.
+     *
+     * @return void
+     */
+    public function _csrf(): void
+    {
+        if ($this->csrfKey !== '') {
+            echo '<input type="hidden" name="' . $this->csrfKey . '" value="' . $this->csrfToken . '" id="csrf-field">';
         }
     }
 
@@ -693,6 +732,10 @@ class FirewallPanel
     protected function saveConfig()
     {
         $configFilePath = $this->directory . '/' . $this->filename;
+
+        if (! empty($this->csrfKey)) {
+            unset($_POST[$this->csrfKey]);
+        }
 
         if (empty($_POST) || ! is_array($_POST)) {
             return;

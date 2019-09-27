@@ -48,7 +48,7 @@ Implementing Shieldon Firewall on your Web Application is pretty easy by using F
 
 ## Laravel 5, 6
 
-### Middware
+### Middleware
 
 #### (1) Define middleware
 
@@ -56,7 +56,7 @@ Defined a middleware named `ShieldonFirewall`
 ```
 php artisan make:middleware ShieldonFirewall
 ```
-Add several lines in the middleware class:
+Add several lines in the `ShieldonFirewall` middleware class:
 
 ```php
 $firewall = new \Shieldon\Firewall(storage_path('shieldon'));
@@ -87,19 +87,20 @@ We need a controller to get into Shieldon firewall controll panel, so..
 Route::any('/your/secret/place/', function() {
     $firewall = \Shieldon\Container::get('firewall');
     $controlPanel = new \Shieldon\FirewallPanel($firewall);
+    $controlPanel->csrf('_token', csrf_token());
     $controlPanel->entry();
 })->middleware('firewall');
-
-// Remember to exclude this URL from CSRF protection.
 ```
 
 
 Add `firewall` middleware to any route you would like to protect.
 
-* Notice: Shieldon Firewall requires `POST` to receive CAPTCHA form identification, make sure your routes have POST method support.
+* Notice: Shieldon Firewall requires `POST` to receive CAPTCHA form identification, make sure your routes have POST method support. Please change `Route::get` to `Route::any` to make it work.
+
 
 ### Bootstrap
 
+...
 
 
 ### Other Frameworks

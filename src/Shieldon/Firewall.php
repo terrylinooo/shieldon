@@ -52,6 +52,16 @@ class Firewall
     use FirewallTrait;
 
     /**
+     * A RESTful routing system defines four methods: POST, GET, PUT, DELETE 
+     * If current framework is a RESTful routing system, 
+     * the page will be refeshed after submitting Capatcha form.
+     * No refresh? An Error will be occurred while current URL does't support POST method request.
+     *
+     * @var boolean
+     */
+    protected $restful = false;
+
+    /**
      * Constructor.
      */
     public function __construct($source)
@@ -141,11 +151,27 @@ class Firewall
                 // @codeCoverageIgnoreStart
                 if ($this->shieldon->captchaResponse()) {
                     $this->shieldon->unban();
+
+                    // The reason here please check out the explanation of $restful property.
+                    if ($this->restful) {
+                        header('Location: ' . $this->shieldon->getCurrentUrl(), true, 303);
+                        exit;
+                    }
                 }
                 $this->shieldon->output(200);
                 // @codeCoverageIgnoreEnd
             }
         }
+    }
+
+    /**
+     * Check out the explanation of $restful property.
+     *
+     * @return void
+     */
+    public function restful(): void
+    {
+        $this->restful = true;
     }
 
     /**

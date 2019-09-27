@@ -37,6 +37,7 @@ $timezone = '';
                 </div>
                 <div class="d-inline-block align-top">
                     <label>&nbsp;</label><br />
+                    <?php $this->_csrf(); ?>
                     <input type="hidden" name="action" value="add">
                     <input type="hidden" name="order" value="">
                     <input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="Submit">

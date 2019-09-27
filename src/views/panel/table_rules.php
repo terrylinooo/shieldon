@@ -24,6 +24,7 @@ $timezone = '';
         </div>
         <div class="so-rule-form">
             <form method="post">
+                <?php $this->_csrf(); ?>
                 <input name="ip" type="text" value="" class="regular-text" placeholder="Please fill in an IP address..">
                 <select name="action" class="regular">
                     <option value="none">--- please select ---</option>
