@@ -16,7 +16,7 @@ class CsrfTest extends \PHPUnit\Framework\TestCase
     public function test__construct()
     {
         $captchaInstance = new Csrf([
-            'name' => 'pooh',
+            'name' => 'pool',
             'value' => '209b131bfec1c01c0f84d858bbf0ff47',
         ]);
 
@@ -29,16 +29,18 @@ class CsrfTest extends \PHPUnit\Framework\TestCase
         $name = $p1->getValue($captchaInstance);
         $value = $p2->getValue($captchaInstance);
 
-        $this->assertSame($name, 'pooh');
+        $this->assertSame($name, 'pool');
         $this->assertSame($value, '209b131bfec1c01c0f84d858bbf0ff47');
     }
 
     public function testResponse()
     {
         $captchaInstance = new Csrf([
-            'name' => 'pooh',
+            'name' => 'pool',
             'value' => '209b131bfec1c01c0f84d858bbf0ff47',
         ]);
+
+        $_POST['pool'] = '209b131bfec1c01c0f84d858bbf0ff47';
 
         $result = $captchaInstance->response();
 
@@ -48,11 +50,11 @@ class CsrfTest extends \PHPUnit\Framework\TestCase
     public function testForm()
     {
         $captchaInstance = new Csrf([
-            'name' => 'pooh',
+            'name' => 'pool',
             'value' => '209b131bfec1c01c0f84d858bbf0ff47',
         ]);
 
         $result = $captchaInstance->form();
-        $this->assertSame($result, '<input type="hidden" name="pooh" value="209b131bfec1c01c0f84d858bbf0ff47">');
+        $this->assertSame($result, '<input type="hidden" name="pool" value="209b131bfec1c01c0f84d858bbf0ff47">');
     }
 }

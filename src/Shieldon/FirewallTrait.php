@@ -10,6 +10,9 @@
 
 namespace Shieldon;
 
+use function count;
+use function explode;
+
 /*
  * @since 3.0.0
  */

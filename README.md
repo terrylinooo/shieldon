@@ -8,7 +8,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP community.
 
 - Document: https://shield-on-php.github.io (v2)
 - V3 document site is coming soon.
-- **Version: 3.0.0-rc2**
+- **Version: 3.0.0-rc3**
 
 ## Features
 
@@ -54,7 +54,7 @@ For Laravel lovers, you can choose Middleware or Bootstrap to implement Shieldon
 
 #### (1) Define a Middleware.
 
-Defined a middleware named `ShieldonFirewall`
+Define a middleware named `ShieldonFirewall`
 ```
 php artisan make:middleware ShieldonFirewall
 ```
@@ -75,8 +75,6 @@ $firewall->run();
 
 #### (2) Register a Middleware alias.
 
-Because we want Shieldon watching every HTTP request, we need it to be gobal.
-
 Modify `app/Http/Kernel.php` and add this line in `$routeMiddleware` property.
 ```php
 'firewall' => \App\Http\Middleware\ShieldonFirewall::class,
@@ -84,7 +82,7 @@ Modify `app/Http/Kernel.php` and add this line in `$routeMiddleware` property.
 
 #### (3) Defind a Route for Firewall Panel.
 
-We need a controller to get into Shieldon firewall controll panel, so..
+We need a controller to get into Shieldon firewall controll panel, so that..
 
 ```php
 Route::any('/your/secret/place/', function() {
@@ -95,10 +93,13 @@ Route::any('/your/secret/place/', function() {
 })->middleware('firewall');
 ```
 
+Add `firewall` middleware to any route you would like to protect. For example:
 
-Add `firewall` middleware to any route you would like to protect.
-
-* Notice: Shieldon Firewall requires `POST` to receive CAPTCHA form identification, make sure your routes have POST method support. Please change `Route::get` to `Route::any` to make it work.
+```php
+Route::get('/', function () {
+    return view('welcome');
+})->middleware('firewall');
+```
 
 ### Bootstrap
 
@@ -175,7 +176,7 @@ Although it has a basic login protection.
 
 ## Self-built
 
-If you would like to customize your own WAF, try the following step and checkout document for public APIs you can use.
+If you would like to customize your own WAF, try the following steps and checkout document for public APIs you can use.
 
 Here is a full example to let you know how Shieldon works and then you can manually implement Shieldon on your Web Application.
 

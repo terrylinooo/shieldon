@@ -17,6 +17,25 @@
 
 namespace Shieldon\Security;
 
+use function array_keys;
+use function array_map;
+use function get_html_translation_table;
+use function html_entity_decode;
+use function implode;
+use function mt_rand;
+use function mt_srand;
+use function preg_match;
+use function preg_match_all;
+use function preg_replace;
+use function preg_replace_callback;
+use function rawurldecode;
+use function str_ireplace;
+use function str_replace;
+use function stripslashes;
+use function substr;
+use function time;
+use function version_compare;
+
  /**
   * Cross-Site Scripting protection.
   */
@@ -106,24 +125,34 @@ class Xss
      * http://ha.ckers.org/xss.html
      *
      * @param mixed $str     string or array
-     * @param bool  $isImage Is checking for an image?
+     * @param bool  $isImage Is checking an image?
      *
      * @return mixed array|string
      */
-    public function clean($str, bool $isImage = false)
+    public function clean($str, $isImage = false)
     {
         // Is the string an array?
         if (is_array($str)) {
   
             foreach ($str as $key => $value) {
-                $str[$key] = $this->clean($str[$key]);
+                $str[$key] = $this->clean($str[$key], $isImage);
             }
 
             return $str;
         }
 
-        //Remove Invisible Characters
-        $str = $this->removeInvisibleCharacters($str);
+        // No need to clean if numeric characters...
+        if (is_numeric($str)) {
+            return $str;
+        }
+
+        // Remove Invisible Characters.
+        if (false === $isImage) {
+
+            // We cannot remove invisable characters because that Photoshop 2018 will add invisble value (URL-encode: %01)
+            // to the fields, that breaks the checking result, so just ignore this check for that stupid...
+            $str = $this->removeInvisibleCharacters($str);
+        }
 
         /*
          * URL Decode
@@ -158,7 +187,9 @@ class Xss
         );
 
         // Remove Invisible Characters Again!
-        $str = $this->removeInvisibleCharacters($str);
+        if (false === $isImage) {
+            $str = $this->removeInvisibleCharacters($str);
+        }
 
         /*
          * Convert all tabs to spaces
@@ -169,9 +200,6 @@ class Xss
          * large blocks of data, so we use str_replace.
          */
         $str = str_replace("\t", ' ', $str);
-
-        // Capture converted string for later comparison
-        $convertedString = $str;
 
         // Remove Strings that are never allowed
         $str = $this->doNeverAllowed($str);
@@ -185,15 +213,7 @@ class Xss
          *
          * But it doesn't seem to pose a problem.
          */
-        if ($isImage) {
-
-            // Images have a tendency to have the PHP short opening and
-            // closing tags every so often so we skip those and only
-            // do the long opening tags.
-            $str = preg_replace('/<\?(php)/i', '&lt;?\\1', $str);
-        } else {
-            $str = str_replace(['<?', '?>'], ['&lt;?', '?&gt;'], $str);
-        }
+        $str = str_replace(['<?', '?>'], ['&lt;?', '?&gt;'], $str);
 
         /*
          * Compact any exploded words
@@ -209,12 +229,12 @@ class Xss
         ];
 
         foreach ($words as $word) {
-            $word = implode('\s*', str_split($word)).'\s*';
+            $word = implode('\s*', str_split($word)) . '\s*';
 
             // We only want to do this when it is followed by a non-word character
             // That way valid stuff like "dealer to" does not become "dealerto"
             $str = preg_replace_callback(
-                '#('.substr($word, 0, -3).')(\W)#is', 
+                '#(' . substr($word, 0, -3) . ')(\W)#is', 
                 [$this, 'compactExplodedWords'], 
                 $str
             );
@@ -263,6 +283,9 @@ class Xss
         } while($original !== $str);
 
         unset($original);
+
+        // Remove evil attributes such as style, onclick and xmlns
+		$str = $this->removeEvilAttributes($str, $isImage);
 
         /*
          * Sanitize naughty HTML elements
@@ -355,23 +378,26 @@ class Xss
          * string post-removal of XSS, then it fails, as there was unwanted XSS
          * code found and removed/changed during processing.
          */
-        if ($isImage) {
-            return ($str === $convertedString);
-        }
-    
         return $str;
     }
 
     /**
      * Check if an image contains XSS code.
      *
-     * @param string $str Image content.
+     * @param string $imageAbsPath Absolute path of an image,
      *
      * @return bool
      */
-    public function checkImage(string $str): bool
+    public function checkImage(string $imageAbsPath): bool
     {
-        return clean($str, true);
+        $originExif = @exif_read_data($imageAbsPath);
+        $filteredExif = [];
+
+        if (! empty($originExif)) {
+            $filteredExif = $this->clean($originExif, true);
+        }
+
+        return ($originExif == $filteredExif);
     }
 
     /**
@@ -407,6 +433,78 @@ class Xss
 
         return $str;
     }
+
+    /*
+	 * Remove Evil HTML Attributes (like evenhandlers and style)
+	 *
+	 * It removes the evil attribute and either:
+	 * 	- Everything up until a space
+	 *		For example, everything between the pipes:
+	 *		<a |style=document.write('hello');alert('world');| class=link>
+	 * 	- Everything inside the quotes
+	 *		For example, everything between the pipes:
+	 *		<a |style="document.write('hello'); alert('world');"| class="link">
+	 *
+	 * @param string $str The string to check
+	 * @param boolean $is_image TRUE if this is an image
+	 * @return string The string with the evil attributes removed
+	 */
+	protected function removeEvilAttributes($str, $is_image)
+	{
+		// All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
+		$evilAttributes = array('on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href');
+
+		if ($is_image) {
+			/*
+			 * Adobe Photoshop puts XML metadata into JFIF images,
+			 * including namespacing, so we have to allow this for images.
+			 */
+			unset($evilAttributes[array_search('xmlns', $evilAttributes)]);
+		}
+
+		do {
+			$count = 0;
+			$attribs = array();
+
+			// find occurrences of illegal attribute strings with quotes (042 and 047 are octal quotes)
+			preg_match_all(
+                '/(?<!\w)(' . implode('|', $evilAttributes) . ')\s*=\s*(\042|\047)([^\\2]*?)(\\2)/is',
+                $str,
+                $matches,
+                PREG_SET_ORDER
+            );
+
+			foreach ($matches as $attr) {
+				$attribs[] = preg_quote($attr[0], '/');
+			}
+
+			// find occurrences of illegal attribute strings without quotes
+			preg_match_all(
+                '/(?<!\w)(' . implode('|', $evilAttributes) . ')\s*=\s*([^\s>]*)/is',
+                $str,
+                $matches,
+                PREG_SET_ORDER
+            );
+
+			foreach ($matches as $attr) {
+				$attribs[] = preg_quote($attr[0], '/');
+			}
+
+			// replace illegal attribute strings that are inside an html tag
+			if (count($attribs) > 0) {
+				$str = preg_replace(
+                    '/(<?)(\/?[^><]+?)([^A-Za-z<>\-])(.*?)(' . implode('|', $attribs) . ')(.*?)([\s><]?)([><]*)/i',
+                    '$1$2 $4$6$7$8',
+                    $str,
+                    -1,
+                    $count
+                );
+			}
+
+		} while ($count);
+
+		return $str;
+	}
 
     /**
      * Random Hash for protecting URLs
@@ -450,7 +548,7 @@ class Xss
 
         static $_entities;
 
-        $flag = is_php('5.4')
+        $flag = $this->isPHP('5.4')
             ? ENT_COMPAT | ENT_HTML5
             : ENT_COMPAT;
 
@@ -459,11 +557,13 @@ class Xss
             $strCompare = $str;
 
             // Decode standard entities, avoiding false positives
+
+            /*
             if (preg_match_all('/\&[a-z]{2,}(?![a-z;])/i', $str, $matches)) {
-                if ( ! isset($_entities)) {
+                if (! isset($_entities)) {
                     $_entities = array_map(
                         'strtolower',
-                        is_php('5.3.4')
+                        $this->isPHP('5.3.4')
                             ? get_html_translation_table(HTML_ENTITIES, $flag, $this->charset)
                             : get_html_translation_table(HTML_ENTITIES, $flag)
                     );
@@ -490,6 +590,8 @@ class Xss
 
                 $str = str_ireplace(array_keys($replace), array_values($replace), $str);
             }
+
+            */
 
             // Decode numeric & UTF16 two byte entities
             $str = html_entity_decode(
@@ -603,14 +705,14 @@ class Xss
             $attributes = [];
 
             // Attribute-catching pattern
-            $attributes_pattern = '#'
+            $attributesPattern = '#'
                 .'(?<name>[^\s\042\047>/=]+)' // attribute characters
                 // optional attribute-value
                 .'(?:\s*=(?<value>[^\s\042\047=><`]+|\s*\042[^\042]*\042|\s*\047[^\047]*\047|\s*(?U:[^\s\042\047=><`]*)))' // attribute-value separator
                 .'#i';
 
             // Blacklist pattern for evil attribute names
-            $is_evil_pattern = '#^(' . implode('|', $evilAttributes) . ')$#i';
+            $isEvilPattern = '#^(' . implode('|', $evilAttributes) . ')$#i';
 
             // Each iteration filters a single attribute
             do {
@@ -619,18 +721,20 @@ class Xss
                 // of numerous XSS issues we've had.
                 $matches['attributes'] = preg_replace('#^[^a-z]+#i', '', $matches['attributes']);
 
-                if (! preg_match($attributes_pattern, $matches['attributes'], $attribute, PREG_OFFSET_CAPTURE)) {
+                if (! preg_match($attributesPattern, $matches['attributes'], $attribute, PREG_OFFSET_CAPTURE)) {
                     // No (valid) attribute found? Discard everything else inside the tag
                     break;
                 }
 
                 if (
                     // Is it indeed an "evil" attribute?
-                    preg_match($is_evil_pattern, $attribute['name'][0]) ||
+                    preg_match($isEvilPattern, $attribute['name'][0]) ||
                     // Or does it have an equals sign, but no value and not quoted? Strip that too!
                     (trim($attribute['value'][0]) === '')            
                 ) {
+                    // @codeCoverageIgnoreStart
                     $attributes[] = 'xss=removed';
+                    // @codeCoverageIgnoreEnd
                 } else {
                     $attributes[] = $attribute[0][0];
                 }
@@ -645,7 +749,9 @@ class Xss
             return '<' . $matches['slash'] . $matches['tagName'] . $attributes . '>';
         }
 
+        // @codeCoverageIgnoreStart
         return $matches[0];
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -780,5 +886,25 @@ class Xss
 
         return $str;
     }
+
+    /**
+     * Determines if the PHP version being used is greater than the supplied version number.
+     *
+     * @param string $version
+     *
+     * @return bool
+     */
+    protected function isPHP($version): bool
+	{
+        static $_isPHP;
+
+		$version = (string) $version;
+
+		if (! isset($_isPHP[$version])) {
+			$_isPHP[$version] = version_compare(PHP_VERSION, $version, '>=');
+		}
+
+		return $_isPHP[$version];
+	}
 }
 

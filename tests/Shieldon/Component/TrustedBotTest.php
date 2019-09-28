@@ -73,10 +73,12 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     {
         $trustedBotComponent = new TrustedBot();
 
-        $trustedBotComponent->removeItem('.google.com');
+        $trustedBotComponent->removeItem('google');
         $list = $trustedBotComponent->getList();
 
-        if (! in_array('.google.com', $list)) {
+        $result = array_column($list, 'google');
+
+        if (empty($result)) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);

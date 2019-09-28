@@ -63,8 +63,6 @@ if (! isset($_SERVER['HTTP_HOST'])) {
     $_SERVER['HTTP_HOST'] = 'shieldon.io';
 }
 
-
-
 /**
  * Create a Sheildon instance with specific driver.
  *

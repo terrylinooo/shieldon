@@ -29,18 +29,25 @@ use Shieldon\Security\Xss;
 use Shieldon\Security\httpAuthentication;
 use Shieldon\FirewallTrait;
 
-
 use PDO;
 use PDOException;
 use Redis;
 use RedisException;
 
-use function count;
-use function explode;
+use function array_column;
+use function defined;
+use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
+use function is_array;
+use function is_dir;
+use function is_string;
 use function json_decode;
+use function json_encode;
+use function mkdir;
+use function rtrim;
 use function strpos;
+use function umask;
 
 /**
  * Managed Firewall.
@@ -154,8 +161,16 @@ class Firewall
 
                     // The reason here please check out the explanation of $restful property.
                     if ($this->restful) {
-                        header('Location: ' . $this->shieldon->getCurrentUrl(), true, 303);
-                        exit;
+
+                        // Modify the request method from POST to GET.
+                        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+                        /**
+                         * Another solution: 
+                         * 
+                         * header('Location: ' . $this->shieldon->getCurrentUrl(), true, 303);
+                         * exit;
+                         */
                     }
                 }
                 $this->shieldon->output(200);

@@ -129,12 +129,21 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         unset($results);
 
         // Test 4. Referer.
+
+         /*
         $shieldon->setFilters([
             'session'   => false,
             'cookie'    => false,
             'referer'   => true,
             'frequency' => false,
         ]);
+        */
+
+       
+        $shieldon->setFilter('session', false);
+        $shieldon->setFilter('cookie', false);
+        $shieldon->setFilter('referer', true);
+        $shieldon->setFilter('frequency', false); 
 
         $shieldon->setProperty('interval_check_referer', 1);
         $shieldon->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);

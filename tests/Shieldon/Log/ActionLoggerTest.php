@@ -17,6 +17,11 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
     {
         try {
             $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
+
+            $info = $logger->getCurrentLoggerInfo();
+
+            $this->assertIsArray($info);
+
         } catch(\Exception $e) {
             $this->assertTrue(false);
         }
@@ -24,6 +29,8 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
         if ($logger instanceof ActionLogger) {
             $this->assertTrue(true);
         }
+
+        
     }
 
     public function testAdd() 

@@ -19,7 +19,41 @@ use Shieldon\Log\LogParser;
 use Shieldon\Shieldon;
 use Shieldon\FirewallTrait;
 
+use PDO;
+use PDOException;
+use Redis;
+use RedisException;
 use ReflectionObject;
+
+use function array_push;
+use function array_values;
+use function class_exists;
+use function count;
+use function date;
+use function define;
+use function defined;
+use function explode;
+use function extract;
+use function file_exists;
+use function file_put_contents;
+use function filter_var;
+use function gethostbyaddr;
+use function header;
+use function is_array;
+use function is_dir;
+use function is_numeric;
+use function is_string;
+use function is_writable;
+use function mkdir;
+use function ob_end_clean;
+use function ob_get_contents;
+use function ob_start;
+use function parse_url;
+use function password_verify;
+use function round;
+use function strtotime;
+use function time;
+use function umask;
 
 /**
  * Firewall's Control Panel
@@ -70,6 +104,16 @@ class FirewallPanel
      */
     protected $csrfKey = '';
     protected $csrfToken = '';
+
+    /**
+     * Login as a demo user.
+     *
+     * @var array
+     */
+    protected $demoUser = [
+        'user' => 'demo',
+        'pass' => '$2y$10$MTi1ROPnHEukp5RwGNdxuOSAyhGdpc4sfQpwNCv9yHoVvgl9tz8Xy',
+    ];
 
     /**
      * Constructor.
@@ -125,6 +169,10 @@ class FirewallPanel
     public function entry()
     {
         $slug = $_GET['so_page'] ?? '';
+
+        if (isset($_POST) && 'demo' === $this->mode) {
+            unset($_POST);
+        }
 
         switch($slug) {
 
@@ -205,11 +253,32 @@ class FirewallPanel
     }
 
     /**
+     * In demo mode, user's submitting action will not take any effect.
+     *
+     * @param string $user
+     * @param string $pass
+     *
+     * @return void
+     */
+    public function demo(string $user = '', string $pass = ''): void
+    {
+        if (! empty($user)) {
+            $this->demoUser['user'] = $user;
+        }
+
+        if (! empty($pass)) {
+            $this->demoUser['pass'] = $pass;
+        }
+
+        $this->mode = 'demo';
+    }
+
+    /**
      * Setting page.
      *
      * @return void
      */
-    public function setting(): void
+    protected function setting(): void
     {
         $data[] = [];
 
@@ -226,7 +295,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function overview(): void
+    protected function overview(): void
     {
         /*
         |--------------------------------------------------------------------------
@@ -358,7 +427,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function ipManager()
+    protected function ipManager()
     {
         if (isset($_POST['ip']) && filter_var(explode('/', $_POST['ip'])[0], FILTER_VALIDATE_IP)) {
 
@@ -424,7 +493,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function exclusion(): void
+    protected function exclusion(): void
     {
         if (isset($_POST['url'])) {
 
@@ -464,7 +533,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function authentication(): void
+    protected function authentication(): void
     {
         if (isset($_POST['url']) && isset($_POST['user']) && isset($_POST['pass'])) {
 
@@ -510,7 +579,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function xssProtection(): void
+    protected function xssProtection(): void
     {
         if (isset($_POST['xss'])) {
             unset($_POST['xss']);
@@ -571,7 +640,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function dashboard(): void
+    protected function dashboard(): void
     {
         $tab = $_GET['tab'] ?? 'today';
 
@@ -619,7 +688,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function ruleTable(): void
+    protected function ruleTable(): void
     {
         if (isset($_POST['ip'])) {
 
@@ -686,7 +755,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function ipLogTable(): void
+    protected function ipLogTable(): void
     {
         $data['ip_log_list'] = $this->shieldon->driver->getAll('log');
 
@@ -700,7 +769,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function sessionTable(): void
+    protected function sessionTable(): void
     {
         $data['session_list'] = $this->shieldon->driver->getAll('session');
 
@@ -729,7 +798,7 @@ class FirewallPanel
      *
      * @return void
      */
-    protected function saveConfig()
+    private function saveConfig()
     {
         $configFilePath = $this->directory . '/' . $this->filename;
 
@@ -737,7 +806,7 @@ class FirewallPanel
             unset($_POST[$this->csrfKey]);
         }
 
-        if (empty($_POST) || ! is_array($_POST)) {
+        if (empty($_POST) || ! is_array($_POST) || 'managed' !== $this->mode) {
             return;
         }
 
@@ -782,12 +851,12 @@ class FirewallPanel
                     ];
 
                     try {
-                        $pdo = new \PDO(
+                        $pdo = new PDO(
                             'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
                             (string) $db['user'],
                             (string) $db['pass']
                         );
-                    } catch(\PDOException $e) {
+                    } catch(PDOException $e) {
                         $isDataDriverFailed = true;
                     }
                 } else {
@@ -817,8 +886,8 @@ class FirewallPanel
 
                 if (class_exists('PDO')) {
                     try {
-                        $pdo = new \PDO('sqlite:' . $sqliteFilePath);
-                    } catch(\PDOException $e) {
+                        $pdo = new PDO('sqlite:' . $sqliteFilePath);
+                    } catch(PDOException $e) {
                         $isDataDriverFailed = true;
                     }
                 } else {
@@ -835,12 +904,12 @@ class FirewallPanel
 
                 if (class_exists('Redis')) {
                     try {
-                        $redis = new \Redis();
+                        $redis = new Redis();
                         $redis->connect(
                             (string) $this->getConfig['drivers.redis.host'], 
                             (int)    $this->getConfig['drivers.redis.port']
                         );
-                    } catch(\RedisException $e) {
+                    } catch(RedisException $e) {
                         $isDataDriverFailed = true;
                     }
                 } else {
@@ -910,7 +979,31 @@ class FirewallPanel
     protected function _(string $field)
     {
         if (is_string($this->getConfig($field)) || is_numeric($this->getConfig($field))) {
-            echo $this->getConfig($field);
+
+            if ('demo' === $this->mode) {
+
+                // Hide sensitive data because of security concerns.
+                $hiddenForDemo = [
+                    'drivers.redis.auth',
+                    'drivers.file.directory_path',
+                    'drivers.sqlite.directory_path',
+                    'drivers.mysql.dbname',
+                    'drivers.mysql.user',
+                    'drivers.mysql.pass',
+                    'captcha_modules.recaptcha.config.site_key',
+                    'captcha_modules.recaptcha.config.secret_key',
+                    'loggers.action.config.directory_path',
+                ];
+
+                if (in_array($field, $hiddenForDemo)) {
+                    echo 'Cannot view this field in demo mode.';
+                } else {
+                    echo $this->getConfig($field);
+                }
+
+            } else {
+                echo $this->getConfig($field);
+            }
         }
     }
 
@@ -1069,6 +1162,10 @@ class FirewallPanel
     private function httpAuth()
     {
         $admin = $this->getConfig('admin');
+
+        if ('demo' === $this->mode) {
+            $admin = $this->demoUser;
+        }
 
         if (! isset($_SERVER['PHP_AUTH_USER']) || ! isset($_SERVER['PHP_AUTH_PW'])) {
             header('WWW-Authenticate: Basic realm=""');

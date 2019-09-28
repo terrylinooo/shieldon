@@ -79,10 +79,13 @@ class httpAuthentication
         }
     }
 
+    // @codeCoverageIgnoreStart
+
     /**
      * Identify the username and password for proected URL.
      *
      * @return void
+     *
      */
     public function check(): void
     {
@@ -108,4 +111,6 @@ class httpAuthentication
             }
         }
     }
+
+    // @codeCoverageIgnoreEnd
 }

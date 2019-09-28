@@ -1328,10 +1328,10 @@ class Shieldon
     public function setFilter($filterName, $value): self
     {
         $filters = [
-            'cookie',
-            'session',
-            'frequency',
-            'referer',
+            'cookie'    => true,
+            'session'   => true,
+            'frequency' => true,
+            'referer'   => true,
         ];
 
         if (isset($filters[$filterName])) {

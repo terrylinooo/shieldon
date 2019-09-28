@@ -173,6 +173,21 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->setConfig('cronjob.reset_circle.config.last_update', '');
         $firewall->setup();
         $firewall->run();
+
+        // Test method restful();
+        $firewall->restful();
+
+        $reflection = new \ReflectionObject($firewall);
+        $methodSetSessionId = $reflection->getMethod('restful');
+        $methodSetSessionId->setAccessible(true);
+
+        $reflection = new \ReflectionObject($firewall);
+        $p1 = $reflection->getProperty('restful');
+        $p1->setAccessible(true);
+        
+        $restful = $p1->getValue($firewall);
+       
+        $this->assertTrue($restful);
     }
 
     public function testFromPhpPConfig()

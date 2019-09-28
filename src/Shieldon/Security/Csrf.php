@@ -11,6 +11,14 @@
 
 namespace Shieldon\Security;
 
+use function md5;
+use function rand;
+use function session_start;
+use function session_status;
+use function strtoupper;
+use function time;
+use function uniqid;
+
  /**
   * Cross Site Request Forgery protection.
   */
@@ -76,7 +84,7 @@ class Csrf
         }
 
         // Do the tokens match?
-        if ($_POST[$this->name] !== $_SESSION[$this->name]) {
+        if ($_POST[$this->name] !== $_SESSION[$this->name]['hash']) {
             return false;
         }
 
@@ -129,7 +137,7 @@ class Csrf
         $nowTime = time();
 
         if (($nowTime - $hashTime) >= $this->expire || 0 === $this->expire) {
-            $this->hash = md5(uniqid(rand(), true));
+            $this->hash = md5(uniqid((string) rand()));
             $_SESSION[$this->name]['hash'] = $this->hash;
             $_SESSION[$this->name]['time'] = time();
         }
