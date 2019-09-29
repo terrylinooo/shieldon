@@ -8,7 +8,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP community.
 
 - Document: https://shield-on-php.github.io (v2)
 - V3 document site is coming soon.
-- **Version: 3.0.0-rc3**
+- **Version: 3.0.0**
 
 ## Features
 
@@ -29,12 +29,6 @@ Shieldon is a Web Application Firewall (WAF) for PHP community.
 Use PHP Composer:
 
 ```php
-// 3.x RC version.
-composer require terrylinooo/shieldon:3.0.0-rc2
-```
-
-```php
-// Stable 2.x
 composer require terrylinooo/shieldon
 ```
 
