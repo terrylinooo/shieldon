@@ -151,10 +151,6 @@ class FirewallPanel
                 'text' => 'ActionLogger is not implemented with the Shieldon instance.',
             ]);
         }
-
-        if ($this->mode !== 'self') {
-            $this->httpAuth();
-        }
     }
 
      // @codeCoverageIgnoreStart
@@ -169,6 +165,17 @@ class FirewallPanel
     public function entry()
     {
         $slug = $_GET['so_page'] ?? '';
+
+        if ('logout' === $slug) {
+            if (isset($_SERVER['PHP_AUTH_USER'])) {
+                unset($_SERVER['PHP_AUTH_USER']);
+            }
+            if (isset($_SERVER['PHP_AUTH_PW'])) {
+                unset($_SERVER['PHP_AUTH_PW']);
+            }
+        }
+
+        $this->httpAuth();
 
         if (isset($_POST) && 'demo' === $this->mode) {
             unset($_POST);
@@ -217,7 +224,7 @@ class FirewallPanel
                 break;
 
             default:
-                header('Location: ' . $this->url('settings'));
+                header('Location: ' . $this->url('overview'));
                 break;
         }
 

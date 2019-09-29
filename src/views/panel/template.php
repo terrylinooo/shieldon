@@ -49,6 +49,7 @@ function showActive(string $key = '')
                 <ul>
                     <li>Channel: <strong><?php echo $channel_name; ?></strong></li>
                     <li>Mode:  <strong><?php echo $mode_name; ?></strong></li>
+                    <li><a href="<?php echo $page_url; ?>?so_page=logout">Logout</a></li>
                 </ul>
             </div>
         </div>
