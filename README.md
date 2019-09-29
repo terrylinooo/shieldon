@@ -110,11 +110,16 @@ In your `bootstrap/app.php`, after `<?php`, add the following code.
 | conflicts with Laravel's built-in functions.
 */
 
-// Notice that this directory must be writable.
-$firewallstorage = __DIR__ . '/../storage/shieldon';
-$firewall = new \Shieldon\Firewall($firewallstorage);
-$firewall->restful();
-$firewall->run();
+if (isset($_SERVER['REQUEST_URI'])) {
+
+    // Notice that this directory must be writable.
+    $firewallstorage = __DIR__ . '/../storage/shieldon';
+
+    $firewall = new \Shieldon\Firewall($firewallstorage);
+    $firewall->restful();
+    $firewall->run();
+    
+}
 ```
 
 #### (2) Define a Route for Firewall Panel.
