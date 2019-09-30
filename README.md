@@ -6,9 +6,9 @@
 
 Shieldon is a Web Application Firewall (WAF) for PHP community. 
 
+- Document: https://shieldon.io
 - Document: https://shield-on-php.github.io (v2)
-- V3 document site is coming soon.
-- **Version: 3.0.0**
+- **Version: 3.0.1**
 
 ## Features
 
@@ -118,7 +118,6 @@ if (isset($_SERVER['REQUEST_URI'])) {
     $firewall = new \Shieldon\Firewall($firewallstorage);
     $firewall->restful();
     $firewall->run();
-    
 }
 ```
 
@@ -173,7 +172,7 @@ Although it has a basic login protection.
 
 ---
 
-## Self-built
+## Self-build
 
 If you would like to customize your own WAF, try the following steps and checkout document for public APIs you can use.
 
