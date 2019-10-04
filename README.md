@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=master)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://img.shields.io/codecov/c/github/terrylinooo/shieldon.svg)](https://codecov.io/gh/terrylinooo/shieldon) ![PHP from Packagist](https://img.shields.io/packagist/php-v/terrylinooo/shieldon.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Shieldon is a Web Application Firewall (WAF) for PHP community. 
+Shieldon is a Web Application Firewall (WAF) for PHP. 
 
 - Document: https://shieldon.io
 - Document: https://shield-on-php.github.io (v2)
