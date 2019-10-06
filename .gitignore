@@ -10,3 +10,5 @@ tests/report
 .vscode
 tmp
 clover.xml
+
+src/Shieldon/Integration
