@@ -9,7 +9,7 @@
  * 
  */
 
-namespace Shieldon\Intergration\Laravel;
+namespace Shieldon\Integration\Laravel;
 
 use Closure;
 use Shieldon\Firewall;

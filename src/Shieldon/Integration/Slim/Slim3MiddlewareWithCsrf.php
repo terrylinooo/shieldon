@@ -9,19 +9,31 @@
  * 
  */
 
-namespace Shieldon\Intergration\Slim;
+namespace Shieldon\Integration\Slim;
 
 use Shieldon\Firewall;
 
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 /**
  * Middleware for Slim 3 framework with Slim CSRF Guard.
- * 
- * Note: This middleware must be implemented after Slim CSRF Guard.
- * 
- * @since 3.1.0
+ * Please notice that, this middleware must be implemented after Slim CSRF Guard.
+ *
+ * @since 3.0.1
  */
-class Slim3MiddlewareWithCsrf
+class Slim3MiddlewareWithCsrf extends Slim3Middleware
 {
+    /**
+     * Constructor.
+     *
+     * @param string $storage See property `storage` explanation in Slim3Middleware.
+     */
+    public function __construct($storage = '')
+    {
+        parent::__construct($storage);
+    }
+
     /**
      * Shieldon middleware invokable class
      *
@@ -31,17 +43,14 @@ class Slim3MiddlewareWithCsrf
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function __invoke($request, $response, $next)
+    public function __invoke(Request $request, Response $response, $next)
     {
-        $name = $request->getAttribute('csrf_name');
-        $value = $request->getAttribute('csrf_value');
-
         $firewall = new Firewall(storage_path('shieldon'));
 
-        // Pass Laravel CSRF Token to Captcha form.
+        // Pass Slim CSRF Token to Captcha form.
         $firewall->shieldon->setCaptcha(new \Shieldon\Captcha\Csrf([
-            'key' => $name,
-            'value' => $value,
+            'key' => $request->getAttribute('csrf_name'),
+            'value' => $request->getAttribute('csrf_value'),
         ]));
 
         $firewall->restful();

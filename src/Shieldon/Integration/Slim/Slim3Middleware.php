@@ -9,17 +9,41 @@
  * 
  */
 
-namespace Shieldon\Intergration\Slim;
+namespace Shieldon\Integration\Slim;
 
 use Shieldon\Firewall;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Middleware for Slim 3 framework
  * 
- * @since 3.1.0
+ * @since 3.0.1
  */
 class Slim3Middleware
 {
+    /**
+     * The absolute path of the storage where stores Shieldon generated data.
+     *
+     * @var string
+     */
+    protected $storage = '';
+
+    /**
+     * Constructor.
+     *
+     * @param string $storage See property `storage` explanation.
+     */
+    public function __construct($storage = '')
+    {
+        // shieldon folder is placed above wwwroot for best security, this folder must be writable.
+        $this->storage = dirname($_SERVER['SCRIPT_FILENAME']) . '/../shieldon';
+
+        if ('' !== $storage) {
+            $this->storage = $storage;
+        }
+    }
+
     /**
      * Shieldon middleware invokable class
      *
@@ -29,9 +53,9 @@ class Slim3Middleware
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function __invoke($request, $response, $next)
+    public function __invoke(Request $request, Response $response, $next)
     {
-        $firewall = new Firewall(storage_path('shieldon'));
+        $firewall = new Firewall($this->storage);
         $firewall->restful();
         $firewall->run();
 
