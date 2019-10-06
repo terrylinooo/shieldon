@@ -165,6 +165,7 @@ class Firewall
                         // Modify the request method from POST to GET.
                         $_SERVER['REQUEST_METHOD'] = 'GET';
                         header('Location: ' . $this->shieldon->getCurrentUrl(), true, 303);
+                        die($_SERVER['REQUEST_METHOD']);
                         exit;
                     }
                 }

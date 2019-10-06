@@ -9,7 +9,7 @@
  * 
  */
 
-namespace Shieldon\Integrationl;
+namespace Shieldon\Integration;
 
 use Shieldon\Firewall;
 use Shieldon\FirewallPanel;
@@ -24,17 +24,18 @@ use Shieldon\FirewallPanel;
 class ShieldonController
 {
     /**
-     * Shieldon controller invokable class
+     * Shieldon controller.
      *
      * @param string $storage         The absolute path of the storage where stores Shieldon generated data.
      * @param string $panelRequestURI The entry URL of Firewall Panel.
      *
      * @return null|\Shieldon\Firewall
      */
-    public function __invoke($storagePath = '', $panelRequestURI = '/Glory-to-Hong-Kong/')
+    public function __construct($storagePath = '', $panelRequestURI = '')
     {
-        // Prevent possible issues occur in CLI command line.
         if (isset($_SERVER['REQUEST_URI'])) {
+            // Prevent possible issues occur in CLI command line.
+            // Therefore we have to check out the REQUEST_URI variable that exists or not first.
 
             if ('' === $storagePath) {
 
@@ -44,15 +45,21 @@ class ShieldonController
 
             $firewall = new Firewall($storagePath);
 
-            if (0 === strpos($firewall->getShieldon()->getCurrentUrl(), $panelRequestURI)) {
+            if (
+                ! empty($panelRequestURI) &&
+                0 === strpos($firewall->getShieldon()->getCurrentUrl(), $panelRequestURI)
+            ) {
 
                 // Get into the Firewall Panel.
                 $controlPanel = new FirewallPanel($firewall);
                 $controlPanel->entry();
+                exit;
             }
 
             $firewall->restful();
             $firewall->run();
+
+            return $firewall;
         }
     }
 }

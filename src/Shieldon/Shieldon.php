@@ -318,9 +318,9 @@ class Shieldon
         $this->setSessionId();
 
         // At least load a captcha instance. Example is the base one.
-        if (! isset($this->captcha['Example'])) {
-            $this->setCaptcha(new \Shieldon\Captcha\Example());
-        }
+        // if (! isset($this->captcha['Example'])) {
+        $this->setCaptcha(new \Shieldon\Captcha\Example());
+        // }
 
         if (! empty($properties)) {
             $this->setProperties($properties);
@@ -829,9 +829,11 @@ class Shieldon
     public function setCaptcha(CaptchaInterface $instance): self
     {
         if ($instance instanceof CaptchaInterface) {
-            $class = get_class($instance);
-            $class = substr($class, strrpos($class, '\\') + 1);
-            $this->captcha[$class] = $instance;
+            // $class = get_class($instance);
+            // $class = substr($class, strrpos($class, '\\') + 1);
+            // $this->captcha[$class] = $instance;
+
+            $this->captcha[] = $instance;
         }
 
         return $this;

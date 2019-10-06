@@ -236,12 +236,12 @@ class FirewallPanel
      * Most popular PHP framework has a built-in CSRF protection such as Laravel.
      * We need to pass the CSRF token for our form actions.
      *
-     * @param string $name
-     * @param string $value
+     * @param string|null $name
+     * @param string|null $value
      *
      * @return void
      */
-    public function csrf(string $name = '', string $value = ''): void
+    public function csrf($name = '', $value = ''): void
     {
         $this->csrfKey = $name;
         $this->csrfToken = $value;
@@ -254,7 +254,7 @@ class FirewallPanel
      */
     public function _csrf(): void
     {
-        if ($this->csrfKey !== '') {
+        if (! empty($this->csrfKey)) {
             echo '<input type="hidden" name="' . $this->csrfKey . '" value="' . $this->csrfToken . '" id="csrf-field">';
         }
     }

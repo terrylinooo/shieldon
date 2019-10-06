@@ -33,8 +33,8 @@ class LaravelMiddleware
         $firewall = new Firewall(storage_path('shieldon'));
 
         // Pass Laravel CSRF Token to Captcha form.
-        $firewall->shieldon->setCaptcha(new \Shieldon\Captcha\Csrf([
-            'key' => '_token',
+        $firewall->getShieldon()->setCaptcha(new \Shieldon\Captcha\Csrf([
+            'name' => '_token',
             'value' => csrf_token(),
         ]));
         
