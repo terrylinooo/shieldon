@@ -9,6 +9,10 @@
     <filter>
         <whitelist>
             <directory suffix=".php">src/Shieldon/</directory>
+			<exclude>
+				<file>src/Shieldon/Autoloader.php</file>
+				<directory suffix=".php">src/Shieldon/Integation</directory>
+			</exclude>
         </whitelist>
     </filter>
     <php>
