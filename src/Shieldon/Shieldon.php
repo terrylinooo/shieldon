@@ -337,7 +337,7 @@ class Shieldon
      *
      * @return integer
      */
-    protected function detect(): int
+    protected function filter(): int
     {
         $now = time();
         $logData = [];
@@ -1119,7 +1119,7 @@ class Shieldon
      * Run, run, run!
      *
      * Check the rule tables first, if an IP address has been listed.
-     * Call function detect() if an IP address is not listed in rule tables.
+     * Call function filter() if an IP address is not listed in rule tables.
      *
      */
     public function run(): int
@@ -1190,7 +1190,7 @@ class Shieldon
      * Run, run, run!
      *
      * Check the rule tables first, if an IP address has been listed.
-     * Call function detect() if an IP address is not listed in rule tables.
+     * Call function filter() if an IP address is not listed in rule tables.
      *
      * @return int RESPONSE_CODE
      */
@@ -1284,7 +1284,7 @@ class Shieldon
 
         // This IP address is not listed in rule table, let's detect it.
         if ($this->enableFiltering) {
-            return $this->result = $this->sessionHandler($this->detect());
+            return $this->result = $this->sessionHandler($this->filter());
         }
 
         return $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
