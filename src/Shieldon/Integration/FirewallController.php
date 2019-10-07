@@ -21,7 +21,7 @@ use Shieldon\FirewallPanel;
  * 
  * @since 3.0.1
  */
-class ShieldonController
+class FirewallController
 {
     /**
      * Shieldon controller.
@@ -29,7 +29,7 @@ class ShieldonController
      * @param string $storage         The absolute path of the storage where stores Shieldon generated data.
      * @param string $panelRequestURI The entry URL of Firewall Panel.
      *
-     * @return null|\Shieldon\Firewall
+     * @return void
      */
     public function __construct($storagePath = '', $panelRequestURI = '')
     {
@@ -45,10 +45,7 @@ class ShieldonController
 
             $firewall = new Firewall($storagePath);
 
-            if (
-                ! empty($panelRequestURI) &&
-                0 === strpos($firewall->getShieldon()->getCurrentUrl(), $panelRequestURI)
-            ) {
+            if (! empty($panelRequestURI) && 0 === strpos($_SERVER['REQUEST_URI'], $panelRequestURI)) {
 
                 // Get into the Firewall Panel.
                 $controlPanel = new FirewallPanel($firewall);
@@ -58,8 +55,6 @@ class ShieldonController
 
             $firewall->restful();
             $firewall->run();
-
-            return $firewall;
         }
     }
 }

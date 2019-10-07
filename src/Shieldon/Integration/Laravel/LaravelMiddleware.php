@@ -11,8 +11,11 @@
 
 namespace Shieldon\Integration\Laravel;
 
-use Closure;
 use Shieldon\Firewall;
+use Closure;
+use Illuminate\Http\Request;
+
+use function storage_path; // Laravel helper.
 
 /**
  * Middleware for Laravel framework (5.x - 6.x)
@@ -24,11 +27,11 @@ class LaravelMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request
+     * @param Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $firewall = new Firewall(storage_path('shieldon'));
 
