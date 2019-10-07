@@ -21,31 +21,31 @@ use Shieldon\FirewallPanel;
  * 
  * @since 3.0.1
  */
-class FirewallController
+class FirewallBootstrapper
 {
     /**
      * Shieldon controller.
      *
-     * @param string $storage         The absolute path of the storage where stores Shieldon generated data.
-     * @param string $panelRequestURI The entry URL of Firewall Panel.
+     * @param string $storage    The absolute path of the storage where stores Shieldon generated data.
+     * @param string $requestURI The entry URL of Firewall Panel.
      *
      * @return void
      */
-    public function __construct($storagePath = '', $panelRequestURI = '')
+    public function __construct($storage = '', $requestURI = '')
     {
         if (isset($_SERVER['REQUEST_URI'])) {
             // Prevent possible issues occur in CLI command line.
             // Therefore we have to check out the REQUEST_URI variable that exists or not first.
 
-            if ('' === $storagePath) {
+            if ('' === $storage) {
 
                 // shieldon folder is placed above wwwroot for best security, this folder must be writable.
-                $storagePath = dirname($_SERVER['SCRIPT_FILENAME']) . '/../shieldon';
+                $storage = dirname($_SERVER['SCRIPT_FILENAME']) . '/../shieldon';
             }
 
-            $firewall = new Firewall($storagePath);
+            $firewall = new Firewall($storage);
 
-            if (! empty($panelRequestURI) && 0 === strpos($_SERVER['REQUEST_URI'], $panelRequestURI)) {
+            if (! empty($requestURI) && 0 === strpos($_SERVER['REQUEST_URI'], $requestURI)) {
 
                 // Get into the Firewall Panel.
                 $controlPanel = new FirewallPanel($firewall);

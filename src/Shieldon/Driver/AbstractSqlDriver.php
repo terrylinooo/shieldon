@@ -10,7 +10,12 @@
 
 namespace Shieldon\Driver;
 
+use Exception;
 use PDO;
+
+use function is_array;
+use function is_bool;
+
 /**
  * Abstract Mysql Driver.
  */
@@ -347,7 +352,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
         
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             return false;
         }
 
@@ -406,7 +411,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
 
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             return false;
         }
 
@@ -459,7 +464,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
 
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             return false;
         }
 
@@ -514,7 +519,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
@@ -545,7 +550,7 @@ abstract class AbstractSqlDriver extends DriverProvider
 
         // @codeCoverageIgnoreStart
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 

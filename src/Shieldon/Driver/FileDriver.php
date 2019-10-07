@@ -10,11 +10,21 @@
 
 namespace Shieldon\Driver;
 
-use RuntimeException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RuntimeException;
+
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
+use function is_dir;
+use function json_decode;
+use function ksort;
 use function mkdir;
-use function is_string;
+use function rmdir;
+use function touch;
+use function umask;
+use function unlink;
 
 /**
  * File Driver
@@ -337,8 +347,8 @@ class FileDriver extends DriverProvider
     /**
      * Get filename.
      *
-     * @param string $ip
-     * @param string $type
+     * @param string $ip   IP address.
+     * @param string $type The table name of the data cycle.
      *
      * @return string
      */
@@ -347,7 +357,7 @@ class FileDriver extends DriverProvider
         switch ($type) {
             case 'log'    : return $this->directory . '/' . $this->tableLogs       . '/' . $ip . '.' . $this->extension;
             case 'session': return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
-            case 'rule'   : return $this->directory . '/' . $this->tableRuleList . '/' . $ip . '.' . $this->extension;
+            case 'rule'   : return $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
         }
 
         return '';
@@ -356,7 +366,8 @@ class FileDriver extends DriverProvider
     /**
      * Get directory.
      *
-     * @param string $type
+     * @param string $type The table name of the data cycle.
+     *
      * @return string
      */
     private function getDirectory(string $type = 'log'): string

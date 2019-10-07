@@ -16,6 +16,7 @@ use Closure;
 use Illuminate\Http\Request;
 
 use function storage_path; // Laravel helper.
+use function csrf_token;   // Laravel helper.
 
 /**
  * Middleware for Laravel framework (5.x - 6.x)

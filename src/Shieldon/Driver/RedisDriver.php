@@ -12,6 +12,12 @@ namespace Shieldon\Driver;
 
 use Redis;
 
+use function is_array;
+use function is_bool;
+use function json_decode;
+use function json_encode;
+use function ksort;
+
 /**
  * Redis Driver
  */
