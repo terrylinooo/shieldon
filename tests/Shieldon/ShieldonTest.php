@@ -506,7 +506,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $t->setAccessible(true);
         $refectedCaptcha = $t->getValue($shieldon);
 
-        if ($refectedCaptcha['ImageCaptcha'] === $imageCaptcha) {
+        if ($refectedCaptcha[1] instanceof $imageCaptcha) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);

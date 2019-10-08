@@ -21,7 +21,7 @@ use Shieldon\FirewallPanel;
  * 
  * @since 3.0.1
  */
-class FirewallBootstrapper
+class Bootstrapper
 {
     /**
      * Shieldon controller.

@@ -12,11 +12,8 @@
 namespace Shieldon\Integration\Laravel;
 
 use Shieldon\Firewall;
-use Closure;
-use Illuminate\Http\Request;
-
-use function storage_path; // Laravel helper.
-use function csrf_token;   // Laravel helper.
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Middleware for Laravel framework (5.x - 6.x)
