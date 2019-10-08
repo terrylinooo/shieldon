@@ -100,10 +100,9 @@ class FirewallPanel
     /**
      * see $this->csrf()
      *
-     * @var string
+     * @var array
      */
-    protected $csrfKey = '';
-    protected $csrfToken = '';
+    protected $csrfField = [];
 
     /**
      * Login as a demo user.
@@ -146,10 +145,7 @@ class FirewallPanel
 
         } else {
 
-            array_push($this->messages, [
-                'type' => 'error',
-                'text' => 'ActionLogger is not implemented with the Shieldon instance.',
-            ]);
+            $this->responseMessage('warning', 'ActionLogger is not implemented with the Shieldon instance.');
         }
     }
 
@@ -236,15 +232,39 @@ class FirewallPanel
      * Most popular PHP framework has a built-in CSRF protection such as Laravel.
      * We need to pass the CSRF token for our form actions.
      *
-     * @param string|null $name
-     * @param string|null $value
+     * @param string|array $csrfparams
      *
      * @return void
      */
-    public function csrf($name = '', $value = ''): void
+    public function csrf(...$csrfparams): void
     {
-        $this->csrfKey = $name;
-        $this->csrfToken = $value;
+        if (1 === count($csrfparams)) {
+
+            foreach ($csrfparams as $key => $value) {
+
+                $this->csrfField[] = [
+                    'name' => $key,
+                    'value' => $value,
+                ];
+            }
+
+        } elseif (2 === count($csrfparams)) {
+
+            if (! empty($csrfparams[0]) && is_string($csrfparams[0])) {
+                $csrfKey = $csrfparams[0];
+            }
+    
+            if (! empty($csrfparams[1]) && is_string($csrfparams[1])) {
+                $csrfValue = $csrfparams[1];
+            }
+
+            if (! empty($csrfKey)) {
+                $this->csrfField[] = [
+                    'name' => $csrfKey,
+                    'value' => $csrfValue,
+                ];
+            }
+        }
     }
 
     /**
@@ -254,8 +274,10 @@ class FirewallPanel
      */
     public function _csrf(): void
     {
-        if (! empty($this->csrfKey)) {
-            echo '<input type="hidden" name="' . $this->csrfKey . '" value="' . $this->csrfToken . '" id="csrf-field">';
+        if (! empty($this->csrfField)) {
+            foreach ($this->csrfField as $value) {
+                echo '<input type="hidden" name="' . $value['name'] . '" value="' . $value['value'] . '" id="csrf-field">';
+            }
         }
     }
 
@@ -809,8 +831,10 @@ class FirewallPanel
     {
         $configFilePath = $this->directory . '/' . $this->filename;
 
-        if (! empty($this->csrfKey)) {
-            unset($_POST[$this->csrfKey]);
+        foreach ($this->csrfField as $csrfInfo) {
+            if (! empty($csrfInfo['name'])) {
+                unset($_POST[$csrfInfo['name']]);
+            }
         }
 
         if (empty($_POST) || ! is_array($_POST) || 'managed' !== $this->mode) {
@@ -850,11 +874,11 @@ class FirewallPanel
 
                 if (class_exists('PDO')) {
                     $db = [
-                        'host'    => $this->getConfig['drivers.mysql.host'],
-                        'dbname'  => $this->getConfig['drivers.mysql.dbname'],
-                        'user'    => $this->getConfig['drivers.mysql.user'],
-                        'pass'    => $this->getConfig['drivers.mysql.pass'],
-                        'charset' => $this->getConfig['drivers.mysql.charset'],
+                        'host'    => $this->getConfig('drivers.mysql.host'),
+                        'dbname'  => $this->getConfig('drivers.mysql.dbname'),
+                        'user'    => $this->getConfig('drivers.mysql.user'),
+                        'pass'    => $this->getConfig('drivers.mysql.pass'),
+                        'charset' => $this->getConfig('drivers.mysql.charset'),
                     ];
 
                     try {
@@ -865,9 +889,11 @@ class FirewallPanel
                         );
                     } catch(PDOException $e) {
                         $isDataDriverFailed = true;
+                        $this->responseMessage('error', "Cannot access to your MySQL database, please check your settings.");
                     }
                 } else {
                     $isDataDriverFailed = true;
+                    $this->responseMessage('error', "Your system doesn't support MySQL driver.");
                 }
 
                 break;
@@ -896,13 +922,16 @@ class FirewallPanel
                         $pdo = new PDO('sqlite:' . $sqliteFilePath);
                     } catch(PDOException $e) {
                         $isDataDriverFailed = true;
+                        $this->responseMessage('error', $e->getMessage());
                     }
                 } else {
                     $isDataDriverFailed = true;
+                    $this->responseMessage('error', "Your system doesn't support SQLite driver.");
                 }
 
                 if (! is_writable($sqliteFilePath)) {
                     $isDataDriverFailed = true;
+                    $this->responseMessage('error', "SQLite data driver requies the storage directory writable.");
                 }
 
                 break;
@@ -913,14 +942,16 @@ class FirewallPanel
                     try {
                         $redis = new Redis();
                         $redis->connect(
-                            (string) $this->getConfig['drivers.redis.host'], 
-                            (int)    $this->getConfig['drivers.redis.port']
+                            (string) $this->getConfig('drivers.redis.host'), 
+                            (int)    $this->getConfig('drivers.redis.port')
                         );
                     } catch(RedisException $e) {
                         $isDataDriverFailed = true;
+                        $this->responseMessage('error', $e->getMessage());
                     }
                 } else {
                     $isDataDriverFailed = true;
+                    $this->responseMessage('error', "Your system doesn't support Redis driver.");
                 }
 
                 break;
@@ -945,6 +976,7 @@ class FirewallPanel
 
                 if (! is_writable($fileDir)) {
                     $isDataDriverFailed = true;
+                    $this->responseMessage('error', "File data driver requies the storage directory writable.");
                 }
             // endswitch
         }
@@ -968,12 +1000,14 @@ class FirewallPanel
     
             if (! is_writable($actionLogDir)) {
                 $isDataDriverFailed = true;
+                $this->responseMessage('error', "Action Logger requies the storage directory writable.");
             }
         }
 
         // Only update settings while data driver is correctly connected.
         if (! $isDataDriverFailed) {
             file_put_contents($configFilePath, json_encode($this->configuration));
+            $this->responseMessage('success', "Settings saved.");
         }
     }
 
@@ -1134,6 +1168,26 @@ class FirewallPanel
         $content['content'] = $this->loadView($page, $data);
 
         $this->loadView('panel/template', $content, true);
+    }
+
+    /**
+     * Response message to front.
+     *
+     * @param string $type
+     * @param string $text
+     *
+     * @return void
+     */
+    private function responseMessage(string $type, string $text)
+    {
+        if ($type == 'error') {
+            $type = 'danger';
+        }
+
+        array_push($this->messages, [
+            'type' => $type,
+            'text' => $text,
+        ]);
     }
 
     /**

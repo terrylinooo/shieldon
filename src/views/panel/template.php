@@ -126,6 +126,30 @@ function showActive(string $key = '')
                 </div>
             </div>
         </div>
+
+        <?php if (! empty($this->messages)) : ?>
+        <div id="message-modal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Message</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <?php foreach ($this->messages as $msgInfo) : ?>
+                            <p class="text-<?php echo $msgInfo['type']; ?>">
+                                <?php echo $msgInfo['text']; ?>
+                            </p>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script> $('#message-modal').modal(); </script>
+        <?php endif; ?>
+
         <script>
 
             $(function() {
