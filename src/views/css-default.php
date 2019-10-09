@@ -87,6 +87,7 @@ $css = <<< EOF
     } 
 
     .so-credit {
+        display: block;
         padding: 0 10px 10px 10px;
         font-size: 12px;
     }
