@@ -330,6 +330,8 @@ class Shieldon
         $this->currentUrl = $_SERVER['REQUEST_URI'];
     
         $this->setIp('', true);
+
+        include __DIR__ . '/helpers.php';
     }
 
     /**
@@ -1063,7 +1065,6 @@ class Shieldon
                 }
 
                 $css = require self::SHIELDON_DIR . '/../views/css-default.php';
-                $lang = require self::SHIELDON_DIR . '/../views/lang.php';
 
                 ob_start();
                 require $viewPath;
