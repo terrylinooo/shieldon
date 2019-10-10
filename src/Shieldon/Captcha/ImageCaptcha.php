@@ -140,7 +140,7 @@ class ImageCaptcha implements CaptchaInterface
         $base64image = $this->createCaptcha();
 
         if (! empty($base64image)) {
-            $html = '<div style="padding: 0x; overflow: hidden; margin: 10px 0;">';
+            $html = '<div style="padding: 0px; overflow: hidden; margin: 10px 0;">';
             $html .= '<div style="
                 border: 1px #dddddd solid;
                 overflow: hidden;
@@ -148,8 +148,8 @@ class ImageCaptcha implements CaptchaInterface
                 display: inline-block;
                 padding: 5px;
                 box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.08);">';
-            $html .= '<img src="data:image/' . $this->imageType . ';base64,' . $base64image . '" style="width: ' . $this->properties['img_width'] . '; height: ' . $this->properties['img_height'] . ';">';
-            $html .= '<br /><input type="text" name="shieldon_image_captcha" style="
+            $html .= '<div style="margin-bottom: 2px;"><img src="data:image/' . $this->imageType . ';base64,' . $base64image . '" style="width: ' . $this->properties['img_width'] . '; height: ' . $this->properties['img_height'] . ';"></div>';
+            $html .= '<div><input type="text" name="shieldon_image_captcha" style="
                 width: 100px;
                 border: 1px solid rgba(27,31,35,.2);
                 border-radius: 3px;
@@ -159,7 +159,7 @@ class ImageCaptcha implements CaptchaInterface
                 line-height: 20px;
                 box-shadow: inset 0 1px 2px rgba(27,31,35,.075);
                 vertical-align: middle;
-                padding: 6px 12px;;">';
+                padding: 6px 12px;;"></div>';
             $html .= '</div>';
             $html .= '</div>';
         }
