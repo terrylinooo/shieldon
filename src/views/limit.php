@@ -176,16 +176,17 @@ EOF;
                             <?php _e('core', 'limit.message', 'This page is limiting the number of people online. Please wait a moment.'); ?>
 						</div>
 					</div>
-                    <?php if ($showLineupInformation || $showOnlineInformation) : ?>
-                        <div class="status-info">
-                            <?php if ($showLineupInformation) : ?>
-                                <?php _e('core', 'lineup_info', '', ['<strong>' . $this->currentWaitNumber . '</strong>']); ?><br />
-                            <?php endif; ?>
-                            <?php if ($showOnlineInformation) : ?>
-                                <?php _e('core', 'online_info', '', ['<strong>' . $this->sessionCount . '</strong>']); ?>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
+ 
+                    <div class="status-info">
+                        <?php _e('core', 'lineup_info', '', ['<strong>' . $this->currentWaitNumber . '</strong>']); ?><br />
+
+                        <?php if ($showOnlineInformation) : ?>
+                            <?php _e('core', 'online_info', '', ['<strong>' . $this->sessionCount . '</strong>']); ?><br />
+                        <?php endif; ?>
+
+                        <br /><small><?php _e('core', 'keepalive_info', '', [$this->isLimitSession[1]]); ?></small>
+
+                    </div>
 				</div>
 			</div>
 		</div>

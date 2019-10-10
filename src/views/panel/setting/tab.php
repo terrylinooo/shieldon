@@ -30,3 +30,9 @@ $tab = $_POST['tab'] ?? 'daemon';
 <label for="tab4" class="tab">
     <i class="fas fa-puzzle-piece"></i> CAPTCHAs
 </label>
+
+<input id="tab5" type="radio" name="tabs" class="tab" value="dialog_ui" <?php $this->checked($tab, 'dialog_ui', false); ?> />
+<label for="tab5" class="tab">
+    <i class="far fa-window-maximize"></i> Dialog UI
+</label>
+

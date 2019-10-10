@@ -435,4 +435,18 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Dialog UI
+    |--------------------------------------------------------------------------
+    */
+
+    'dialog_ui' => [
+        'lang'                     => 'en',
+        'background_image'         => '',
+        'background_color'         => '#ffffff',
+        'header_background_color'  => '#212531',
+        'header_color'             => '#ffffff',
+        'shadow_opacity'           => '0.2',
+    ],
 ];

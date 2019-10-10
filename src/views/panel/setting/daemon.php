@@ -211,7 +211,10 @@
     <table class="setting-table">
         <tr>
             <td class="r1"></td>
-            <td class="r2"><p>When the online user amount has reached the limit, other users not in the queue have to line up!</p></td>
+            <td class="r2">
+                <p>When the online user amount has reached the limit, other users not in the queue have to line up!<br />The following image is an example.</p>
+                <p><img src="https://shieldon-io.github.io/static/images/please-line-up.png"></p>
+            </td>
         </tr>
         <tr>
             <td class="r1">Online Limit</td>

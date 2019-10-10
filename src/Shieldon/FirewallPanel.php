@@ -863,6 +863,10 @@ class FirewallPanel
                     }
                 }
             }
+
+            if ($postKey === 'dialog_ui__shadow_opacity') {
+                $this->setConfig(str_replace('__', '.', $postKey), (string) $postData);
+            }
         }
 
         //  Start checking the availibility of the data driver settings.
@@ -1007,6 +1011,7 @@ class FirewallPanel
         // Only update settings while data driver is correctly connected.
         if (! $isDataDriverFailed) {
             file_put_contents($configFilePath, json_encode($this->configuration));
+
             $this->responseMessage('success', "Settings saved.");
         }
     }

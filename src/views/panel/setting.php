@@ -32,6 +32,10 @@ $timezone = '';
         <section id="content4" class="tab-section">
             <?php $this->_include('panel/setting/captchas'); ?>
         </section>
+
+        <section id="content5" class="tab-section">
+            <?php $this->_include('panel/setting/dialog_ui'); ?>
+        </section>
     </div>
     <div class="d-flex justify-content-center py-2">
         <button type="submit" class="btn btn-enter"><i class="fas fa-fire-alt"></i> SAVE</button>

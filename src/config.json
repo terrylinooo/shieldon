@@ -115,7 +115,7 @@
         "HTTP_X_FORWARDED_HOST": false
     },
     "online_session_limit": {
-        "enable": true,
+        "enable": false,
         "config": {
             "count": 100,
             "period": 300
@@ -184,5 +184,13 @@
             "user": "wp_shieldon_admin",
             "pass": "$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq"
         }
-    ]
+    ],
+    "dialog_ui": {
+        "background_image": "",
+        "background_color": "#ffffff",
+        "header_background_color": "#212531",
+        "header_color": "#ffffff",
+        "shadow_opacity": "0.2",
+        "lang": "en"
+    }
 }

@@ -12,7 +12,8 @@ return [
     'stop.message' => 'Please complete the CAPTCHA to confirm you are a human.',
     'stop.submit' => 'Submit',
     'credit' => 'This website is protected by {0} open source project.',
-    'lineup_info' => 'Your queue number: {0}',
+    'lineup_info' => 'Number of users ahead of you: {0}',
     'online_info' => 'Online users: {0}',
+    'keepalive_info' => 'After entering, each user has {0} seconds to view this page.',
 ];
 

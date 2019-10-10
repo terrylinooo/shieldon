@@ -12,6 +12,7 @@ return[
     'stop.message' => '请完成 CAPTCHA 验证确认您是人类。',
     'stop.submit' => '送出',
     'credit' => '这个网站由 {0} 开源专案防护。',
-    'lineup_info' => '您的号码牌：{0}',
+    'lineup_info' => '排在您之前的人数：{0}',
     'online_info' => '在线人数：{0}',
+    'keepalive_info' => '在进入后，每位使用者有 {0} 秒钟的时间可以检视这个页面。',
 ];

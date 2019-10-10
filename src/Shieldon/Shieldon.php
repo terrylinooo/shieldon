@@ -189,9 +189,9 @@ class Shieldon
         'cookie_domain'          => '',
         'cookie_value'           => '1',
         'lang'                   => 'en',
-        'display_credit_link'    => true,
         'display_online_info'    => true,
         'display_lineup_info'    => true,
+        'display_user_info'      => false,
     ];
 
     /**
@@ -265,6 +265,9 @@ class Shieldon
      */
     private $currentSessionOrder = 0;
 
+
+
+
     /**
      * Used on limitSession.
      *
@@ -331,6 +334,9 @@ class Shieldon
     
         $this->setIp('', true);
 
+        /**
+         * @since 3.1.0
+         */
         include __DIR__ . '/helpers.php';
     }
 
@@ -975,6 +981,7 @@ class Shieldon
     public function limitSession(int $count = 1000, int $period = 300): self
     {
         $this->isLimitSession = [$count, $period];
+
         return $this;
     }
 
@@ -1022,15 +1029,12 @@ class Shieldon
             // @codeCoverageIgnoreEnd
         }
 
+        header('X-Protected-By: shieldon.io');
+
         /**
          * @var string The language of output UI. It is used on views.
          */
         $langCode = $this->properties['lang'] ?? 'en';
-
-        /**
-         * @var bool Show Shieldon's credit link. It is used on views.
-         */
-        $showCreditLink = true;
 
         /**
          * @var bool Show online session count. It is used on views.
@@ -1042,24 +1046,36 @@ class Shieldon
          */
         $showLineupInformation = true;
 
+        /**
+         * @var bool Show user information such as IP, user-agent, device name.
+         */
+        $showUserInformation = true;
+
         // Use default template if there is no custom HTML template.
         if (empty($this->html[$type])) {
 
             $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.php';
 
-            if (empty($this->properties['display_credit_link'])) {
-                $showCreditLink = false;
-            }
-
             if (empty($this->properties['display_lineup_info'])) {
-                $showCreditLink = false;
+                $showLineupInformation = false;
             }
 
             if (empty($this->properties['display_online_info'])) {
-                $showCreditLink = false;
+                $$showOnlineInformation = false;
+            }
+
+            if (empty($this->properties['display_user_info'])) {
+                $showUserInformation = false;
+            }
+
+            if ($showUserInformation) {
+                $dialoguserinfo['ip'] = $this->ip;
+                $dialoguserinfo['rdns'] = $this->ipResolvedHostname;
+                $dialoguserinfo['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
             }
 
             if (file_exists($viewPath)) {
+
                 if (! defined('SHIELDON_VIEW')) {
                     define('SHIELDON_VIEW', true);
                 }
@@ -1096,9 +1112,8 @@ class Shieldon
             // @codeCoverageIgnoreEnd
         }
 
-
         // Remove unused variable notices generated from PHP intelephense.
-        unset($langCode, $showCreditLink, $showOnlineInformation, $showLineupInformation);
+        unset($langCode, $showOnlineInformation, $showLineupInformation, $showUserInformation);
         unset($css, $lang);
 
         if ($echo) {

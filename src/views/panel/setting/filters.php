@@ -24,7 +24,8 @@
         <tr>
             <td class="r1"></td>
             <td class="r2">
-                <p>Don't worry about the human visitors, if they reach the limit and get banned, they can easily continue surfing your website by solving CAPTCHA.</p>
+                <p>Don't worry about the human visitors, if they reach the limit and get banned, they can easily continue surfing your website by solving CAPTCHA.<br />The following image is an example.</p>
+                <p><img src="https://shieldon-io.github.io/static/images/captcha_form.png"></p>
             </td>
         </tr>
         <tr>
