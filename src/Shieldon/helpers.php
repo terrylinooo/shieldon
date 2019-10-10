@@ -11,6 +11,10 @@
 namespace Shieldon\Helper;
 
 /**
+ * @since 3.1.0
+ */
+
+/**
  * Get locale message.
  *
  * @return string
