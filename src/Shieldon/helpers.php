@@ -49,7 +49,7 @@ function __(): string
         $resultString = $i18n[$filename][$langcode];
     }
 
-    if (! empty($replacement)) { 
+    if (is_array($replacement)) { 
         /**
          * Example:
          *     __('test', 'example_string', 'Search results: {0} items. Total items: {1}.', [5, 150]);
@@ -57,7 +57,7 @@ function __(): string
          * Result:
          *     Search results: 5 items. Total items: 150.
          */
-        for ($i = 0; $i < count($replacement); $i++) {
+        foreach ($replacement as $i => $r) {
             $resultString = str_replace('{' . $i . '}', $replacement[$i], $resultString);
         }
     }
