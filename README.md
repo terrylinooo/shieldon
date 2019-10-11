@@ -6,8 +6,7 @@
 
 Shieldon is a Web Application Firewall (WAF) for PHP. 
 
-- Document: https://shieldon.io
-
+- Website: [https://shieldon.io](https://shieldon.io/)
 - **Version: 3.1.0**
 
 ## Features
@@ -46,7 +45,7 @@ For Laravel lovers, you can choose Middleware or Bootstrap to implement Shieldon
 
 ### Middleware
 
-#### (1) Define a Middleware.
+#### 1. Define a Middleware.
 
 Define a middleware named `ShieldonFirewall`
 ```
@@ -67,14 +66,14 @@ $firewall->restful();
 $firewall->run();
 ```
 
-#### (2) Register a Middleware alias.
+#### 2. Register a Middleware alias.
 
 Modify `app/Http/Kernel.php` and add this line in `$routeMiddleware` property.
 ```php
 'firewall' => \App\Http\Middleware\ShieldonFirewall::class,
 ```
 
-#### (3) Defind a Route for Firewall Panel.
+#### 3. Defind a Route for Firewall Panel.
 
 We need a controller to get into Shieldon firewall controll panel, so that..
 
@@ -97,7 +96,7 @@ Route::get('/', function () {
 
 ### Bootstrap
 
-#### (1) Before Initializing $app
+#### 1. Before Initializing $app
 In your `bootstrap/app.php`, after `<?php`, add the following code.
 ```php
 /*
@@ -121,7 +120,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
 }
 ```
 
-#### (2) Define a Route for Firewall Panel.
+#### 2. Define a Route for Firewall Panel.
 
 ```php
 Route::any('/your/secret/place/', function() {
@@ -134,9 +133,24 @@ Route::any('/your/secret/place/', function() {
 
 If you adopt this way, Shieldon Firewall will run in Global scope. But no worry, you can set up the exclusion list for the URLs you want Shieldon Firewall ignore them.
 
+### Popular Frameworks
+
+Here are the guides of integrating with the popular PHP frameworks.
+
+- [Laravel](https://shieldon.io/en/guide/laravel.html)
+- [Symfony](https://shieldon.io/en/guide/symfony.html)
+- [CodeIgniter](https://shieldon.io/en/guide/codeigniter.html)
+- [CakePHP](https://shieldon.io/en/guide/cakephp.html)
+- [Yii](https://shieldon.io/en/guide/yii.html)
+- [Zend](https://shieldon.io/en/guide/zend.html)
+- [Slim](https://shieldon.io/en/guide/slim.html)
+- [Fat-Free](https://shieldon.io/en/guide/fatfree.html)
+- [Fuel](https://shieldon.io/en/guide/fuel.html)
+- [PHPixie](https://shieldon.io/en/guide/phpixie.html)
+
 ### Other Frameworks
 
-If you're not using Laravel, no worry, Shieldon is created for lazy developers like me. Implementing Shieldon on other framework is as easy as well.
+Implementing Shieldon on other framework is as easy as well.
 
 ```php
 // Notice that this directory must be writable.
@@ -170,7 +184,11 @@ $controlPanel->entry();
 Put the code on the Controller and the URL that only you know.
 Although it has a basic login protection.
 
----
+### PHP Project without Routing System
+
+```php
+//
+```
 
 ## Self-build
 
@@ -250,6 +268,7 @@ When an user has been permanently banned.
 When an user has reached the online session limit. You can set the online session limit by using `limitSession` API.
 ![](https://i.imgur.com/U02w70x.png)
 
+
 ## License
 
 MIT
@@ -258,6 +277,3 @@ MIT
 
 Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 
-Do you own a WordPress website?
-
-I have made a WordPress plugin called [WP Shieldon](https://wordpress.org/plugins/wp-shieldon), it is based on Shieldon library. You can check out the [source code](https://github.com/terrylinooo/wp-shieldon) to understand about how to implement Shieldon in your PHP project.
