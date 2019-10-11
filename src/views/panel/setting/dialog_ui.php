@@ -60,7 +60,7 @@
         <tr>
             <td class="r1">Background Color</td>
             <td class="r2">
-                <input type="text" name="dialog_ui__background_color" class="form-control form-control-sm col-sm-3" value="<?php $this->_('dialog_ui.background_color'); ?>"><br />
+                <input type="text" name="dialog_ui__bg_color" class="form-control form-control-sm col-sm-3" value="<?php $this->_('dialog_ui.bg_color'); ?>"><br />
                 <p>You can spefic a background color if you don't want to spefic the background image.</p>
             </td>
         </tr>
@@ -71,7 +71,7 @@
         <tr>
             <td class="r1">Background Color<br /><small>Dialog Header</small></td>
             <td class="r2">
-                <input type="text" name="dialog_ui__header_background_color" class="form-control form-control-sm col-sm-3" value="<?php $this->_('dialog_ui.header_background_color'); ?>"><br />
+                <input type="text" name="dialog_ui__header_bg_color" class="form-control form-control-sm col-sm-3" value="<?php $this->_('dialog_ui.header_bg_color'); ?>"><br />
                 <p>For example: <code>#00aeff</code> or <code>rgb(0,174,255)</code></p>
             </td>
         </tr>

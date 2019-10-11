@@ -28,6 +28,20 @@ function __(): string
      */
     static $i18n;
 
+    /**
+     * Current session language code.
+     * 
+     * @var string 
+     */
+    static $lang;
+
+    /**
+     * Checking the file exists for not.
+     *
+     * @var array 
+     */
+    static $fileChecked;
+
     $num = func_num_args();
 
     $filename    = func_get_arg(0); // required.
@@ -35,11 +49,30 @@ function __(): string
     $placeholder = ($num > 2) ? func_get_arg(2) : '';
     $replacement = ($num > 3) ? func_get_arg(3) : [];
 
-    // Fetch current user's session language code.
-    $lang = $_SESSION['lang'] ?? 'en';
+    if (empty($i18n[$filename]) && empty($fileChecked[$filename])) {
 
-    if (empty($i18n[$filename])) {
-        $i18n[$filename] = include __DIR__ . '/../localization/' . $lang . '/' . $filename . '.php';
+        $fileChecked[$filename] = true;
+
+        if (empty($lang)) {
+            // Fetch current user's session language code.
+            $lang = $lang ?? ($_SESSION['shieldon_ui_lang'] ?? 'en');
+        }
+
+        $lang = str_replace('-', '_', $lang);
+
+        if (stripos($lang, 'zh_') !== false) {
+            if (stripos($lang, 'zh_CN') !== false) {
+                $lang = 'zh_CN';
+            } else {
+                $lang = 'zh';
+            }
+        }
+
+        $file = __DIR__ . '/../localization/' . $lang . '/' . $filename . '.php';
+        
+        if (file_exists($file)) {
+            $i18n[$filename] = include $file;
+        }
     }
 
     // If we don't get the string from the localization file, use placeholder instead.

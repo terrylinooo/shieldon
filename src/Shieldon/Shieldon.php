@@ -188,9 +188,8 @@ class Shieldon
         'cookie_name'            => 'ssjd',
         'cookie_domain'          => '',
         'cookie_value'           => '1',
-        'lang'                   => 'en',
+        'lang'                   => 'en', // deprecated since 3.1.0
         'display_online_info'    => true,
-        'display_lineup_info'    => true,
         'display_user_info'      => false,
     ];
 
@@ -265,9 +264,6 @@ class Shieldon
      */
     private $currentSessionOrder = 0;
 
-
-
-
     /**
      * Used on limitSession.
      *
@@ -305,6 +301,14 @@ class Shieldon
      * @since 3.0.0
      */
     private $firewallType = 'self'; // managed | config | self | demo
+
+    /**
+     * Custom dialog UI settings.
+     *
+     * @var array
+     * @since 3.1.0
+     */
+    private $dialogUI = [];
 
     /**
      * Constructor.
@@ -1003,6 +1007,20 @@ class Shieldon
     }
 
     /**
+     * Customize the dialog UI.
+     *
+     * @since 3.1.0
+     *
+     * @return self
+     */
+    public function setDialogUI(array $settings): self
+    {
+        $this->dialogUI = $settings;
+
+        return $this;
+    }
+
+    /**
      * Output result page.
      *
      * @param int $httpStatus
@@ -1080,12 +1098,22 @@ class Shieldon
                     define('SHIELDON_VIEW', true);
                 }
 
+                $ui = [
+                    'background_image' => $this->dialogUI['background_image'] ?? '',
+                    'bg_color'         => $this->dialogUI['bg_color'] ?? '#ffffff',
+                    'header_bg_color'  => $this->dialogUI['header_bg_color'] ?? '#212531',
+                    'header_color'     => $this->dialogUI['header_color'] ?? '#ffffff',
+                    'shadow_opacity'   => $this->dialogUI['shadow_opacity'] ?? '0.2',
+                ];
+
                 $css = require self::SHIELDON_DIR . '/../views/css-default.php';
 
                 ob_start();
                 require $viewPath;
                 $output = ob_get_contents();
                 ob_end_clean();
+
+                unset($css, $lang, $ui);
             }
         } else {
     
@@ -1114,7 +1142,6 @@ class Shieldon
 
         // Remove unused variable notices generated from PHP intelephense.
         unset($langCode, $showOnlineInformation, $showLineupInformation, $showUserInformation);
-        unset($css, $lang);
 
         if ($echo) {
 

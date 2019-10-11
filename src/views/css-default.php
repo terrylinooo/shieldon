@@ -1,11 +1,5 @@
 <?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?');
 
-$customCss['body.background-image'] = 'https://i.imgur.com/A4VlgLI.png';
-$customCss['body.background-image'] = '';
-$customCss['body.background-color'] = '#ffffff';
-$customCss['card.header-bg-color'] = '#212531';
-$customCss['card.header-color'] = '#ffffff';
-$customCss['card.box-shadow-opacity'] = '0.1';
 
 $css = <<< EOF
 
@@ -22,8 +16,8 @@ $css = <<< EOF
     }
 
     body {
-        background-color: {$customCss['body.background-color']};
-        background-image: url({$customCss['body.background-image']});
+        background-color: {$ui['bg_color']};
+        background-image: url({$ui['background_image']});
         font-family: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Helvetica", "Arial", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", sans-serif;
     }
 
@@ -56,12 +50,12 @@ $css = <<< EOF
         background-clip: border-box;
         border: 1px solid rgba(0, 0, 0, 0.125);
         border-radius: 5px;
-        box-shadow: 1px 4px 14px 1px rgba(0, 0, 0, {$customCss['card.box-shadow-opacity']});
+        box-shadow: 1px 4px 14px 1px rgba(0, 0, 0, {$ui['shadow_opacity']});
     }
 
     .inner .card .card-header {
-        background-color: {$customCss['card.header-bg-color']};
-        color: {$customCss['card.header-color']};
+        background-color: {$ui['header_bg_color']};
+        color: {$ui['header_color']};
         font-weight: bold;
         padding: 0.75rem 1.25rem;
         margin-bottom: 0;

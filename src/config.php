@@ -7,8 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  * 
- * Notice: This file is a simple file for configuration, copy this file
- * to your framework's config directory.
+ * Notice: This file is a sample file for configuration.
  */
 
 return [
@@ -442,11 +441,11 @@ return [
     */
 
     'dialog_ui' => [
-        'lang'                     => 'en',
-        'background_image'         => '',
-        'background_color'         => '#ffffff',
-        'header_background_color'  => '#212531',
-        'header_color'             => '#ffffff',
-        'shadow_opacity'           => '0.2',
+        'lang'             => 'en',
+        'background_image' => '',
+        'bg_color'         => '#ffffff',
+        'header_bg_color'  => '#212531',
+        'header_color'     => '#ffffff',
+        'shadow_opacity'   => '0.2',
     ],
 ];

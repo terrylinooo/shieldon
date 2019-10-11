@@ -139,6 +139,8 @@ class Firewall
 
         $this->setAuthentication();
 
+        $this->setDialogUI();
+
         $this->status = $this->getOption('daemon');
     }
 
@@ -742,6 +744,20 @@ class Firewall
         if (! empty($deniedList)) {
             $this->shieldon->component['Ip']->setDeniedList($deniedList);
         }
+    }
+
+    /**
+     * Set dialog UI.
+     *
+     * @return void
+     */
+    protected function setDialogUI()
+    {
+        $ui = $this->getOption('dialog_ui');
+
+        $_SESSION['shieldon_ui_lang'] = $ui['lang'];
+
+        $this->shieldon->setDialogUI($this->getOption('dialog_ui'));
     }
 
     /**
