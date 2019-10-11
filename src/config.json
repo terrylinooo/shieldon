@@ -187,8 +187,8 @@
     ],
     "dialog_ui": {
         "background_image": "",
-        "background_color": "#ffffff",
-        "header_background_color": "#212531",
+        "bg_color": "#ffffff",
+        "header_bg_color": "#212531",
         "header_color": "#ffffff",
         "shadow_opacity": "0.2",
         "lang": "en"
