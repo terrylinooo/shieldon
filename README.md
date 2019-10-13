@@ -12,7 +12,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP.
 ## Features
 
 - SEO friendly.
-- Basic Http-type DDOS protection.
+- Http-type DDOS mitigation.
 - Anti-scraping.
 - Online session control.
 - Cross-site scripting (XSS) protection.
@@ -241,13 +241,11 @@ if ($result !== $shieldon::RESPONSE_ALLOW) {
 
 ##  Screenshots
 
-
 ### Firewall Panel
 
-The default login username and password are `wp_shieldon_user` and `wp_shieldon_pass`.
-You have set up the settings to make Shieldon work.
+An easy-to-user control panel for Shieldon Firewall.
 
-![](https://i.imgur.com/rkqR5mv.png)
+![](https://i.imgur.com/MELx6Vl.png)
 
 ### Temporarily Ban a User
 
