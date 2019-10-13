@@ -45,9 +45,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($properties['cookie_name'], 'unittest');
         $this->assertSame($properties['cookie_domain'], 'localhost');
         $this->assertSame($properties['lang'], 'zh');
-        $this->assertSame($properties['display_credit_link'], false);
         $this->assertSame($properties['display_online_info'], false);
-        $this->assertSame($properties['display_lineup_info'], false);
     }
 
     public function testDetect($driver = 'sqlite')
@@ -418,9 +416,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($properties['cookie_name'], 'unittest');
         $this->assertSame($properties['cookie_domain'], 'localhost');
         $this->assertSame($properties['lang'], 'zh');
-        $this->assertSame($properties['display_credit_link'], false);
-        $this->assertSame($properties['display_online_info'], false);
-        $this->assertSame($properties['display_lineup_info'], false);
     }
 
     public function testSetStrict()
@@ -597,8 +592,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_URI'] = '/';
 
         $shieldon = getTestingShieldonInstance($driver);
-        $shieldon->setProperty('display_credit_link', false);
-        $shieldon->setProperty('display_online_info', false);
         $shieldon->setProperty('display_lineup_info', false);
         $shieldon->driver->rebuild();
 
@@ -659,7 +652,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         if ($result[3] === $shieldon::RESPONSE_TEMPORARILY_DENY) {
             $output = $shieldon->output(0, false);
 
-            if (strpos($output, 'Captcha') !== false) {
+            if (stripos($output, 'Captcha') !== false) {
                 $this->assertTrue(true);
             } else {
                 $this->assertTrue(false);

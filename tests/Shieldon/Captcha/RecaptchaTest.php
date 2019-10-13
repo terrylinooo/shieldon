@@ -61,9 +61,10 @@ class RecaptchaTest extends \PHPUnit\Framework\TestCase
         $captchaInstance = new Recaptcha($captchaConfig);
         $result = $captchaInstance->form();
 
-        $html  = '';
+        $html  = '<div><div style="display: inline-block">';
         $html .= '<script src="https://www.google.com/recaptcha/api.js?hl=en"></script>';
         $html .= '<div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>';
+        $html .= '</div></div>';
 
         $this->assertSame($result, $html);
 
@@ -77,7 +78,7 @@ class RecaptchaTest extends \PHPUnit\Framework\TestCase
         $captchaInstance = new Recaptcha($captchaConfig);
         $result = $captchaInstance->form();
 
-        $html  = '';
+        $html  = '<div><div style="display: inline-block">';
         $html .= '<input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response" value="">';
         $html .= '<script src="https://www.google.com/recaptcha/api.js?render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI&hl=zh"></script>';
         $html .= '<script>';
@@ -87,6 +88,7 @@ class RecaptchaTest extends \PHPUnit\Framework\TestCase
         $html .= '        }); ';
         $html .= '    });';
         $html .= '</script>';
+        $html .= '</div></div>';
 
         $this->assertSame($result, $html);
     }

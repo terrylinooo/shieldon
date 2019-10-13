@@ -101,7 +101,7 @@ class Recaptcha implements CaptchaInterface
     public function form(): string
     {
         $html = '<div>';
-        $html.= '    <div style="display: inline-block">';
+        $html .= '<div style="display: inline-block">';
         if ('v3' !== $this->version) {
             $html .= '<script src="https://www.google.com/recaptcha/api.js?hl=' . $this->lang . '"></script>';
             $html .= '<div class="g-recaptcha" data-sitekey="' . $this->key . '"></div>';
@@ -116,7 +116,7 @@ class Recaptcha implements CaptchaInterface
             $html .= '    });';
             $html .= '</script>';
         }
-        $html .= '   </div>';
+        $html .= '</div>';
         $html .= '</div>';
 
         return $html;

@@ -341,7 +341,7 @@ class Shieldon
         /**
          * @since 3.1.0
          */
-        include __DIR__ . '/helpers.php';
+        include_once __DIR__ . '/helpers.php';
     }
 
     /**
