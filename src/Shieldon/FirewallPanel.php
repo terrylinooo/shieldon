@@ -854,6 +854,14 @@ class FirewallPanel
                         $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', false);
                         $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', false);
                         $this->setConfig('ip_variable_source.' . $postData, true);
+
+                    } elseif ($postKey === 'dialog_ui__shadow_opacity') {
+                        $this->setConfig('dialog_ui.shadow_opacity', (string) $postData);
+
+                    } elseif ($postKey === 'admin__pass') {
+                        if (strlen($_POST['admin__pass']) < 58) {
+                            $this->setConfig('admin.pass', password_hash($postData, PASSWORD_BCRYPT));
+                        }
                     } else {
                         if (is_numeric($postData)) {
                             $this->setConfig(str_replace('__', '.', $postKey), (int) $postData);
@@ -862,10 +870,6 @@ class FirewallPanel
                         }
                     }
                 }
-            }
-
-            if ($postKey === 'dialog_ui__shadow_opacity') {
-                $this->setConfig(str_replace('__', '.', $postKey), (string) $postData);
             }
         }
 

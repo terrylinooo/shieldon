@@ -37,7 +37,7 @@
             <td class="r1">Last Modified</td>
             <td class="r2">
                 <?php $this->_('admin.last_modified'); ?>
-                <input type="hidden" name="last_modified" value="">
+                <input type="hidden" name="admin__last_modified" value="<?php echo date('Y-m-d H:i:s'); ?>">
             </td>
         </tr>
     </table>

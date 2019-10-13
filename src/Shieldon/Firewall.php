@@ -585,8 +585,10 @@ class Firewall
 
             if (($nowTime - $lastResetTime) > $cronjobSetting['config']['period']) {
 
+                $updateResetTime =  date('Y-m-d 00:00:00');
+
                 // Update new reset time.
-                $this->setConfig('cronjob.reset_circle.config.last_update', date('Y-m-d 00:00:00' , $lastResetTime));
+                $this->setConfig('cronjob.reset_circle.config.last_update', $updateResetTime);
                 $this->updateConfig();
 
                 // Remove all logs.
