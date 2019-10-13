@@ -42,7 +42,6 @@ class Psr7Middleware
         if ('' !== $storage) {
             $this->storage = $storage;
         }
-        die();
     }
 
     /**

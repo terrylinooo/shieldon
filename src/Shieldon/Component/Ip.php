@@ -352,10 +352,10 @@ class Ip extends ComponentProvider
     /**
      * Only allow IPs in allowedList, then deny all.
      *
-     * @return void
+     * @return bool
      */
-    public function denyAll(): void
+    public function denyAll(): bool
     {
-        $this->isDenyAll = true;
+        return $this->isDenyAll = true;
     }
 }

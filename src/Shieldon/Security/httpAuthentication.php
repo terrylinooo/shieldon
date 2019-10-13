@@ -106,6 +106,7 @@ class httpAuthentication
                     // nothing to do right now.
                 } else {
                     header('HTTP/1.0 401 Unauthorized');
+                    unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
                     die('Permission required.');
                 }
             }

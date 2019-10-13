@@ -1039,6 +1039,9 @@ class FirewallPanel
                     'captcha_modules.recaptcha.config.site_key',
                     'captcha_modules.recaptcha.config.secret_key',
                     'loggers.action.config.directory_path',
+                    'admin.user',
+                    'admin.pass',
+                    'admin.last_modified',
                 ];
 
                 if (in_array($field, $hiddenForDemo)) {
@@ -1244,6 +1247,8 @@ class FirewallPanel
             password_verify($_SERVER['PHP_AUTH_PW'], $admin['pass'])
         ) {} else {
             header('HTTP/1.0 401 Unauthorized');
+
+            unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
             die('Permission required.');
         }
     }

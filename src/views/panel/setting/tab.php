@@ -36,3 +36,8 @@ $tab = $_POST['tab'] ?? 'daemon';
     <i class="far fa-window-maximize"></i> Dialog UI
 </label>
 
+<input id="tab6" type="radio" name="tabs" class="tab" value="admin_login" <?php $this->checked($tab, 'admin_login', false); ?> />
+<label for="tab6" class="tab">
+    <i class="fas fa-user-cog"></i> Admin Login
+</label>
+

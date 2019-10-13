@@ -625,7 +625,7 @@ class Shieldon
      *
      * @return ComponentInterface|null
      */
-    protected function getComponent(string $name)
+    public function getComponent(string $name)
     {
         if (isset($this->component[$name]) && ($this->component[$name] instanceof ComponentInterface)) {
             return $this->component[$name];
@@ -881,10 +881,14 @@ class Shieldon
      */
     public function setComponent(ComponentProvider $instance): self
     {
+       
         if ($instance instanceof ComponentProvider) {
             $class = get_class($instance);
+
+            
             $class = substr($class, strrpos($class, '\\') + 1);
-            $this->component[$class] = $instance;
+            $this->component[$class] =& $instance;
+  
         }
 
         return $this;
@@ -1037,6 +1041,7 @@ class Shieldon
         } elseif (self::RESPONSE_LIMIT === $this->result) {
             $type = 'limit';
         } elseif (self::RESPONSE_DENY === $this->result) {
+            
             $type = 'deny';
         } else {
 

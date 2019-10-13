@@ -152,7 +152,7 @@ class Firewall
     public function run(): void
     {
         if ($this->status) {
-        
+
             $result = $this->shieldon->run();
 
             if ($result !== $this->shieldon::RESPONSE_ALLOW) {
@@ -755,9 +755,10 @@ class Firewall
     {
         $ui = $this->getOption('dialog_ui');
 
-        $_SESSION['shieldon_ui_lang'] = $ui['lang'];
-
-        $this->shieldon->setDialogUI($this->getOption('dialog_ui'));
+        if (! empty($ui)) {
+            $_SESSION['shieldon_ui_lang'] = $ui['lang'];
+            $this->shieldon->setDialogUI($this->getOption('dialog_ui'));
+        }
     }
 
     /**

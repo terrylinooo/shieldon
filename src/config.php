@@ -39,6 +39,7 @@ return [
     'admin' => [
         'user' => 'shieldon_user',
         'pass' => '$2y$10$x/celAC.L8xBn1UPPq619uG6ZGKoA6yfbjxtAJqAAtB.yLjU3S3Fu',
+        'last_modified' => '1989-06-04',
     ],
 
     /*
