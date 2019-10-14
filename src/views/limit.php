@@ -159,6 +159,7 @@ EOF;
 <head>
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php _e('core', 'limit.title', 'Please line up'); ?></title>
     <?php echo '<style>' . $css . '</style>'; ?>
 </head>
