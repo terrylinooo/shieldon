@@ -26,10 +26,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
             'limit_unusual_behavior' => ['cookie' => 1, 'session' => 1, 'referer' => 1],
             'cookie_name'            => 'unittest',
             'cookie_domain'          => 'localhost',
-            'lang'                   => 'zh',
-            'display_credit_link'    => false,
             'display_online_info'    => false,
-            'display_lineup_info'    => false,
         ];
 
         $shieldon = new \Shieldon\Shieldon($properties);
@@ -44,7 +41,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($properties['limit_unusual_behavior'], ['cookie' => 1, 'session' => 1, 'referer' => 1]);
         $this->assertSame($properties['cookie_name'], 'unittest');
         $this->assertSame($properties['cookie_domain'], 'localhost');
-        $this->assertSame($properties['lang'], 'zh');
         $this->assertSame($properties['display_online_info'], false);
     }
 
@@ -400,10 +396,8 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setProperty('limit_unusual_behavior', ['cookie' => 1, 'session' => 1, 'referer' => 1]);
         $shieldon->setProperty('cookie_name', 'unittest');
         $shieldon->setProperty('cookie_domain', 'localhost');
-        $shieldon->setProperty('lang', 'zh');
-        $shieldon->setProperty('display_credit_link', false);
-        $shieldon->setProperty('display_online_info', false);
-        $shieldon->setProperty('display_lineup_info', false);
+        $shieldon->setProperty('display_online_info', true);
+        $shieldon->setProperty('display_lineup_info', true);
 
         $reflection = new \ReflectionObject($shieldon);
         $t = $reflection->getProperty('properties');
@@ -415,7 +409,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($properties['limit_unusual_behavior'], ['cookie' => 1, 'session' => 1, 'referer' => 1]);
         $this->assertSame($properties['cookie_name'], 'unittest');
         $this->assertSame($properties['cookie_domain'], 'localhost');
-        $this->assertSame($properties['lang'], 'zh');
     }
 
     public function testSetStrict()

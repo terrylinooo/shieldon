@@ -8,7 +8,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub Repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
-- **Version: 3.1.2**
+- **Version: 3.1.3**
 
 ## Features
 
@@ -65,21 +65,43 @@ Click [here](/demo/) to view demo.
 
 ## Screenshots
 
-### Temporarily Ban a User
+Only a few screenshots are listed below.
+
+### Firewall Panel
+
+#### Captcha Stats
+
+![Captcha Statistics](https://i.imgur.com/tjc8mW8.png)
+
+#### Online Session Stats
+
+You can see the real time data here if `Online Session Limit` is enabled.
+
+![](https://i.imgur.com/sfssPyj.png)
+
+#### Rule Table
+
+You can temporarily ban a user here.
+
+![](https://i.imgur.com/5Vg2brX.png)
+
+
+### Dialog
+
+#### Temporarily Ban a User
 
 When the users or robots are trying to view many your web pages in a short period of time, they will temporarily get banned. Get unbanned by solving a Catpcha.
 
 ![](https://i.imgur.com/rlsEwSG.png)
 
-
-### Permanently Ban a User
+#### Permanently Ban a User
 
 When an user has been permanently banned.
 
 ![](https://i.imgur.com/Qy1sADw.png)
 
 
-### Online Session Control
+#### Online Session Control
 
 When an user has reached the online session limit. You can set the online session limit by using `limitSession` API.
 ![](https://i.imgur.com/U02w70x.png)

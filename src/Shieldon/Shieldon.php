@@ -188,7 +188,6 @@ class Shieldon
         'cookie_name'            => 'ssjd',
         'cookie_domain'          => '',
         'cookie_value'           => '1',
-        'lang'                   => 'en', // deprecated since 3.1.0
         'display_online_info'    => true,
         'display_user_info'      => false,
     ];
@@ -1065,11 +1064,6 @@ class Shieldon
         $showOnlineInformation = true;
 
         /**
-         * @var bool Show lineup information. It is used on views.
-         */
-        $showLineupInformation = true;
-
-        /**
          * @var bool Show user information such as IP, user-agent, device name.
          */
         $showUserInformation = true;
@@ -1079,12 +1073,8 @@ class Shieldon
 
             $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.php';
 
-            if (empty($this->properties['display_lineup_info'])) {
-                $showLineupInformation = false;
-            }
-
             if (empty($this->properties['display_online_info'])) {
-                $$showOnlineInformation = false;
+                $showOnlineInformation = false;
             }
 
             if (empty($this->properties['display_user_info'])) {
