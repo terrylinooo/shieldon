@@ -8,6 +8,9 @@
  * file that was distributed with this source code.
  */
 
+use function Shieldon\Helper\_e;
+use function Shieldon\Helper\mask_string;
+
 $timezone = '';
 
 ?>
@@ -61,7 +64,12 @@ $timezone = '';
             <tbody>
                 <?php foreach($rule_list as $ipInfo) : ?>
                 <tr>
-                    <td><?php echo $ipInfo['log_ip']; ?></td>
+                    <td>
+                        <?php if ($this->mode === 'demo') : ?>
+                            <?php $ipInfo['log_ip'] = mask_string($ipInfo['log_ip']); ?>
+                        <?php endif; ?>
+                        <?php echo $ipInfo['log_ip']; ?>
+                    </td>
                     <td><?php echo $ipInfo['ip_resolve']; ?></td>
                     <td>
                         <?php 

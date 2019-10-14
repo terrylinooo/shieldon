@@ -8,6 +8,9 @@
  * file that was distributed with this source code.
  */
 
+use function Shieldon\Helper\_e;
+use function Shieldon\Helper\mask_string;
+
 $timezone = '';
 
 ?>

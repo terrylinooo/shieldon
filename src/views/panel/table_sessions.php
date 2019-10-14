@@ -8,6 +8,9 @@
  * file that was distributed with this source code.
  */
 
+use function Shieldon\Helper\_e;
+use function Shieldon\Helper\mask_string;
+
 $timezone = '';
 
 ?>
@@ -100,7 +103,12 @@ $timezone = '';
                         <td title="Key: <?php echo $key ?>"><?php echo $i; ?></td>
                         <td><?php echo $satusName; ?></td>
                         <td><?php echo $sessionInfo['id']; ?></td>
-                        <td><?php echo $sessionInfo['ip']; ?></td>
+                        <td>
+                            <?php if ($this->mode === 'demo') : ?>
+                                <?php $sessionInfo['ip'] = mask_string($sessionInfo['ip']); ?>
+                            <?php endif; ?>
+                            <?php echo $sessionInfo['ip']; ?>
+                        </td>
                         <td><?php echo date('Y-m-d H:i:s', $sessionInfo['time']); ?></td>
                         <th><?php echo $remainsTime; ?></th>
                     </tr>

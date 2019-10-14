@@ -7,6 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use function Shieldon\Helper\_e;
+use function Shieldon\Helper\mask_string;
+
 ?>
 
 <div class="so-dashboard">
@@ -83,7 +87,12 @@
                 <?php if (! empty($ip_details)) : ?>
                 <?php foreach($ip_details as $ip => $ipInfo) : ?>
                 <tr>
-                    <td><?php echo $ip; ?></td>
+                    <td>
+                        <?php if ($this->mode === 'demo') : ?>
+                            <?php $ip = mask_string($ip); ?>
+                        <?php endif; ?>
+                        <?php echo $ip; ?>
+                    </td>
                     <td><?php echo count($ipInfo['session_id']); ?></td>
                     <td><?php echo $ipInfo['pageview_count']; ?></td>
                     <td><?php echo $ipInfo['captcha_success_count']; ?></td>

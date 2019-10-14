@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+
 /**
  * Hightlight current page position in sidebar menu.
  *

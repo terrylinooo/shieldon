@@ -114,3 +114,25 @@ function _e(): void
 
     echo __($filename, $langcode, $placeholder, $replacement);
 }
+
+/**
+ * Mask strings with asterisks.
+ *
+ * @param string $str
+ *
+ * @return string
+ */
+function mask_string($str)
+{
+    if (filter_var($str, FILTER_VALIDATE_IP) !== false) {
+        $tmp = explode('.', $str);
+        $tmp[0] = '*';
+        $tmp[1] = '*';
+        $masked = implode('.', $tmp);
+
+    } else {
+        $masked =  str_repeat('*', strlen($str) - 6) . substr(str, -6);
+    }
+
+    return $masked;
+}
