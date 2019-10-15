@@ -1,5 +1,3 @@
-
-
 ![Shieldon - Web Application Firewall for PHP](https://i.imgur.com/G4xpugB.png)
 
 [![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=master)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://img.shields.io/codecov/c/github/terrylinooo/shieldon.svg)](https://codecov.io/gh/terrylinooo/shieldon) ![PHP from Packagist](https://img.shields.io/packagist/php-v/terrylinooo/shieldon.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -22,7 +20,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 - IP manager.
 - Protecting pages via WWW-Authenticate.
 - Detailed statistics and charts.
-- More features will come..
+- More features will come...
 
 ## Installation
 
@@ -54,7 +52,7 @@ Here are the guides of integrating with the popular PHP frameworks.
 
 ## Firewall Panel
 
-Since 3.0.0, Shieldon starts providing a Firewall Instance and it's visualization UI called Firewall Panel. By using Shieldon Firewall, you can easy implement it on your Web application.
+Since 3.0.0, Shieldon starts providing a Firewall Instance, and it's visualization UI called Firewall Panel. By using Shieldon Firewall, you can easily implement it on your Web application.
 
 ![Firewall Panel](https://i.imgur.com/MELx6Vl.png)
 
@@ -75,7 +73,7 @@ Only a few screenshots are listed below.
 
 #### Online Session Stats
 
-You can see the real time data here if `Online Session Limit` is enabled.
+You can see the real-time data here if `Online Session Limit` is enabled.
 
 ![](https://i.imgur.com/sfssPyj.png)
 
@@ -96,14 +94,14 @@ When the users or robots are trying to view many your web pages in a short perio
 
 #### Permanently Ban a User
 
-When an user has been permanently banned.
+When a user has been permanently banned.
 
 ![](https://i.imgur.com/Qy1sADw.png)
 
 
 #### Online Session Control
 
-When an user has reached the online session limit. You can set the online session limit by using `limitSession` API.
+When a user has reached the online session limit. You can set the online session limit by using `limitSession` API.
 ![](https://i.imgur.com/U02w70x.png)
 
 ## Author
