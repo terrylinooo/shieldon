@@ -58,7 +58,7 @@ trait FirewallTrait
      *
      * @return object
      */
-    public function getShieldon(): object
+    public function getShieldon()
     {
         return $this->shieldon;
     }

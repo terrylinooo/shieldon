@@ -48,6 +48,7 @@ function showActive(string $key = '')
             </div>
             <div class="mode-info">
                 <ul>
+                    <li>PHP: <?php echo phpversion(); ?></li>
                     <li>Channel: <strong><?php echo $channel_name; ?></strong></li>
                     <li>Mode:  <strong><?php echo $mode_name; ?></strong></li>
                     <li><a href="<?php echo $page_url; ?>?so_page=logout">Logout</a></li>
@@ -66,6 +67,7 @@ function showActive(string $key = '')
                                 </li>
                             </ul>
                         </li>
+                        <?php if ($this->mode === 'managed') : ?>
                         <li>
                             <a><i class="fas fa-fire-alt"></i> Firewall</a>
                             <ul class="nav child-menu">
@@ -86,6 +88,8 @@ function showActive(string $key = '')
                                 </li>
                             </ul>
                         </li>
+                        <?php endif; ?>
+                        <?php if (! empty($this->shieldon->logger)) : ?>
                         <li>
                             <a><i class="fas fa-chart-area"></i> Logs</a>
                             <ul class="nav child-menu">
@@ -106,6 +110,7 @@ function showActive(string $key = '')
                                 </li>
                             </ul>
                         </li>
+                        <?php endif; ?>
                         <li>
                             <a><i class="fas fa-table"></i> Data Circle</a>
                             <ul class="nav child-menu">

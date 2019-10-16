@@ -13,7 +13,7 @@ namespace Shieldon\Driver;
 /**
  * DriverProvider
  */
-abstract class DriverProvider extends AbstractDriver
+class DriverProvider extends AbstractDriver
 {
     /**
      * Data table for regular session logs.
@@ -147,5 +147,89 @@ abstract class DriverProvider extends AbstractDriver
         }
 
         return $parsedData;
+    }
+
+    /**
+     * Implement fetch.
+     *
+     * @param string $ip The data id of the entry to fetch.
+     *
+     * @return array The data or an empty array.
+     */
+    protected function doFetch(string $ip, string $type = 'log'): array
+    {
+        return [];
+    }
+
+    /**
+     * Implement fetch all.
+     *
+     * @param string $type The data type.
+     *
+     * @return array The data or an empty array.
+     */
+    protected function doFetchAll(string $type = 'log'): array
+    {
+        return [];
+    }
+
+    /**
+     * Implement has.
+     *
+     * @param string $ip The data id of the entry to check for.
+     *
+     * @return bool
+     */
+    protected function checkExist(string $ip, string $type = 'log'): bool
+    {
+        return false;
+    }
+
+    /**
+     * Implement save.
+     *
+     * @param string $ip     The data id.
+     * @param array  $data   The data.
+     * @param int    $expire The data will be deleted after expiring.
+     *
+     * @return bool
+     */
+    protected function doSave(string $ip, array $data, string $type = 'log', $expire = 0): bool 
+    {
+        return false;
+    }
+
+    /**
+     * Implement delete.
+     *
+     * @param string $ip
+     *
+     * @return bool
+     */
+    protected function doDelete(string $ip, string $type = 'log'): bool
+    {
+        return false;
+    }
+
+    /**
+     * Rebuild data tables.
+     *
+     * @return bool
+     */
+    protected function doRebuild(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Initial data tables.
+     * 
+     * @param bool $dbCheck
+     *
+     * @return void
+     */
+    protected function doInitialize(bool $dbCheck = true): void
+    {
+
     }
 }

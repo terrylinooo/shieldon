@@ -18,13 +18,13 @@ use Shieldon\Driver\SqliteDriver;
 use Shieldon\Log\LogParser;
 use Shieldon\Shieldon;
 use Shieldon\FirewallTrait;
+use function Shieldon\Helper\__;
 
 use PDO;
 use PDOException;
 use Redis;
 use RedisException;
 use ReflectionObject;
-
 use function array_push;
 use function array_values;
 use function class_exists;
@@ -119,7 +119,7 @@ class FirewallPanel
      *
      * @param object $instance Shieldon | Firewall
      */
-    public function __construct(object $instance) 
+    public function __construct($instance) 
     {
         if ($instance instanceof Shieldon) {
             $this->mode = 'self';
@@ -142,10 +142,6 @@ class FirewallPanel
             $this->parser = new LogParser($logDirectory);
 
             $this->pageAvailability['logs'] = true;
-
-        } else {
-
-            $this->responseMessage('warning', 'ActionLogger is not implemented with the Shieldon instance.');
         }
     }
 
@@ -748,19 +744,19 @@ class FirewallPanel
         }
 
         $reasons = [
-            $this->shieldon::REASON_MANUAL_BAN           => 'Added manually by administrator',
-            $this->shieldon::REASON_IS_SEARCH_ENGINE     => 'Search engine bot',
-            $this->shieldon::REASON_IS_GOOGLE            => 'Google bot',
-            $this->shieldon::REASON_IS_BING              => 'Bing bot',
-            $this->shieldon::REASON_IS_YAHOO             => 'Yahoo bot',
-            $this->shieldon::REASON_TOO_MANY_SESSIONS    => 'Too many sessions',
-            $this->shieldon::REASON_TOO_MANY_ACCESSES    => 'Too many accesses',
-            $this->shieldon::REASON_EMPTY_JS_COOKIE      => 'Cannot create JS cookies',
-            $this->shieldon::REASON_EMPTY_REFERER        => 'Empty referrer',
-            $this->shieldon::REASON_REACHED_LIMIT_DAY    => 'Daily limit reached',
-            $this->shieldon::REASON_REACHED_LIMIT_HOUR   => 'Hourly limit reached',
-            $this->shieldon::REASON_REACHED_LIMIT_MINUTE => 'Minutely limit reached',
-            $this->shieldon::REASON_REACHED_LIMIT_SECOND => 'Secondly limit reached',
+            $this->shieldon::REASON_MANUAL_BAN           => __('panel', 'reason_manual_ban', 'Added manually by administrator'),
+            $this->shieldon::REASON_IS_SEARCH_ENGINE     => __('panel', 'reason_is_search_engine', 'Search engine bot'),
+            $this->shieldon::REASON_IS_GOOGLE            => __('panel', 'reason_is_google', 'Google bot'),
+            $this->shieldon::REASON_IS_BING              => __('panel', 'reason_is_bing', 'Bing bot'),
+            $this->shieldon::REASON_IS_YAHOO             => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
+            $this->shieldon::REASON_TOO_MANY_SESSIONS    => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
+            $this->shieldon::REASON_TOO_MANY_ACCESSES    => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
+            $this->shieldon::REASON_EMPTY_JS_COOKIE      => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'),
+            $this->shieldon::REASON_EMPTY_REFERER        => __('panel', 'reason_empty_referer', 'Empty referrer'),
+            $this->shieldon::REASON_REACHED_LIMIT_DAY    => __('panel', 'reason_reached_limit_day', 'Daily limit reached'),
+            $this->shieldon::REASON_REACHED_LIMIT_HOUR   => __('panel', 'reason_reached_limit_hour', 'Hourly limit reached'),
+            $this->shieldon::REASON_REACHED_LIMIT_MINUTE => __('panel', 'reason_reached_limit_minute', 'Minutely limit reached'),
+            $this->shieldon::REASON_REACHED_LIMIT_SECOND => __('panel', 'reason_reached_limit_second', 'Secondly limit reached'),
         ];
 
         $types = [
@@ -1174,7 +1170,7 @@ class FirewallPanel
         }
 
         $content['channel_name'] = $channelName;
-        $content['mode_name'] = $this->mode; // WAF, self-managed
+        $content['mode_name'] = $this->mode;
         $content['page_url'] = $this->url();
         $content['title'] = $data['title'] ?? '';
         $content['content'] = $this->loadView($page, $data);
@@ -1236,7 +1232,7 @@ class FirewallPanel
     {
         $admin = $this->getConfig('admin');
 
-        if ('demo' === $this->mode) {
+        if ('demo' === $this->mode || 'self' === $this->mode) {
             $admin = $this->demoUser;
         }
 

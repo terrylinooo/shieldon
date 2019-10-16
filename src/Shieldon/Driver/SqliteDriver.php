@@ -14,7 +14,7 @@ use PDO;
 /**
  * Sqlite Driver.
  */
-class SqliteDriver extends AbstractSqlDriver
+class SqliteDriver extends SqlDriverProvider
 {
     /**
      * Constructor.

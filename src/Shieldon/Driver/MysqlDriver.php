@@ -15,7 +15,7 @@ use PDO;
 /**
  * Mysql Driver.
  */
-class MysqlDriver extends AbstractSqlDriver
+class MysqlDriver extends SqlDriverProvider
 {
     /**
      * Constructor.

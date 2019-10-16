@@ -17,9 +17,9 @@ use function is_array;
 use function is_bool;
 
 /**
- * Abstract Mysql Driver.
+ * SQL Driver provider.
  */
-abstract class AbstractSqlDriver extends DriverProvider
+class SqlDriverProvider extends DriverProvider
 {
     /**
      * Data engine will be used on.

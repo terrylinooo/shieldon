@@ -74,7 +74,7 @@ class FileDriver extends DriverProvider
      *
      * @return void
      */
-    protected function doInitialize($dbCheck = true): void
+    protected function doInitialize(bool $dbCheck = true): void
     {
         if (! $this->isInitialized) {
             if (! empty($this->channel)) {

@@ -11,7 +11,7 @@
 namespace Shieldon\Driver;
 
 
-class AbstractSqlDriverTest extends \PHPUnit\Framework\TestCase
+class SqlDriverProviderTest extends \PHPUnit\Framework\TestCase
 {
     public function test__construct()
     {
@@ -44,7 +44,7 @@ class AbstractSqlDriverTest extends \PHPUnit\Framework\TestCase
             $db['pass']
         );
 
-        $mockSqlDriver = $this->getMockForAbstractClass('Shieldon\Driver\AbstractSqlDriver', [$pdoInstance]);
+        $mockSqlDriver = new \Shieldon\Driver\SqlDriverProvider($pdoInstance);
         $reflection = new \ReflectionObject($mockSqlDriver);
         $p1 = $reflection->getProperty('tableLogs');
         $p1->setAccessible(true);
@@ -101,7 +101,7 @@ class AbstractSqlDriverTest extends \PHPUnit\Framework\TestCase
             $db['pass']
         );
 
-        $mockSqlDriver = $this->getMockForAbstractClass('Shieldon\Driver\AbstractSqlDriver', [$pdoInstance]);
+        $mockSqlDriver = new \Shieldon\Driver\SqlDriverProvider($pdoInstance);
         $mockSqlDriver->init();
         $reflection = new \ReflectionObject($mockSqlDriver);
         $methodDoFetch = $reflection->getMethod('doFetch');
@@ -127,7 +127,7 @@ class AbstractSqlDriverTest extends \PHPUnit\Framework\TestCase
             $db['pass']
         );
 
-        $mockSqlDriver = $this->getMockForAbstractClass('Shieldon\Driver\AbstractSqlDriver', [$pdoInstance]);
+        $mockSqlDriver = new \Shieldon\Driver\SqlDriverProvider($pdoInstance);
         $reflection = new \ReflectionObject($mockSqlDriver);
         $methodDoFetchAll = $reflection->getMethod('doFetchAll');
         $methodDoFetchAll->setAccessible(true);
@@ -152,7 +152,7 @@ class AbstractSqlDriverTest extends \PHPUnit\Framework\TestCase
             $db['pass']
         );
 
-        $mockSqlDriver = $this->getMockForAbstractClass('Shieldon\Driver\AbstractSqlDriver', [$pdoInstance]);
+        $mockSqlDriver = new \Shieldon\Driver\SqlDriverProvider($pdoInstance);
         $reflection = new \ReflectionObject($mockSqlDriver);
         $methodDoDelete = $reflection->getMethod('doDelete');
         $methodDoDelete->setAccessible(true);
