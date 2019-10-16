@@ -14,11 +14,10 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.1.0",
-        "phpunit/phpunit": "^8.4"
+        "php": ">=7.1.0"
     },
     "require-dev": {
-        "php": ">=7.1.0"
+        "phpunit/phpunit": "^7"
     },
     "autoload": {
         "psr-4": {
@@ -38,3 +37,4 @@
         "test": "phpunit"
     }
 }
+
