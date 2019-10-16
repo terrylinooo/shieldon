@@ -893,11 +893,25 @@ class FirewallPanel
                         );
                     } catch(PDOException $e) {
                         $isDataDriverFailed = true;
-                        $this->responseMessage('error', "Cannot access to your MySQL database, please check your settings.");
+                        $this->responseMessage('error', 
+                            __(
+                                'panel',
+                                'error_mysql_connection',
+                                'Cannot access to your MySQL database, please check your settings.'
+                            )
+                        );
                     }
                 } else {
                     $isDataDriverFailed = true;
-                    $this->responseMessage('error', "Your system doesn't support MySQL driver.");
+                    $this->responseMessage('error',
+                        __(
+                            'panel',
+                            'error_mysql_driver_not_supported',
+                            'Your system doesn’t support MySQL driver.'
+                        )
+                    );
+                    
+                    
                 }
 
                 break;
@@ -930,12 +944,24 @@ class FirewallPanel
                     }
                 } else {
                     $isDataDriverFailed = true;
-                    $this->responseMessage('error', "Your system doesn't support SQLite driver.");
+                    $this->responseMessage('error',
+                        __(
+                            'panel',
+                            'error_sqlite_driver_not_supported',
+                            'Your system doesn’t support SQLite driver.'
+                        )
+                    );
                 }
 
                 if (! is_writable($sqliteFilePath)) {
                     $isDataDriverFailed = true;
-                    $this->responseMessage('error', "SQLite data driver requies the storage directory writable.");
+                    $this->responseMessage('error',
+                        __(
+                            'panel',
+                            'error_sqlite_directory_not_writable',
+                            'SQLite data driver requires the storage directory writable.'
+                        )
+                    );
                 }
 
                 break;
@@ -955,7 +981,13 @@ class FirewallPanel
                     }
                 } else {
                     $isDataDriverFailed = true;
-                    $this->responseMessage('error', "Your system doesn't support Redis driver.");
+                    $this->responseMessage('error',
+                        __(
+                            'panel',
+                            'error_redis_driver_not_supported',
+                            'Your system doesn’t support Redis driver.'
+                        )
+                    );
                 }
 
                 break;
@@ -980,7 +1012,13 @@ class FirewallPanel
 
                 if (! is_writable($fileDir)) {
                     $isDataDriverFailed = true;
-                    $this->responseMessage('error', "File data driver requies the storage directory writable.");
+                    $this->responseMessage('error',
+                        __(
+                            'panel',
+                            'error_file_directory_not_writable',
+                            'File data driver requires the storage directory writable.'
+                        )
+                    );
                 }
             // endswitch
         }
@@ -1004,7 +1042,13 @@ class FirewallPanel
     
             if (! is_writable($actionLogDir)) {
                 $isDataDriverFailed = true;
-                $this->responseMessage('error', "Action Logger requies the storage directory writable.");
+                $this->responseMessage('error',
+                    __(
+                        'panel',
+                        'error_logger_directory_not_writable',
+                        'Action Logger requires the storage directory writable.'
+                    )
+                );
             }
         }
 
@@ -1012,7 +1056,13 @@ class FirewallPanel
         if (! $isDataDriverFailed) {
             file_put_contents($configFilePath, json_encode($this->configuration));
 
-            $this->responseMessage('success', "Settings saved.");
+            $this->responseMessage('success',
+                __(
+                    'panel',
+                    'success_settings_saved',
+                    'Settings saved.'
+                )
+            );
         }
     }
 
@@ -1045,7 +1095,7 @@ class FirewallPanel
                 ];
 
                 if (in_array($field, $hiddenForDemo)) {
-                    echo 'Cannot view this field in demo mode.';
+                    echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
                 } else {
                     echo $this->getConfig($field);
                 }
@@ -1239,7 +1289,7 @@ class FirewallPanel
         if (! isset($_SERVER['PHP_AUTH_USER']) || ! isset($_SERVER['PHP_AUTH_PW'])) {
             header('WWW-Authenticate: Basic realm=""');
             header('HTTP/1.0 401 Unauthorized');
-            die('Permission required.');
+            die(__('panel', 'permission_required', 'Permission required.'));
         }
 
         if (
@@ -1249,7 +1299,7 @@ class FirewallPanel
             header('HTTP/1.0 401 Unauthorized');
 
             unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
-            die('Permission required.');
+            die(__('panel', 'permission_required', 'Permission required.'));
         }
     }
 

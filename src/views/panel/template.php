@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
+use function Shieldon\Helper\_e;
 
 /**
  * Hightlight current page position in sidebar menu.
@@ -48,9 +48,9 @@ function showActive(string $key = '')
             </div>
             <div class="mode-info">
                 <ul>
-                    <li>Channel: <strong><?php echo $channel_name; ?></strong></li>
-                    <li>Mode:  <strong><?php echo $mode_name; ?></strong></li>
-                    <li><a href="<?php echo $page_url; ?>?so_page=logout">Logout</a></li>
+                    <li><?php _e('panel', 'channel', 'Channel'); ?>: <strong><?php echo $channel_name; ?></strong></li>
+                    <li><?php _e('panel', 'mode', 'Mode'); ?>:  <strong><?php echo $mode_name; ?></strong></li>
+                    <li><a href="<?php echo $page_url; ?>?so_page=logout"><?php _e('panel', 'logout', 'Logout'); ?></a></li>
                 </ul>
             </div>
         </div>
