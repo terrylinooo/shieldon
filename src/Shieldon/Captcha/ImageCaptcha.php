@@ -266,7 +266,7 @@ class ImageCaptcha implements CaptchaInterface
         imagedestroy($im);
 
         // Save hash.
-        $_SESSION['shieldon_image_captcha_hash'] = password_hash($this->word, PASSWORD_ARGON2I);
+        $_SESSION['shieldon_image_captcha_hash'] = password_hash($this->word, PASSWORD_BCRYPT);
 
         return base64_encode($image_data);
     }
