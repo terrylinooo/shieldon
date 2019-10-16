@@ -62,7 +62,7 @@ class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
 
     public function testResponse()
     {
-        $_SESSION['shieldon_image_captcha_hash'] = '$argon2i$v=19$m=1024,t=2,p=2$RWVKVXJ4T3NHQWZqRXFaUg$Oh6emqczEG0+UffyT2+t2XmKBufSmkxcIaGMmUv+7oE';
+        $_SESSION['shieldon_image_captcha_hash'] = '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.';
         $_POST['shieldon_image_captcha'] = '';
 
         $captchaInstance = new ImageCaptcha();

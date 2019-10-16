@@ -35,8 +35,8 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall = \Shieldon\Container::get('firewall');
         $shieldon = \Shieldon\Container::get('shieldon');
 
-        // Set a fake session to avoid occuring errors.
-        $shieldon->setIp('140.112.172.12');
+        $firewall->getShieldon()->setIp('141.11.72.12');
+
         $reflection = new \ReflectionObject($shieldon);
         $methodSetSessionId = $reflection->getMethod('setSessionId');
         $methodSetSessionId->setAccessible(true);
@@ -48,10 +48,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $this->testFromJsonConfig();
 
         $firewall = \Shieldon\Container::get('firewall');
-        $shieldon = \Shieldon\Container::get('shieldon');
-
-        // Set a fake session to avoid occuring errors.
-        $shieldon->setIp('131.122.87.32');
+        $firewall->getShieldon()->setIp('131.122.87.32');
 
         /*
         |--------------------------------------------------------------------------
@@ -79,7 +76,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $_COOKIE['_test'] = '<script> alert(123); </script>';
         $_GET['_test'] = '<script> alert(123); </script>';
 
-        $shieldon->setIp('140.132.172.12');
+        $firewall->getShieldon()->setIp('140.132.72.12');
 
         $firewall->setup();
         $firewall->run();
@@ -98,10 +95,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $this->testFromJsonConfig();
 
         $firewall = \Shieldon\Container::get('firewall');
-        $shieldon = \Shieldon\Container::get('shieldon');
-
-        // Set a fake session to avoid occuring errors.
-        $shieldon->setIp('131.122.87.12');
+        $firewall->getShieldon()->setIp('131.122.87.9');
 
         /*
         |--------------------------------------------------------------------------
@@ -111,8 +105,8 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->setConfig('captcha_modules.image.config.type', 'alpha');
         $firewall->setup();
         $firewall->run();
-        
-        $shieldon->setIp('140.112.172.92');
+
+        $firewall->getShieldon()->setIp('140.112.172.92');
 
         $firewall->setConfig('captcha_modules.image.config.type', 'numeric');
         $firewall->setup();
@@ -124,10 +118,8 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     {
         $this->testFromJsonConfig();
         $firewall = \Shieldon\Container::get('firewall');
-        $shieldon = \Shieldon\Container::get('shieldon');
 
-        // Set a fake session to avoid occuring errors.
-        $shieldon->setIp('131.132.87.12');
+        $firewall->getShieldon()->setIp('131.132.87.12');
 
         /*
         |--------------------------------------------------------------------------
@@ -177,7 +169,6 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     {
         $this->testFromJsonConfig();
         $firewall = \Shieldon\Container::get('firewall');
-        $shieldon = \Shieldon\Container::get('shieldon');
 
         /*
         |--------------------------------------------------------------------------
@@ -187,24 +178,23 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
 
         // SQLite
         $firewall->setConfig('driver_type', 'sqlite');
-        $firewall->setConfig('driver.sqlite.directory_path', BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->setConfig('drivers.sqlite.directory_path', BOOTSTRAP_DIR . '/../tmp/shieldon');
         
-        $shieldon->setIp('131.111.11.111');
+        $firewall->getShieldon()->setIp(rand_ip());
         $firewall->setup();
         $firewall->run();
-
+        
         // Redis
         $firewall->setConfig('driver_type', 'redis');
-        $shieldon->setIp('131.111.11.112');
+        $firewall->getShieldon()->setIp(rand_ip());
         $firewall->setup();
         $firewall->run();
-
+         
         // MySQL
         $firewall->setConfig('driver_type', 'mysql');
-        $shieldon->setIp('131.111.11.113');
+        $firewall->getShieldon()->setIp(rand_ip());
         $firewall->setup();
         $firewall->run();
-
     }
 
     public function testSetCronJobOption()
@@ -264,7 +254,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall = \Shieldon\Container::get('firewall');
         $shieldon = \Shieldon\Container::get('shieldon');
 
-        $shieldon->setIp('131.111.11.213');
+        $shieldon->setIp('131.111.11.115');
         $reflection = new \ReflectionObject($shieldon);
         $methodSetSessionId = $reflection->getMethod('setSessionId');
         $methodSetSessionId->setAccessible(true);

@@ -36,7 +36,7 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
     public function testAdd() 
     {
         $shieldon = new \Shieldon\Shieldon();
-        $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon', '19890604');
+        $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon/test_logs', '19890604');
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = md5((string) time());

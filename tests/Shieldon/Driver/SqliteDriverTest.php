@@ -29,7 +29,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testInstallSql()
     {
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $db = new SqliteDriver($pdoInstance);
 
@@ -46,7 +46,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testCheckTableExists()
     {
-        $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+        $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $db = new SqliteDriver($pdoInstance);
 

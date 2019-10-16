@@ -18,7 +18,7 @@ define('BOOTSTRAP_DIR', __DIR__);
  * @param string $filename File name.
  * @return string The file's path.
  */
-function saveTestingFile($filename, $dir = '')
+function save_testing_file($filename, $dir = '')
 {
     if ($dir === '') {
         $dir = BOOTSTRAP_DIR . '/../tmp/' . $dir;
@@ -70,7 +70,7 @@ if (! isset($_SERVER['HTTP_HOST'])) {
  *
  * @return object
  */
-function getTestingShieldonInstance($driver = 'sqlite')
+function get_testing_shieldon_instance($driver = 'sqlite')
 {
     $shieldon = new \Shieldon\Shieldon();
 
@@ -134,7 +134,7 @@ function getTestingShieldonInstance($driver = 'sqlite')
 
         case 'sqlite':
         default:
-            $dbLocation = saveTestingFile('shieldon_unittest.sqlite3');
+            $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
 
             $pdoInstance = new \PDO('sqlite:' . $dbLocation);
             $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
@@ -142,6 +142,11 @@ function getTestingShieldonInstance($driver = 'sqlite')
     }
 
     return $shieldon;
+}
+
+function rand_ip()
+{
+    return rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255);
 }
 
 require __DIR__ . '/../src/autoload.php';
