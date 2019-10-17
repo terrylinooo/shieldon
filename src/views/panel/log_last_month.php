@@ -21,9 +21,9 @@ use function Shieldon\Helper\mask_string;
                 <div id="chart-1"></div>
             </div>
             <div class="board-field right">
-                <div class="heading">CAPTCHAs</div>
+                <div class="heading"><?php _e('panel', 'log_heading_captchas', 'CAPTCHAs'); ?></div>
                 <div class="nums"><?php echo number_format($period_data['captcha_count']); ?></div>
-                <div class="note">CAPTCHA statistic last month</div>
+                <div class="note"><?php _e('panel', 'log_note_captcha_last_month', 'CAPTCHA statistic last month'); ?></div>
             </div>
         </div>
         <div class="so-board">
@@ -31,9 +31,9 @@ use function Shieldon\Helper\mask_string;
                 <div id="chart-2"></div>
             </div>
             <div class="board-field right">
-                <div class="heading">Pageviews</div>
+                <div class="heading"><?php _e('panel', 'log_heading_pageviews', 'Pageviews'); ?></div>
                 <div class="nums"><?php echo number_format($period_data['pageview_count']); ?></div>
-                <div class="note">Total pageviews last month.</div>
+                <div class="note"><?php _e('panel', 'log_note_pageview_last_month', 'Total pageviews last month'); ?></div>
             </div>
         </div>
         <div class="so-board area-chart-container">
@@ -43,11 +43,11 @@ use function Shieldon\Helper\mask_string;
     <?php endif; ?>
     <div class="so-tabs">
         <ul>
-            <li><a href="?tab=today">Today</a></li>
-            <li><a href="?tab=yesterday">Yesterday</a></li>
-            <li><a href="?tab=past_seven_days">Last 7 days</a></li>
-            <li><a href="?tab=this_month">This month</a></li>
-            <li class="is-active"><a href="?tab=last_month">Last month</a></li>
+            <li><a href="?tab=today"><?php _e('panel', 'log_label_today', 'Today'); ?></a></li>
+            <li><a href="?tab=yesterday"><?php _e('panel', 'log_label_yesterday', 'Yesterday'); ?></a></li>
+            <li><a href="?tab=past_seven_days"><?php _e('panel', 'log_label_last_7_days', 'Last 7 days'); ?></a></li>
+            <li><a href="?tab=this_month"><?php _e('panel', 'log_label_this_month', 'This month'); ?></a></li>
+            <li class="is-active"><a href="?tab=last_month"><?php _e('panel', 'log_label_last_month', 'Last month'); ?></a></li>
         </ul>
     </div>
 
@@ -62,7 +62,8 @@ use function Shieldon\Helper\mask_string;
         </div>
     <?php else : ?>
         <div class="alert alert-danger">
-            Sorry, you have to implement ActionLogger to use this function.
+            <?php _e('panel', 'log_msg_no_logger', 'Sorry, you have to implement ActionLogger to use this function.'); ?>
+            
         </div>
     <?php endif; ?>
 
@@ -70,17 +71,17 @@ use function Shieldon\Helper\mask_string;
         <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th rowspan="2">IP</th>
-                    <th rowspan="2">Sessions</th>
-                    <th rowspan="2">Pageviews</th>
-                    <th colspan="3" class="merged-field">CAPTCHA</th>
-                    <th rowspan="2">In blacklist</th>
-                    <th rowspan="2">In queue</th>
+                    <th rowspan="2"><?php _e('panel', 'ipma_label_ip', 'IP'); ?></th>
+                    <th rowspan="2"><?php _e('panel', 'log_label_session', 'Sessions'); ?></th>
+                    <th rowspan="2"><?php _e('panel', 'log_label_pageviews', 'Pageviews'); ?></th>
+                    <th colspan="3" class="merged-field"><?php _e('panel', 'log_label_captcha', 'CAPTCHA'); ?></th>
+                    <th rowspan="2"><?php _e('panel', 'log_label_in_blacklist', 'In blacklist'); ?></th>
+                    <th rowspan="2"><?php _e('panel', 'log_label_in_queue', 'In queue'); ?></th>
                 </tr>
                 <tr>
-                    <th>solved</th>
-                    <th>failed</th>
-                    <th>displays</th>
+                    <th><?php _e('panel', 'log_label_solved', 'solved'); ?></th>
+                    <th><?php _e('panel', 'log_label_failed', 'failed'); ?></th>
+                    <th><?php _e('panel', 'log_label_displays', 'displays'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -107,7 +108,7 @@ use function Shieldon\Helper\mask_string;
         </table>
     </div>
     <div class="so-timezone">
-        Timezone: UTC 
+        <?php _e('panel', 'log_label_timezone', 'Timezone'); ?>: UTC 
     </div>
 </div>
 

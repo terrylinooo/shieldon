@@ -9,7 +9,6 @@
  */
 
 use function Shieldon\Helper\_e;
-use function Shieldon\Helper\mask_string;
 
 $timezone = '';
 
@@ -18,15 +17,17 @@ $timezone = '';
 <div class="so-dashboard">
     <div id="so-rule-table-form" class="so-datatables">
         <div class="so-datatable-heading">
-            Exclusion<br />
+            <?php _e('panel', 'excl_heading', 'Exclusion'); ?>
+            <br />
         </div>
         <div class="so-datatable-description">
-            Please enter the begin with URLs you want them excluded from Shieldon protection.<br />
+            <?php _e('panel', 'excl_description', 'Please enter the begin with URLs you want them excluded from Shieldon protection.'); ?>
+            <br />
         </div>
         <div class="so-rule-form">
             <form method="post">
                 <div class="d-inline-block align-top">
-                    <label for="url-path">URL Path</label><br />
+                    <label for="url-path"><?php _e('panel', 'auth_label_url_path', 'URL Path'); ?></label><br />
                     <input name="url" id="url-path" type="text" value="" class="regular-text">
                     <span class="form-text text-muted">e.g. <code>/url-path/</code></span>
                 </div>
@@ -35,7 +36,7 @@ $timezone = '';
                     <?php $this->_csrf(); ?>
                     <input type="hidden" name="action" value="add">
                     <input type="hidden" name="order" value="">
-                    <input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="Submit">
+                    <input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="<?php _e('panel', 'auth_btn_submit', 'Submit'); ?>">
                 </div>
             </form>
         </div>
@@ -53,8 +54,8 @@ $timezone = '';
         <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th>URL Path</th>
-                    <th>Remove</th>
+                    <th><?php _e('panel', 'auth_label_url_path', 'URL Path'); ?></th>
+                    <th><?php _e('panel', 'auth_label_remove', 'Remove'); ?></th>
                 </tr>
             </thead>
             <tbody>
