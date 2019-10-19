@@ -9,7 +9,6 @@
  */
 
 use function Shieldon\Helper\_e;
-use function Shieldon\Helper\mask_string;
 
 $timezone = '';
 
@@ -22,12 +21,12 @@ $timezone = '';
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
-            <?php _e('panel', 'overflow_heading', 'Data Circle'); ?><br />
+            <?php _e('panel', 'overview_heading_data_circle', 'Data Circle'); ?>
             <div class="heading-right">
                 <ul>
-                    <li><span>shieldon_rule_list</span> <strong><?php echo count($rule_list); ?> rows</strong></li>
-                    <li><span>shieldon_logs</span> <strong><?php echo count($ip_log_list); ?> rows</strong></li>
-                    <li><span>shieldon_sessions</span> <strong><?php echo count($session_list); ?> rows</strong></li>
+                    <li><span>shieldon_rule_list</span> <strong><?php echo count($rule_list); ?> <?php _e('panel', 'overview_text_rows', 'rows'); ?><br /></strong></li>
+                    <li><span>shieldon_logs</span> <strong><?php echo count($ip_log_list); ?> <?php _e('panel', 'overview_text_rows', 'rows'); ?></strong></li>
+                    <li><span>shieldon_sessions</span> <strong><?php echo count($session_list); ?> <?php _e('panel', 'overview_text_rows', 'rows'); ?></strong></li>
                 </ul>
             </div>
         </div>
@@ -35,11 +34,11 @@ $timezone = '';
         <div class="row">
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">MySQL</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_mysql', 'MySQL'); ?></div>
                     <div class="nums">
                         <?php echo $driver['mysql']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
                     </div>
-                    <div class="note">SQL database.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_sql_db', 'SQL database.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/driver/mysql.html" 
                         data-id="driver-mysql" 
@@ -50,11 +49,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">Redis</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_redis', 'Redis'); ?></div>
                     <div class="nums">
                         <?php echo $driver['redis']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
                     </div>
-                    <div class="note">In-memory dadabase.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_memory_db', 'In-memory dadabase.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/driver/redis.html" 
                         data-id="driver-redis" 
@@ -65,11 +64,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">File</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_file', 'File'); ?></div>
                     <div class="nums">
                         <?php echo $driver['file']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
                     </div>
-                    <div class="note">File system.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_file_system', 'File system.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/driver/file.html" 
                         data-id="driver-file" 
@@ -80,11 +79,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">SQLite</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_sqlite', 'SQLite'); ?></div>
                     <div class="nums">
                         <?php echo $driver['sqlite'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
                     </div>
-                    <div class="note">SQL database.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_sql_db', 'SQL database.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/driver/sqlite.html" 
                         data-id="driver-sqlite" 
@@ -100,17 +99,17 @@ $timezone = '';
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
-            Filters
+            <?php _e('panel', 'overview_heading_filters', 'Filters'); ?>
         </div>
         <br />
         <div class="row">
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">Cookie</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_cookie', 'Cookie'); ?></div>
                     <div class="nums">
                         <?php echo $filters['cookie'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Check if visitors can create cookie by JavaScript.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_cookie', 'Check if visitors can create cookie by JavaScript.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/api.html#setfilters" 
                         data-id="filters-cookie" 
@@ -121,11 +120,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">Session</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_session', 'Session'); ?></div>
                     <div class="nums">
                         <?php echo $filters['session'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Detect multiple sessions created by the same visitor.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_session', 'Detect multiple sessions created by the same visitor.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/api.html#setfilters" 
                         data-id="filters-session" 
@@ -136,11 +135,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">Frequency</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_frequency', 'Frequency'); ?></div>
                     <div class="nums">
                         <?php echo $filters['frequency'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Check how often does a visitor view the pages.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_frequency', 'Check how often does a visitor view the pages.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/api.html#setfilters" 
                         data-id="filters-frequency" 
@@ -151,11 +150,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">Referrer</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_referer', 'Referrer'); ?></div>
                     <div class="nums">
                         <?php echo $filters['referer'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Check HTTP referrer information.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_referer', 'Check HTTP referrer information.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/api.html#setfilters" 
                         data-id="filters-referer" 
@@ -170,17 +169,17 @@ $timezone = '';
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
-            Components
+            <?php _e('panel', 'overview_heading_components', 'Components'); ?>
         </div>
         <br />
         <div class="row">
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">IP</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_ip', 'IP'); ?></div>
                     <div class="nums">
                         <?php echo $components['Ip'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Advanced IP address mangement.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_ip', 'Advanced IP address mangement.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/component/ip.html" 
                         data-id="components-ip" 
@@ -191,11 +190,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">Trusted Bot</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_trustedbot', 'Trusted Bot'); ?></div>
                     <div class="nums">
                         <?php echo $components['TrustedBot'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Allow popular search engines crawl your website.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_trustedbot', 'Allow popular search engines crawl your website.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/component/trustedbot.html" 
                         data-id="components-trustedbot" 
@@ -206,11 +205,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">Header</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_header', 'Header'); ?></div>
                     <div class="nums">
                         <?php echo $components['Header'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Analysis header information from visitors.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_header', 'Analyze header information from visitors.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/component/header.html" 
                         data-id="components-header" 
@@ -221,11 +220,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">RDNS</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_rdns', 'RDNS'); ?></div>
                     <div class="nums">
                         <?php echo $components['Rdns'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Identify IP resolved hostname (RDNS) from visitors.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_rdns', 'Identify IP resolved hostname (RDNS) from visitors.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/component/rdns.html" 
                         data-id="components-rdns" 
@@ -236,11 +235,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">User Agent</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_useragent', 'User Agent'); ?></div>
                     <div class="nums">
                         <?php echo $components['UserAgent'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Analysis user-agent information from visitors.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_useragent', 'Analysis user-agent information from visitors.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/component/useragent.html" 
                         data-id="components-useragent" 
@@ -255,12 +254,12 @@ $timezone = '';
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
-            Logger
+            <?php _e('panel', 'overview_heading_logger', 'Logger'); ?>
             <div class="heading-right">
                 <ul>
-                    <li><span>since</span> <strong><?php echo $logger_started_working_date; ?></strong></li>
-                    <li><span>days</span> <strong><?php echo $logger_work_days; ?></strong></li>
-                    <li><span>size</span> <strong><?php echo $logger_total_size; ?></strong></li>
+                    <li><span><?php _e('panel', 'overview_text_since', 'since'); ?></span> <strong><?php echo $logger_started_working_date; ?></strong></li>
+                    <li><span><?php _e('panel', 'overview_text_days', 'days'); ?></span> <strong><?php echo $logger_work_days; ?></strong></li>
+                    <li><span><?php _e('panel', 'overview_text_size', 'size'); ?></span> <strong><?php echo $logger_total_size; ?></strong></li>
                 </ul>
             </div>
         </div>
@@ -268,11 +267,11 @@ $timezone = '';
         <div class="row">
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">Action Logger</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_action_logger', 'Action Logger'); ?></div>
                     <div class="nums">
                         <?php echo $data['action_logger']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Record every visitor's behavior.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_action_logger', 'Record every visitor’s behavior.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/logs/actionlogger.html" 
                         data-id="logs-actionlogger" 
@@ -287,17 +286,17 @@ $timezone = '';
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
-            Captcha Modules
+            <?php _e('panel', 'overview_heading_captcha', 'Captcha Modules'); ?>
         </div>
         <br />
         <div class="row">
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">reCAPTCHA</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_recaptcha', 'reCAPTCHA'); ?></div>
                     <div class="nums">
                         <?php echo $captcha['recaptcha']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">Provided by Google.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_recaptcha', 'Provided by Google.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/captcha/recaptcha.html" 
                         data-id="captcha-recaptcha" 
@@ -308,11 +307,11 @@ $timezone = '';
             </div>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading">Image Captcha</div>
+                    <div class="heading"><?php _e('panel', 'overview_label_image_captcha', 'Image Captcha'); ?></div>
                     <div class="nums">
                         <?php echo $captcha['imagecaptcha']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note">A simple text-in-image Captcha.</div>
+                    <div class="note"><?php _e('panel', 'overview_note_image_captcha', 'A simple text-in-image Captcha.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/captcha/image.html" 
                         data-id="captcha-image" 
@@ -336,8 +335,8 @@ $timezone = '';
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-primary" id="btn-document-link" data-url=""><i class="far fa-file-code"></i> Document</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn-document-link" data-url=""><i class="far fa-file-code"></i> <?php _e('panel', 'overview_btn_document', 'Document'); ?></button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php _e('panel', 'overview_btn_close', 'Close'); ?></button>
             </div>
         </div>
     </div>
@@ -425,7 +424,7 @@ $shieldon->setComponent($ip);
         <li>removeItem</li>
     </ul>
     <p>
-        Dor more usages please check out that document.
+        <?php _e('panel', 'overview_text_more_usages', 'For more usages please check out that document.'); ?>
     </p>
 </script>
 
@@ -451,7 +450,7 @@ $shieldon->setComponent($robot);
         <li>removeItem</li>
     </ul>
     <p>
-        Dor more usages please check out that document.
+        <?php _e('panel', 'overview_text_more_usages', 'For more usages please check out that document.'); ?>
     </p>
 </script>
 
@@ -471,7 +470,7 @@ $shieldon->setComponent($header);
         <li>removeItem</li>
     </ul>
     <p>
-        Dor more usages please check out that document.
+        <?php _e('panel', 'overview_text_more_usages', 'For more usages please check out that document.'); ?>
     </p>
 </script>
 
@@ -491,7 +490,7 @@ $shieldon->setComponent($rdns);
         <li>removeItem</li>
     </ul>
     <p>
-        Dor more usages please check out that document.
+        <?php _e('panel', 'overview_text_more_usages', 'For more usages please check out that document.'); ?>
     </p>
 </script>
 
@@ -511,7 +510,7 @@ $shieldon->setComponent($agent);
         <li>removeItem</li>
     </ul>
     <p>
-        Dor more usages please check out that document.
+        <?php _e('panel', 'overview_text_more_usages', 'For more usages please check out that document.'); ?>
     </p>
 </script>
 
@@ -620,9 +619,6 @@ $shieldon->setCaptcha($captchaInstance);
         </code>
     </pre>
 </script>
-
-
-
 
 <script>
 

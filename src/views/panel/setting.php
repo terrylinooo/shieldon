@@ -9,7 +9,6 @@
  */
 
 use function Shieldon\Helper\_e;
-use function Shieldon\Helper\mask_string;
 
 $timezone = '';
 
@@ -45,7 +44,7 @@ $timezone = '';
         </section>
     </div>
     <div class="d-flex justify-content-center py-2">
-        <button type="submit" class="btn btn-enter"><i class="fas fa-fire-alt"></i> SAVE</button>
+        <button type="submit" class="btn btn-enter"><i class="fas fa-fire-alt"></i> <?php _e('panel', 'overview_btn_save', 'SAVE'); ?></button>
     </div>
 </div>
 <?php $this->_csrf(); ?>

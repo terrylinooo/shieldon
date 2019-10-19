@@ -26,7 +26,8 @@ $timezone = '';
     </div>
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <div class="so-datatable-heading">
-            IP Log Table
+            <?php _e('panel', 'table_heading_ip_log', 'IP Log Table'); ?>
+            
         </div>
         <div class="so-datatable-description">
             This is where the Shieldon records the users' strange behavior.<br />
