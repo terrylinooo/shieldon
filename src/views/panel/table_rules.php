@@ -18,25 +18,25 @@ $timezone = '';
 <div class="so-dashboard">
     <div id="so-rule-table-form" class="so-datatables">
         <div class="so-datatable-heading">
-            Rule Table<br />
+            <?php _e('panel', 'table_heading_rule', 'Rule Table'); ?>
         </div>
         <div class="so-datatable-description">
-            This is where the Shieldon temporarily allows or denys users in current cycle. 
-            All processes are automatic and instant, you can ignore that.<br />
-            Rule table will be reset after new cycle begins.
+            <?php _e('panel', 'table_description_rule_1', 'This is where the Shieldon temporarily allows or denys users in current cycle. '); ?><br />
+            <?php _e('panel', 'table_description_rule_2', 'All processes are automatic and instant, you can ignore that.'); ?><br />
+            <?php _e('panel', 'table_description_rule_3', 'Rule table will be reset after new cycle begins.'); ?>
         </div>
         <div class="so-rule-form">
             <form method="post">
                 <?php $this->_csrf(); ?>
-                <input name="ip" type="text" value="" class="regular-text" placeholder="Please fill in an IP address..">
+                <input name="ip" type="text" value="" class="regular-text" placeholder="<?php _e('panel', 'table_ip_placeholder', 'Please fill in an IP address..'); ?>">
                 <select name="action" class="regular">
-                    <option value="none">--- please select ---</option>
-                    <option value="temporarily_ban">Deny this IP temporarily</option>
-                    <option value="permanently_ban">Deny this IP permanently</option>
-                    <option value="allow">Allow this IP</option>
-                    <option value="remove">Remove this IP</option>
+                    <option value="none">--- <?php _e('panel', 'ipma_label_plz_select', 'Please select'); ?> ---</option>
+                    <option value="temporarily_ban"><?php _e('panel', 'table_label_deny_ip_temporarily', 'Deny this IP temporarily'); ?></option>
+                    <option value="permanently_ban"><?php _e('panel', 'table_label_deny_ip_permanently', 'Deny this IP permanently'); ?></option>
+                    <option value="allow"><?php _e('panel', 'ipma_label_allow_ip', 'Allow this IP'); ?></option>
+                    <option value="remove"><?php _e('panel', 'ipma_label_remove_ip', 'Remove this IP'); ?></option>
                 </select>
-                <input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="Submit">
+                <input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="<?php _e('panel', 'auth_btn_submit', 'Submit'); ?>">
             </form>
         </div>
     </div>
@@ -53,12 +53,12 @@ $timezone = '';
         <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th>IP</th>
-                    <th>Resolved hostname</th>
-                    <th>Type</th>
-                    <th>Reason</th>
-                    <th>Time</th>
-                    <th>Remove</th>
+                    <th><?php _e('panel', 'overview_label_ip', 'IP'); ?></th>
+                    <th><?php _e('panel', 'table_label_resolved_hostname', 'Resolved hostname'); ?></th>
+                    <th><?php _e('panel', 'table_label_type', 'Type'); ?></th>
+                    <th><?php _e('panel', 'table_label_reason', 'Reason'); ?></th>
+                    <th><?php _e('panel', 'table_label_time', 'Time'); ?></th>
+                    <th><?php _e('panel', 'table_label_remove', 'Remove'); ?></th>
                 </tr>
             </thead>
             <tbody>

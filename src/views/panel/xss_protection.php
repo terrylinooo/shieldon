@@ -18,12 +18,11 @@ use function Shieldon\Helper\mask_string;
 <div class="so-dashboard">
     <div id="so-rule-table-form" class="so-datatables">
         <div class="so-datatable-heading">
-            XSS Protection<br />
+            <?php _e('panel', 'xss_heading', 'XSS Protection'); ?>
         </div>
         <div class="so-datatable-description">
-            Prevent Cross site scripting (XSS) attacks.<br />
+            <?php _e('panel', 'xss_description', 'Prevent Cross site scripting (XSS) attacks.'); ?>
         </div>
-
         <div class="so-setting-page">
             <table class="setting-table">
                 <form method="post">
@@ -37,7 +36,7 @@ use function Shieldon\Helper\mask_string;
                             <span class="switch-left">ON</span>
                             <span class="switch-right">OFF</span>
                         </label>
-                        <p>Eradicate all POST method variables.</p>
+                        <p><?php _e('panel', 'xss_text_filter_post_variables', 'Filter all POST method variables.'); ?></p>
                     </td>
                 </tr>
                 <tr class="border-top">
@@ -50,7 +49,7 @@ use function Shieldon\Helper\mask_string;
                             <span class="switch-left">ON</span>
                             <span class="switch-right">OFF</span>
                         </label>
-                        <p>Eradicate all GET method variables.</p>
+                        <p><?php _e('panel', 'xss_text_filter_get_variables', 'Filter all GET method variables.'); ?></p>
                     </td>
                 </tr>
                 <tr class="border-top">
@@ -63,7 +62,7 @@ use function Shieldon\Helper\mask_string;
                             <span class="switch-left">ON</span>
                             <span class="switch-right">OFF</span>
                         </label>
-                        <p>Eradicate all COOKIE method variables.</p>
+                        <p><?php _e('panel', 'xss_text_filter_cookie_variables', 'Filter all COOKIE method variables.'); ?></p>
                     </td>
                 </tr>
                 <tr class="border-top">
@@ -72,23 +71,23 @@ use function Shieldon\Helper\mask_string;
                         <input type="hidden" name="xss" value="page">
                         <input type="hidden" name="order" value="">
                         <input type="submit" name="submit" id="btn-update" class="btn btn-info" value="Update">&nbsp;&nbsp;
-                        <span class="text-muted">Update the above settings</span>
+                        <span class="text-muted"><?php _e('panel', 'xss_text_update_above_settings', 'Update above settings.'); ?></span>
                     </td>
                 </tr>
                 </form>
                 <tr class="border-top">
-                    <td class="r1">Single variable</td>
+                    <td class="r1"><?php _e('panel', 'xss_label_single_variable', 'Single variable'); ?></td>
                     <td class="r2">
                         <br />
                         <form method="post">
                         <div class="so-rule-form">
                             <div class="d-inline-block align-top">
-                                <label for="variable">Variable Name</label><br />
+                                <label for="variable"><?php _e('panel', 'xss_label_variable_name', 'Variable Name'); ?></label><br />
                                 <input name="variable" type="text" value="" id="variable" class="regular-text">
                                 <span class="form-text text-muted">e.g. <code>post_content</code></span>
                             </div>
                             <div class="d-inline-block align-top">
-                                <label for="type">Type</label><br />
+                                <label for="type"><?php _e('panel', 'table_label_type', 'Type'); ?></label><br />
                                 <select name="type" class="regular" id="type">
                                     <option value="post">POST</option>
                                     <option value="get">GET</option>
@@ -100,11 +99,11 @@ use function Shieldon\Helper\mask_string;
                                 <input type="hidden" name="action" value="add">
                                 <input type="hidden" name="order" value="">
                                 <input type="hidden" name="xss" value="page">
-                                <input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="Submit">
+                                <input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="<?php _e('panel', 'auth_btn_submit', 'Submit'); ?>">
                             </div>
                         </div>
                         </form>
-                        <p>Eradicate potential injection string for single variable.</p>
+                        <p><?php _e('panel', 'xss_text_eradicate_injection', 'Eradicate potential injection string for single variable.'); ?></p>
                     </td>
                 </tr>
             </table>
@@ -123,9 +122,9 @@ use function Shieldon\Helper\mask_string;
         <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th>Type</th>
-                    <th>Variable</th>
-                    <th>Remove</th>
+                    <th><?php _e('panel', 'table_label_type', 'Type'); ?></th>
+                    <th><?php _e('panel', 'xss_label_variable', 'Variable'); ?></th>
+                    <th><?php _e('panel', 'table_label_remove', 'Remove'); ?></th>
                 </tr>
             </thead>
             <tbody>

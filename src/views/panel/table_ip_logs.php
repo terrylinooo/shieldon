@@ -27,30 +27,29 @@ $timezone = '';
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <div class="so-datatable-heading">
             <?php _e('panel', 'table_heading_ip_log', 'IP Log Table'); ?>
-            
         </div>
         <div class="so-datatable-description">
-            This is where the Shieldon records the users' strange behavior.<br />
-            All processes are automatic and instant, you can ignore that.<br />
-            IP log table will be all cleared after new cycle begins.
+            <?php _e('panel', 'table_description_ip_log_1', 'This is where the Shieldon records the users’ strange behavior.'); ?><br />
+            <?php _e('panel', 'table_description_ip_log_2', 'All processes are automatic and instant, you can ignore that.'); ?><br />
+            <?php _e('panel', 'table_description_ip_log_3', 'IP log table will be all cleared after new cycle begins.'); ?><br />
         </div>
         <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th rowspan="2">IP</th>
-                    <th rowspan="2">Resolved hostname</th>
-                    <th colspan="4" class="merged-field">Pageviews</th>
-                    <th colspan="3" class="merged-field">Flags</th>
-                    <th rowspan="2">Last visit</th>
+                    <th rowspan="2"><?php _e('panel', 'overview_label_ip', 'IP'); ?></th>
+                    <th rowspan="2"><?php _e('panel', 'table_label_resolved_hostname', 'Resolved hostname'); ?></th>
+                    <th colspan="4" class="merged-field"><?php _e('panel', 'table_label_pageviews', 'Pageviews'); ?></th>
+                    <th colspan="3" class="merged-field"><?php _e('panel', 'table_label_flags', 'Flags'); ?></th>
+                    <th rowspan="2"><?php _e('panel', 'table_label_last_visit', 'Last visit'); ?></th>
                 </tr>
                 <tr>
                     <th>S</th>
                     <th>M</th>
                     <th>H</th>
                     <th>D</th>
-                    <th>Cookie</th>
-                    <th>Session</th>
-                    <th>Referrer</th>
+                    <th><?php _e('panel', 'overview_label_cookie', 'Cookie'); ?></th>
+                    <th><?php _e('panel', 'overview_label_session', 'Session'); ?></th>
+                    <th><?php _e('panel', 'overview_label_referer', 'Referrer'); ?></th>
                 </tr>
             </thead>
             <tbody>

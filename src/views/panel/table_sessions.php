@@ -9,6 +9,7 @@
  */
 
 use function Shieldon\Helper\_e;
+use function Shieldon\Helper\__;
 use function Shieldon\Helper\mask_string;
 
 $timezone = '';
@@ -22,9 +23,9 @@ $timezone = '';
                 <i class="fas fa-clipboard-check"></i>
             </div>
             <div class="board-field right">
-                <div class="heading">Limit</div>
+                <div class="heading"><?php _e('panel', 'table_heading_limit', 'Limit'); ?></div>
                 <div class="nums"><?php echo $session_limit_count; ?></div>
-                <div class="note">Online session limit.</div>
+                <div class="note"><?php _e('panel', 'table_note_limit', 'Online session limit.'); ?></div>
             </div>
         </div>
 
@@ -33,9 +34,9 @@ $timezone = '';
                 <i class="far fa-clock"></i>
             </div>
             <div class="board-field right">
-                <div class="heading">Period</div>
+                <div class="heading"><?php _e('panel', 'table_heading_period', 'Period'); ?></div>
                 <div class="nums"><?php echo number_format($session_limit_period ); ?></div>
-                <div class="note">Keep-alive period. (minutes)</div>
+                <div class="note"><?php _e('panel', 'table_note_period', 'Keep-alive period. (minutes)'); ?></div>
             </div>
         </div>
         <div class="so-board">
@@ -43,9 +44,9 @@ $timezone = '';
                 <i class="fas fa-street-view"></i>
             </div>
             <div class="board-field right">
-                <div class="heading">Online</div>
+                <div class="heading"><?php _e('panel', 'table_heading_online', 'Online'); ?></div>
                 <div class="nums"><?php echo number_format($online_count ); ?></div>
-                <div class="note">Online session amount.</div>
+                <div class="note"><?php _e('panel', 'table_note_online', 'Online session amount.'); ?></div>
             </div>
         </div>
     </div>
@@ -59,21 +60,21 @@ $timezone = '';
     </div>
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <div class="so-datatable-heading">
-            Session Table
+            <?php _e('panel', 'table_heading_session', 'Session Table'); ?>
         </div>
         <div class="so-datatable-description">
-            Read-time logs for <strong>Online Session Controll</strong>. All processes are automatic and instant, you can ignore that.<br />
-            Notice this is only working when you have enabled that function.
+            <?php _e('panel', 'table_description_session_1', 'Read-time logs for <strong>Online Session Controll</strong>. All processes are automatic and instant, you can ignore that.'); ?><br />
+            <?php _e('panel', 'table_description_session_2', 'Notice this is only working when you have enabled that function.'); ?>
         </div>
         <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th>Priority</th>
-                    <th>Status</th>
-                    <th>Session ID</th>
-                    <th>IP</th>
-                    <th>Time</th>
-                    <th>Remain seconds</th>
+                    <th><?php _e('panel', 'table_label_priority', 'Priority'); ?></th>
+                    <th><?php _e('panel', 'table_label_status', 'Status'); ?></th>
+                    <th><?php _e('panel', 'table_label_session_id', 'Session ID'); ?></th>
+                    <th><?php _e('panel', 'overview_label_ip', 'IP'); ?></th>
+                    <th><?php _e('panel', 'table_label_time', 'Time'); ?></th>
+                    <th><?php _e('panel', 'table_label_remain_seconds', 'Remain seconds'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -89,13 +90,13 @@ $timezone = '';
                         }
 
                         if ($i < $session_limit_count ) {
-                            $satusName = 'Allowable';
+                            $satusName = __('panel', 'table_text_allowable', 'Allowable');
 
                             if ($remainsTime < 1 ) {
-                                $satusName = 'Expired';
+                                $satusName = __('panel', 'table_text_expired', 'Expired');
                             }
                         } else {
-                            $satusName = 'Waiting';
+                            $satusName = __('panel', 'table_text_waiting', 'Waiting');
                         }
 
                     ?>

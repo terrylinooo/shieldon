@@ -90,8 +90,6 @@ return [
     'overview_note_sql_db' => 'SQL database.',
     'overview_note_memory_db' =>  'In-memory dadabase.',
     'overview_label_redis' => 'Redis',
-
-
     'overview_btn_document' => 'Document',
     'overview_btn_close' => 'Close',
     'overview_btn_save' => 'SAVE',
@@ -130,6 +128,56 @@ return [
     'overview_note_file_system' => 'File system.',
     'overview_label_file' => 'File',
     'overview_text_more_usages' => 'For more usages please check out that document.',
-    
 
+    // IP log table.
+    'table_heading_ip_log' => 'IP Log Table',
+    'table_description_ip_log_1' => 'This is where the Shieldon records the users’ strange behavior.',
+    'table_description_ip_log_2' => 'All processes are automatic and instant, you can ignore that.',
+    'table_description_ip_log_3' => 'IP log table will be all cleared after new cycle begins.',
+    'table_label_resolved_hostname' => 'Resolved hostname',
+    'table_label_last_visit' => 'Last visit',
+    'table_label_flags' => 'Flags',
+
+    // Rule table.
+    'table_heading_rule' => 'Rule Table',
+    'table_description_rule_1' => 'This is where the Shieldon temporarily allows or denys users in current cycle.',
+    'table_description_rule_2' => 'All processes are automatic and instant, you can ignore that.',
+    'table_description_rule_3' => 'Rule table will be reset after new cycle begins.',
+    'table_label_deny_ip_temporarily' => 'Deny this IP temporarily',
+    'table_label_deny_ip_permanently' => 'Deny this IP permanently',
+    'table_ip_placeholder' => 'Please fill in an IP address..',
+    'table_label_type' => 'Type',
+    'table_label_reason' => 'Reason',
+    'table_label_time' => 'Time',
+    'table_label_remove' => 'Remove',
+
+    // Session table.
+    'table_heading_session' => 'Session Table',
+    'table_label_remain_seconds' => 'Remain Seconds',
+    'table_label_priority' => 'Priority',
+    'table_label_status' => 'Status',
+    'table_label_session_id' => 'Session ID',
+    'table_text_allowable' => 'Allowable',
+    'table_text_expired' => 'Expired',
+    'table_text_waiting' => 'Waiting',
+    'table_description_session_1' => 'Read-time logs for <strong>Online Session Controll</strong>. All processes are automatic and instant, you can ignore that.',
+    'table_description_session_2' => 'Notice this is only working when you have enabled that function.',
+    'table_heading_limit' => 'Limit',
+    'table_note_limit' => 'Online session limit.',
+    'table_heading_period' => 'Period',
+    'table_note_period' => 'Keep-alive period. (minutes)',
+    'table_heading_online' => 'Online',
+    'table_note_online' => 'Online session limit.',
+
+    // Xss protection.
+    'xss_heading' => 'XSS Protection',
+    'xss_description' => 'Prevent Cross site scripting (XSS) attacks.',
+    'xss_label_variable' => 'Variable',
+    'xss_text_eradicate_injection' => 'Eradicate potential injection string for single variable.',
+    'xss_label_single_variable' => 'Single variable',
+    'xss_label_variable_name' => 'Variable Name',
+    'xss_text_update_above_settings' => 'Update above settings.',
+    'xss_text_filter_cookie_variables' => 'Filter all COOKIE method variables.',
+    'xss_text_filter_get_variables' => 'Filter all GET method variables.',
+    'xss_text_filter_post_variables' => 'Filter all POST method variables.',
 ];
