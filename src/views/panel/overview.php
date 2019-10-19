@@ -22,7 +22,7 @@ $timezone = '';
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
-            Data Circle
+            <?php _e('panel', 'overflow_heading', 'Data Circle'); ?><br />
             <div class="heading-right">
                 <ul>
                     <li><span>shieldon_rule_list</span> <strong><?php echo count($rule_list); ?> rows</strong></li>
