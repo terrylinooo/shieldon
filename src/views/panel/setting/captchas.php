@@ -9,11 +9,10 @@
  */
 
 use function Shieldon\Helper\_e;
-use function Shieldon\Helper\mask_string;
 
 ?>
 <div class="section-title bg-glass">
-    <h2>reCAPTCHA</h2>
+    <h2><?php _e('panel', 'setting_heading_recaptcha', 'reCAPTCHA'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
             <input type="hidden" name="captcha_modules__recaptcha__enable" value="off" />
@@ -26,18 +25,10 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0" data-parent="captcha-recaptcha-section">
     <table class="setting-table">
         <tr>
-            <td class="r1"></td>
-            <td class="r2">
-                <p>
-                    Check HTTP referrer information.
-                </p>
-            </td>
-        </tr>
-        <tr>
-            <td class="r1">Site Key</td>
+            <td class="r1"><?php _e('panel', 'setting_label_recaptcha_key', 'Site Key'); ?></td>
             <td class="r2">
                 <input type="text" name="captcha_modules__recaptcha__config__site_key" class="form-control form-control-sm col-sm-3" value="<?php $this->_('captcha_modules.recaptcha.config.site_key'); ?>"><br />
-                <p>Enter Google reCaptcha site key for your webiste.</p>
+                <p><?php _e('panel', 'setting_note_recaptcha_key', 'Enter Google reCaptcha site key for your webiste.'); ?></p>
             </td>
         </tr>
     </table>
@@ -45,10 +36,10 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0" data-parent="captcha-recaptcha-section">
     <table class="setting-table">
         <tr>
-            <td class="r1">Secret Key</td>
+            <td class="r1"><?php _e('panel', 'setting_label_recaptcha_secret', 'Secret Key'); ?></td>
             <td class="r2">
                 <input type="text" name="captcha_modules__recaptcha__config__secret_key" class="form-control form-control-sm col-sm-3" value="<?php $this->_('captcha_modules.recaptcha.config.secret_key'); ?>"><br />
-                <p>Enter Google reCahptcha secret key for your webiste.</p>
+                <p><?php _e('panel', 'setting_note_recaptcha_secret', 'Enter Google reCahptcha secret key for your webiste.'); ?></p>
             </td>
         </tr>
     </table>
@@ -56,7 +47,7 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0" data-parent="captcha-recaptcha-section">
     <table class="setting-table">
         <tr>
-            <td class="r1">Version</td>
+            <td class="r1"><?php _e('panel', 'setting_label_recaptcha_version', 'Version'); ?></td>
             <td class="r2">
                 <div class="container">
                     <div ckass="row">
@@ -73,7 +64,7 @@ use function Shieldon\Helper\mask_string;
                                     v3
                                 </label> 
                             </div>
-                            <p>Please use corresponding key for that version you choose, otherwise it won't work.</p>
+                            <p><?php _e('panel', 'setting_note_recaptcha_version', 'Please use corresponding key for that version you choose, otherwise it won’t work.'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -85,10 +76,10 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0" data-parent="captcha-recaptcha-section">
     <table class="setting-table">
         <tr>
-            <td class="r1">Language Code</td>
+            <td class="r1"><?php _e('panel', 'setting_label_recaptcha_lang', 'Language Code'); ?></td>
             <td class="r2">
                 <input type="text" name="captcha_modules__recaptcha__config__lang" class="form-control form-control-sm col-sm-3" value="<?php $this->_('captcha_modules.recaptcha.config.lang'); ?>"><br />
-                <p>ISO 639 - ISO 3166 code. For example, zh-TW stands for Tranditional Chinese of Taiwan.</p>
+                <p><?php _e('panel', 'setting_note_recaptcha_lang', 'ISO 639 - ISO 3166 code. For example, zh-TW stands for Tranditional Chinese of Taiwan.'); ?></p>
             </td>
         </tr>
     </table>
@@ -97,7 +88,7 @@ use function Shieldon\Helper\mask_string;
 
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
-    <h2>Image</h2>
+    <h2><?php _e('panel', 'setting_heading_image_captcha', 'Image'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
             <input type="hidden" name="captcha_modules__image__enable" value="off" />
@@ -110,7 +101,7 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0" data-parent="captcha-image-section">
     <table class="setting-table">
         <tr>
-            <td class="r1">Language Code</td>
+            <td class="r1"><?php _e('panel', 'table_label_type', 'Type'); ?></td>
             <td class="r2">
                 <div class="container">
                     <div ckass="row">
@@ -118,19 +109,19 @@ use function Shieldon\Helper\mask_string;
                             <div class="radio-style">
                                 <input name="captcha_modules__image__config__type" value="alnum" type="radio" id="captcha-image-alnum" <?php $this->checked('captcha_modules.image.config.type', 'alnum'); ?> /> 
                                 <label for="captcha-image-alnum" class="radio-label">
-                                    Alpha-numeric string with lower and uppercase characters.
+                                    <?php _e('panel', 'setting_note_image_captcha_1', 'Alpha-numeric string with lower and uppercase characters.'); ?>
                                 </label> 
                             </div>
                             <div class="radio-style">
                                 <input name="captcha_modules__image__config__type" value="alpha" type="radio" id="captcha-image-alpha" <?php $this->checked('captcha_modules.image.config.type', 'alpha'); ?> /> 
                                 <label for="captcha-image-alpha" class="radio-label">
-                                    A string with lower and uppercase letters only.
+                                    <?php _e('panel', 'setting_note_image_captcha_2', 'A string with lower and uppercase letters only.'); ?>
                                 </label> 
                             </div>
                             <div class="radio-style">
                                 <input name="captcha_modules__image__config__type" value="numeric" type="radio" id="captcha-image-numeric" <?php $this->checked('captcha_modules.image.config.type', 'numeric'); ?> /> 
                                 <label for="captcha-image-numeric" class="radio-label">
-                                    Numeric string only.
+                                    <?php _e('panel', 'setting_note_image_captcha_3', 'Numeric string only.'); ?>
                                 </label> 
                             </div>
                         </div>
@@ -143,10 +134,10 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0" data-parent="captcha-image-section">
     <table class="setting-table">
         <tr>
-            <td class="r1">Length</td>
+            <td class="r1"><?php _e('panel', 'setting_label_length', 'Length'); ?></td>
             <td class="r2">
                 <input type="text" name="captcha_modules__image__config__length" class="form-control form-control-sm col-sm-3" value="<?php $this->_('captcha_modules.image.config.length'); ?>"><br />
-                <p>How many characters do you like to display on CAPTCHA.</p>
+                <p><?php _e('panel', 'setting_note_image_captcha_length', 'How many characters do you like to display on CAPTCHA.'); ?></p>
             </td>
         </tr>
     </table>

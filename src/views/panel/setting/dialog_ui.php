@@ -9,16 +9,15 @@
  */
 
 use function Shieldon\Helper\_e;
-use function Shieldon\Helper\mask_string;
 
 ?>
 <div class="section-title bg-glass">
-    <h2>Dialog UI</h2>
+    <h2><?php _e('panel', 'setting_heading_dailogui', 'Dialog UI'); ?></h2>
 </div>
 <div class="section-body my-0">
     <table class="setting-table">
         <tr>
-            <td class="r1">Language</td>
+            <td class="r1"><?php _e('panel', 'setting_label_language', 'Language'); ?></td>
             <td class="r2">
                 <div class="container">
                     <div ckass="row">
@@ -51,10 +50,10 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0">
     <table class="setting-table">
         <tr>
-            <td class="r1">Background Image</td>
+            <td class="r1"><?php _e('panel', 'setting_label_background_image', 'Background Image'); ?></td>
             <td class="r2">
                 <input type="text" name="dialog_ui__background_image" class="form-control form-control-sm col-sm-3" value="<?php $this->_('dialog_ui.background_image'); ?>"><br />
-                <p>Please add a full URL or relative path of the image.</p>
+                <p><?php _e('panel', 'setting_note_background_image', 'Please add a full URL or relative path of the image.'); ?></p>
             </td>
         </tr>
     </table>
@@ -62,10 +61,10 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0">
     <table class="setting-table">
         <tr>
-            <td class="r1">Background Color</td>
+            <td class="r1"><?php _e('panel', 'setting_label_background_color', 'Background Color'); ?></td>
             <td class="r2">
                 <input type="text" name="dialog_ui__bg_color" class="form-control form-control-sm col-sm-3" value="<?php $this->_('dialog_ui.bg_color'); ?>"><br />
-                <p>You can spefic a background color if you don't want to spefic the background image.</p>
+                <p><?php _e('panel', 'setting_note_background_color', 'You can specify a background color if you don’t want to use a background image.'); ?></p>
             </td>
         </tr>
     </table>
@@ -73,10 +72,13 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0">
     <table class="setting-table">
         <tr>
-            <td class="r1">Background Color<br /><small>Dialog Header</small></td>
+            <td class="r1">
+                <?php _e('panel', 'setting_label_background_color', 'Background Color'); ?><br />
+                <small><?php _e('panel', 'setting_label_dialog_header', 'Dialog Header'); ?></small>
+            </td>
             <td class="r2">
                 <input type="text" name="dialog_ui__header_bg_color" class="form-control form-control-sm col-sm-3" value="<?php $this->_('dialog_ui.header_bg_color'); ?>"><br />
-                <p>For example: <code>#00aeff</code> or <code>rgb(0,174,255)</code></p>
+                <p><?php _e('panel', 'setting_text_for_example', 'For example'); ?>: <code>#00aeff</code> or <code>rgb(0,174,255)</code></p>
             </td>
         </tr>
     </table>
@@ -84,10 +86,13 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0">
     <table class="setting-table">
         <tr>
-            <td class="r1">Font Color<br /><small>Dialog Header</small></td>
+            <td class="r1">
+                <?php _e('panel', 'setting_label_font_color', 'Font Color'); ?><br />
+                <small><?php _e('panel', 'setting_label_dialog_header', 'Dialog Header'); ?></small>
+            </td>
             <td class="r2">
                 <input type="text" name="dialog_ui__header_color" class="form-control form-control-sm col-sm-3" value="<?php $this->_('dialog_ui.header_color'); ?>"><br />
-                <p>For example: <code>#00aeff</code> or <code>rgb(0,174,255)</code></p>
+                <p><?php _e('panel', 'setting_text_for_example', 'For example'); ?>: <code>#00aeff</code> or <code>rgb(0,174,255)</code></p>
             </td>
         </tr>
     </table>
@@ -95,10 +100,10 @@ use function Shieldon\Helper\mask_string;
 <div class="section-body my-0">
     <table class="setting-table">
         <tr>
-            <td class="r1">Shadow Opacity</td>
+            <td class="r1"><?php _e('panel', 'setting_label_shadow_opacity', 'Shadow Opacity'); ?></td>
             <td class="r2">
                 <input type="text" name="dialog_ui__shadow_opacity" class="form-control form-control-sm col-sm-3" value="<?php $this->_('dialog_ui.shadow_opacity'); ?>"><br />
-                <p>The range from 0 to 1, for example, 0.2 stands for 20% opacity.</p>
+                <p><?php _e('panel', 'setting_note_shadow_opacity', 'The range from 0 to 1, for example, 0.2 stands for 20% opacity.'); ?></p>
             </td>
         </tr>
     </table>

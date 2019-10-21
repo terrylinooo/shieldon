@@ -9,11 +9,10 @@
  */
 
 use function Shieldon\Helper\_e;
-use function Shieldon\Helper\mask_string;
 
 ?>
 <div class="section-title bg-glass">
-    <h2>IP</h2>
+    <h2><?php _e('panel', 'setting_heading_component_ip', 'IP'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
             <input type="hidden" name="components__ip__enable" value="off" />
@@ -28,7 +27,7 @@ use function Shieldon\Helper\mask_string;
         <tr>
             <td class="r1"></td>
             <td class="r2">
-                <p>Enabling this option will activate the IP Manager.</p>
+                <p><?php _e('panel', 'setting_note_component_ip', 'Activate the IP Manager by enabling this option.'); ?></p>
             </td>
         </tr>
     </table>
@@ -36,7 +35,7 @@ use function Shieldon\Helper\mask_string;
 
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
-    <h2>Trusted Bots</h2>
+    <h2><?php _e('panel', 'setting_heading_component_tb', 'Trusted Bots'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
             <input type="hidden" name="components__trusted_bot__enable" value="off" />
@@ -52,13 +51,14 @@ use function Shieldon\Helper\mask_string;
             <td class="r1"></td>
             <td class="r2">
                 <p>
-                    Allow popular search engines crawl your webiste.<br />
-                    Notice: Turning this option off will impact your SEO because the bots will be going to checking process.
+                    <?php _e('panel', 'setting_note_component_tb_1', 'Allow popular search engines to crawl your website.'); ?><br />
+                    <?php _e('panel', 'setting_note_component_tb_2', 'Notice: Turning this option off will impact your SEO because the bots will be going to the checking process.'); ?>
+                    <br />
                 </p>
             </td>
         </tr>
         <tr>
-            <td class="r1">Strict Mode</td>
+            <td class="r1"><?php _e('panel', 'setting_label_strict_mode', 'Strict Mode'); ?></td>
             <td class="r2">
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="components__trusted_bot__strict_mode" value="off" />
@@ -66,7 +66,7 @@ use function Shieldon\Helper\mask_string;
                     <span class="switch-left">ON</span>
                     <span class="switch-right">OFF</span>
                 </label>
-                <p>IP resolved hostname and IP address must match.</p>
+                <p><?php _e('panel', 'setting_note_component_tb_3', 'IP resolved hostname and IP address must match with each other.'); ?></p>
             </td>
         </tr>
     </table>
@@ -74,7 +74,7 @@ use function Shieldon\Helper\mask_string;
 
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
-    <h2>Header</h2>
+    <h2><?php _e('panel', 'setting_heading_component_header', 'Header'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
             <input type="hidden" name="components__header__enable" value="off" />
@@ -90,12 +90,12 @@ use function Shieldon\Helper\mask_string;
             <td class="r1"></td>
             <td class="r2">
                 <p>
-                    Analysis header information from visitors.
+                    <?php _e('panel', 'setting_note_component_header_1', 'Analyze header information from visitors.'); ?>
                 </p>
             </td>
         </tr>
         <tr>
-            <td class="r1">Strict Mode</td>
+            <td class="r1"><?php _e('panel', 'setting_label_strict_mode', 'Strict Mode'); ?></td>
             <td class="r2">
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="components__header__strict_mode" value="off" />
@@ -103,7 +103,7 @@ use function Shieldon\Helper\mask_string;
                     <span class="switch-left">ON</span>
                     <span class="switch-right">OFF</span>
                 </label>
-                <p>Deny all vistors without common header information.</p>
+                <p><?php _e('panel', 'setting_note_component_header_2', 'Deny all vistors without common header information.'); ?></p>
                 
             </td>
         </tr>
@@ -112,7 +112,7 @@ use function Shieldon\Helper\mask_string;
 
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
-    <h2>User Agent</h2>
+    <h2><?php _e('panel', 'setting_heading_component_useragent', 'User Agent'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
             <input type="hidden" name="components__user_agent__enable" value="off" />
@@ -128,12 +128,12 @@ use function Shieldon\Helper\mask_string;
             <td class="r1"></td>
             <td class="r2">
                 <p>
-                    Analysis user-agent information from visitors.
+                    <?php _e('panel', 'setting_note_component_useragent_1', 'Analyze user-agent information from visitors.'); ?>
                 </p>
             </td>
         </tr>
         <tr>
-            <td class="r1">Strict Mode</td>
+            <td class="r1"><?php _e('panel', 'setting_label_strict_mode', 'Strict Mode'); ?></td>
             <td class="r2">
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="components__user_agent__strict_mode" value="off" />
@@ -141,7 +141,7 @@ use function Shieldon\Helper\mask_string;
                     <span class="switch-left">ON</span>
                     <span class="switch-right">OFF</span>
                 </label>
-                <p>Visitors with empty user-agent information will be blocked.</p>
+                <p><?php _e('panel', 'setting_note_component_useragent_2', 'Visitors with empty user-agent information will be blocked.'); ?></p>
             </td>
         </tr>
     </table>
@@ -149,7 +149,7 @@ use function Shieldon\Helper\mask_string;
 
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
-    <h2>Reverse DNS</h2>
+    <h2><?php _e('panel', 'setting_heading_component_rdns', 'Reverse DNS'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
             <input type="hidden" name="components__rdns__enable" value="off" />
@@ -165,12 +165,12 @@ use function Shieldon\Helper\mask_string;
             <td class="r1"></td>
             <td class="r2">
                 <p>
-                In general, an IP from Internet Service Provider (ISP) will have RDNS set. This option only works when strict mode is on.
+                    <?php _e('panel', 'setting_note_component_rdns_1', 'In general, an IP from Internet Service Provider (ISP) often have the RDNS set. This option only works when strict mode is on.'); ?>
                 </p>
             </td>
         </tr>
         <tr>
-            <td class="r1">Strict Mode</td>
+            <td class="r1"><?php _e('panel', 'setting_label_strict_mode', 'Strict Mode'); ?></td>
             <td class="r2">
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="components__rdns__strict_mode" value="off" />
@@ -179,8 +179,8 @@ use function Shieldon\Helper\mask_string;
                     <span class="switch-right">OFF</span>
                 </label>
                 <p>
-                    Visitors with empty RDNS record will be blocked.<br />
-                    IP resolved hostname (RDNS) and IP address must match.
+                <?php _e('panel', 'setting_note_component_rdns_2', 'Visitors with an empty RDNS record will be blocked.'); ?><br />
+                <?php _e('panel', 'setting_note_component_tb_3', 'IP resolved hostname and IP address must match with each other.'); ?>
                 </p>
             </td>
         </tr>

@@ -18,7 +18,7 @@ $timezone = '';
 <div class="so-dashboard">
     <div id="so-rule-table-form" class="so-datatables">
         <div class="so-datatable-heading">
-            <?php _e('panel', 'ipma_heading', 'IP Manager'); ?><br />
+            <?php _e('panel', 'ipma_heading', 'IP Manager'); ?>
         </div>
         <div class="so-datatable-description">
             <?php _e('panel', 'ipma_description', 'IP Manager is not like Rule Table (effective period depends on the data cycle), everything you have done here is permanent.'); ?><br />
