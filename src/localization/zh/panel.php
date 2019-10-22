@@ -17,37 +17,37 @@ return [
     'reason_reached_limit_second' => '達到每秒限制',
 
     // Message
-    'error_mysql_connection' => 'Cannot access to your MySQL database, please check your settings.',
-    'error_mysql_driver_not_supported' => 'Your system doesn’t support MySQL driver.',
-    'error_sqlite_driver_not_supported' => 'Your system doesn’t support SQLite driver.',
-    'error_sqlite_directory_not_writable' => 'SQLite data driver requires the storage directory writable.',
-    'error_redis_driver_not_supported' => 'Your system doesn’t support Redis driver.',
-    'error_file_directory_not_writable' => 'File data driver requires the storage directory writable.',
-    'error_logger_directory_not_writable' => 'Action Logger requires the storage directory writable.',
-    'success_settings_saved' => 'Settings saved',
+    'error_mysql_connection' => '無法連接您的 MySQL 資料庫，請檢查設定值。',
+    'error_mysql_driver_not_supported' => '您的系統不支援 MySQL 驅動器。',
+    'error_sqlite_driver_not_supported' => '您的系統不支援 SQLite 驅動器。',
+    'error_sqlite_directory_not_writable' => 'SQLite 資料驅動器需要儲存目錄可寫入。',
+    'error_redis_driver_not_supported' => '您的系統不支援 Redis 驅動器。',
+    'error_file_directory_not_writable' => '檔案資料驅動器需要儲存目錄可寫入。',
+    'error_logger_directory_not_writable' => '動作日誌記錄器需要儲存目錄可寫入。',
+    'success_settings_saved' => '設定值已儲存。',
 
     // Others.
-    'field_not_visible' => 'Cannot view this field in demo mode.',
-    'permission_required' => 'Permission required.',
+    'field_not_visible' => '無法在示範模式檢視此欄位。',
+    'permission_required' => '需要權限。',
 
     // Header status bar.
-    'channel' => 'Channel',
-    'mode' => 'Mode',
-    'logout' => 'Logout',
+    'channel' => '頻道',
+    'mode' => '模式',
+    'logout' => '登出',
 
     // Setting - authentication page.
-    'auth_heading' => 'Authentication',
-    'auth_description' => 'The HTTP WWW-Authenticate response header defines the authentication method that should be used to gain access to a resource.',
-    'auth_label_url_path' => 'URL Path',
-    'auth_label_username' => 'Username',
-    'auth_label_password' => 'Password',
-    'auth_btn_submit' => 'Submit',
-    'auth_label_encrypted' => 'encrypted',
-    'auth_label_remove' => 'Remove',
+    'auth_heading' => '認證方式',
+    'auth_description' => '回應頭部字段 HTTP WWW-Authenticate 定義了獲取對資源的連接權限應該被使用的認證方式。',
+    'auth_label_url_path' => '網址路徑',
+    'auth_label_username' => '使用者',
+    'auth_label_password' => '密碼',
+    'auth_btn_submit' => '送出',
+    'auth_label_encrypted' => '已加密',
+    'auth_label_remove' => '移除',
 
     // Setting - exclusion page.
-    'excl_heading' => 'Exclusion',
-    'excl_description' => 'Please enter the begin with URLs you want them excluded from Shieldon protection.',
+    'excl_heading' => '排除',
+    'excl_description' => '請輸入要排除掉 Shieldon 保護的開頭網址。',
 
     // IP Manager
     'ipma_heading' => 'IP Manager',
