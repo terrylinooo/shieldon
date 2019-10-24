@@ -109,7 +109,7 @@ $timezone = '';
                     <div class="nums">
                         <?php echo $filters['cookie'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_cookie', 'Check if visitors can create cookie by JavaScript.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_cookie', 'Check whether visitors can create cookie by JavaScript.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/api.html#setfilters" 
                         data-id="filters-cookie" 
@@ -124,7 +124,7 @@ $timezone = '';
                     <div class="nums">
                         <?php echo $filters['session'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_session', 'Detect multiple sessions created by the same visitor.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_session', 'Detect whether multiple sessions created by the same visitor.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
                         data-document="https://shield-on-php.github.io/en/api.html#setfilters" 
                         data-id="filters-session" 

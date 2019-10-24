@@ -129,7 +129,7 @@ use function Shieldon\Helper\_e;
             <td class="r1"><?php _e('panel', 'setting_label_cookie_domain', 'Cookie Domain'); ?></td>
             <td class="r2">
                 <input type="text" name="filters__cookie__config__cookie_domain" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_domain'); ?>"><br />
-                <p><?php _e('panel', 'setting_text_leave_blank', 'Just leave it blank.'); ?></p>
+                <p><?php _e('panel', 'setting_text_leave_blank', 'Just leave it blank to apply default.'); ?></p>
             </td>
         </tr>
     </table>
@@ -153,7 +153,7 @@ use function Shieldon\Helper\_e;
             <td class="r1"></td>
             <td class="r2">
                 <p>
-                    <?php _e('panel', 'setting_note_filter_session', 'Detect multiple sessions created by the same visitor.'); ?>
+                    <?php _e('panel', 'setting_note_filter_session', 'Detect whether multiple sessions created by the same visitor.'); ?>
                 </p>
             </td>
         </tr>

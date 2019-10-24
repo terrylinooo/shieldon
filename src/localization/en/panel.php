@@ -82,7 +82,7 @@ return [
     'log_label_failed' => 'failed',
     'log_label_displays' => 'displays',
     'log_label_timezone' => 'Timezone',
-    'log_note_captcha_last_7_days',
+    'log_note_captcha_last_7_days' => 'CAPTCHA statistic last 7 days.',
 
     // Overview
     'overview_heading_data_circle' => 'Data Circle',
@@ -105,7 +105,7 @@ return [
     'overview_text_since' => 'since',
     'overview_text_days' => 'days',
     'overview_text_size' => 'size',
-    'overview_note_useragent' => 'Analysis user-agent information from visitors.',
+    'overview_note_useragent' => 'Analyze user-agent information from visitors.',
     'overview_label_useragent' => 'User Agent',
     'overview_note_rdns' => 'Identify IP resolved hostname (RDNS) from visitors.',
     'overview_label_rdns' => 'RDNS',
@@ -120,9 +120,9 @@ return [
     'overview_label_referer' => 'Referrer',
     'overview_note_frequency' => 'Check how often does a visitor view the pages.',
     'overview_label_frequency' => 'Frequency',
-    'overview_note_session' => 'Detect multiple sessions created by the same visitor.',
+    'overview_note_session' => 'Detect whether multiple sessions created by the same visitor.',
     'overview_label_session' => 'Session',
-    'overview_note_cookie' => 'Check if visitors can create cookie by JavaScript.',
+    'overview_note_cookie' => 'Check whether visitors can create cookie by JavaScript.',
     'overview_label_cookie' => 'Cookie',
     'overview_heading_filters' => 'Filters',
     'overview_label_sqlite' => 'SQLite',
@@ -141,9 +141,9 @@ return [
 
     // Rule table.
     'table_heading_rule' => 'Rule Table',
-    'table_description_rule_1' => 'This is where the Shieldon temporarily allows or denys users in current cycle.',
+    'table_description_rule_1' => 'It is the place where the Shieldon temporarily allows or denies users in the current cycle.',
     'table_description_rule_2' => 'All processes are automatic and instant, you can ignore that.',
-    'table_description_rule_3' => 'Rule table will be reset after new cycle begins.',
+    'table_description_rule_3' => 'Rule table will be reset when new cycle begins.',
     'table_label_deny_ip_temporarily' => 'Deny this IP temporarily',
     'table_label_deny_ip_permanently' => 'Deny this IP permanently',
     'table_ip_placeholder' => 'Please fill in an IP address..',
@@ -234,7 +234,7 @@ return [
     // Setting - daemon
     'setting_heading_enable' => 'Enable',
     'setting_label_data_driver' => 'Data Driver',
-    'setting_note_data_driver' => 'Start protecting your website by implementing Shieldon. This plugin only works when this option is enabled.',
+    'setting_note_data_driver' => 'Start protecting your website by implementing Shieldon. Shieldon Firewall only works when this option is enabled.',
     'setting_label_driver_file' => 'File system',
     'setting_label_driver_mysql' => 'MySQL',
     'setting_label_driver_redis' => 'Redis',
@@ -287,7 +287,7 @@ return [
     'setting_note_daily_limit' => 'Page views per vistor per day.',
     'setting_label_filter_cookie' => 'Cookie',
     'setting_label_filter_session' => 'Session',
-    'setting_note_filter_session' => 'Detect multiple sessions created by the same visitor.',
+    'setting_note_filter_session' => 'Detect whether multiple sessions created by the same visitor.',
     'setting_label_filter_referer' => 'Referrer',
     'setting_note_filter_referer' => 'Check HTTP referer information.',
     'setting_label_quota' => 'Quota',
@@ -298,5 +298,5 @@ return [
     'setting_note_cookie_name' => 'English characters only.',
     'setting_label_cookie_value' => 'Cookie Value',
     'setting_label_cookie_domain' => 'Cookie Domain',
-    'setting_text_leave_blank' => 'Just leave it blank.'
+    'setting_text_leave_blank' => 'Just leave it blank to apply default.'
 ];

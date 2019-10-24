@@ -27,7 +27,7 @@ use function Shieldon\Helper\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_data_driver', 'Data Driver'); ?></td>
             <td class="r2">
-                <p><?php _e('panel', 'setting_note_data_driver', 'Start protecting your website by implementing Shieldon. This plugin only works when this option is enabled.'); ?></p>
+                <p><?php _e('panel', 'setting_note_data_driver', 'Start protecting your website by implementing Shieldon. Shieldon Firewall only works when this option is enabled.'); ?></p>
                 <div>
                     <div class="button-wrap">
                         <input class="radio-label" type="radio" name="driver_type" id="driver-file" value="file" <?php $this->checked('driver_type', 'file'); ?> />

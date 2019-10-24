@@ -112,3 +112,13 @@ Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 ## License
 
 MIT
+
+## Todo
+
+The following items will come in the feature updates.
+
+### Notification
+
+- Slack
+- Telegram
+- Line Notify
