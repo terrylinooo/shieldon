@@ -10,3 +10,4 @@ tests/report
 .vscode
 tmp
 clover.xml
+.phpunit.result.cache
