@@ -6,7 +6,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub Repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
-- **Version: 3.1.4**
+- **Version: 3.2.0**
 
 ## Features
 
@@ -75,13 +75,20 @@ Only a few screenshots are listed below.
 
 You can see the real-time data here if `Online Session Limit` is enabled.
 
-![](https://i.imgur.com/sfssPyj.png)
+![Firewall Panel - Online Session Control](https://i.imgur.com/sfssPyj.png)
 
 #### Rule Table
 
 You can temporarily ban a user here.
 
-![](https://i.imgur.com/5Vg2brX.png)
+![Firewall Panel - Rule Table](https://i.imgur.com/5Vg2brX.png)
+
+
+#### Responsive
+
+Shieldon's Firewall Panel is fully responsive, and you can manage it when you are not in front of your computer, using your mobile phone at any time.
+
+![Responsive Firewall Panel](https://i.imgur.com/ohbtqJX.png)
 
 
 ### Dialog
@@ -90,20 +97,20 @@ You can temporarily ban a user here.
 
 When the users or robots are trying to view many your web pages in a short period of time, they will temporarily get banned. Get unbanned by solving a Catpcha.
 
-![](https://i.imgur.com/rlsEwSG.png)
+![Firewall Dialog 1](https://i.imgur.com/rlsEwSG.png)
 
 #### Permanently Ban a User
 
 When a user has been permanently banned.
 
-![](https://i.imgur.com/Qy1sADw.png)
+![Firewall Dialog 2](https://i.imgur.com/Qy1sADw.png)
 
 
 #### Online Session Control
 
 When a user has reached the online session limit. You can set the online session limit by using `limitSession` API.
 
-![](https://i.imgur.com/U02w70x.png)
+![Firewall Dialog 3](https://i.imgur.com/U02w70x.png)
 
 ## Author
 
