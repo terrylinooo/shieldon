@@ -16,6 +16,27 @@ return [
     'reason_reached_limit_minute' => '達到每分限制',
     'reason_reached_limit_second' => '達到每秒限制',
 
+    // Menu
+    'nav_locale' => '語系',
+    'menu_firewall' => '防火牆',
+    'menu_status' => '狀態',
+    'menu_overview' => '總覽',
+    'menu_settings' => '設定',
+    'menu_ip_manager' => 'IP 管理員',
+    'menu_xss_protection' => 'XSS 防護',
+    'menu_authentication' => '網頁認證',
+    'menu_exclusion' => '例外清單',
+    'menu_last_month' => '上月',
+    'menu_this_month' => '本月',
+    'menu_last_7_days' => '過去 7 日',
+    'menu_yesterday' => '昨日',
+    'menu_today' => '今天',
+    'menu_ip_logs' => 'IP 記錄',
+    'menu_ip_rules' => 'IP 規則',
+    'menu_sessions' => '工作階段',
+    'menu_logs' => '記錄',
+    'menu_data_circle' => '資料週期',
+
     // Message
     'error_mysql_connection' => '無法連接您的 MySQL 資料庫，請檢查設定值。',
     'error_mysql_driver_not_supported' => '您的系統不支援 MySQL 驅動器。',
@@ -46,7 +67,7 @@ return [
     'auth_label_remove' => '移除',
 
     // Setting - exclusion page.
-    'excl_heading' => '排除',
+    'excl_heading' => '例外清單',
     'excl_description' => '請輸入要排除掉 Shieldon 保護的開頭網址。',
 
     // IP Manager
@@ -185,7 +206,7 @@ return [
     // Tab
     'tab_heading_adminlogin' => '管理登入',
     'tab_heading_dialogui' => '對話框介面',
-    'tab_heading_captchas' => 'CAPTCHAs',
+    'tab_heading_captchas' => 'CAPTCHA 驗證',
     'tab_heading_filters' => '過濾器',
     'tab_heading_components' => '元件',
     'tab_heading_daemon' => '守護進程',

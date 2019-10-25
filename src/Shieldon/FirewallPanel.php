@@ -114,6 +114,14 @@ class FirewallPanel
         'pass' => '$2y$10$MTi1ROPnHEukp5RwGNdxuOSAyhGdpc4sfQpwNCv9yHoVvgl9tz8Xy',
     ];
 
+
+    /**
+     * Language code.
+     *
+     * @var string
+     */
+    public $locate = 'en';
+
     /**
      * Constructor.
      *
@@ -156,6 +164,17 @@ class FirewallPanel
      */
     public function entry()
     {
+        if ((php_sapi_name() !== 'cli')) {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+        }
+
+        $this->locate = 'en';
+        if (! empty($_SESSION['shieldon_panel_lang'])) {
+            $this->locate = $_SESSION['shieldon_panel_lang'];
+        }
+
         $slug = $_GET['so_page'] ?? '';
 
         if ('logout' === $slug) {
@@ -165,6 +184,13 @@ class FirewallPanel
             if (isset($_SERVER['PHP_AUTH_PW'])) {
                 unset($_SERVER['PHP_AUTH_PW']);
             }
+
+            if (isset($_SESSION['shieldon_panel_lang'])) {
+                unset($_SESSION['shieldon_panel_lang']);
+            }
+            $this->httpAuth();
+            header('Location: ' . $this->url('overview'));
+            exit;
         }
 
         $this->httpAuth();
@@ -213,6 +239,10 @@ class FirewallPanel
 
             case 'dashboard':
                 $this->dashboard();
+                break;
+
+            case 'ajax_change_locale':
+                $this->ajaxChangeLocale();
                 break;
 
             default:
@@ -1301,6 +1331,24 @@ class FirewallPanel
             unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
             die(__('panel', 'permission_required', 'Permission required.'));
         }
+    }
+
+    /**
+     * Switch supported language.
+     *
+     * @return void
+     */
+    private function ajaxChangeLocale()
+    {
+        $_SESSION['shieldon_panel_lang'] = $_GET['langCode'] ?? 'en';
+
+        $response['status'] = 'success';
+        $response['lang_code'] = $_GET['langCode'];
+        $response['session_lang_code'] = $_SESSION['shieldon_panel_lang'];
+ 
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($response);
+        exit;
     }
 
     // @codeCoverageIgnoreEnd

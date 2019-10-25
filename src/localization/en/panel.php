@@ -16,6 +16,27 @@ return [
     'reason_reached_limit_minute' => 'Minutely limit reached',
     'reason_reached_limit_second' => 'Secondly limit reached',
 
+    // Menu
+    'nav_locale' => 'Locale',
+    'menu_firewall' => 'Firewall',
+    'menu_status' => 'Status',
+    'menu_overview' => 'Overflow',
+    'menu_settings' => 'Settings',
+    'menu_ip_manager' => 'IP Manager',
+    'menu_xss_protection' => 'XSS Protection',
+    'menu_authentication' => 'Authentication',
+    'menu_exclusion' => 'Exclusion',
+    'menu_last_month' => 'Last month',
+    'menu_this_month' => 'This month',
+    'menu_last_7_days' => 'Last 7 days',
+    'menu_yesterday' => 'Yesterday',
+    'menu_today' => 'Today',
+    'menu_ip_logs' => 'IP Logs',
+    'menu_ip_rules' => 'IP Rules',
+    'menu_sessions' => 'Sessions',
+    'menu_logs' => 'Logs',
+    'menu_data_circle' => 'Data Circle',
+
     // Message
     'error_mysql_connection' => 'Cannot access to your MySQL database, please check your settings.',
     'error_mysql_driver_not_supported' => 'Your system doesn’t support MySQL driver.',

@@ -29,13 +29,6 @@ function __(): string
     static $i18n;
 
     /**
-     * Current session language code.
-     * 
-     * @var string 
-     */
-    static $lang;
-
-    /**
      * Checking the file exists for not.
      *
      * @var array 
@@ -48,15 +41,17 @@ function __(): string
     $langcode    = func_get_arg(1); // required.
     $placeholder = ($num > 2) ? func_get_arg(2) : '';
     $replacement = ($num > 3) ? func_get_arg(3) : [];
+    $lang        = 'en';
+
+    if (isset($_SESSION['shieldon_panel_lang'])) {
+        $lang = $_SESSION['shieldon_panel_lang'];
+    } elseif (isset($_SESSION['shieldon_ui_lang'])) {
+        $lang = $_SESSION['shieldon_ui_lang'];
+    }
 
     if (empty($i18n[$filename]) && empty($fileChecked[$filename])) {
 
         $fileChecked[$filename] = true;
-
-        if (empty($lang)) {
-            // Fetch current user's session language code.
-            $lang = $lang ?? ($_SESSION['shieldon_ui_lang'] ?? 'en');
-        }
 
         $lang = str_replace('-', '_', $lang);
 

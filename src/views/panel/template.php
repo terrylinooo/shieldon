@@ -28,7 +28,7 @@ function showActive(string $key = '')
 }
 
 ?><!doctype html>
-<html lang="en">
+<html lang="<?php echo $this->locate; ?>">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -38,89 +38,107 @@ function showActive(string $key = '')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.8.3/apexcharts.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
-        <link rel="stylesheet" href="https://shieldon-io.github.io/static/css/firewall-ui.css">
+        <link rel="stylesheet" href="https://shieldon-io.github.io/static/css/firewall-ui.css?v=<?php echo date('Ymd'); ?>">
+        <!-- development <link rel="stylesheet" href="http://shieldon-doc.lo/static/css/firewall-ui.css?v=<?php echo date('Ymd'); ?>">-->
+        
         <title><?php echo $title; ?></title>
     </head>
     <body>
-        <div class="shieldon-info-bar">
-            <div class="logo-info">
-                <img src="https://shieldon-io.github.io/static/images/logo.png">
-            </div>
-            <div class="mode-info">
-                <ul>
-                    <li><?php _e('panel', 'channel', 'Channel'); ?>: <strong><?php echo $channel_name; ?></strong></li>
-                    <li><?php _e('panel', 'mode', 'Mode'); ?>:  <strong><?php echo $mode_name; ?></strong></li>
-                    <li><a href="<?php echo $page_url; ?>?so_page=logout"><?php _e('panel', 'logout', 'Logout'); ?></a></li>
+
+        <nav class="navbar navbar-expand-md navbar-dark shadow-md">
+            
+            <a class="navbar-brand" href="#">
+                <img src="https://shieldon-io.github.io/static/images/logo.png" class="logo-image">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#top-navbar" aria-controls="top-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="top-navbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><?php _e('panel', 'channel', 'Channel'); ?>: <strong><?php echo $channel_name; ?></strong></li>
+                    <li class="nav-item"><?php _e('panel', 'mode', 'Mode'); ?>:  <strong><?php echo $mode_name; ?></strong></li>
+                    <li class="nav-item"><a href="<?php echo $page_url; ?>?so_page=logout" class="nav-link"><?php _e('panel', 'logout', 'Logout'); ?></a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><?php _e('panel', 'nav_locale', 'Locale'); ?></a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="#" data-lang="en" class="dropdown-item" onclick="selectLanguage(this, event);" role="button">English</a>
+                            <a href="#" data-lang="zh" class="dropdown-item" onclick="selectLanguage(this, event);" role="button">中文</a>
+                            <a href="#" data-lang="zh_CN" class="dropdown-item" onclick="selectLanguage(this, event);" role="button">简体中文</a>
+                        </div>
+                    </li>
                 </ul>
             </div>
-        </div>
+        </nav>
+
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2 so-sidebar-menu">
                     <ul class="nav flex-column parent-menu">
                         <li>
-                            <a href="#"><i class="fas fa-cog"></i> Status</a>
+                            <a href="#"><i class="fas fa-cog"></i> <?php _e('panel', 'menu_status', 'Status'); ?></a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=overview">Overview</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=overview"><?php _e('panel', 'menu_overview', 'Overview'); ?></a>
                                 </li>
                             </ul>
                         </li>
                         <?php if ($this->mode === 'managed') : ?>
                         <li>
-                            <a><i class="fas fa-fire-alt"></i> Firewall</a>
+                            <a><i class="fas fa-fire-alt"></i> <?php _e('panel', 'menu_firewall', 'Firewall'); ?></a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=settings">Settings</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=settings"><?php _e('panel', 'menu_settings', 'Settings'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_manager">IP Manager</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_manager"><?php _e('panel', 'menu_ip_manager', 'IP Manager'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=xss_protection">XSS Protection</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=xss_protection"><?php _e('panel', 'menu_xss_protection', 'XSS Protection'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=authentication">Authentication</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=authentication"><?php _e('panel', 'menu_authentication', 'Authentication'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=exclusion">Exclusion</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=exclusion"><?php _e('panel', 'menu_exclusion', 'Exclusion'); ?></a>
                                 </li>
                             </ul>
                         </li>
                         <?php endif; ?>
                         <?php if (! empty($this->shieldon->logger)) : ?>
                         <li>
-                            <a><i class="fas fa-chart-area"></i> Logs</a>
+                            <a><i class="fas fa-chart-area"></i> <?php _e('panel', 'menu_logs', 'Logs'); ?></a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=today">Today</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=today"><?php _e('panel', 'menu_today', 'Today'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=yesterday">Yesterday</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=yesterday"><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=past_seven_days">Last 7 days</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=past_seven_days"><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=this_month">This month</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=this_month"><?php _e('panel', 'menu_this_month', 'This month'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=last_month">Last month</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=last_month"><?php _e('panel', 'menu_last_month', 'Last month'); ?></a>
                                 </li>
                             </ul>
                         </li>
                         <?php endif; ?>
                         <li>
-                            <a><i class="fas fa-table"></i> Data Circle</a>
+                            <a><i class="fas fa-table"></i> <?php _e('panel', 'menu_data_circle', 'Data Circle'); ?></a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_log_table">IP Logs</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_log_table"><?php _e('panel', 'menu_ip_logs', 'IP Logs'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_rule_table">IP Rules</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_rule_table"><?php _e('panel', 'menu_ip_rules', 'IP Rules'); ?></a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=session_table">Sessions</a>
+                                    <a href="<?php echo $page_url; ?>?so_page=session_table"><?php _e('panel', 'menu_ip_sessions', 'Sessions'); ?></a>
                                 </li>
                              </ul>
                         </li>
@@ -137,7 +155,7 @@ function showActive(string $key = '')
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Message</h5>
+                        <h5 class="modal-title"><?php _e('panel', 'logout', 'Message'); ?></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -176,6 +194,28 @@ function showActive(string $key = '')
                         $(this).parent('li').addClass('active').parents('ul').slideDown(500).parent().addClass('active');
                     }
                 });
+
+                var selectLanguage = function (obj, event) {
+                    event.preventDefault();
+                    var langCode = $(obj).attr('data-lang');
+                    var url = window.location.href + '&so_page=ajax_change_locale';
+  
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        data: {'langCode': langCode},
+                        dataType: 'JSON',
+                        cache: false,
+                        success: function (data) { 
+                            if (data.status = 'success') {
+                                console.log(data);
+                                location.reload();
+                            }
+                        }
+                    }); 
+                };
+
+                window.selectLanguage = selectLanguage;
             });
 
         </script>

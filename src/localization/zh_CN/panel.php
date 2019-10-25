@@ -15,6 +15,27 @@ return [
     'reason_reached_limit_hour' => '达到每小时限制',
     'reason_reached_limit_minute' => '达到每分限制',
     'reason_reached_limit_second' => '达到每秒限制',
+
+    // Menu
+    'nav_locale' => '语系',
+    'menu_firewall' => '防火墙',
+    'menu_status' => '状态',
+    'menu_overview' => '总览',
+    'menu_settings' => '设置',
+    'menu_ip_manager' => 'IP 管理员',
+    'menu_xss_protection' => 'XSS 防护',
+    'menu_authentication' => '网页认证',
+    'menu_exclusion' => '例外清单',
+    'menu_last_month' => '上月',
+    'menu_this_month' => '本月',
+    'menu_last_7_days' => '过去 7 日',
+    'menu_yesterday' => '昨日',
+    'menu_today' => '今天',
+    'menu_ip_logs' => 'IP 日志',
+    'menu_ip_rules' => 'IP 规则',
+    'menu_sessions' => '工作阶段',
+    'menu_logs' => '日志',
+    'menu_data_circle' => '资料周期',
     
     // 信息
     'error_mysql_connection' => '无法连接您的 MySQL 资料库，请检查设置值。',
@@ -45,8 +66,8 @@ return [
     'auth_label_encrypted' => '已加密',
     'auth_label_remove' => '可移除',
     
-    //设置-排除页面。
-    'excl_heading' => '排除',
+    //设置-例外清单除页面。
+    'excl_heading' => '例外清单',
     'excl_description' => '请输入要排除掉Shieldon保护的起始网址。',
     
     // IP管理器
@@ -185,7 +206,7 @@ return [
     // 标签
     'tab_heading_adminlogin' => '管理登录',
     'tab_heading_dialogui' => '补充介面',
-    'tab_heading_captchas' => 'CAPTCHAs',
+    'tab_heading_captchas' => 'CAPTCHA 验证',
     'tab_heading_filters' => '过滤器',
     'tab_heading_components' => '元件',
     'tab_heading_daemon' => '守护进程',
