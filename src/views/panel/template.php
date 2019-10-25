@@ -27,20 +27,22 @@ function showActive(string $key = '')
     }
 }
 
+//$staticSrc = 'http://shieldon-doc.lo/static';
+$staticSrc = 'http://shieldon-io.github.io/static';
+
 ?><!doctype html>
 <html lang="<?php echo $this->locate; ?>">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.8.3/apexcharts.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css">
-        <link rel="stylesheet" href="https://shieldon-io.github.io/static/css/firewall-ui.css?v=<?php echo date('Ymd'); ?>">
-        <!-- development <link rel="stylesheet" href="http://shieldon-doc.lo/static/css/firewall-ui.css?v=<?php echo date('Ymd'); ?>">-->
-        
+        <script src="<?php echo $staticSrc; ?>/third-party/jquery/jquery.min.js"></script>
+        <script src="<?php echo $staticSrc; ?>/third-party/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="<?php echo $staticSrc; ?>/third-party/datatables/datatables.min.js"></script>
+        <script src="<?php echo $staticSrc; ?>/third-party/apexcharts/apexcharts.min.js"></script>
+        <link rel="stylesheet" href="<?php echo $staticSrc; ?>/third-party/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="<?php echo $staticSrc; ?>/third-party/datatables/datatables.min.css">
+        <link rel="stylesheet" href="<?php echo $staticSrc; ?>/third-party/fontawesome/css/all.css">
+        <link rel="stylesheet" href="<?php echo $staticSrc; ?>/css/firewall-ui.css?v=<?php echo date('Ymd'); ?>">
         <title><?php echo $title; ?></title>
     </head>
     <body>

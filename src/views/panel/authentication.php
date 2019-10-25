@@ -59,7 +59,7 @@ $timezone = '';
         </div>
     </div>
     <div id="so-table-container" class="so-datatables" style="display: none;">
-        <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
+        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th><?php _e('panel', 'auth_label_url_path', 'URL Path'); ?></th>
@@ -88,6 +88,7 @@ $timezone = '';
 
     $(function() {
         $('#so-datalog').DataTable({
+            'responsive': true,
             'pageLength': 25,
             'initComplete': function(settings, json) {
                 $('#so-table-loading').hide();

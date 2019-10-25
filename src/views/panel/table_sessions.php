@@ -66,7 +66,7 @@ $timezone = '';
             <?php _e('panel', 'table_description_session_1', 'Read-time logs for <strong>Online Session Controll</strong>. All processes are automatic and instant, you can ignore that.'); ?><br />
             <?php _e('panel', 'table_description_session_2', 'Notice this is only working when you have enabled that function.'); ?>
         </div>
-        <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
+        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th><?php _e('panel', 'table_label_priority', 'Priority'); ?></th>
@@ -124,6 +124,7 @@ $timezone = '';
 
     $(function() {
         $('#so-datalog').DataTable({
+            'responsive': true,
             'pageLength': 25,
             'initComplete': function(settings, json) {
                 $('#so-table-loading').hide();

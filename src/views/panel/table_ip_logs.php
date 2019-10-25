@@ -33,7 +33,7 @@ $timezone = '';
             <?php _e('panel', 'table_description_ip_log_2', 'All processes are automatic and instant, you can ignore that.'); ?><br />
             <?php _e('panel', 'table_description_ip_log_3', 'IP log table will be all cleared after new cycle begins.'); ?><br />
         </div>
-        <table id="so-datalog" class="cell-border compact stripe" cellspacing="0" width="100%">
+        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th rowspan="2"><?php _e('panel', 'overview_label_ip', 'IP'); ?></th>
@@ -100,6 +100,7 @@ $timezone = '';
 
     $(function() {
         $('#so-datalog').DataTable({
+            'responsive': true,
             'pageLength': 25,
             'initComplete': function(settings, json) {
                 $('#so-table-loading').hide();
