@@ -190,6 +190,13 @@ class Shieldon
         'cookie_value'           => '1',
         'display_online_info'    => true,
         'display_user_info'      => false,
+
+        /**
+         * @since 3.3.0
+         */
+        'attempt_captcha_quota'  => 10,
+        'attempt_block_quota'    => 10,
+        'data_writable_folder'   => '/tmp/',
     ];
 
     /**
@@ -233,7 +240,7 @@ class Shieldon
      *
      * @var bool
      */
-    private $isRuleList = false;
+    private $isAllowedRule = false;
 
     /**
      * Is to limit traffic? This will recond online sessions.
@@ -310,6 +317,15 @@ class Shieldon
     private $dialogUI = [];
 
     /**
+     * If you set this option enabled, Shieldon will record every CAPTCHA fails in a row, 
+     * Once that user have reached the limitation number, Shieldon will put it as a blocked IP in rule table,
+     * until the new data cycle begins.
+     *
+     * @var boolean
+     */
+    private $isBlockAttempt = false;
+
+    /**
      * Constructor.
      * 
      * @return void
@@ -362,9 +378,9 @@ class Shieldon
         ];
 
         // Fetch an IP data from Shieldon log table.
-        $ipDetail = $this->driver->get($this->ip, 'log');
+        $ipDetail = $this->driver->get($this->ip, 'filter_log');
 
-        $ipDetail = $this->driver->parseData($ipDetail, 'log');
+        $ipDetail = $this->driver->parseData($ipDetail, 'filter_log');
         $logData  = $ipDetail;
 
         // Counting user pageviews.
@@ -541,7 +557,7 @@ class Shieldon
                 }
             }
 
-            $this->driver->save($this->ip, $logData, 'log');
+            $this->driver->save($this->ip, $logData, 'filter_log');
 
         } else {
 
@@ -557,7 +573,7 @@ class Shieldon
                 $logData["first_time_{$key}"] = $now;
             }
 
-            $this->driver->save($this->ip, $logData, 'log');
+            $this->driver->save($this->ip, $logData, 'filter_log');
         }
 
         return self::RESPONSE_ALLOW;
@@ -605,7 +621,7 @@ class Shieldon
 
         // Remove logs for this IP address because It already has it's own rule on system.
         // No need to count it anymore.
-        $this->driver->delete($ip, 'log');
+        $this->driver->delete($ip, 'filter_log');
 
         if (null !== $this->logger) {
             $log['ip']          = $ip;
@@ -1280,13 +1296,59 @@ class Shieldon
             $ruleType = (int) $ipRule['type'];
 
             if ($ruleType === self::ACTION_ALLOW) {
-                $this->isRuleList = true;
+                $this->isAllowedRule = true;
             } else {
+
+                /**
+                 * @since 3.3.0
+                 */
+                if ($this->isBlockAttempt) {
+
+                    $attempts = (int) $ipRule['attempts'];
+
+                    $logData['log_ip']     = $ipRule['log_ip'];
+                    $logData['ip_resolve'] = $ipRule['ip_resolve'];
+                    $logData['time']       = time();
+                    $logData['type']       = $ipRule['type'];
+                    $logData['reason']     = $ipRule['reason'];
+                    $logData['attempts']   = $attempts + 1;
+
+                    if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
+
+                        $quota = $this->properties['attempt_captcha_quota'];
+
+                        if ($attempts >= $quota) {
+                            $logData['type'] = self::ACTION_DENY;
+                        }
+                    }
+
+                    if ($ruleType === self::ACTION_DENY) {
+                        // For the requests that are already banned, but they are still attempting access, that means 
+                        // that they are programmably accessing your website. Consider put them in the system-layer fireall
+                        // such as IPTABLE.
+
+                        $quota = $this->properties['attempt_block_quota'];
+
+                        if ($attempts === $quota) {
+
+                            $folder = rtrim($this->properties['data_writable_folder'], '/');
+                            $filePath = $folder . '/iptables_queue.log';
+
+                            // Add this IP address to itables_queue.log
+                            // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
+                            file_put_contents($filePath, $this->ip . "\n", FILE_APPEND | LOCK_EX);
+                        }
+                    }
+
+                    $this->driver->save($this->ip, $logData, 'rule');
+                }
+
+                // For an incoming request already in the rule list, return the rule type immediately.
                 return $this->result = $ruleType;
             }
         }
 
-        if (! $this->isRuleList) {
+        if (! $this->isAllowedRule) {
 
             if ($this->getComponent('TrustedBot')) {
  
@@ -1320,6 +1382,9 @@ class Shieldon
                     return $this->result = self::RESPONSE_ALLOW;
                 }
             }
+        } else {
+            // The requests that are allowed in rule table will not go into sessionHandler.
+            return $this->result = self::RESPONSE_ALLOW;
         }
 
         // This IP address is not listed in rule table, let's detect it.
