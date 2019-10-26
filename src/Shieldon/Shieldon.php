@@ -95,7 +95,7 @@ class Shieldon
 
     const LOG_LIMIT = 3;
     const LOG_PAGEVIEW = 11;
-	const LOG_BLACKLIST = 98;
+    const LOG_BLACKLIST = 98;
     const LOG_CAPTCHA = 99;
 
     // Shieldon directory.
@@ -324,6 +324,13 @@ class Shieldon
      * @var boolean
      */
     private $isBlockAttempt = false;
+
+    /**
+     * The ways Shieldon send a message to when someone has been blocked.
+     *
+     * @var MessengerInterface[]
+     */
+    private $messengers = [];
 
     /**
      * Constructor.
@@ -1313,11 +1320,14 @@ class Shieldon
                     $logData['reason']     = $ipRule['reason'];
                     $logData['attempts']   = $attempts + 1;
 
+                    $triggerMessenger = false;
+
                     if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
 
                         $quota = $this->properties['attempt_captcha_quota'];
 
-                        if ($attempts >= $quota) {
+                        if ($attempts === $quota) {
+                            $triggerMessenger = true;
                             $logData['type'] = self::ACTION_DENY;
                         }
                     }
@@ -1330,6 +1340,7 @@ class Shieldon
                         $quota = $this->properties['attempt_block_quota'];
 
                         if ($attempts === $quota) {
+                            $triggerMessenger = true;
 
                             $folder = rtrim($this->properties['data_writable_folder'], '/');
                             $filePath = $folder . '/iptables_queue.log';
@@ -1341,6 +1352,23 @@ class Shieldon
                     }
 
                     $this->driver->save($this->ip, $logData, 'rule');
+
+                    /**
+                     * Notify this event to messengers.
+                     */
+                    if ($triggerMessenger) {
+
+                        try {
+
+                            foreach ($this->messengers as $messenger) {
+                                $messenger->send($logData);
+                            }
+    
+                        } catch (Exception $e) {
+                            // Do not throw error, becasue the third-party services might be unavailable.
+                        }
+                    }
+
                 }
 
                 // For an incoming request already in the rule list, return the rule type immediately.
