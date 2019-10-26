@@ -20,7 +20,7 @@ interface DriverInterface
      *
      * @return array The data or an empty array.
      */
-    public function get(string $ip, string $type = 'log'): array;
+    public function get(string $ip, string $type = 'filter_log'): array;
 
     /**
      * Get all entries from the driver provider.
@@ -30,7 +30,7 @@ interface DriverInterface
      *
      * @return array The data or an empty array.
      */
-    public function getAll(string $type = 'log'): array;
+    public function getAll(string $type = 'filter_log'): array;
 
     /**
      * Tests if an entry exists in the data.
@@ -40,7 +40,7 @@ interface DriverInterface
      *
      * @return bool
      */
-    public function has(string $ip, string $type = 'log'): bool;
+    public function has(string $ip, string $type = 'filter_log'): bool;
 
     /**
      * Save data or replace old data to the new.
@@ -53,7 +53,7 @@ interface DriverInterface
      *
      * @return bool
      */
-    public function save(string $ip, array $data, string $type = 'log', int $expire = 0): bool;
+    public function save(string $ip, array $data, string $type = 'filter_log', int $expire = 0): bool;
 
     /**
      * Delete a data entry.
@@ -65,7 +65,7 @@ interface DriverInterface
      *              deleting a non-existing entry is considered successful.
      *              return false overwise.
      */
-    public function delete(string $ip, string $type = 'log'): bool;
+    public function delete(string $ip, string $type = 'filter_log'): bool;
 
     /**
      * Rebuild data table.

@@ -53,7 +53,7 @@ class RedisDriver extends DriverProvider
         $this->channel = $channel;
 
         if (! empty($this->channel)) {
-            $this->tableLogs = $this->channel . ':shieldon_logs';
+            $this->tableFilterLogs = $this->channel . ':shieldon_filter_logs';
             $this->tableRuleList = $this->channel . ':shieldon_rule_list';
             $this->tableSessions = $this->channel . ':shieldon_sessions';
         }
@@ -81,14 +81,14 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doFetchAll(string $type = 'log'): array
+    protected function doFetchAll(string $type = 'filter_log'): array
     {
         $results = [];
 
         switch ($type) {
 
             case 'rule':
-            case 'log':
+            case 'filter_log':
             case 'session':
 
                 $keys = $this->redis->keys($this->getNamespace($type) . ':*');
@@ -116,7 +116,7 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doFetch(string $ip, string $type = 'log'): array
+    protected function doFetch(string $ip, string $type = 'filter_log'): array
     {
         $results = [];
 
@@ -135,7 +135,7 @@ class RedisDriver extends DriverProvider
                     $results = $resultData;
                 }
 
-            case 'log':
+            case 'filter_log':
                 $content = $this->redis->get($this->getKeyName($ip, $type));
                 $resultData = json_decode($content, true);
 
@@ -150,7 +150,7 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function checkExist(string $ip, string $type = 'log'): bool
+    protected function checkExist(string $ip, string $type = 'filter_log'): bool
     {
         $isExist = $this->redis->exists($this->getKeyName($ip, $type));
 
@@ -168,7 +168,7 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doSave(string $ip, array $data, string $type = 'log', $expire = 0): bool
+    protected function doSave(string $ip, array $data, string $type = 'filter_log', $expire = 0): bool
     {
         switch ($type) {
 
@@ -177,7 +177,7 @@ class RedisDriver extends DriverProvider
                 $logData['log_ip'] = $ip;
                 break;
 
-            case 'log':
+            case 'filter_log':
                 $logData['log_ip'] = $ip;
                 $logData['log_data'] = $data;
                 break;
@@ -201,11 +201,11 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doDelete(string $ip, string $type = 'log'): bool
+    protected function doDelete(string $ip, string $type = 'filter_log'): bool
     {
         switch ($type) {
             case 'rule':
-            case 'log':
+            case 'filter_log':
             case 'session':
                 return $this->redis->del($this->getKeyName($ip, $type)) >= 0;
         }
@@ -217,7 +217,7 @@ class RedisDriver extends DriverProvider
      */
     protected function doRebuild(): bool
     {
-        foreach (['rule', 'log', 'session'] as $type) {
+        foreach (['rule', 'filter_log', 'session'] as $type) {
             $keys = $this->redis->keys($this->getNamespace($type) . ':*');
 
             if (! empty($keys)) {
@@ -237,10 +237,10 @@ class RedisDriver extends DriverProvider
      *
      * @return string
      */
-    private function getKeyName(string $ip, string $type = 'log'): string
+    private function getKeyName(string $ip, string $type = 'filter_log'): string
     {
         switch ($type) {
-            case 'log'    : return $this->tableLogs     . ':' . $ip;
+            case 'filter_log'    : return $this->tableFilterLogs     . ':' . $ip;
             case 'session': return $this->tableSessions . ':' . $ip;
             case 'rule'   : return $this->tableRuleList . ':' . $ip;
         }
@@ -254,10 +254,10 @@ class RedisDriver extends DriverProvider
      *
      * @return string
      */
-    private function getNamespace(string $type = 'log'): string
+    private function getNamespace(string $type = 'filter_log'): string
     {
         switch ($type) {
-            case 'log'    : return $this->tableLogs;
+            case 'filter_log'    : return $this->tableFilterLogs;
             case 'session': return $this->tableSessions;
             case 'rule'   : return $this->tableRuleList;
         }

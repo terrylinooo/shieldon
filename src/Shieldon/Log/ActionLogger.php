@@ -47,7 +47,7 @@ final class ActionLogger
      *
      * @var string
      */
-    protected $extension = 'log';
+    protected $extension = 'filter_log';
 
     /**
      * The file name.
@@ -82,7 +82,7 @@ final class ActionLogger
         }
 
         $this->file = $Ymd . '.' . $this->extension;
-        $this->filePath = $this->directory . '/' . $this->file;
+        $this->filePath = rtrim($this->directory, '/') . '/' . $this->file;
     }
 
     /**
@@ -122,7 +122,7 @@ final class ActionLogger
             $fromYmd = date('Ymd', strtotime($fromYmd));
 
             $this->file = $fromYmd . '.' . $this->extension;
-            $this->filePath = $this->directory . '/' . $this->file;
+            $this->filePath = rtrim($this->directory, '/') . '/' . $this->file;
         }
 
         if ('' === $toYmd) {

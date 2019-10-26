@@ -401,7 +401,7 @@ class FirewallPanel
 
         // Data circle.
         $data['rule_list'] = $this->shieldon->driver->getAll('rule');
-        $data['ip_log_list'] = $this->shieldon->driver->getAll('log');
+        $data['ip_log_list'] = $this->shieldon->driver->getAll('filter_log');
         $data['session_list'] = $this->shieldon->driver->getAll('session');
 
         /*
@@ -812,7 +812,7 @@ class FirewallPanel
      */
     protected function ipLogTable(): void
     {
-        $data['ip_log_list'] = $this->shieldon->driver->getAll('log');
+        $data['ip_log_list'] = $this->shieldon->driver->getAll('filter_log');
 
         $this->renderPage('panel/table_ip_logs', $data);
     }

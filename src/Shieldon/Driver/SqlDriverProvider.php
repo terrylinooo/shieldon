@@ -76,7 +76,7 @@ class SqlDriverProvider extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doFetch(string $ip, string $type = 'log'): array
+    protected function doFetch(string $ip, string $type = 'filter_log'): array
     {
         $results = [];
 
@@ -102,8 +102,8 @@ class SqlDriverProvider extends DriverProvider
                 }
                 break;
 
-            case 'log':
-                $sql = 'SELECT log_ip, log_data FROM ' . $this->tableLogs . '
+            case 'filter_log':
+                $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs . '
                     WHERE log_ip = :log_ip
                     LIMIT 1';
 
@@ -149,7 +149,7 @@ class SqlDriverProvider extends DriverProvider
    /**
      * {@inheritDoc}
      */
-    protected function doFetchAll(string $type = 'log'): array
+    protected function doFetchAll(string $type = 'filter_log'): array
     {
         $results = [];
 
@@ -167,8 +167,8 @@ class SqlDriverProvider extends DriverProvider
                 }
                 break;
 
-            case 'log':
-                $sql = 'SELECT log_ip, log_data FROM ' . $this->tableLogs;
+            case 'filter_log':
+                $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs;
 
                 $query = $this->db->prepare($sql);
                 $query->execute();
@@ -198,7 +198,7 @@ class SqlDriverProvider extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function checkExist(string $ip, string $type = 'log'): bool
+    protected function checkExist(string $ip, string $type = 'filter_log'): bool
     {
         switch ($type) {
 
@@ -207,8 +207,8 @@ class SqlDriverProvider extends DriverProvider
                 $field = 'log_ip';
                 break;
 
-            case 'log':
-                $tableName = $this->tableLogs;
+            case 'filter_log':
+                $tableName = $this->tableFilterLogs;
                 $field = 'log_ip';
                 break;
 
@@ -238,7 +238,7 @@ class SqlDriverProvider extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doSave(string $ip, array $data, string $type = 'log', $expire = 0): bool
+    protected function doSave(string $ip, array $data, string $type = 'filter_log', $expire = 0): bool
     {
         switch ($type) {
 
@@ -249,8 +249,8 @@ class SqlDriverProvider extends DriverProvider
                 $logData['log_ip'] = $ip;
                 break;
 
-            case 'log':
-                $tableName = $this->tableLogs;
+            case 'filter_log':
+                $tableName = $this->tableFilterLogs;
                 $logWhere['log_ip'] = $ip;
                 $logData['log_ip'] = $ip;
                 $logData['log_data'] = json_encode($data);
@@ -274,12 +274,12 @@ class SqlDriverProvider extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doDelete(string $ip, string $type = 'log'): bool
+    protected function doDelete(string $ip, string $type = 'filter_log'): bool
     {
         switch ($type) {
-            case 'rule'   : return $this->remove($this->tableRuleList, ['log_ip' => $ip]);
-            case 'log'    : return $this->remove($this->tableLogs,     ['log_ip' => $ip]);
-            case 'session': return $this->remove($this->tableSessions, ['id'     => $ip]);
+            case 'rule'      : return $this->remove($this->tableRuleList,   ['log_ip' => $ip]);
+            case 'filter_log': return $this->remove($this->tableFilterLogs, ['log_ip' => $ip]);
+            case 'session'   : return $this->remove($this->tableSessions,   ['id'     => $ip]);
         }
 
         return false;
@@ -481,7 +481,7 @@ class SqlDriverProvider extends DriverProvider
         try {
 
             $sql = "
-                CREATE TABLE IF NOT EXISTS `{$this->tableLogs}` (
+                CREATE TABLE IF NOT EXISTS `{$this->tableFilterLogs}` (
                     `log_ip` varchar(46) NOT NULL,
                     `log_data` blob,
                     PRIMARY KEY (`log_ip`)
@@ -497,6 +497,7 @@ class SqlDriverProvider extends DriverProvider
                     `type` tinyint(3) UNSIGNED NOT NULL,
                     `reason` tinyint(3) UNSIGNED NOT NULL,
                     `time` int(10) UNSIGNED NOT NULL,
+                    `attempts` int(10) UNSIGNED DEFAULT 0,
                     PRIMARY KEY (`log_ip`)
                 ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
             ";
@@ -535,7 +536,7 @@ class SqlDriverProvider extends DriverProvider
     {
         try {
 
-            $sql = "DROP TABLE IF EXISTS `{$this->tableLogs}`";
+            $sql = "DROP TABLE IF EXISTS `{$this->tableFilterLogs}`";
             $this->db->query($sql);
 
             $sql = "DROP TABLE IF EXISTS `{$this->tableRuleList}`";
@@ -564,7 +565,7 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function checkTableExists(): bool
     {
-        $checkLogTable = $this->db->query("SHOW TABLES LIKE '{$this->tableLogs}'");
+        $checkLogTable = $this->db->query("SHOW TABLES LIKE '{$this->tableFilterLogs}'");
 
         if ($checkLogTable) {
             if ($checkLogTable->rowCount() > 0) {

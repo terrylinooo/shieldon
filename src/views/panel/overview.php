@@ -25,7 +25,7 @@ $timezone = '';
             <div class="heading-right">
                 <ul>
                     <li><span>shieldon_rule_list</span> <strong><?php echo count($rule_list); ?> <?php _e('panel', 'overview_text_rows', 'rows'); ?><br /></strong></li>
-                    <li><span>shieldon_logs</span> <strong><?php echo count($ip_log_list); ?> <?php _e('panel', 'overview_text_rows', 'rows'); ?></strong></li>
+                    <li><span>shieldon_filter_logs</span> <strong><?php echo count($ip_log_list); ?> <?php _e('panel', 'overview_text_rows', 'rows'); ?></strong></li>
                     <li><span>shieldon_sessions</span> <strong><?php echo count($session_list); ?> <?php _e('panel', 'overview_text_rows', 'rows'); ?></strong></li>
                 </ul>
             </div>

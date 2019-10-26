@@ -91,14 +91,14 @@ class FileDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doFetchAll(string $type = 'log'): array
+    protected function doFetchAll(string $type = 'filter_log'): array
     {
         $results = [];
 
         switch ($type) {
 
             case 'rule':
-            case 'log':
+            case 'filter_log':
             case 'session':
 
                 $dir = $this->getDirectory($type);
@@ -135,7 +135,7 @@ class FileDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doFetch(string $ip, string $type = 'log'): array
+    protected function doFetch(string $ip, string $type = 'filter_log'): array
     {
         $results = [];
 
@@ -155,7 +155,7 @@ class FileDriver extends DriverProvider
                 }
                 break;
 
-            case 'log':
+            case 'filter_log':
                 $fileContent = file_get_contents($this->getFilename($ip, $type));
                 $resultData = json_decode($fileContent, true);
 
@@ -171,7 +171,7 @@ class FileDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function checkExist(string $ip, string $type = 'log'): bool
+    protected function checkExist(string $ip, string $type = 'filter_log'): bool
     {
         if (file_exists($this->getFilename($ip, $type))) {
             return true;
@@ -183,7 +183,7 @@ class FileDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doSave(string $ip, array $data, string $type = 'log', $expire = 0): bool
+    protected function doSave(string $ip, array $data, string $type = 'filter_log', $expire = 0): bool
     {
         switch ($type) {
 
@@ -192,7 +192,7 @@ class FileDriver extends DriverProvider
                 $logData['log_ip'] = $ip;
                 break;
 
-            case 'log':
+            case 'filter_log':
                 $logData['log_ip'] = $ip;
                 $logData['log_data'] = $data;
                 break;
@@ -213,11 +213,11 @@ class FileDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doDelete(string $ip, string $type = 'log'): bool
+    protected function doDelete(string $ip, string $type = 'filter_log'): bool
     {
         switch ($type) {
             case 'rule':
-            case 'log':
+            case 'filter_log':
             case 'session':
                 return $this->remove($this->getFilename($ip, $type));
         }
@@ -232,7 +232,7 @@ class FileDriver extends DriverProvider
     {
         // Those are Shieldon logs directories.
         $removeDirs = [
-            $this->getDirectory('log'),
+            $this->getDirectory('filter_log'),
             $this->getDirectory('rule'),
             $this->getDirectory('session'),
         ];
@@ -268,7 +268,7 @@ class FileDriver extends DriverProvider
 
         // Check if are Shieldon directories removed or not.
         $result = (
-            ! is_dir($this->getDirectory('log'))     && 
+            ! is_dir($this->getDirectory('filter_log'))     && 
             ! is_dir($this->getDirectory('rule'))    && 
             ! is_dir($this->getDirectory('session'))
         );
@@ -292,8 +292,8 @@ class FileDriver extends DriverProvider
         if (! file_exists($checkingFile)) {
             $originalUmask = umask(0);
 
-            if (! is_dir($this->getDirectory('log'))) {
-                $resultA = @mkdir($this->getDirectory('log'), 0777, true);
+            if (! is_dir($this->getDirectory('filter_log'))) {
+                $resultA = @mkdir($this->getDirectory('filter_log'), 0777, true);
             }
     
             if (! is_dir($this->getDirectory('rule'))) {
@@ -352,12 +352,12 @@ class FileDriver extends DriverProvider
      *
      * @return string
      */
-    private function getFilename(string $ip, string $type = 'log'): string
+    private function getFilename(string $ip, string $type = 'filter_log'): string
     {
         switch ($type) {
-            case 'log'    : return $this->directory . '/' . $this->tableLogs       . '/' . $ip . '.' . $this->extension;
-            case 'session': return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
-            case 'rule'   : return $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
+            case 'filter_log' : return $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
+            case 'session'    : return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
+            case 'rule'       : return $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
         }
 
         return '';
@@ -370,10 +370,10 @@ class FileDriver extends DriverProvider
      *
      * @return string
      */
-    private function getDirectory(string $type = 'log'): string
+    private function getDirectory(string $type = 'filter_log'): string
     {
         switch ($type) {
-            case 'log'    : return $this->directory . '/' . $this->tableLogs;
+            case 'filter_log'    : return $this->directory . '/' . $this->tableFilterLogs;
             case 'session': return $this->directory . '/' . $this->tableSessions;
             case 'rule'   : return $this->directory . '/' . $this->tableRuleList;
         }

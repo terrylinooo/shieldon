@@ -46,7 +46,7 @@ class SqlDriverProviderTest extends \PHPUnit\Framework\TestCase
 
         $mockSqlDriver = new \Shieldon\Driver\SqlDriverProvider($pdoInstance);
         $reflection = new \ReflectionObject($mockSqlDriver);
-        $p1 = $reflection->getProperty('tableLogs');
+        $p1 = $reflection->getProperty('tableFilterLogs');
         $p1->setAccessible(true);
         $p2 = $reflection->getProperty('tableRuleList');
         $p2->setAccessible(true);
@@ -55,14 +55,14 @@ class SqlDriverProviderTest extends \PHPUnit\Framework\TestCase
         $p4 = $reflection->getProperty('isInitialized');
         $p4->setAccessible(true);
 
-        $tableLogs = $p1->getValue($mockSqlDriver);
+        $tableFilterLogs = $p1->getValue($mockSqlDriver);
         $tableRuleList = $p2->getValue($mockSqlDriver);
         $tableSessions = $p3->getValue($mockSqlDriver);
         $isInitialized = $p4->getValue($mockSqlDriver);
 
         $this->assertEmpty($isInitialized);
 
-        $pdoInstance->query("DROP TABLE IF EXISTS `{$tableLogs}`");
+        $pdoInstance->query("DROP TABLE IF EXISTS `{$tableFilterLogs}`");
         $pdoInstance->query("DROP TABLE IF EXISTS `{$tableRuleList}`");
         $pdoInstance->query("DROP TABLE IF EXISTS `{$tableSessions}`");
 
@@ -132,7 +132,7 @@ class SqlDriverProviderTest extends \PHPUnit\Framework\TestCase
         $methodDoFetchAll = $reflection->getMethod('doFetchAll');
         $methodDoFetchAll->setAccessible(true);
         $methodDoFetchAll->invokeArgs($mockSqlDriver, ['rule']);
-        $methodDoFetchAll->invokeArgs($mockSqlDriver, ['log']);
+        $methodDoFetchAll->invokeArgs($mockSqlDriver, ['filter_log']);
     }
 
     public function testDoDelete()

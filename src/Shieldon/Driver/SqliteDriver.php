@@ -36,7 +36,7 @@ class SqliteDriver extends SqlDriverProvider
     {
         try {
             $sql = "
-                CREATE TABLE IF NOT EXISTS {$this->tableLogs} (
+                CREATE TABLE IF NOT EXISTS {$this->tableFilterLogs} (
                     log_ip VARCHAR(46) PRIMARY KEY,
                     log_data BLOB
                 );
@@ -89,7 +89,7 @@ class SqliteDriver extends SqlDriverProvider
         // $debug should be false, otherwise an error occurs.
         
         try {
-            $result = $this->db->query("SELECT 1 FROM $this->tableLogs LIMIT 1");
+            $result = $this->db->query("SELECT 1 FROM $this->tableFilterLogs LIMIT 1");
 
         // @codeCoverageIgnoreStart
         } catch (Exception $e) {

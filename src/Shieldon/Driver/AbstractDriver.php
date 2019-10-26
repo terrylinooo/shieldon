@@ -20,7 +20,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      */
-    public function get(string $ip, string $type = 'log'): array
+    public function get(string $ip, string $type = 'filter_log'): array
     {
         return $this->doFetch($ip, $type);
     }
@@ -28,7 +28,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      */
-    public function getAll(string $type = 'log'): array
+    public function getAll(string $type = 'filter_log'): array
     {
         return $this->doFetchAll($type);
     }
@@ -36,7 +36,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      */
-    public function has(string $ip, string $type = 'log'): bool
+    public function has(string $ip, string $type = 'filter_log'): bool
     {
         return $this->checkExist($ip, $type);
     }
@@ -44,7 +44,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      */
-    public function save(string $ip, array $data, string $type = 'log', int $expire = 0): bool
+    public function save(string $ip, array $data, string $type = 'filter_log', int $expire = 0): bool
     {
         return $this->doSave($ip, $data, $type, $expire);
     }
@@ -52,7 +52,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      */
-    public function delete(string $ip, string $type = 'log'): bool
+    public function delete(string $ip, string $type = 'filter_log'): bool
     {
         return $this->doDelete($ip, $type);
     }
@@ -80,7 +80,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return array The data or an empty array.
      */
-    abstract protected function doFetch(string $ip, string $type = 'log'): array;
+    abstract protected function doFetch(string $ip, string $type = 'filter_log'): array;
 
     /**
      * Implement fetch all.
@@ -89,7 +89,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return array The data or an empty array.
      */
-    abstract protected function doFetchAll(string $type = 'log'): array;
+    abstract protected function doFetchAll(string $type = 'filter_log'): array;
 
     /**
      * Implement has.
@@ -98,7 +98,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return bool
      */
-    abstract protected function checkExist(string $ip, string $type = 'log'): bool;
+    abstract protected function checkExist(string $ip, string $type = 'filter_log'): bool;
 
     /**
      * Implement save.
@@ -109,7 +109,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return bool
      */
-    abstract protected function doSave(string $ip, array $data, string $type = 'log', $expire = 0): bool;
+    abstract protected function doSave(string $ip, array $data, string $type = 'filter_log', $expire = 0): bool;
 
     /**
      * Implement delete.
@@ -118,7 +118,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return bool
      */
-    abstract protected function doDelete(string $ip, string $type = 'log'): bool;
+    abstract protected function doDelete(string $ip, string $type = 'filter_log'): bool;
 
     /**
      * Rebuild data tables.

@@ -16,11 +16,11 @@ namespace Shieldon\Driver;
 class DriverProvider extends AbstractDriver
 {
     /**
-     * Data table for regular session logs.
+     * Data table for regular filter logs.
      *
      * @var string
      */
-    protected $tableLogs = 'shieldon_logs';
+    protected $tableFilterLogs = 'shieldon_filter_logs';
 
     /**
      * Data table name for whitelist.
@@ -62,7 +62,7 @@ class DriverProvider extends AbstractDriver
         $this->channel = $channel;
 
         if (! empty($this->channel)) {
-            $this->tableLogs = $this->channel . '_shieldon_logs';
+            $this->tableFilterLogs = $this->channel . '_shieldon_filter_logs';
             $this->tableRuleList = $this->channel . '_shieldon_rule_list';
             $this->tableSessions = $this->channel . '_shieldon_sessions';
         }
@@ -86,7 +86,7 @@ class DriverProvider extends AbstractDriver
      *
      * @return array
      */
-    public function parseData(array $data, string $type = 'log'): array
+    public function parseData(array $data, string $type = 'filter_log'): array
     {
         $parsedData = [];
 
@@ -100,7 +100,7 @@ class DriverProvider extends AbstractDriver
                 break;
 
             // Log table data structure.
-            case 'log':
+            case 'filter_log':
             default:
 
                 $fields = [
@@ -156,7 +156,7 @@ class DriverProvider extends AbstractDriver
      *
      * @return array The data or an empty array.
      */
-    protected function doFetch(string $ip, string $type = 'log'): array
+    protected function doFetch(string $ip, string $type = 'filter_log'): array
     {
         return [];
     }
@@ -168,7 +168,7 @@ class DriverProvider extends AbstractDriver
      *
      * @return array The data or an empty array.
      */
-    protected function doFetchAll(string $type = 'log'): array
+    protected function doFetchAll(string $type = 'filter_log'): array
     {
         return [];
     }
@@ -180,7 +180,7 @@ class DriverProvider extends AbstractDriver
      *
      * @return bool
      */
-    protected function checkExist(string $ip, string $type = 'log'): bool
+    protected function checkExist(string $ip, string $type = 'filter_log'): bool
     {
         return false;
     }
@@ -194,7 +194,7 @@ class DriverProvider extends AbstractDriver
      *
      * @return bool
      */
-    protected function doSave(string $ip, array $data, string $type = 'log', $expire = 0): bool 
+    protected function doSave(string $ip, array $data, string $type = 'filter_log', $expire = 0): bool 
     {
         return false;
     }
@@ -206,7 +206,7 @@ class DriverProvider extends AbstractDriver
      *
      * @return bool
      */
-    protected function doDelete(string $ip, string $type = 'log'): bool
+    protected function doDelete(string $ip, string $type = 'filter_log'): bool
     {
         return false;
     }

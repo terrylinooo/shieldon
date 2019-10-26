@@ -29,7 +29,7 @@ class DriverProviderTest extends \PHPUnit\Framework\TestCase
     public function testParseData()
     {
         $mock = $this->getMockForAbstractClass('Shieldon\Driver\DriverProvider');
-        $result = $mock->parseData([], 'log');
+        $result = $mock->parseData([], 'filter_log');
 
         $fields = [
             'ip'                 => '', 

@@ -83,7 +83,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
         sleep(2);
         $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
-        $ipDetail = $shieldon->driver->get('141.112.175.2', 'log');
+        $ipDetail = $shieldon->driver->get('141.112.175.2', 'filter_log');
 
         if ($ipDetail['pageviews_s'] == 0) {
             $this->assertTrue(true);
@@ -217,11 +217,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
         sleep(2);
         $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
-        $ipDetail = $shieldon->driver->get('140.112.173.11', 'log');
+        $ipDetail = $shieldon->driver->get('140.112.173.11', 'filter_log');
         $this->assertEquals($ipDetail['flag_empty_referer'], 1);
         sleep(2);
         $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
-        $ipDetail = $shieldon->driver->get('140.112.173.11', 'log');
+        $ipDetail = $shieldon->driver->get('140.112.173.11', 'filter_log');
         $this->assertEquals($ipDetail['flag_empty_referer'], 0);
     }
 
