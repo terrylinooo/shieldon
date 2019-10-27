@@ -77,7 +77,7 @@ class TelegramMessenger implements MessengerInterface
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->getApiURL());
+        curl_setopt($ch, CURLOPT_URL, $this->apiurl());
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -99,11 +99,9 @@ class TelegramMessenger implements MessengerInterface
     }
 
     /**
-     * Telegram API URL.
-     *
-     * @return string
+     * @inheritDoc
      */
-    private function getApiURL(): string
+    public function apiurl(): string
     {
         return 'https://api.telegram.org/bot' . $this->apiKey . '/SendMessage';
     }

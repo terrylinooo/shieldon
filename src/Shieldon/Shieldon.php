@@ -38,6 +38,7 @@ use Shieldon\Driver\DriverProvider;
 use Shieldon\Log\ActionLogger;
 
 use LogicException;
+use RuntimeException;
 use Closure;
 
 use function get_class;
@@ -1328,6 +1329,7 @@ class Shieldon
 
                         if ($attempts === $quota) {
                             $triggerMessenger = true;
+
                             $logData['type'] = self::ACTION_DENY;
                         }
                     }
@@ -1364,7 +1366,7 @@ class Shieldon
                                 $messenger->send($logData);
                             }
     
-                        } catch (Exception $e) {
+                        } catch (RuntimeException $e) {
                             // Do not throw error, becasue the third-party services might be unavailable.
                         }
                     }

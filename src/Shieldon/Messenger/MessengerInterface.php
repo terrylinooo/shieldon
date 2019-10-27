@@ -26,4 +26,11 @@ interface MessengerInterface
      * @return void
      */
     public function send(string $message, array $logData = []): void;
+
+    /**
+     * API URL from the third-party service provider.
+     *
+     * @return string
+     */
+    public function apiurl(): string;
 }
