@@ -84,7 +84,7 @@ class Firewall
 
             if (! file_exists($configFilePath)) {
 
-                $jsonString = file_get_contents(__DIR__ . '/../config.json');
+                $jsonString = file_get_contents(__DIR__ . '/../../config.json');
 
                 if (defined('PHPUNIT_TEST')) {
                     $jsonString = file_get_contents(__DIR__ . '/../../tests/config.json');

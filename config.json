@@ -1,0 +1,197 @@
+
+{
+    "daemon": false,
+    "admin": {
+        "user": "shieldon_user",
+        "pass": "$2y$10$x/celAC.L8xBn1UPPq619uG6ZGKoA6yfbjxtAJqAAtB.yLjU3S3Fu",
+        "last_modified": "1989-06-04"
+    },
+    "channel_id": "",
+    "driver_type": "file",
+    "drivers": {
+        "file": {
+            "directory_path": ""
+        },
+        "sqlite": {
+            "directory_path": ""
+        },
+        "redis": {
+            "port": 6379,
+            "host": "127.0.0.1",
+            "auth": ""
+        },
+        "mysql": {
+            "host": "127.0.0.1",
+            "dbname": "shieldon_db",
+            "user": "shieldon_user",
+            "pass": "1234",
+            "charset": "utf8"
+        }
+    },
+    "loggers": {
+        "action": {
+            "enable": false,
+            "config": {
+                "directory_path": ""
+            }
+        }
+    },
+    "filters": {
+        "frequency": {
+            "enable": true,
+            "config": {
+                "quota_s": 2,
+                "quota_m": 10,
+                "quota_h": 30,
+                "quota_d": 60
+            }
+        },
+        "cookie": {
+            "enable": false,
+            "config": {
+                "cookie_name": "ssjd",
+                "cookie_domain": "",
+                "cookie_value": "1",
+                "quota": 5
+            }
+        },
+        "session": {
+            "enable": false,
+            "config": {
+                "quota": 5,
+                "time_buffer": 5
+            }
+        },
+        "referer": {
+            "enable": false,
+            "config": {
+                "quota": 5,
+                "time_buffer": 5
+            }
+        }
+    },
+    "components": {
+        "ip": {
+            "enable": true
+        },
+        "trusted_bot": {
+            "enable": true,
+            "strict_mode": false
+        },
+        "header": {
+            "enable": true,
+            "strict_mode": false
+        },
+        "user_agent": {
+            "enable": true,
+            "strict_mode": false
+        },
+        "rdns": {
+            "enable": true,
+            "strict_mode": false
+        }
+    },
+    "captcha_modules": {
+        "recaptcha": {
+            "enable": false,
+            "config": {
+                "site_key": null,
+                "secret_key": null,
+                "version": "v2",
+                "lang": "en-US"
+            }
+        },
+        "image": {
+            "enable": false,
+            "config": {
+                "type": "alnum",
+                "length": 4
+            }
+        }
+    },
+    "ip_variable_source": {
+        "REMOTE_ADDR": true,
+        "HTTP_CF_CONNECTING_IP": false,
+        "HTTP_X_FORWARDED_FOR": false,
+        "HTTP_X_FORWARDED_HOST": false
+    },
+    "online_session_limit": {
+        "enable": false,
+        "config": {
+            "count": 100,
+            "period": 300
+        }
+    },
+    "xss_protection": {
+        "post": false,
+        "get": false,
+        "cookie": false
+    },
+    "xss_protected_list": [
+        {
+            "type": "get",
+            "variable": "_test"
+        },
+        {
+            "type": "post",
+            "variable": "_test"
+        },
+        {
+            "type": "cookie",
+            "variable": "_test"
+        }
+    ],
+    "ddos_protection": {
+        "enable": false,
+        "config": {
+            "count": 5
+        }
+    },
+    "csrf_protection": {
+        "enable": false,
+        "config": {
+            "expire": 7200,
+            "excluded_urls": [
+                {
+                    "url": "/ajax/"
+                }
+            ]
+        }
+    },
+    "cronjob": {
+        "reset_circle": {
+            "enable": false,
+            "config": {
+                "period": 86400,
+                "last_update": "2019-01-01 00:00:00"
+            }
+        }
+    },
+    "excluded_urls": [
+        {
+            "url": "/tests/"
+        }
+    ],
+    "ip_manager": [
+        {
+            "url": "/",
+            "rule": "allow",
+            "ip": "127.0.0.1"
+        }
+    ],
+    "www_authenticate": [
+        {
+            "url": "/admin/",
+            "user": "wp_shieldon_admin",
+            "pass": "$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq"
+        }
+    ],
+    "dialog_ui": {
+        "background_image": "",
+        "bg_color": "#ffffff",
+        "header_bg_color": "#212531",
+        "header_color": "#ffffff",
+        "shadow_opacity": "0.2",
+        "lang": "en"
+    }
+}

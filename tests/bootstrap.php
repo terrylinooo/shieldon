@@ -149,6 +149,6 @@ function rand_ip()
     return rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255);
 }
 
-require __DIR__ . '/../src/autoload.php';
+require __DIR__ . '/../autoload.php';
 
 

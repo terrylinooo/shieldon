@@ -63,7 +63,7 @@ function __(): string
             }
         }
 
-        $file = __DIR__ . '/../localization/' . $lang . '/' . $filename . '.php';
+        $file = __DIR__ . '/../../localization/' . $lang . '/' . $filename . '.php';
         
         if (file_exists($file)) {
             $i18n[$filename] = include $file;

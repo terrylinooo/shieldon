@@ -15,7 +15,7 @@ use Shieldon\Driver\FileDriver;
 use Shieldon\Driver\MysqlDriver;
 use Shieldon\Driver\RedisDriver;
 use Shieldon\Driver\SqliteDriver;
-use Shieldon\Log\LogParser;
+use Shieldon\Log\ActionLogParser;
 use Shieldon\Shieldon;
 use Shieldon\FirewallTrait;
 use function Shieldon\Helper\__;
@@ -146,8 +146,8 @@ class FirewallPanel
             // We need to know where the logs stored in.
             $logDirectory = $this->shieldon->logger->getDirectory();
 
-            // Load logParser for parsing log files.
-            $this->parser = new LogParser($logDirectory);
+            // Load ActionLogParser for parsing log files.
+            $this->parser = new ActionLogParser($logDirectory);
 
             $this->pageAvailability['logs'] = true;
         }
@@ -1194,7 +1194,7 @@ class FirewallPanel
             define('SHIELDON_VIEW', true);
         }
 
-        $viewFilePath =  __DIR__ . '/../views/' . $page . '.php';
+        $viewFilePath =  __DIR__ . '/../../templates/' . $page . '.php';
     
         if (! empty($data)) {
             extract($data);
@@ -1230,7 +1230,7 @@ class FirewallPanel
             define('SHIELDON_VIEW', true);
         }
 
-        require __DIR__ . '/../views/' . $page . '.php';
+        require __DIR__ . '/../../templates/' . $page . '.php';
     }
 
     /**

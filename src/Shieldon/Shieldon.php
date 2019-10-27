@@ -1095,7 +1095,7 @@ class Shieldon
         // Use default template if there is no custom HTML template.
         if (empty($this->html[$type])) {
 
-            $viewPath = self::SHIELDON_DIR . '/../views/' . $type . '.php';
+            $viewPath = self::SHIELDON_DIR . '/../../templates/' . $type . '.php';
 
             if (empty($this->properties['display_online_info'])) {
                 $showOnlineInformation = false;
@@ -1125,7 +1125,7 @@ class Shieldon
                     'shadow_opacity'   => $this->dialogUI['shadow_opacity'] ?? '0.2',
                 ];
 
-                $css = require self::SHIELDON_DIR . '/../views/css-default.php';
+                $css = require self::SHIELDON_DIR . '/../../templates/css-default.php';
 
                 ob_start();
                 require $viewPath;
