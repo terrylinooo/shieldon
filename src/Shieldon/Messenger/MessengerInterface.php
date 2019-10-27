@@ -15,8 +15,15 @@ namespace Shieldon\Messenger;
  * 
  * @since 3.3.0
  */
-class MessengerInterface
+interface MessengerInterface
 {
-
-
+    /**
+     * Send message to your Telegram channel.
+     *
+     * @param string $message The message body.
+     * @param array  $logData Simple key-value data.
+     * 
+     * @return void
+     */
+    public function send(string $message, array $logData = []): void;
 }
