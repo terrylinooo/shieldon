@@ -19,31 +19,19 @@ use function curl_setopt;
 use function json_decode;
 
 /**
- * TelegramMessenger
+ * LineNotifyMessenger
  * 
  * @since 3.3.0
  */
-class TelegramMessenger implements MessengerInterface
+class LineNotifyMessenger implements MessengerInterface
 {
     /**
-     * API key.
-     *
-     * Add `BotFather` to start a conversation.
-     * Type command `/newbot` to obtain your api key.
+     * This access token is obtained by clicking `Generate token` button
+     * at https://notify-bot.line.me/my/
      *
      * @var string
      */
-    private $apiKey;
-
-    /**
-     * Telegram channel name.
-     *
-     * For example, @your_channel_name, and remember, make your channel type public.
-     * If you want to send message to your private channel, googling will find solutions.
-     *
-     * @var string
-     */
-    private $channel;
+    private $accessToken = '';
 
     /**
      * The connection timeout when calling Telegram API.
@@ -53,13 +41,11 @@ class TelegramMessenger implements MessengerInterface
     private $timeout = 5;
 
     /**
-     * @param string $apiKey  Telegram bot access token provided by BotFather
-     * @param string $channel Telegram channel name
+     * @param string $accessToken The developer access token.
      */
-    public function __construct(string $apiKey, string $channel, int $timeout = 5)
+    public function __construct(string $accessToken, int $timeout = 5)
     {
-        $this->apiKey = $apiKey;
-        $this->channel = $channel;
+        $this->accessToken = $accessToken;
         $this->timeout = $timeout;
     }
 
@@ -82,29 +68,34 @@ class TelegramMessenger implements MessengerInterface
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-            'text' => $message,
-            'chat_id' => $this->channel,
-        ]));
+        curl_setopt($ch, CURLOPT_POST, 1 );
+
+        $headers = [
+            'Content-type: '  . 'application/x-www-form-urlencoded',
+            'Authorization: ' . 'Bearer ' . $this->accessToken,
+        ];
     
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "message=$message");
+
         $result = curl_exec($ch);
 
         if (! curl_errno($ch)) {
             $result = json_decode($result, true);
 
-            if (false === $result['ok']) {
-                throw new RuntimeException('An error occurred when accessing Telegram API. (' . $result['description'] . ')');
+            if (200 !== $result['status']) {
+                throw new RuntimeException('An error occurred when accessing Line Notify API. (' . $result['message'] . ')');
             }
         }
     }
 
     /**
-     * Telegram API URL.
+     * Line Notify API URL.
      *
      * @return string
      */
     private function getApiURL(): string
     {
-        return 'https://api.telegram.org/bot' . $this->apiKey . '/SendMessage';
+        return 'https://notify-api.line.me/api/notify';
     }
 }
