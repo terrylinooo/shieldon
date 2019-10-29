@@ -84,9 +84,17 @@ return [
     
     //日志
     'log_heading_captchas' => 'CAPTCHA 验证',
-    'log_note_captcha_last_month' => 'CAPTCHA 上月份统计',
     'log_heading_pageviews' => '网页查看数',
+    'log_note_captcha_last_month' => 'CAPTCHA 上月份统计',
     'log_note_pageview_last_month' => '上月份总网页查看数',
+    'log_note_captcha_last_7_days' => 'CAPTCHA 过去 7 日统计',
+    'log_note_pageview_last_7_days' => '过去 7 日网页检视总数',
+    'log_note_pageview_this_month' => '本月份网页检视总数',
+    'log_note_captcha_this_month' => 'CAPTCHA 本月份统计',
+    'log_note_captcha_today' => 'CAPTCHA 今日统计',
+    'log_note_pageview_today' => '今日网页检视总数',
+    'log_note_pageview_yesterday' => '昨日网页检视总数',
+    'log_note_captcha_yesterday' => 'CAPTCHA 昨日统计',
     
     'log_label_last_month' => '上月',
     'log_label_this_month' => '本月',
@@ -103,7 +111,6 @@ return [
     'log_label_failed' => '已失败',
     'log_label_displays' => '显示次数',
     'log_label_timezone' => '时区',
-    'log_note_captcha_last_7_days' => 'CAPTCHA 过去 7 日统计',
     
     //概述
     'overview_heading_data_circle' => '资料周期',
@@ -160,7 +167,7 @@ return [
     'table_label_last_visit' => '上次造访',
     'table_label_flags' => '旗标',
     
-    //规则表。
+    // 规则表。
     'table_heading_rule' => '规则表',
     'table_description_rule_1' => '这是Shieldon在目前的资料周期内，暂时性地允许或拒绝用户的地方。',
     'table_description_rule_2' => '所有过程是自动化且即时性的，您可以忽略。',
@@ -173,7 +180,7 @@ return [
     'table_label_time' => '时间',
     'table_label_remove' => '可移除',
     
-    //会话表。
+    // 会话表。
     'table_heading_session' => '工作阶段表',
     'table_label_remain_seconds' => '剩余秒数',
     'table_label_priority' => '优先权',
@@ -211,13 +218,13 @@ return [
     'tab_heading_components' => '元件',
     'tab_heading_daemon' => '守护进程',
     
-    //设置-管理员登录。
+    // 设置-管理员登录。
     'setting_heading_adminlogin' => '管理登录',
     'setting_label_last_modified' => '最近一次修改',
     'setting_label_password' => '密码',
     'setting_label_user' => '用户',
     
-    //设置-验证码。
+    // 设置-验证码。
     'setting_heading_recaptcha' => 'reCAPTCHA验证',
     'setting_label_recaptcha_key' => '网站金钥',
     'setting_note_recaptcha_key' => '输入您的网站的 Google reCaptcha 网站金钥。',
@@ -234,7 +241,7 @@ return [
     'setting_label_length' => '长度',
     'setting_heading_image_captcha' => '图片型验证码',
     
-    //设置-组件。
+    // 设置-组件。
     'setting_heading_component_ip' => 'IP',
     'setting_note_component_ip' => '通过启用此选项来启动 IP 管理员。',
     'setting_heading_component_tb' => '信任的机器人',
@@ -252,7 +259,7 @@ return [
     'setting_note_component_rdns_1' => '一般而言，从电信业者配发的 IP 都会被设置 RDNS 记录。此选项仅在严格模式时运作。',
     'setting_note_component_rdns_2' => '所有 RDNS 记录为空值的访客将会被封锁。',
 
-    //设置-守护程序
+    // 设置-守护程序
     'setting_heading_enable' => '启用',
     'setting_label_data_driver' => '资料驱动器',
     'setting_note_data_driver' => '通过由执行 Shieldon 开始保护您的网站。Shieldon 防火墙只有在这个选项启用时才会运作。',

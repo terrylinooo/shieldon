@@ -193,5 +193,22 @@
         "header_color": "#ffffff",
         "shadow_opacity": "0.2",
         "lang": "en"
+    },
+    "messengers": {
+        "line_notify": {
+            "access_token": "your_access_token"
+        },
+        "telegram": {
+            "api_key": "your_api_key",
+            "channel": "@your_channel"
+        },
+        "sendgrid": {
+            "api_key": "your_api_key",
+            "sender": "your@email.com",
+            "recipients": [
+                "user1@email.com",
+                "user2@email.com"
+            ]
+        }
     }
 }

@@ -84,9 +84,17 @@ return [
 
     // Log
     'log_heading_captchas' => 'CAPTCHAs',
-    'log_note_captcha_last_month' => 'CAPTCHA statistic last month',
     'log_heading_pageviews' => 'Pageviews',
-    'log_note_pageview_last_month' => 'Total pageviews last month',
+    'log_note_captcha_last_month' => 'CAPTCHA statistic last month.',
+    'log_note_pageview_last_month' => 'Total pageviews last month.',
+    'log_note_captcha_last_7_days' => 'CAPTCHA statistic last 7 days.',
+    'log_note_pageview_last_7_days' => 'Total pageviews last 7 days.',
+    'log_note_pageview_this_month' => 'Total pageviews this month.',
+    'log_note_captcha_this_month' => 'CAPTCHA statistic this month.',
+    'log_note_captcha_today' => 'CAPTCHA statistic today.',
+    'log_note_pageview_today' => 'Total pageviews today.',
+    'log_note_pageview_yesterday' => 'Total pageviews yesterday.',
+    'log_note_captcha_yesterday' => 'CAPTCHA statistic today.',
 
     'log_label_last_month' => 'Last month',
     'log_label_this_month' => 'This month',
@@ -103,7 +111,7 @@ return [
     'log_label_failed' => 'failed',
     'log_label_displays' => 'displays',
     'log_label_timezone' => 'Timezone',
-    'log_note_captcha_last_7_days' => 'CAPTCHA statistic last 7 days.',
+
 
     // Overview
     'overview_heading_data_circle' => 'Data Circle',

@@ -27,8 +27,8 @@ function showActive(string $key = '')
     }
 }
 
-//$staticSrc = 'http://shieldon-doc.lo/static';
-$staticSrc = 'http://shieldon-io.github.io/static';
+$staticSrc = 'http://shieldon-doc.lo/static';
+//$staticSrc = 'http://shieldon-io.github.io/static';
 
 ?><!doctype html>
 <html lang="<?php echo $this->locate; ?>">
@@ -76,77 +76,131 @@ $staticSrc = 'http://shieldon-io.github.io/static';
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-2 so-sidebar-menu">
+                <div class="col-md-2 col-sm-1 col-xs-1 so-sidebar-menu">
                     <ul class="nav flex-column parent-menu">
                         <li>
-                            <a href="#"><i class="fas fa-cog"></i> <?php _e('panel', 'menu_status', 'Status'); ?></a>
+                            <a href="#">
+                                <i class="fas fa-cog"></i>
+                                <span><?php _e('panel', 'menu_status', 'Status'); ?></span>
+                            </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=overview"><?php _e('panel', 'menu_overview', 'Overview'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=overview">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                        <span><?php _e('panel', 'menu_overview', 'Overview'); ?></span>
+                                    </a>
                                 </li>
                             </ul>
                         </li>
                         <?php if ($this->mode === 'managed') : ?>
                         <li>
-                            <a><i class="fas fa-fire-alt"></i> <?php _e('panel', 'menu_firewall', 'Firewall'); ?></a>
+                            <a href="#">
+                                <i class="fas fa-fire-alt"></i>
+                                <span><?php _e('panel', 'menu_firewall', 'Firewall'); ?></span>
+                            </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=settings"><?php _e('panel', 'menu_settings', 'Settings'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=settings">
+                                        <i class="fas fa-cogs"></i>
+                                        <span><?php _e('panel', 'menu_settings', 'Settings'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_manager"><?php _e('panel', 'menu_ip_manager', 'IP Manager'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_manager">
+                                        <i class="fas fa-globe"></i>
+                                        <span><?php _e('panel', 'menu_ip_manager', 'IP Manager'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=xss_protection"><?php _e('panel', 'menu_xss_protection', 'XSS Protection'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=xss_protection">
+                                        <i class="fas fa-umbrella"></i>
+                                        <span><?php _e('panel', 'menu_xss_protection', 'XSS Protection'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=authentication"><?php _e('panel', 'menu_authentication', 'Authentication'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=authentication">
+                                        <i class="fas fa-user-lock"></i>
+                                        <span><?php _e('panel', 'menu_authentication', 'Authentication'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=exclusion"><?php _e('panel', 'menu_exclusion', 'Exclusion'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=exclusion">
+                                        <i class="fas fa-eye-slash"></i>
+                                        <span><?php _e('panel', 'menu_exclusion', 'Exclusion'); ?></span>
+                                    </a>
                                 </li>
                             </ul>
                         </li>
                         <?php endif; ?>
                         <?php if (! empty($this->shieldon->logger)) : ?>
                         <li>
-                            <a><i class="fas fa-chart-area"></i> <?php _e('panel', 'menu_logs', 'Logs'); ?></a>
+                            <a href="#">
+                                <i class="fas fa-chart-area"></i>
+                                <span><?php _e('panel', 'menu_logs', 'Logs'); ?></span>
+                            </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=today"><?php _e('panel', 'menu_today', 'Today'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=today">
+                                        <i class="far fa-calendar-check"></i>
+                                        <span><?php _e('panel', 'menu_today', 'Today'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=yesterday"><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=yesterday">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <span><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=past_seven_days"><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=past_seven_days">
+                                        <i class="fas fa-calendar-week"></i>
+                                        <span><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=this_month"><?php _e('panel', 'menu_this_month', 'This month'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=this_month">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span><?php _e('panel', 'menu_this_month', 'This month'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=last_month"><?php _e('panel', 'menu_last_month', 'Last month'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=last_month">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span><?php _e('panel', 'menu_last_month', 'Last month'); ?></span>
+                                    </a>
                                 </li>
                             </ul>
                         </li>
                         <?php endif; ?>
                         <li>
-                            <a><i class="fas fa-table"></i> <?php _e('panel', 'menu_data_circle', 'Data Circle'); ?></a>
+                            <a href="#">
+                                <i class="fas fa-table"></i>
+                                <span><?php _e('panel', 'menu_data_circle', 'Data Circle'); ?></span>
+                            </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_log_table"><?php _e('panel', 'menu_ip_logs', 'IP Logs'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_log_table">
+                                        <i class="fas fa-chart-area"></i>
+                                        <span><?php _e('panel', 'menu_ip_logs', 'IP Logs'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_rule_table"><?php _e('panel', 'menu_ip_rules', 'IP Rules'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_rule_table">
+                                        <i class="fas fa-fire-alt"></i>
+                                        <span><?php _e('panel', 'menu_ip_rules', 'IP Rules'); ?></span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=session_table"><?php _e('panel', 'menu_ip_sessions', 'Sessions'); ?></a>
+                                    <a href="<?php echo $page_url; ?>?so_page=session_table">
+                                        <i class="fas fa-user-clock"></i>
+                                        <span><?php _e('panel', 'menu_ip_sessions', 'Sessions'); ?>
+                                    </a>
                                 </li>
                              </ul>
                         </li>
                     </ul>
                 </div>
-                <div class="col-md-10 so-content">
+                <div class="col-md-10 col-sm-11 col-xs-11 so-content">
                     <?php echo $content; ?>
                 </div>
             </div>

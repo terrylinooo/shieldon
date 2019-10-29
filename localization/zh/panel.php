@@ -84,9 +84,17 @@ return [
 
     // Log
     'log_heading_captchas' => 'CAPTCHA 驗證',
-    'log_note_captcha_last_month' => 'CAPTCHA 上月份統計',
     'log_heading_pageviews' => '網頁檢視數',
+    'log_note_captcha_last_month' => 'CAPTCHA 上月份統計',
     'log_note_pageview_last_month' => '上月份總網頁檢視數',
+    'log_note_captcha_last_7_days' => 'CAPTCHA 過去 7 日統計',
+    'log_note_pageview_last_7_days' => '過去 7 日網頁檢視總數',
+    'log_note_pageview_this_month' => '本月份網頁檢視總數',
+    'log_note_captcha_this_month' => 'CAPTCHA 本月份統計',
+    'log_note_captcha_today' => 'CAPTCHA 今日統計',
+    'log_note_pageview_today' => '今日網頁檢視總數',
+    'log_note_pageview_yesterday' => '昨日網頁檢視總數',
+    'log_note_captcha_yesterday' => 'CAPTCHA 昨日統計',
 
     'log_label_last_month' => '上月',
     'log_label_this_month' => '本月',
@@ -103,7 +111,7 @@ return [
     'log_label_failed' => '已失敗',
     'log_label_displays' => '顯示次數',
     'log_label_timezone' => '時區',
-    'log_note_captcha_last_7_days' => 'CAPTCHA 過去 7 日統計',
+
 
     // Overview
     'overview_heading_data_circle' => '資料週期',

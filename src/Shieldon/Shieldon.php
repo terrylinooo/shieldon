@@ -36,6 +36,7 @@ use Shieldon\Component\ComponentProvider;
 use Shieldon\Container;
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Log\ActionLogger;
+use Messenger\MessengerInterface;
 
 use LogicException;
 use RuntimeException;
@@ -193,11 +194,20 @@ class Shieldon
         'display_user_info'      => false,
 
         /**
+         * If you set this option enabled, Shieldon will record every CAPTCHA fails in a row, 
+         * Once that user have reached the limitation number, Shieldon will put it as a blocked IP in rule table,
+         * until the new data cycle begins.
+         * 
+         * Once that user have been blocked, they are still access the warning page, it means that they are not
+         * humain for sure, so let's throw them into the system firewall and say goodbye to them forever.
+         * 
          * @since 3.3.0
          */
-        'attempt_captcha_quota'  => 10,
-        'attempt_block_quota'    => 10,
-        'data_writable_folder'   => '/tmp/',
+        'enable_block_attempt_captcha'  => true,
+        'block_attempt__captcha_quota'  => 10,
+        'enable_system_firewall'        => true,
+        'system_firewall_warning_quota' => 10,
+        'system_firewall_logs_folder'   => '/tmp/',
     ];
 
     /**
@@ -316,15 +326,6 @@ class Shieldon
      * @since 3.1.0
      */
     private $dialogUI = [];
-
-    /**
-     * If you set this option enabled, Shieldon will record every CAPTCHA fails in a row, 
-     * Once that user have reached the limitation number, Shieldon will put it as a blocked IP in rule table,
-     * until the new data cycle begins.
-     *
-     * @var boolean
-     */
-    private $isBlockAttempt = false;
 
     /**
      * The ways Shieldon send a message to when someone has been blocked.
@@ -821,6 +822,20 @@ class Shieldon
     }
 
     /**
+     * Set a messenger
+     *
+     * @param MessengerInterfa $instance
+     *
+     * @return self[= ][  
+     */
+    public function setMessenger(MessengerInterface $instance): self
+    {
+        $this->messengers[] = $instance;
+
+        return $this;
+    }
+
+    /**
      * For first time installation only. This is for creating data tables automatically.
      * Turning it on will check the data tables exist or not at every single pageview, 
      * it's not good for high traffic websites.
@@ -1307,44 +1322,50 @@ class Shieldon
                 $this->isAllowedRule = true;
             } else {
 
+                $attempts = (int) $ipRule['attempts'];
+
+                $logData['log_ip']     = $ipRule['log_ip'];
+                $logData['ip_resolve'] = $ipRule['ip_resolve'];
+                $logData['time']       = time();
+                $logData['type']       = $ipRule['type'];
+                $logData['reason']     = $ipRule['reason'];
+                $logData['attempts']   = $attempts + 1;
+
+                $isTriggerMessenger = false;
+                $isUpdatRuleTable = false;
+
                 /**
                  * @since 3.3.0
                  */
-                if ($this->isBlockAttempt) {
-
-                    $attempts = (int) $ipRule['attempts'];
-
-                    $logData['log_ip']     = $ipRule['log_ip'];
-                    $logData['ip_resolve'] = $ipRule['ip_resolve'];
-                    $logData['time']       = time();
-                    $logData['type']       = $ipRule['type'];
-                    $logData['reason']     = $ipRule['reason'];
-                    $logData['attempts']   = $attempts + 1;
-
-                    $triggerMessenger = false;
-
+                if ($this->properties['enable_block_attempt_captcha']) {
+                    $isUpdatRuleTable = true;
+    
                     if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
 
-                        $quota = $this->properties['attempt_captcha_quota'];
+                        $quota = $this->properties['block_attempt_captcha_quota'];
 
                         if ($attempts === $quota) {
-                            $triggerMessenger = true;
+                            $isTriggerMessenger = true;
 
                             $logData['type'] = self::ACTION_DENY;
                         }
                     }
+                }
+
+                if ($this->properties['enable_system_firewall']) {
+                    $isUpdatRuleTable = true;
 
                     if ($ruleType === self::ACTION_DENY) {
+
                         // For the requests that are already banned, but they are still attempting access, that means 
                         // that they are programmably accessing your website. Consider put them in the system-layer fireall
                         // such as IPTABLE.
-
-                        $quota = $this->properties['attempt_block_quota'];
+                        $quota = $this->properties['system_firewall_warning_quota'];
 
                         if ($attempts === $quota) {
-                            $triggerMessenger = true;
+                            $isTriggerMessenger = true;
 
-                            $folder = rtrim($this->properties['data_writable_folder'], '/');
+                            $folder = rtrim($this->properties['system_firewall_logs_folder'], '/');
                             $filePath = $folder . '/iptables_queue.log';
 
                             // Add this IP address to itables_queue.log
@@ -1352,25 +1373,26 @@ class Shieldon
                             file_put_contents($filePath, $this->ip . "\n", FILE_APPEND | LOCK_EX);
                         }
                     }
+                }
 
+                if ($isUpdatRuleTable) {
                     $this->driver->save($this->ip, $logData, 'rule');
+                }
 
-                    /**
-                     * Notify this event to messengers.
-                     */
-                    if ($triggerMessenger) {
+                /**
+                 * Notify this event to messengers.
+                 */
+                if ($isTriggerMessenger) {
 
-                        try {
+                    try {
 
-                            foreach ($this->messengers as $messenger) {
-                                $messenger->send($logData);
-                            }
-    
-                        } catch (RuntimeException $e) {
-                            // Do not throw error, becasue the third-party services might be unavailable.
+                        foreach ($this->messengers as $messenger) {
+                            $messenger->send($logData);
                         }
-                    }
 
+                    } catch (RuntimeException $e) {
+                        // Do not throw error, becasue the third-party services might be unavailable.
+                    }
                 }
 
                 // For an incoming request already in the rule list, return the rule type immediately.

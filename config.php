@@ -449,4 +449,30 @@ return [
         'header_color'     => '#ffffff',
         'shadow_opacity'   => '0.2',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Messenger
+    |--------------------------------------------------------------------------
+    */
+
+    'messengers' => [
+
+        'line_notify' => [
+            'access_token' => 'your_access_token',
+        ],
+
+        'telegram' => [
+            'api_key' => 'your_api_key',
+        ],
+
+        'sendgrid' => [
+            'api_key' => 'your_api_key',
+            'sender' => 'your@email.com',
+            'recipients' => [
+                'user1@email.com',
+                'user2@email.com',
+            ]
+        ]
+    ]
 ];
