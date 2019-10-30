@@ -20,6 +20,8 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 - IP manager.
 - Protecting pages via WWW-Authenticate.
 - Detailed statistics and charts.
+- Messenger - Send notifications when specific events occurred.
+- System-layer firwall - The ip6tables management.
 - More features will come...
 
 ## Installation
@@ -88,7 +90,7 @@ You can temporarily ban a user here.
 
 Shieldon's Firewall Panel is fully responsive, and you can manage it when you are not in front of your computer, using your mobile phone at any time.
 
-![Responsive Firewall Panel](https://i.imgur.com/ohbtqJX.png)
+![Responsive Firewall Panel](https://i.imgur.com/fUz9lZD.png)
 
 
 ### Dialog
