@@ -5,20 +5,19 @@
 #-
 #- SYNOPSIS
 #-
-#-    firewall.sh [-h] [-i] [-f [file_path]]
+#-    firewall.sh [-h] [-i] [-w [log_directory]]
 #-
 #- OPTIONS
 #-
-#-    -f ?, --file=?       Specify the path of iptables_queue.log
-#-    -t ?, --type=?       Specify firewall type. Options:
-#-                         firewalld, ufw, iptables, ip6tables
+#-    -w ?, --watch=?      Watch the directory where the firewall logs are stored.
+#-    -c, --clear          Clear all input records.
 #-    -h, --help           Print this help.
 #-    -i, --info           Print script information.
 #-
 #- EXAMPLES
 #-
-#-    $ ./firewall.sh -f /tmp/iptables_queue.log -t=ip6tables
-#-    $ ./firewall.sh --file=/tmp/iptables_queue.log --type=ip6tables
+#-    $ ./firewall.sh -w /tmp/shieldon_iptable
+#-    $ ./firewall.sh --watch=/tmp/shieldon_iptable
 #+
 #+ IMPLEMENTATION:
 #+
@@ -30,7 +29,16 @@
 #==============================================================================
 
 #==============================================================================
-# Part 1. Option (DO NOT MODIFY)
+# Part 1. Config
+#==============================================================================
+
+# iptables_log_folder=""
+# iptables_watching_file="iptables_queue.log"
+# iptables_default_rules_file="iptables_default_rules.log"
+# iptables_status_log_file="iptables_status.log"
+
+#==============================================================================
+# Part 2. Option (DO NOT MODIFY)
 #==============================================================================
 
 # Print script help
@@ -51,27 +59,21 @@ show_script_information() {
 if [ "$#" -gt 0 ]; then
     while [ "$#" -gt 0 ]; do
         case "$1" in
-            # Specify the path of iptables_queue.log.
-            "-f") 
-                iptables_file="${2}"
+            # Specify the path of iptables logs' directory.
+            "-w") 
+                iptables_log_folder="${2}"
                 shift 2
             ;;
-            "--file="*) 
-                iptables_file="${1#*=}"; 
+            "--watch="*) 
+                iptables_log_folder="${1#*=}"
                 shift 1
             ;;
-            # Specify Firewall type.
-            "-t") 
-                firewall_type="${2}"
-                shift 2
-            ;;
-            "--type="*) 
-                firewall_type="${1#*=}"; 
-                shift 1
-            ;;
-            # Help
-            "-h"|"--help")
-                show_script_help
+            # Clear INPUT chain rules.
+            "-c"|"--clear")
+                # Prevent you block yourself out of the server if the default rule is DENY...
+                iptables -P INPUT ACCEPT
+                # Flush rules.
+                iptables -F INPUT
                 exit 1
             ;;
             # Info
@@ -92,57 +94,22 @@ if [ "$#" -gt 0 ]; then
 fi
 
 #==============================================================================
-# Part 2. Main part.
+# Part 3. Main part.
 #==============================================================================
 
-if [ "${firewall_type}" == "firewalld" ]; then
-    is_firewalld=$(firewall-cmd --state | grep "running")
+# Assign absolute path.
+iptables_watching_file="${iptables_log_folder}/iptables_queue.log"
+iptables_default_rules_file="${iptables_log_folder}/iptables_default_rules.log"
+iptables_status_log_file="${iptables_log_folder}/iptables_status.log"
 
-    if [ "${is_firewalld}" == "running" ]; then
-        while IFS= read -r line; do
-            firewall-cmd --zone=drop --add-source=${line}
-        done < "${iptables_file}"
-    fi
-fi
-
-if [ "${firewall_type}" == "ufw" ]; then
-    is_utw=$(ufw status | grep "Status: active")
-
-    if [ "${is_utw}" == "active" ]; then
-        while IFS= read -r line; do
-           ufw deny from ${line} to any
-        done < "${iptables_file}"
-    fi
-fi
-
-if [ "${firewall_type}" == "ip6tables" ]; then
-    is_ip6tables=$(ip6tables -L | grep "Chain INPUT")
-    if [ "${is_ip6tables}" == "Chain INPUT" ]; then
-        while IFS= read -r line; do
-            ip6tables -A INPUT -s ${line} -j DROP
-        done < "${iptables_file}"
-    fi
-fi
-
-if [ "${firewall_type}" == "iptables" ]; then
-    is_iptables=$(iptables -L | grep "Chain INPUT")
-    ip6_regex='^([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}$'
-
-    if [ "${is_iptables}" == "Chain INPUT" ]; then
-        while IFS= read -r line; do
-
-            if [[ "${line}" =~ "${ip6_regex}" ]]; then
-                echo "iptables does not support ipv6 address."
-            else
-                iptables -A INPUT -s ${line} -j DROP
-            fi
-
-        done < "${iptables_file}"
-    fi
-fi
+while IFS=';' read -r ip action; do
+    ip6tables -A INPUT -s "${ip}" -j "${action}"
+done < "${iptables_watching_file}"
 
 #==============================================================================
-# Part 3. Done. Clean the iptables_queue.log
+# Part 4. Done. Empty the iptables_queue.log
 #==============================================================================
 
-truncate -s 0 ${iptables_file}
+truncate -s 0 "${iptables_watching_file}"
+
+ip6tables -L > "${iptables_status_log_file}"

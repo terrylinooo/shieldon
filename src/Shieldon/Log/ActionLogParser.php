@@ -123,8 +123,8 @@ final class ActionLogParser
 
         // range: past_seven_hours ~ now
         $this->periods['past_seven_hours'] = [
-            'timesamp_begin' => strtotime(gmdate('Y-m-d H:00:00', strtotime('-7 hours'))),
-            'timesamp_end'   => strtotime(gmdate('Y-m-d H:00:00', strtotime('-1 hours'))),
+            'timesamp_begin' => strtotime(date('Y-m-d H:00:00', strtotime('-7 hours'))),
+            'timesamp_end'   => strtotime(date('Y-m-d H:00:00', strtotime('-1 hours'))),
             'display_format' =>'H:00',
             'display_count'  => 7,
             'period'         => 3600,
@@ -132,7 +132,7 @@ final class ActionLogParser
 
         // range: past_seven_days ~ today
         $this->periods['past_seven_days'] = [
-            'timesamp_begin' => strtotime(gmdate('Ymd', strtotime('-7 days'))),
+            'timesamp_begin' => strtotime(date('Ymd', strtotime('-7 days'))),
             'timesamp_end'   => strtotime('today'),
             'display_format' => 'D',
             'display_count'  => 7,
@@ -233,7 +233,6 @@ final class ActionLogParser
 
             // Add a new field `datetime` that original logs don't have.
             $log['datetime'] = date('Y-m-d H:i:s', $logTimesamp);
-
             
             foreach (array_keys($this->periods) as $t) {
 

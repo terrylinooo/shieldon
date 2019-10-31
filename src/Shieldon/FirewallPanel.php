@@ -241,6 +241,14 @@ class FirewallPanel
                 $this->dashboard();
                 break;
 
+            case 'messenger':
+                $this->messenger();
+                break;
+
+            case 'system_layer_firewall':
+                $this->systemLayerFirewall();
+                break;
+
             case 'ajax_change_locale':
                 $this->ajaxChangeLocale();
                 break;
@@ -849,6 +857,42 @@ class FirewallPanel
     }
 
     /**
+     * Messenger setting page.
+     *
+     * @return void
+     */
+    protected function messenger(): void
+    {
+        $data[] = [];
+
+        if (isset($_POST['tab'])) {
+            unset($_POST['tab']);
+            $this->saveConfig();
+        }
+
+        $this->renderPage('panel/messenger', $data);
+    }
+
+    /**
+     * System layer firwall
+     *
+     * @return void
+     */
+    protected function systemLayerFirewall(): void
+    {
+        $data[] = [];
+
+        if (isset($_POST['tab'])) {
+            unset($_POST['tab']);
+            $this->saveConfig();
+        }
+
+        $data['ip_list'] = $this->getConfig('ip_manager');
+
+        $this->renderPage('panel/system_layer_firewall', $data);
+    }
+
+    /**
      * Save the configuration settings to the JSON file.
      *
      * @return void
@@ -1221,13 +1265,18 @@ class FirewallPanel
      * Include a view file.
      *
      * @param string $page
+     * @param array $data
      *
      * @return void
      */
-    private function _include(string $page)
+    private function _include(string $page, array $data = [])
     {
         if (! defined('SHIELDON_VIEW')) {
             define('SHIELDON_VIEW', true);
+        }
+
+        foreach ($data as $k => $v) {
+            ${$k} = $v;
         }
 
         require __DIR__ . '/../../templates/' . $page . '.php';

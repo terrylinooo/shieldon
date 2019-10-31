@@ -136,7 +136,7 @@ $staticSrc = 'http://shieldon-io.github.io/static';
                                     </a>
                                 </li>   
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=system-layer">
+                                    <a href="<?php echo $page_url; ?>?so_page=system_layer_firewall">
                                         <i class="fas fa-skull"></i>
                                         <span><?php _e('panel', 'menu_system_layer', 'System Layer'); ?></span>
                                     </a>

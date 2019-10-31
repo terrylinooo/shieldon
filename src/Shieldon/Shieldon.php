@@ -203,9 +203,9 @@ class Shieldon
          * 
          * @since 3.3.0
          */
-        'enable_block_attempt_captcha'  => true,
+        'enable_block_attempt_captcha'  => false,
         'block_attempt__captcha_quota'  => 10,
-        'enable_system_firewall'        => true,
+        'enable_system_firewall'        => false,
         'system_firewall_warning_quota' => 10,
         'system_firewall_logs_folder'   => '/tmp/',
     ];
@@ -619,6 +619,7 @@ class Shieldon
                 $logData['time']       = $now;
                 $logData['type']       = $actionCode;
                 $logData['reason']     = $reasonCode;
+                $logData['attempts']   = 0;
 
                 $this->driver->save($ip, $logData, 'rule');
                 break;
@@ -1322,78 +1323,82 @@ class Shieldon
                 $this->isAllowedRule = true;
             } else {
 
-                $attempts = (int) $ipRule['attempts'];
+                // Prevent previous version doesn't has this filed
+                //if (isset($ipRule['attempts'])) {
+                    $attempts = (int) $ipRule['attempts'];
 
-                $logData['log_ip']     = $ipRule['log_ip'];
-                $logData['ip_resolve'] = $ipRule['ip_resolve'];
-                $logData['time']       = time();
-                $logData['type']       = $ipRule['type'];
-                $logData['reason']     = $ipRule['reason'];
-                $logData['attempts']   = $attempts + 1;
-
-                $isTriggerMessenger = false;
-                $isUpdatRuleTable = false;
-
-                /**
-                 * @since 3.3.0
-                 */
-                if ($this->properties['enable_block_attempt_captcha']) {
-                    $isUpdatRuleTable = true;
+                    $logData['log_ip']     = $ipRule['log_ip'];
+                    $logData['ip_resolve'] = $ipRule['ip_resolve'];
+                    $logData['time']       = time();
+                    $logData['type']       = $ipRule['type'];
+                    $logData['reason']     = $ipRule['reason'];
+                    $logData['attempts']   = $attempts + 1;
     
-                    if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
-
-                        $quota = $this->properties['block_attempt_captcha_quota'];
-
-                        if ($attempts === $quota) {
-                            $isTriggerMessenger = true;
-
-                            $logData['type'] = self::ACTION_DENY;
+                    $isTriggerMessenger = false;
+                    $isUpdatRuleTable = false;
+    
+                    /**
+                     * @since 3.3.0
+                     */
+                    if ($this->properties['enable_block_attempt_captcha']) {
+                        $isUpdatRuleTable = true;
+        
+                        if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
+    
+                            $quota = $this->properties['block_attempt_captcha_quota'];
+    
+                            if ($attempts === $quota) {
+                                $isTriggerMessenger = true;
+    
+                                $logData['type'] = self::ACTION_DENY;
+                            }
                         }
                     }
-                }
-
-                if ($this->properties['enable_system_firewall']) {
-                    $isUpdatRuleTable = true;
-
-                    if ($ruleType === self::ACTION_DENY) {
-
-                        // For the requests that are already banned, but they are still attempting access, that means 
-                        // that they are programmably accessing your website. Consider put them in the system-layer fireall
-                        // such as IPTABLE.
-                        $quota = $this->properties['system_firewall_warning_quota'];
-
-                        if ($attempts === $quota) {
-                            $isTriggerMessenger = true;
-
-                            $folder = rtrim($this->properties['system_firewall_logs_folder'], '/');
-                            $filePath = $folder . '/iptables_queue.log';
-
-                            // Add this IP address to itables_queue.log
-                            // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
-                            file_put_contents($filePath, $this->ip . "\n", FILE_APPEND | LOCK_EX);
+    
+                    if ($this->properties['enable_system_firewall']) {
+                        $isUpdatRuleTable = true;
+    
+                        if ($ruleType === self::ACTION_DENY) {
+    
+                            // For the requests that are already banned, but they are still attempting access, that means 
+                            // that they are programmably accessing your website. Consider put them in the system-layer fireall
+                            // such as IPTABLE.
+                            $quota = $this->properties['system_firewall_warning_quota'];
+    
+                            if ($attempts === $quota) {
+                                $isTriggerMessenger = true;
+    
+                                $folder = rtrim($this->properties['system_firewall_logs_folder'], '/');
+                                $filePath = $folder . '/iptables_queue.log';
+    
+                                // Add this IP address to itables_queue.log
+                                // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
+                                file_put_contents($filePath, $this->ip . "\n", FILE_APPEND | LOCK_EX);
+                            }
                         }
                     }
-                }
-
-                if ($isUpdatRuleTable) {
-                    $this->driver->save($this->ip, $logData, 'rule');
-                }
-
-                /**
-                 * Notify this event to messengers.
-                 */
-                if ($isTriggerMessenger) {
-
-                    try {
-
-                        foreach ($this->messengers as $messenger) {
-                            $messenger->send($logData);
-                        }
-
-                    } catch (RuntimeException $e) {
-                        // Do not throw error, becasue the third-party services might be unavailable.
+    
+                    if ($isUpdatRuleTable) {
+                        $this->driver->save($this->ip, $logData, 'rule');
                     }
-                }
+    
+                    /**
+                     * Notify this event to messengers.
+                     */
+                    if ($isTriggerMessenger) {
+    
+                        try {
+    
+                            foreach ($this->messengers as $messenger) {
+                                $messenger->send($logData);
+                            }
+    
+                        } catch (RuntimeException $e) {
+                            // Do not throw error, becasue the third-party services might be unavailable.
+                        }
+                    }
+                //}
+                
 
                 // For an incoming request already in the rule list, return the rule type immediately.
                 return $this->result = $ruleType;

@@ -20,27 +20,11 @@ $timezone = '';
         <?php $this->_include('panel/setting/tab'); ?>
             
         <section id="content1" class="tab-section">
-            <?php $this->_include('panel/setting/daemon'); ?>
+            <?php $this->_include('panel/messenger/event'); ?>
         </section>
 
         <section id="content2" class="tab-section">
-            <?php $this->_include('panel/setting/components'); ?>
-        </section>
-
-        <section id="content3" class="tab-section">
-            <?php $this->_include('panel/setting/filters'); ?>
-        </section>
-
-        <section id="content4" class="tab-section">
-            <?php $this->_include('panel/setting/captchas'); ?>
-        </section>
-
-        <section id="content5" class="tab-section">
-            <?php $this->_include('panel/setting/dialog_ui'); ?>
-        </section>
-
-        <section id="content6" class="tab-section">
-            <?php $this->_include('panel/setting/admin_login'); ?>
+            <?php $this->_include('panel/messenger/modules'); ?>
         </section>
     </div>
     <div class="d-flex justify-content-center py-2">
@@ -48,7 +32,7 @@ $timezone = '';
     </div>
 </div>
 <?php $this->_csrf(); ?>
-<input type="hidden" name="tab" value="daemon">
+<input type="hidden" name="tab" value="messenger-setting">
 <input type="hidden" name="managed_by" value="firewall">
 
 </form>

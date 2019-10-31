@@ -47,7 +47,7 @@ final class ActionLogger
      *
      * @var string
      */
-    protected $extension = 'filter_log';
+    protected $extension = 'log';
 
     /**
      * The file name.
