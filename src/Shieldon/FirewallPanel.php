@@ -1106,7 +1106,7 @@ class FirewallPanel
         $actionLogDir = rtrim($this->getConfig('loggers.action.config.directory_path'), '\\/ ');
 
         if ($enableActionLogger) {
-            if (empty($actionLoggerDir)) {
+            if (empty($actionLogDir)) {
                 $actionLogDir = $this->directory . '/action_logs';
             }
 
@@ -1125,6 +1125,35 @@ class FirewallPanel
                         'panel',
                         'error_logger_directory_not_writable',
                         'Action Logger requires the storage directory writable.'
+                    )
+                );
+            }
+        }
+
+        // System firewall.
+        $enableIp6tables = $this->getConfig('ip6tables.enable');
+        $ip6tablesWatchingFolder = rtrim($this->getConfig('ip6tables.config.watching_folder'), '\\/ ');
+
+        if ($enableIp6tables) {
+            if (empty($ip6tablesWatchingFolder)) {
+                $ip6tablesWatchingFolder = $this->directory . '/ip6tables';
+            }
+
+            $this->setConfig('ip6tables.config.watching_folder', $ip6tablesWatchingFolder);
+
+            if (! is_dir($ip6tablesWatchingFolder)) {
+                $originalUmask = umask(0);
+                @mkdir($ip6tablesWatchingFolder, 0777, true);
+                umask($originalUmask);
+            }
+    
+            if (! is_writable($ip6tablesWatchingFolder)) {
+                $isDataDriverFailed = true;
+                $this->responseMessage('error',
+                    __(
+                        'panel',
+                        'error_ip6tables_directory_not_writable',
+                        'Ip6tables watching folder requires the storage directory writable.'
                     )
                 );
             }

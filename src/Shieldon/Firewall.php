@@ -631,11 +631,10 @@ class Firewall
 
         if ($eventSetting['data_circle']['enable']) {
             $enableDataCircle = true;
-            $enableDataCircle = true;
         }
 
         if ($eventSetting['system_firewall']['enable']) {
-            $enableDataCircle = true;
+            $enableSystemFirewall = true;
         }
 
         $this->shieldon->setProperty('deny_attempt_enable', [
@@ -656,10 +655,8 @@ class Firewall
      */
     protected function setIp6tablesWatchingFolder(): void
     {
-        $this->shieldon->setProperty(
-            'ip6tables_watching_folder',
-            $this->getOption('ip6tables_watching_folder')
-        );
+        $ip6tablesSetting = $this->getOption('config', 'ip6tables');
+        $this->shieldon->setProperty('ip6tables_watching_folder',  $ip6tablesSetting['watching_folder']);
     }
 
     /**

@@ -234,5 +234,10 @@
             }
         }
     },
-    "ip6tables_watching_folder": "/tmp"
+    "ip6tables": {
+        "enable": false,
+        "config": {
+            "watching_folder": ""
+        }
+    }
 }

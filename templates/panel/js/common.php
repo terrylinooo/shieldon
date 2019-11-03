@@ -46,6 +46,15 @@
         $('input[name="tabs"]').change(function() {
             $('input[name="tab"]').val($(this).val());
         });
+
+        $('#iptables-watch-folder').html($('input[name="ip6tables__config__watching_folder"]').val());
+
+        $('input[name="ip6tables__config__watching_folder"]').keyup(function() {
+            $('#iptables-watch-folder').html($(this).val());
+            $('#code2').val($('#code1').text());
+        });
+
+        $('#code2').val($('#code1').text());
     });
 
 </script>

@@ -1374,7 +1374,7 @@ class Shieldon
 
                 if ($this->properties['deny_attempt_enable']['system_firewall']) {
                     $isUpdatRuleTable = true;
-
+                  
                     if ($ruleType === self::ACTION_DENY) {
 
                         // For the requests that are already banned, but they are still attempting access, that means 
@@ -1382,17 +1382,22 @@ class Shieldon
                         // such as IPTABLE.
                         $buffer = $this->properties['deny_attempt_buffer']['system_firewall'];
 
-                        if ($attempts === $buffer) {
+                        if ($attempts >= $buffer) {
                             $isTriggerMessenger = true;
-
+                            
                             $folder = rtrim($this->properties['ip6tables_watching_folder'], '/');
 
                             if (file_exists($folder) && is_writable($folder)) {
-                                $filePath = $folder . '/iptables_queue.log';
+                                $filePath = $folder . '/watching_queue.log';
+
+                                // action, ip, port, protocol
+                                // deny,127.0.0.1,all,all  (example)
+                                // deny,127.0.0.1,80,tcp   (example)
+                                $command = 'deny,' . $this->ip . ',all,all';
 
                                 // Add this IP address to itables_queue.log
                                 // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
-                                file_put_contents($filePath, $this->ip . "\n", FILE_APPEND | LOCK_EX);
+                                file_put_contents($filePath, $command . "\n", FILE_APPEND | LOCK_EX);
                             }
                         }
                     }
