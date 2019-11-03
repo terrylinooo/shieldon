@@ -194,21 +194,45 @@
         "shadow_opacity": "0.2",
         "lang": "en"
     },
+    "events": {
+        "failed_attempts_in_a_row": {
+            "data_circle": {
+                "enable": true,
+                "messenger": true,
+                "buffer": 10
+            },
+            "system_firewall": {
+                "enable": false,
+                "messenger": false,
+                "buffer": 10
+            }
+        }
+    },
     "messengers": {
-        "line_notify": {
-            "access_token": "your_access_token"
-        },
         "telegram": {
-            "api_key": "your_api_key",
-            "channel": "@your_channel"
+            "enable": false,
+            "config": {
+                "api_key": "your_api_key",
+                "channel": "@your_channel"
+            }
+        },
+        "line_notify": {
+            "enable": false,
+            "config": {
+                "access_token": "your_access_token"
+            }
         },
         "sendgrid": {
-            "api_key": "your_api_key",
-            "sender": "your@email.com",
-            "recipients": [
-                "user1@email.com",
-                "user2@email.com"
-            ]
+            "enable": false,
+            "config": {
+                "api_key": "your_api_key",
+                "sender": "your@email.com",
+                "recipients": [
+                    "user1@email.com",
+                    "user2@email.com"
+                ]
+            }
         }
-    }
+    },
+    "ip6tables_watching_folder": "/tmp"
 }

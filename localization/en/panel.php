@@ -327,5 +327,28 @@ return [
     'setting_note_cookie_name' => 'English characters only.',
     'setting_label_cookie_value' => 'Cookie Value',
     'setting_label_cookie_domain' => 'Cookie Domain',
-    'setting_text_leave_blank' => 'Just leave it blank to apply default.'
+    'setting_text_leave_blank' => 'Just leave it blank to apply default.',
+
+    // Messenger
+    'messenger_heading_events' => 'Events',
+    'messenger_desc_events' => 'When they occur, what are the events that you would like to receive notifications sent by Messenger modules.',
+    'messenger_label_event_1' => 'Ban a user permanently in current data cycle.',
+    'messenger_desc_event_1' => 'This event happens typically when a user fails too many times due to invalid CAPTCHA in a row.',
+    'messenger_label_event_2' => 'Ban a user permanently in system firwall',
+    'messenger_desc_event_2' => 'This event happens typically when a user is already banned permanently in curent data cycle, but they are still access the warning pages too many times in a row, we can confirm that they are malicious bots.',
+    'messenger_desc_event_3' => 'This option will take effect only when you have set the system-layer firewall correctly.',
+    'messenger_heading_telegram' => 'Telegram',
+    'messenger_label_api_key' => 'API Key',
+    'messenger_label_channel' => 'Channel',
+    'messenger_heading_line_notify' => 'Line Notify',
+    'messenger_label_access_token' => 'Access Token',
+    'messenger_heading_sendgrid' => 'SendGrid',
+    'messenger_label_sender' => 'Sender',
+    'messenger_label_recipients' => 'Recipients',
+
+    'tab_heading_events' => 'Events',
+    'tab_heading_modules' => 'Modules',
+
+    'setting_heading_deny_attempts' => 'Deny Attempts',
+    'setting_desc_deny_attempts' => 'Say goodbye to bad behavior visitors.',
 ];

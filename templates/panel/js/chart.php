@@ -27,7 +27,7 @@
     var labelChartString = [<?php echo ($period_data['label_chart_string'] ?? ''); ?>];
     <?php endif; ?>
 
-    var todayPieOptions = {
+    var firstPieOptions = {
         legend: {
             show: false
         },
@@ -49,15 +49,12 @@
         }]
     };
 
-    var todayCaptchaPie = new ApexCharts(
-        document.querySelector("#chart-1"),
-        todayPieOptions
+    var firstCaptchaPie = new ApexCharts(
+        document.querySelector('#chart-1'),
+        firstPieOptions
     );
 
-    todayCaptchaPie.render();
-
-    // Yesterday
-    var yesterdayPieOptions = {
+    var secondPieOptions = {
         legend: {
             show: false
         },
@@ -79,15 +76,12 @@
         }]
     }
 
-    var yesterdayCaptchaPie = new ApexCharts(
-        document.querySelector("#chart-2"),
-        yesterdayPieOptions
+    var secondCaptchaPie = new ApexCharts(
+        document.querySelector('#chart-2'),
+        secondPieOptions
     );
 
-    yesterdayCaptchaPie.render();
-
-    // This month
-    var spark3 = {
+    var thirdSparkOptions = {
         chart: {
             type: 'area',
             sparkline: {
@@ -159,12 +153,14 @@
         }
     }
 
-    var chart = new ApexCharts(
-        document.querySelector("#chart-3"),
-        spark3
+    var thirdCaptchaSpark = new ApexCharts(
+        document.querySelector('#chart-3'),
+        thirdSparkOptions
     );
 
-    chart.render();
+    firstCaptchaPie.render();
+    secondCaptchaPie.render();
+    thirdCaptchaSpark.render();
 
     $(function() {
         $('#so-datalog').DataTable({

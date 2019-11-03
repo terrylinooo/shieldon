@@ -12,211 +12,97 @@ use function Shieldon\Helper\_e;
 
 ?>
 <div class="section-title bg-glass">
-    <h2><?php _e('panel', 'setting_heading_filter_frequency', 'Frequency'); ?></h2>
+    <h2><?php _e('panel', 'messenger_heading_telegram', 'Telegram'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="hidden" name="filters__frequency__enable" value="off" />
-            <input type="checkbox" name="filters__frequency__enable" class="toggle-block" value="on" data-target="filters-frequency-section" <?php $this->checked('filters.frequency.enable', true); ?> />
+            <input type="hidden" name="messengers__telegram__enable" value="off" />
+            <input type="checkbox" name="messengers__telegram__enable" class="toggle-block" value="on" data-target="messenger-telegram-section" <?php $this->checked('messengers.telegram.enable', true); ?> />
             <span class="switch-left">ON</span>
             <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
-<div class="section-body my-0" data-parent="filters-frequency-section">
+<div class="section-body my-0" data-parent="messenger-telegram-section">
     <table class="setting-table">
         <tr>
-            <td class="r1"></td>
+            <td class="r1"><?php _e('panel', 'messenger_label_api_key', 'API Key'); ?></td>
             <td class="r2">
-                <p>
-                    <?php _e('panel', 'setting_note_filter_frequency_1', 'Don’t worry about human visitors, and if they reach the limitation and get banned, they can easily continue surfing your website by solving the CAPTCHA.'); ?><br />
-                    <?php _e('panel', 'setting_note_filter_frequency_2', 'The following image is an example.'); ?>
-                </p>
-                <p><img src="https://shieldon-io.github.io/static/images/captcha_form.png"></p>
-            </td>
-        </tr>
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_secondly_limit', 'Secondly Limit'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__frequency__config__quota_s" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_s'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_secondly_limit', 'Page views per vistor per second.'); ?></p>
-            </td>
-        </tr>
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_minutely_limit', 'Minutely Limit'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__frequency__config__quota_m" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_m'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_minutely_limit', 'Page views per vistor per minute.'); ?></p>
-            </td>
-        </tr>
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_hourly_limit', 'Hourly Limit'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__frequency__config__quota_h" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_h'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_hourly_limit', 'Page views per vistor per hour.'); ?></p>
-            </td>
-        </tr>
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_daily_limit', 'Daily Limit'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__frequency__config__quota_d" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.frequency.config.quota_d'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_daily_limit', 'Page views per vistor per day.'); ?></p>
+                <input type="text" name="messengers__telegram__config__api_key" class="form-control form-control-sm col-sm-3" value="<?php $this->_('messengers.telegram.config.api_key'); ?>"><br />
             </td>
         </tr>
     </table>
 </div>
-
+<div class="section-body my-0" data-parent="messenger-telegram-section">
+    <table class="setting-table">
+        <tr>
+            <td class="r1"><?php _e('panel', 'messenger_label_channel', 'Channel'); ?></td>
+            <td class="r2">
+                <input type="text" name="messengers__telegram__config__channel" class="form-control form-control-sm col-sm-3" value="<?php $this->_('messengers.telegram.config.channel'); ?>"><br />
+            </td>
+        </tr>
+    </table>
+</div>
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
-    <h2><?php _e('panel', 'setting_label_cookie', 'Cookie'); ?></h2>
+    <h2><?php _e('panel', 'messenger_heading_line_notify', 'Line Notify'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="hidden" name="filters__cookie__enable" value="off" />
-            <input type="checkbox" name="filters__cookie__enable" class="toggle-block" value="on" data-target="filters-cookie-section" <?php $this->checked('filters.cookie.enable', true); ?> />
+            <input type="hidden" name="messengers__line_notify__enable" value="off" />
+            <input type="checkbox" name="messengers__line_notify__enable" class="toggle-block" value="on" data-target="messenger-linenotify-section" <?php $this->checked('messengers.line_notify.enable', true); ?> />
             <span class="switch-left">ON</span>
             <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
-<div class="section-body my-0" data-parent="filters-cookie-section">
+<div class="section-body my-0" data-parent="messenger-linenotify-section">
     <table class="setting-table">
         <tr>
-            <td class="r1"></td>
+            <td class="r1"><?php _e('panel', 'messenger_label_access_token', 'Access Token'); ?></td>
             <td class="r2">
-                <p>
-                    Check cookie generated by JavaScript.
-                </p>
-
-                <code class="p-3 border bg-light d-inline-block text-dark">
-                    <span class="text-muted">// You have to inject this variable to the template to make it work.</span><br />
-                    $jsCode = $firewall->getShieldon()->outputJsSnippet();
-                </code><br /><br />
-            </td>
-        </tr>
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_quota', 'Quota'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__cookie__config__quota" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.quota'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_quota', 'A visitor reached this limit will get banned temporarily.'); ?></p>
+                <input type="text" name="messengers__line_notify__config__access_token" class="form-control form-control-sm col-sm-3" value="<?php $this->_('messengers.line_notify.config.access_token'); ?>"><br />
             </td>
         </tr>
     </table>
 </div>
-<div class="section-body my-0" data-parent="filters-cookie-section">
-    <table class="setting-table">
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_cookie_name', 'Cookie Name'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__cookie__config__cookie_name" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_name'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_cookie_name', 'English characters only.'); ?></p>
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="section-body my-0" data-parent="filters-cookie-section">
-    <table class="setting-table">
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_cookie_value', 'Cookie Value'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__cookie__config__cookie_value" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_value'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_cookie_name', 'English characters only.'); ?></p>
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="section-body my-0" data-parent="filters-cookie-section">
-    <table class="setting-table">
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_cookie_domain', 'Cookie Domain'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__cookie__config__cookie_domain" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.cookie.config.cookie_domain'); ?>"><br />
-                <p><?php _e('panel', 'setting_text_leave_blank', 'Just leave it blank to apply default.'); ?></p>
-            </td>
-        </tr>
-    </table>
-</div>
-
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
-    <h2><?php _e('panel', 'setting_label_filter_session', 'Session'); ?></h2>
+    <h2><?php _e('panel', 'messenger_heading_sendgrid', 'SendGrid'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="hidden" name="filters__session__enable" value="off" />
-            <input type="checkbox" name="filters__session__enable" class="toggle-block" value="on" data-target="filters-session-section" <?php $this->checked('filters.session.enable', true); ?> />
+            <input type="hidden" name="messengers__sendgrid__enable" value="off" />
+            <input type="checkbox" name="messengers__sendgrid__enable" class="toggle-block" value="on" data-target="messenger-sendgrid-section" <?php $this->checked('messengers.sendgrid.enable', true); ?> />
             <span class="switch-left">ON</span>
             <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
-<div class="section-body my-0" data-parent="filters-session-section">
+<div class="section-body my-0" data-parent="messenger-sendgrid-section">
     <table class="setting-table">
         <tr>
-            <td class="r1"></td>
+            <td class="r1"><?php _e('panel', 'messenger_label_api_key', 'API Key'); ?></td>
             <td class="r2">
-                <p>
-                    <?php _e('panel', 'setting_note_filter_session', 'Detect whether multiple sessions created by the same visitor.'); ?>
-                </p>
-            </td>
-        </tr>
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_quota', 'Quota'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__session__config__quota" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.session.config.quota'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_quota', 'A visitor reached this limit will get banned temporarily.'); ?></p>
+                <input type="text" name="messengers__sendgrid__config__api_key" class="form-control form-control-sm col-sm-3" value="<?php $this->_('messengers.sendgrid.config.api_key'); ?>"><br />
             </td>
         </tr>
     </table>
 </div>
-<div class="section-body my-0" data-parent="filters-session-section">
+<div class="section-body my-0" data-parent="messenger-sendgrid-section">
     <table class="setting-table">
         <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_buffered_time', 'Buffered Time'); ?></td>
+            <td class="r1"><?php _e('panel', 'messenger_label_sender', 'Sender'); ?></td>
             <td class="r2">
-                <input type="text" name="filters__session__config__time_buffer" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.session.config.time_buffer'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_buffered_time', 'Start using this filter after n seconds after the first time visiting your website.'); ?></p>
+                <input type="text" name="messengers__sendgrid__config__sender" class="form-control form-control-sm col-sm-3" value="<?php $this->_('messengers.sendgrid.config.sender'); ?>"><br />
             </td>
         </tr>
     </table>
 </div>
-
-<!-------------------------------------------------------------------------------------------------------------->
-<div class="section-title bg-glass mt-3">
-    <h2><?php _e('panel', 'setting_label_filter_referer', 'Referrer'); ?></h2>
-    <div class="toggle-container">
-        <label class="rocker rocker-md">
-            <input type="hidden" name="filters__referer__enable" value="off" />
-            <input type="checkbox" name="filters__referer__enable" class="toggle-block" value="on" data-target="filters-referer-section" <?php $this->checked('filters.referer.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
-        </label>
-    </div>
-</div>
-<div class="section-body my-0" data-parent="filters-referer-section">
+<div class="section-body my-0" data-parent="messenger-sendgrid-section">
     <table class="setting-table">
         <tr>
-            <td class="r1"></td>
+            <td class="r1"><?php _e('panel', 'messenger_label_recipients', 'Recipients'); ?></td>
             <td class="r2">
-                <p>
-                    <?php _e('panel', 'setting_note_filter_referer', 'Check HTTP referer information.'); ?>
-                    
-                </p>
-            </td>
-        </tr>
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_quota', 'Quota'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__session__config__quota" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.referer.config.quota'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_quota', 'A visitor reached this limit will get banned temporarily.'); ?></p>
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="section-body my-0" data-parent="filters-referer-section">
-    <table class="setting-table">
-        <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_buffered_time', 'Buffered Time'); ?></td>
-            <td class="r2">
-                <input type="text" name="filters__referer__config__time_buffer" class="form-control form-control-sm col-sm-3" value="<?php $this->_('filters.referer.config.time_buffer'); ?>"><br />
-                <p><?php _e('panel', 'setting_note_buffered_time', 'Start using this filter after n seconds after the first time visiting your website.'); ?></p>
+                <textarea rows="5" name="messengers__sendgrid__config__recipients" class="form-control form-control-sm col-sm-3"><?php $this->_('messengers.sendgrid.config.recipients'); ?></textarea><br />
+                <p><?php _e('panel', 'messenger_desc_recipients', 'Per email address per line.'); ?></p>
             </td>
         </tr>
     </table>

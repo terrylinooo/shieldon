@@ -28,6 +28,9 @@ use Shieldon\Log\ActionLogger;
 use Shieldon\Security\Xss;
 use Shieldon\Security\httpAuthentication;
 use Shieldon\FirewallTrait;
+use Messenger\Telegram;
+use Messenger\LineNotify;
+use Messenger\Sendgrid;
 
 use PDO;
 use PDOException;
@@ -140,6 +143,14 @@ class Firewall
         $this->setAuthentication();
 
         $this->setDialogUI();
+
+        $this->setMessengers();
+
+        $this->setMessageEvents();
+
+        $this->setDenyAttempts();
+
+        $this->setIp6tablesWatchingFolder();
 
         $this->status = $this->getOption('daemon');
     }
@@ -539,6 +550,116 @@ class Firewall
 
             $this->shieldon->setCaptcha(new ImageCaptcha($imageCaptchaConfig));
         }
+    }
+
+    /**
+     * Set the messenger modules.
+     *
+     * @return void
+     */
+    protected function setMessengers(): void
+    {
+        $telegramSetting = $this->getOption('telegram', 'messengers');
+        $linenotodySetting = $this->getOption('line_notify', 'messengers');
+        $sendgridSetting = $this->getOption('sendgrid', 'messengers');
+
+        if ($telegramSetting['enable']) {
+            $apiKey = $telegramSetting['config']['api_key'] ?? '';
+            $channel = $telegramSetting['config']['channel'] ?? '';
+            $this->shieldon->setMessenger(new Telegram($apiKey, $channel));
+        }
+
+        if ($linenotodySetting['enable']) {
+            $accessToken = $linenotodySetting['config']['access_token'] ?? '';
+            $this->shieldon->setMessenger(new LineNotify($accessToken));
+        }
+
+        if ($sendgridSetting['enable']) {
+            $apiKey = $sendgridSetting['config']['api_key'] ?? '';
+            $sender = $sendgridSetting['config']['sender'] ?? '';
+            $recipients = $sendgridSetting['config']['recipients'] ?? [];
+
+            $sendgrid = new Sendgrid($apiKey);
+            $sendgrid->setSubject('Firewall Notification');
+            $sendgrid->addSender($sender);
+
+            foreach ($recipients as $recipient) {
+                $sendgrid->addRecipient($recipient);
+            }
+
+            $this->shieldon->setMessenger($sendgrid);
+        }
+    }
+
+    /**
+     * Set message events.
+     *
+     * @return void
+     */
+    protected function setMessageEvents(): void
+    {
+        $eventSetting = $this->getOption('failed_attempts_in_a_row', 'events');
+
+        $notifyDataCircle = false;
+        $notifySystemFirewall = false;
+
+        if ($eventSetting['data_circle']['messenger']) {
+            $notifyDataCircle = true;
+        }
+
+        if ($eventSetting['system_firewall']['messenger']) {
+            $notifyDataCircle = true;
+        }
+
+        $this->shieldon->setProperty('deny_attempt_notify', [
+            'data_circle' => $notifyDataCircle,
+            'system_firewall' => $notifySystemFirewall,
+        ]);
+    }
+
+    /**
+     * Set deny attempts.
+     *
+     * @return void
+     */
+    protected function setDenyAttempts(): void
+    {
+        $eventSetting = $this->getOption('failed_attempts_in_a_row', 'events');
+
+        $enableDataCircle = false;
+        $enableSystemFirewall = false;
+
+        if ($eventSetting['data_circle']['enable']) {
+            $enableDataCircle = true;
+            $enableDataCircle = true;
+        }
+
+        if ($eventSetting['system_firewall']['enable']) {
+            $enableDataCircle = true;
+        }
+
+        $this->shieldon->setProperty('deny_attempt_enable', [
+            'data_circle' => $enableDataCircle,
+            'system_firewall' => $enableSystemFirewall,
+        ]);
+
+        $this->shieldon->setProperty('deny_attempt_buffer', [
+            'data_circle' => $eventSetting['data_circle']['buffer'] ?? 10,
+            'system_firewall' => $eventSetting['data_circle']['buffer'] ?? 10,
+        ]);
+    }
+
+    /**
+     * Set ip6tables working folder.
+     *
+     * @return void
+     */
+    protected function setIp6tablesWatchingFolder(): void
+    {
+        $this->shieldon->setProperty(
+            'ip6tables_watching_folder',
+            $this->getOption('ip6tables_watching_folder')
+        );
     }
 
     /**

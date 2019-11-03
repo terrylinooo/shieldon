@@ -198,6 +198,59 @@ use function Shieldon\Helper\_e;
         </tr>
     </table>
 </div>
+<div class="section-title bg-glass mt-3">
+    <h2><?php _e('panel', 'setting_heading_deny_attempts', 'Deny Attempts'); ?></h2>
+</div>
+<div class="section-body my-0">
+<p><?php _e('panel', 'setting_desc_deny_attempts', 'Say goodbye to bad behavior visitors.'); ?></p>
+    <table class="setting-table">
+        <tr>
+            <td class="r1"><?php _e('panel', 'messenger_label_event_1', 'Ban a user permanently in current data cycle.'); ?></td>
+            <td class="r2">
+                <p><?php _e('panel', 'messenger_desc_event_1', 'This event happens typically when a user fails too many times due to invalid CAPTCHA in a row.'); ?></p>
+                <label class="rocker rocker-sm">
+                    <input type="hidden" name="events__failed_attempts_in_a_row__data_circle__enable" value="off" />
+                    <input type="checkbox" name="events__failed_attempts_in_a_row__data_circle__enable" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.data_circle.enable', true); ?>>
+                    <span class="switch-left">ON</span>
+                    <span class="switch-right">OFF</span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td class="r1"><?php _e('panel', 'setting_label_denyattempts_buffer', 'Buffer'); ?></td>
+            <td class="r2">
+                 <input type="text" name="events__failed_attempts_in_a_row__data_circle__buffer" class="form-control form-control-sm col-sm-3" value="<?php $this->_('events.failed_attempts_in_a_row.data_circle.buffer'); ?>"><br />
+                <p><?php _e('panel', 'setting_desc_denyattempts_buffer', 'How many fails in a row will trigger this event.'); ?></p>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="section-body my-0">
+    <table class="setting-table">
+        <tr>
+            <td class="r1"><?php _e('panel', 'messenger_label_event_2', 'Ban a user permanently in system firwall'); ?></td>
+            <td class="r2">
+                <p>
+                    <?php _e('panel', 'messenger_desc_event_2', 'This event happens typically when a user is already banned permanently in curent data cycle, but they are still access the warning pages too many times in a row, we can confirm that they are malicious bots.'); ?><br />
+                    <?php _e('panel', 'messenger_desc_event_3', 'This option will take effect only when you have set the system-layer firewall correctly.'); ?>
+                </p>
+                <label class="rocker rocker-sm">
+                    <input type="hidden" name="events__failed_attempts_in_a_row__system_firewall__enable" value="off" />
+                    <input type="checkbox" name="events__failed_attempts_in_a_row__system_firewall__enable" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.system_firewall.enable', true); ?>>
+                    <span class="switch-left">ON</span>
+                    <span class="switch-right">OFF</span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td class="r1"><?php _e('panel', 'setting_label_denyattempts_buffer', 'Buffer'); ?></td>
+            <td class="r2">
+                 <input type="text" name="events__failed_attempts_in_a_row__system_firewall__buffer" class="form-control form-control-sm col-sm-3" value="<?php $this->_('events.failed_attempts_in_a_row.system_firewall.buffer'); ?>"><br />
+                <p><?php _e('panel', 'setting_desc_denyattempts_buffer', 'How many fails in a row will trigger this event.'); ?></p>
+            </td>
+        </tr>
+    </table>
+</div>
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_label_session_limit', 'Session Limit'); ?></h2>

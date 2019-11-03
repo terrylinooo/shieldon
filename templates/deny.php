@@ -19,21 +19,21 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php _e('core', 'deny.title', 'Access denied') ?></title>
+    <title><?php _e('core', 'deny_title', 'Access denied') ?></title>
     <?php echo '<style>' . $css . '</style>'; ?>
 </head>
 <body>
     <div id="wrapper" class="wrapper">
 		<div class="inner">
 			<div class="card">
-				<div class="card-header"><?= _e('core', 'deny.heading', 'Access denied'); ?></div>
+				<div class="card-header"><?= _e('core', 'deny_heading', 'Access denied'); ?></div>
 				<div class="card-body">
 					<div class="status-container">
 						<div class="status-icon">
 							<img src="<?php echo $imgsrc; ?>">
 						</div>
 						<div class="status-message">
-                            <?php _e('core', 'deny.message', 'The IP address you are using has been blocked.') ?>
+                            <?php _e('core', 'deny_message', 'The IP address you are using has been blocked.') ?>
 						</div>
                     </div>
 					<?php if (! empty($dialoguserinfo)) : ?>

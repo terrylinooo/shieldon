@@ -19,21 +19,21 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-clock_96x96.png';
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php _e('core', 'limit.title', 'Please line up'); ?></title>
+    <title><?php _e('core', 'limit_title', 'Please line up'); ?></title>
     <?php echo '<style>' . $css . '</style>'; ?>
 </head>
 <body>
     <div id="wrapper" class="wrapper">
 		<div class="inner">
 			<div class="card">
-				<div class="card-header"><?php _e('core', 'limit.heading', 'Please line up') ?></div>
+				<div class="card-header"><?php _e('core', 'limit_heading', 'Please line up') ?></div>
 				<div class="card-body">
 					<div class="status-container">
 						<div class="status-icon">
 							<img src="<?php echo $imgsrc; ?>">
 						</div>
 						<div class="status-message">
-                            <?php _e('core', 'limit.message', 'This page is limiting the number of people online. Please wait a moment.'); ?>
+                            <?php _e('core', 'limit_message', 'This page is limiting the number of people online. Please wait a moment.'); ?>
 						</div>
 					</div>
  

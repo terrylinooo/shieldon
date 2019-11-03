@@ -932,6 +932,12 @@ class FirewallPanel
                         if (strlen($_POST['admin__pass']) < 58) {
                             $this->setConfig('admin.pass', password_hash($postData, PASSWORD_BCRYPT));
                         }
+                    } else if ($postKey === 'messengers__sendgrid__config__recipients') {
+                        $this->setConfig(
+                            'messengers.sendgrid.config.recipients',
+                            preg_split('/\r\n|[\r\n]/',
+                            $postData)
+                        );
                     } else {
                         if (is_numeric($postData)) {
                             $this->setConfig(str_replace('__', '.', $postKey), (int) $postData);
@@ -984,8 +990,6 @@ class FirewallPanel
                             'Your system doesn’t support MySQL driver.'
                         )
                     );
-                    
-                    
                 }
 
                 break;
@@ -1166,6 +1170,12 @@ class FirewallPanel
                     'admin.user',
                     'admin.pass',
                     'admin.last_modified',
+                    'messenger.telegram.config.apikey',
+                    'messenger.telegram.config.channel',
+                    'messenger.sendgrid.config.apikey',
+                    'messenger.sendgrid.config.sender',
+                    'messenger.sendgrid.config.recipients',
+                    'messenger.line_notify.config.access_token',
                 ];
 
                 if (in_array($field, $hiddenForDemo)) {
@@ -1177,6 +1187,8 @@ class FirewallPanel
             } else {
                 echo $this->getConfig($field);
             }
+        } elseif (is_array($this->getConfig($field))) {
+            echo implode("\n", $this->getConfig($field));
         }
     }
 

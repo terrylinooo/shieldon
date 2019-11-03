@@ -19,21 +19,21 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-secruity_96x96.png';
 	<meta charset="utf-8">
 	<meta name="robots" content="noindex, nofollow">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title><?php _e('core', 'stop.title', 'Please solve CAPTCHA') ?></title>
+	<title><?php _e('core', 'stop_title', 'Please solve CAPTCHA') ?></title>
 	<?php echo '<style>' . $css . '</style>'; ?>
 </head>
 <body>
 	<div id="wrapper" class="wrapper">
 		<div class="inner">
 			<div class="card">
-				<div class="card-header"><?php _e('core', 'stop.heading', 'Unusual behavior detected') ?></div>
+				<div class="card-header"><?php _e('core', 'stop_heading', 'Unusual behavior detected') ?></div>
 				<div class="card-body">
 					<div class="status-container">
 						<div class="status-icon">
 							<img src="<?php echo $imgsrc; ?>">
 						</div>
 						<div class="status-message">
-							<?php _e('core', 'stop.message', 'Please complete the CAPTCHA to confirm you are a human.') ?>
+							<?php _e('core', 'stop_message', 'Please complete the CAPTCHA to confirm you are a human.') ?>
 						</div>
 			
 					</div>
@@ -42,7 +42,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-secruity_96x96.png';
 							<?php foreach ($this->captcha as $captcha) : ?>
 								<?php echo $captcha->form(); ?>
 							<?php endforeach; ?>
-							<p><input type="submit" value="<?php _e('core', 'stop.submit', 'Submit') ?>" /></p>
+							<p><input type="submit" value="<?php _e('core', 'stop_submit', 'Submit') ?>" /></p>
 						</form>
 					</div>
 					<?php if (! empty($dialoguserinfo)) : ?>

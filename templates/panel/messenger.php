@@ -17,10 +17,10 @@ $timezone = '';
 
 <div class="so-setting-page">
     <div class="so-tab">
-        <?php $this->_include('panel/setting/tab'); ?>
+        <?php $this->_include('panel/messenger/tab'); ?>
             
         <section id="content1" class="tab-section">
-            <?php $this->_include('panel/messenger/event'); ?>
+            <?php $this->_include('panel/messenger/events'); ?>
         </section>
 
         <section id="content2" class="tab-section">
