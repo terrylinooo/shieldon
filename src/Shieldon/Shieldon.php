@@ -1390,10 +1390,14 @@ class Shieldon
                             if (file_exists($folder) && is_writable($folder)) {
                                 $filePath = $folder . '/watching_queue.log';
 
-                                // action, ip, port, protocol
-                                // deny,127.0.0.1,all,all  (example)
-                                // deny,127.0.0.1,80,tcp   (example)
-                                $command = 'deny,' . $this->ip . ',all,all';
+                                // command, ipv4/6, ip, port, protocol, action
+                                // add,4,127.0.0.1,all,all,drop  (example)
+                                // add,4,127.0.0.1,80,tcp,drop   (example)
+                                $command = 'add,4,' . $this->ip . ',all,all,deny';
+
+                                if (filter_var($this->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                                    $command = 'add,6,' . $this->ip . ',all,allow';
+                                }
 
                                 // Add this IP address to itables_queue.log
                                 // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 

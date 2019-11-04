@@ -234,6 +234,12 @@
             }
         }
     },
+    "iptables": {
+        "enable": false,
+        "config": {
+            "watching_folder": ""
+        }
+    },
     "ip6tables": {
         "enable": false,
         "config": {

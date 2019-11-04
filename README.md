@@ -21,7 +21,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 - Protecting pages via WWW-Authenticate.
 - Detailed statistics and charts.
 - Messenger - Send notifications when specific events occurred.
-- System-layer firwall - The ip6tables management.
+- System-layer firwall - The iptables management.
 - More features will come...
 
 ## Installation

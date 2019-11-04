@@ -649,13 +649,13 @@ class Firewall
     }
 
     /**
-     * Set ip6tables working folder.
+     * Set iptables working folder.
      *
      * @return void
      */
     protected function setIp6tablesWatchingFolder(): void
     {
-        $ip6tablesSetting = $this->getOption('config', 'ip6tables');
+        $ip6tablesSetting = $this->getOption('config', 'iptables');
         $this->shieldon->setProperty('ip6tables_watching_folder',  $ip6tablesSetting['watching_folder']);
     }
 

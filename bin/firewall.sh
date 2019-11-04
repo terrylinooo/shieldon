@@ -34,7 +34,6 @@
 
 # iptables_log_folder=""
 # iptables_watching_file="iptables_queue.log"
-# iptables_default_rules_file="iptables_default_rules.log"
 # iptables_status_log_file="iptables_status.log"
 
 #==============================================================================
@@ -99,12 +98,68 @@ fi
 
 # Assign absolute path.
 iptables_watching_file="${iptables_log_folder}/iptables_queue.log"
-iptables_default_rules_file="${iptables_log_folder}/iptables_default_rules.log"
 iptables_status_log_file="${iptables_log_folder}/iptables_status.log"
 
-while IFS=';' read -r ip action; do
-    ip6tables -A INPUT -s "${ip}" -j "${action}"
-done < "${iptables_watching_file}"
+if [ -e "${iptables_watching_file}" ]; then
+
+    # command_code, ipv4/6, action, ip, port, protocol, action
+    while IFS=',' read -r command_code ip_type ip port protocol action; do
+
+        # Check if the port is a number
+        this_port=""
+
+        # Check what protocol you want to apply on this rule.
+        this_protocol=""
+
+        # Check what action you want to apply on this rule.
+        this_action=""
+
+        this_command="-A"
+
+        this_ip="-s ${ip}"
+
+        if [[ "${port}" =~ ^[0-9]+$ ]]; then
+            this_port="--dport ${port}"
+        fi
+
+        if [ "${protocol}" == "udp" ]; then
+            this_protocol="-p udp"
+        fi
+
+        if [ "${protocol}" == "tcp" ]; then
+            this_protocol="-p tcp"
+        fi
+
+        if [ "${action}" == "deny" ]; then
+            this_action="j DROP"
+        fi
+
+        if [ "${protocol}" == "allow" ]; then
+            this_action="j ACCEPT"
+        fi
+
+        if [ "${command_code}" == "delete" ]; then
+            this_command="-D"
+        fi
+
+        if [ "${this_action}" != "" ]; then
+            if [ "${ip_type}" == "4" ]; then
+                iptables "${this_command}" INPUT "${this_ip}" "${this_port}" "${this_protocol}" "${this_action}"
+            fi
+
+            if [ "${ip_type}" == "6" ]; then
+                ip6tables "${this_command}" INPUT "${this_ip}" "${this_port}" "${this_protocol}" "${this_action}"
+            fi  
+        fi
+
+    done < "${iptables_watching_file}"
+fi
+
+status_iptables=$(iptables -L)
+status_ip6tables=$(ip6tables -L)
+
+# Update iptables and ip6tables status content.
+echo "${status_iptables} \n\n----\n\n ${status_ip6tables}" > "${iptables_status_log_file}"
 
 #==============================================================================
 # Part 4. Done. Empty the iptables_queue.log
@@ -112,4 +167,4 @@ done < "${iptables_watching_file}"
 
 truncate -s 0 "${iptables_watching_file}"
 
-ip6tables -L > "${iptables_status_log_file}"
+# Continue to wait for new commands to come.

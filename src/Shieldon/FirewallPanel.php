@@ -1131,15 +1131,15 @@ class FirewallPanel
         }
 
         // System firewall.
-        $enableIp6tables = $this->getConfig('ip6tables.enable');
-        $ip6tablesWatchingFolder = rtrim($this->getConfig('ip6tables.config.watching_folder'), '\\/ ');
+        $enableIp6tables = $this->getConfig('iptables.enable');
+        $ip6tablesWatchingFolder = rtrim($this->getConfig('iptables.config.watching_folder'), '\\/ ');
 
         if ($enableIp6tables) {
             if (empty($ip6tablesWatchingFolder)) {
-                $ip6tablesWatchingFolder = $this->directory . '/ip6tables';
+                $ip6tablesWatchingFolder = $this->directory . '/iptables';
             }
 
-            $this->setConfig('ip6tables.config.watching_folder', $ip6tablesWatchingFolder);
+            $this->setConfig('iptables.config.watching_folder', $ip6tablesWatchingFolder);
 
             if (! is_dir($ip6tablesWatchingFolder)) {
                 $originalUmask = umask(0);
@@ -1153,7 +1153,7 @@ class FirewallPanel
                     __(
                         'panel',
                         'error_ip6tables_directory_not_writable',
-                        'Ip6tables watching folder requires the storage directory writable.'
+                        'iptables watching folder requires the storage directory writable.'
                     )
                 );
             }

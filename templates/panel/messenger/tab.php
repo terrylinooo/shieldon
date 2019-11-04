@@ -19,7 +19,7 @@ $tab = $_POST['tab'] ?? 'events';
     <i class="fas fa-shield-alt"></i> <?php _e('panel', 'tab_heading_events', 'Events'); ?>
 </label>
 
-<input id="tab2" type="radio" name="tabs" class="tab" value="modules" <?php $this->checked($tab, 'moduless', false); ?> />
+<input id="tab2" type="radio" name="tabs" class="tab" value="modules" <?php $this->checked($tab, 'modules', false); ?> />
 <label for="tab2" class="tab">
     <i class="fab fa-facebook-messenger"></i> <?php _e('panel', 'tab_heading_modules', 'Modules'); ?>
 </label>

@@ -351,17 +351,16 @@ return [
 
     'setting_heading_deny_attempts' => 'Deny Attempts',
     'setting_desc_deny_attempts' => 'Say goodbye to bad behavior visitors.',
-    'error_ip6tables_directory_not_writable' => 'Ip6tables watching folder requires the storage directory writable.',
+    'error_ip6tables_directory_not_writable' => 'iptables watching folder requires the storage directory writable.',
     'setting_label_system_firewall' => 'System Firewall',
-    'setting_note_install_ip6tables' => 'Make sure you have installed <strong>ip6tables</strong> already in your server.',
+    'setting_note_install_iptables' => 'Make sure you have installed <strong>iptables</strong> and <strong>ip6tables</strong> already in your server, and employ <strong>fiewall.sh</strong> in <strong>crontab</strong> correctly.',
     'setting_label_watching_folder' => 'Watching Folder',
     'setting_label_cronjob' => 'Cron Job',
-    'setting_note_cronjob' => 'Please use this code into the crontab file of your server.',
-    'setting_note_ip6tables' => '<strong>firewall.sh</strong> will watch the changes in this folder to employ command to ip6tables.',
+    'setting_note_cronjob' => 'Please use this code into the crontab file on your server.',
+    'setting_note_iptables' => '<strong>firewall.sh</strong> will watch the changes in this folder to employ command to iptables.',
 
     'setting_heading_deny_attempts' => 'Deny Attempts',
     'setting_desc_deny_attempts' => 'Say goodbye to bad behavior visitors.',
     'setting_label_deny_attempt_buffer' => 'Buffer',
     'setting_desc_deny_attempt_buffer' => 'How many fails in a row will trigger this event.',
-
 ];

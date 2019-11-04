@@ -272,20 +272,20 @@ use function Shieldon\Helper\_e;
     <h2><?php _e('panel', 'setting_label_system_firewall', 'System Firewall'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="hidden" name="loggers__ip6tables__enable" value="off" />
-            <input type="checkbox" name="ip6tables__enable" class="toggle-block" value="on" data-target="ip6tables-section" <?php $this->checked('ip6tables.enable', true); ?> />
+            <input type="hidden" name="loggers__iptables__enable" value="off" />
+            <input type="checkbox" name="iptables__enable" class="toggle-block" value="on" data-target="iptables-section" <?php $this->checked('iptables.enable', true); ?> />
             <span class="switch-left">ON</span>
             <span class="switch-right">OFF</span>
         </label>
     </div>
 </div>
-<div class="section-body my-0" data-parent="ip6tables-section">
-    <p><?php _e('panel', 'setting_note_install_ip6tables', 'Make sure you have installed <strong>ip6tables</strong> already in your server.'); ?></p>
+<div class="section-body my-0" data-parent="iptables-section">
+    <p><?php _e('panel', 'setting_note_install_iptables', 'Make sure you have installed <strong>iptables</strong> and <strong>ip6tables</strong> already in your server, and employ <strong>fiewall.sh</strong> in <strong>crontab</strong> correctly.'); ?></p>
     <table class="setting-table">
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_watching_folder', 'Watching Folder'); ?></td>
             <td class="r2">
-                <input type="text" name="ip6tables__config__watching_folder" class="form-control form-control-sm col-sm-7" value="<?php $this->_('ip6tables.config.watching_folder'); ?>">
+                <input type="text" name="iptables__config__watching_folder" class="form-control form-control-sm col-sm-7" value="<?php $this->_('iptables.config.watching_folder'); ?>">
                 <br />
                 <p>
                     <?php _e('panel', 'setting_note_directory', 'Please fill in the absolute path of the directory where you store the data.'); ?>
@@ -294,7 +294,7 @@ use function Shieldon\Helper\_e;
         </tr>
     </table>
 </div>
-<div class="section-body my-0" data-parent="ip6tables-section">
+<div class="section-body my-0" data-parent="iptables-section">
     <table class="setting-table">
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_cronjob', 'Cron Job'); ?></td>
@@ -304,8 +304,8 @@ use function Shieldon\Helper\_e;
                     <textarea id="code2" class="form-control" rows="4" style="font-size: 12px; font-family: monospace;"></textarea>
                 </div><br />
                 <p>
-                    <?php _e('panel', 'setting_note_cronjob', 'Please use this code into the crontab file of your server.'); ?><br />
-                    <?php _e('panel', 'setting_note_ip6tables', '<strong>firewall.sh</strong> will watch the changes in this folder to employ command to ip6tables.'); ?>
+                    <?php _e('panel', 'setting_note_cronjob', 'Please use this code into the crontab file on your server.'); ?><br />
+                    <?php _e('panel', 'setting_note_iptables', '<strong>firewall.sh</strong> will watch the changes in this folder to employ command to iptables.'); ?>
                 </p>
             </td>
         </tr>
