@@ -226,7 +226,7 @@ class Shieldon
         /**
          * System-layer firewall, ip6table service watches this folder to receive command created by Shieldon Firewall.
          */
-        'ip6tables_watching_folder' => '/tmp/',
+        'iptables_watching_folder' => '/tmp/',
     ];
 
     /**
@@ -1385,10 +1385,10 @@ class Shieldon
                         if ($attempts >= $buffer) {
                             $isTriggerMessenger = true;
                             
-                            $folder = rtrim($this->properties['ip6tables_watching_folder'], '/');
+                            $folder = rtrim($this->properties['iptables_watching_folder'], '/');
 
                             if (file_exists($folder) && is_writable($folder)) {
-                                $filePath = $folder . '/watching_queue.log';
+                                $filePath = $folder . '/iptables_queue.log';
 
                                 // command, ipv4/6, ip, port, protocol, action
                                 // add,4,127.0.0.1,all,all,drop  (example)

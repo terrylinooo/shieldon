@@ -1132,22 +1132,31 @@ class FirewallPanel
 
         // System firewall.
         $enableIp6tables = $this->getConfig('iptables.enable');
-        $ip6tablesWatchingFolder = rtrim($this->getConfig('iptables.config.watching_folder'), '\\/ ');
+        $iptablesWatchingFolder = rtrim($this->getConfig('iptables.config.watching_folder'), '\\/ ');
 
         if ($enableIp6tables) {
-            if (empty($ip6tablesWatchingFolder)) {
-                $ip6tablesWatchingFolder = $this->directory . '/iptables';
+            if (empty($iptablesWatchingFolder)) {
+                $iptablesWatchingFolder = $this->directory . '/iptables';
             }
 
-            $this->setConfig('iptables.config.watching_folder', $ip6tablesWatchingFolder);
+            $this->setConfig('iptables.config.watching_folder', $iptablesWatchingFolder);
 
-            if (! is_dir($ip6tablesWatchingFolder)) {
+            if (! is_dir($iptablesWatchingFolder)) {
                 $originalUmask = umask(0);
-                @mkdir($ip6tablesWatchingFolder, 0777, true);
+                @mkdir($iptablesWatchingFolder, 0777, true);
                 umask($originalUmask);
+
+                // Create default log files.
+                if (is_writable($iptablesWatchingFolder)) {
+                    fopen($iptablesWatchingFolder . '/iptables_queue.log', 'w+');
+                    fopen($iptablesWatchingFolder . '/ipv4_status.log',    'w+');
+                    fopen($iptablesWatchingFolder . '/ipv6_status.log',    'w+');
+                    fopen($iptablesWatchingFolder . '/ipv4_command.log',   'w+');
+                    fopen($iptablesWatchingFolder . '/ipv6_command.log',   'w+');
+                }
             }
     
-            if (! is_writable($ip6tablesWatchingFolder)) {
+            if (! is_writable($iptablesWatchingFolder)) {
                 $isDataDriverFailed = true;
                 $this->responseMessage('error',
                     __(
