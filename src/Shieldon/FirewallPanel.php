@@ -25,6 +25,7 @@ use PDOException;
 use Redis;
 use RedisException;
 use ReflectionObject;
+use SplFileObject;
 use function array_push;
 use function array_values;
 use function class_exists;
@@ -245,8 +246,20 @@ class FirewallPanel
                 $this->messenger();
                 break;
 
-            case 'system_layer_firewall':
-                $this->systemLayerFirewall();
+            case 'iptables':
+                $this->iptables('IPv4');
+                break;
+
+            case 'iptables_status':
+                $this->iptablesStatus('IPv4');
+                break;
+
+            case 'ip6tables':
+                $this->iptables('IPv6');
+                break;
+
+            case 'ip6tables_status':
+                $this->iptablesStatus('IPv6');
                 break;
 
             case 'ajax_change_locale':
@@ -636,7 +649,6 @@ class FirewallPanel
         $this->renderPage('panel/authentication', $data);
     }
 
-
     /**
      * XSS Protection.
      *
@@ -874,11 +886,157 @@ class FirewallPanel
     }
 
     /**
-     * System layer firwall
+     * System layer firwall - iptables
      *
      * @return void
      */
-    protected function systemLayerFirewall(): void
+    protected function iptables(string $type = 'IPv4'): void
+    {
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+        $properties = $t->getValue($this->shieldon);
+
+        $iptablesWatchingFolder = $properties['iptables_watching_folder'];
+
+        // The iptables log files.
+        $ipCommandFile = $iptablesWatchingFolder . '/ipv4_command.log';
+
+        if ('IPv6' === $type) {
+            $ipCommandFile = $iptablesWatchingFolder . '/ipv6_command.log';
+        }
+
+        $iptablesQueueFile = $iptablesWatchingFolder . '/iptables_queue.log';
+
+        if (
+               (isset($_POST['ip'])       && (filter_var(explode('/', $_POST['ip'])[0], FILTER_VALIDATE_IP)))
+            && (isset($_POST['port'])     && (is_numeric($_POST['port']) || ($_POST['port'] === 'all') || ($_POST['port'] === 'custom')))
+            && (isset($_POST['subnet'])   && (is_numeric($_POST['subnet']) || ($_POST['subnet'] === 'null')))
+            && (isset($_POST['protocol']) && (in_array($_POST['protocol'], ['tcp', 'udp', 'all'])))
+            && (isset($_POST['action'])   && (in_array($_POST['action'], ['allow', 'deny'])))
+        ) {
+            $ip       = $_POST['ip'];
+            $port     = $_POST['port'];
+            $subnet   = $_POST['subnet'];
+            $protocol = $_POST['protocol'];
+            $action   = $_POST['action'];
+            $cPort    = $_POST['port_custom'] ?? 'all';
+
+            $isRemoval = false;
+
+            if (isset($_POST['remove']) && $_POST['remove'] === 'yes') {
+                $isRemoval = true;
+            }
+
+            if ('custom' === $port) {
+                $port = $cPort;
+            }
+
+            $ipv = '4';
+
+            if ('IPv6' === $type) {
+                $ipv = '6';
+            }
+
+            $applyCommand = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
+
+            if ($isRemoval) {
+                $originCommandString = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
+
+                // Delete line from the log file.
+                $fileArr = file($ipCommandFile);
+                unset($fileArr[array_search(trim($originCommandString), $fileArr)]);
+
+                $t = [];
+                $i = 0;
+                foreach ($fileArr as $f) {
+                    $t[$i] = trim($f);
+                    $i++;
+                }
+                file_put_contents($ipCommandFile, implode(PHP_EOL, $t));
+
+                $applyCommand = "delete,$ipv,$ip,$subnet,$port,$protocol,$action";
+            }
+
+            // Add a command to the watching file.
+            file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
+
+            if (! $isRemoval) {
+
+                // Becase we need system cronjob done, and then the web page will show the actual results.
+                sleep(10);
+            } else {
+                sleep(1);
+            }
+        }
+
+        $data[] = [];
+
+        $ipCommand = '';
+
+        if (file_exists($ipCommandFile)) {
+            $file = new SplFileObject($ipCommandFile);
+
+            $ipCommand = [];
+
+            while (!$file->eof()) {
+                $line = trim($file->fgets());
+                $ipInfo = explode(',', $line);
+
+                if (! empty($ipInfo[4])) {
+                    $ipCommand[] = $ipInfo;
+                }
+            }
+        }
+
+        $data['ipCommand'] = $ipCommand;
+        $data['type'] = $type;
+
+        $this->renderPage('panel/iptables_manager', $data);
+    }
+
+    /**
+     * System layer firwall - iptables Status
+     * iptables -L
+     *
+     * @return void
+     */
+    protected function iptablesStatus(string $type = 'IPv4'): void
+    {
+        $data[] = [];
+
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+        $properties = $t->getValue($this->shieldon);
+
+        $iptablesWatchingFolder = $properties['iptables_watching_folder'];
+
+        // The iptables log files.
+        $ipStatusFile = $iptablesWatchingFolder . '/ipv4_status.log';
+
+        if ('IPv6' === $type) {
+            $ipStatusFile = $iptablesWatchingFolder . '/ipv6_status.log';
+        }
+        
+        $ipStatus = '';
+
+        if (file_exists($ipStatusFile)) {
+            $ipStatus = file_get_contents($ipStatusFile);
+        }
+
+        $data['ipStatus'] = $ipStatus;
+        $data['type'] = $type;
+
+        $this->renderPage('panel/iptables_status', $data);
+    }
+
+    /**
+     * System layer firwall - ip6tables
+     *
+     * @return void
+     */
+    protected function ip6tables(): void
     {
         $data[] = [];
 
@@ -887,9 +1045,64 @@ class FirewallPanel
             $this->saveConfig();
         }
 
-        $data['ip_list'] = $this->getConfig('ip_manager');
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+        $properties = $t->getValue($this->shieldon);
 
-        $this->renderPage('panel/system_layer_firewall', $data);
+        $iptablesWatchingFolder = $properties['iptables_watching_folder'];
+
+        // The iptables log files.
+        $ipv6CommandFile = $iptablesWatchingFolder . '/ipv6_command.log';
+        $ipv6Command = '';
+
+        if (file_exists($ipv6CommandFile)) {
+            $file = new SplFileObject($ipv6CommandFile);
+
+            $ipv6Command = [];
+            while (!$file->eof()) {
+                $line = trim($file->fgets());
+                $ipInfo = explode(',', $line);
+
+                if (! empty($ipInfo[4])) {
+                    $ipv6Command[] = $ipInfo;
+                }
+            }
+        }
+
+        $data['ipv6Command'] = $ipv6Command;
+
+        $this->renderPage('panel/ip6tables_manager', $data);
+    }
+
+    /**
+     * System layer firwall - ip6tables
+     * ip6tables -L
+     *
+     * @return void
+     */
+    protected function ip6tablesStatus(): void
+    {
+        $data[] = [];
+
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+        $properties = $t->getValue($this->shieldon);
+
+        $iptablesWatchingFolder = $properties['iptables_watching_folder'];
+
+        // The iptables log files.
+        $ipv6StatusFile = $iptablesWatchingFolder . '/ipv6_status.log';
+        $ipv6Status = '';
+
+        if (file_exists($ipv6StatusFile)) {
+            $ipv6Status = file_get_contents($ipv6StatusFile);
+        }
+
+        $data['ipv6Status'] = $ipv6Status;
+
+        $this->renderPage('panel/ip6tables_status', ['data' => $data]);
     }
 
     /**

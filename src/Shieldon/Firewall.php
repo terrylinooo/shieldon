@@ -150,7 +150,7 @@ class Firewall
 
         $this->setDenyAttempts();
 
-        $this->setIp6tablesWatchingFolder();
+        $this->setIptablesWatchingFolder();
 
         $this->status = $this->getOption('daemon');
     }
@@ -653,10 +653,10 @@ class Firewall
      *
      * @return void
      */
-    protected function setIp6tablesWatchingFolder(): void
+    protected function setIptablesWatchingFolder(): void
     {
-        $ip6tablesSetting = $this->getOption('config', 'iptables');
-        $this->shieldon->setProperty('ip6tables_watching_folder',  $ip6tablesSetting['watching_folder']);
+        $iptablesSetting = $this->getOption('config', 'iptables');
+        $this->shieldon->setProperty('iptables_watching_folder',  $iptablesSetting['watching_folder']);
     }
 
     /**

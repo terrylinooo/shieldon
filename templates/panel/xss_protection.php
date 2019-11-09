@@ -70,7 +70,7 @@ use function Shieldon\Helper\mask_string;
                     <td class="py-3">
                         <input type="hidden" name="xss" value="page">
                         <input type="hidden" name="order" value="">
-                        <input type="submit" name="submit" id="btn-update" class="btn btn-info" value="Update">&nbsp;&nbsp;
+                        <input type="submit" name="submit" id="btn-update" class="btn-shieldon" value="Update">&nbsp;&nbsp;
                         <span class="text-muted"><?php _e('panel', 'xss_text_update_above_settings', 'Update above settings.'); ?></span>
                     </td>
                 </tr>
@@ -110,6 +110,19 @@ use function Shieldon\Helper\mask_string;
         </div>
     </div>
     <br />
+    <?php if ( empty($xss_protected_list)) : ?>
+    <div id="so-table-container" class="so-datatables">
+        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
+            <tbody>
+                <tr>
+                    <td>
+                        <?php _e('panel', 'ipma_text_nodata', 'No data is available now.'); ?>
+                    </td>
+                </tr>
+            </tbdoy>
+        </table>
+    </div>
+    <?php else: ?>
     <div id="so-table-loading" class="so-datatables">
         <div class="lds-css ng-scope">
             <div class="lds-ripple">
@@ -118,6 +131,7 @@ use function Shieldon\Helper\mask_string;
             </div>
         </div>
     </div>
+    <?php endif; ?>
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>

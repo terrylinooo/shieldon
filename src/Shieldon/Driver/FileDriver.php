@@ -268,8 +268,8 @@ class FileDriver extends DriverProvider
 
         // Check if are Shieldon directories removed or not.
         $result = (
-            ! is_dir($this->getDirectory('filter_log'))     && 
-            ! is_dir($this->getDirectory('rule'))    && 
+            ! is_dir($this->getDirectory('filter_log')) && 
+            ! is_dir($this->getDirectory('rule'))       && 
             ! is_dir($this->getDirectory('session'))
         );
 

@@ -14,22 +14,56 @@ use function Shieldon\Helper\_e;
 <div class="so-dashboard">
     <div id="so-rule-table-form" class="so-datatables">
         <div class="so-datatable-heading">
-            <?php _e('panel', 'iptable_heading', 'Iptables Manager'); ?>
+            <?php _e('panel', 'iptable_heading', 'Iptables Manager'); ?> (<?php echo $type; ?>)
         </div>
+        <?php if ('IPv4' === $type) : ?>
         <div class="so-datatable-description">
-            <?php _e('panel', 'iptable_description_1', 'This is Web Interface of iptables / ip6tables, be careful of using this function, preventing to block yourself.'); ?><br />
+            <?php _e('panel', 'iptable_description_1', 'This is Web Interface of <strong>iptables</strong>, be careful of using this function.'); ?><br />
             <?php _e('panel', 'iptable_description_2', 'You can only manage incoming requests here.'); ?><br />
             <?php _e('panel', 'iptable_description_3', 'After you reboot your server, the rules here will be disappeared. Using <strong>iptables-save</strong> youself to keep the rules exist.'); ?>
         </div>
-        <div class="so-rule-form">
-            <form method="post">
+        <?php endif; ?>
+        <?php if ('IPv6' === $type) : ?>
+        <div class="so-datatable-description">
+            <?php _e('panel', 'ip6table_description_1', 'This is Web Interface of <strong>ip6tables</strong>, be careful of using this function.'); ?><br />
+            <?php _e('panel', 'ip6table_description_2', 'You can only manage incoming requests here.'); ?><br />
+            <?php _e('panel', 'ip6table_description_3', 'After you reboot your server, the rules here will be disappeared. Using <strong>ip6tables-save</strong> youself to keep the rules exist.'); ?>
+        </div>
+        <?php endif; ?>
+        <div class="so-rule-form iptables-form">
+            <form method="post" onsubmit="freezeUI();">
                 <div class="d-inline-block align-top">
-                    <label for="ip-address"><?php _e('panel', 'iptables_label_ip', 'IP'); ?></label><br />
+                    <label for="ip-address" style="padding-left: 10px;"><?php _e('panel', 'iptables_label_ip', 'IP'); ?></label><br />
                     <input name="ip" type="text" value="" id="ip-address" class="regular-text ">
-                    <span class="form-text text-muted">e.g. <code>1.1.1.1</code> , <code>127.0.0.1/24</code></span>
                 </div>
                 <div class="d-inline-block align-top">
-                    <label for="port"><?php _e('panel', 'iptables_label_port', 'Port'); ?></label><br />
+                    <label for="subnet" style="padding-left: 20px"><?php _e('panel', 'iptables_label_subnet', 'Subnet'); ?></label><br />
+                    <span class="seperate">/<span>
+                    <?php if ('IPv4' === $type) : ?>
+                    <select name="subnet" class="regular" id="subnet">
+                        <option value="null">---</option>
+                        <?php for ($i = 32; $i > 0; $i--) : ?>
+                            <?php $label = $i;  ?>
+                            <?php if ($i === 8) $label = $i . ' (A)'; ?>
+                            <?php if ($i === 16) $label = $i . ' (B)'; ?>
+                            <?php if ($i === 24) $label = $i . ' (C)'; ?>
+                            <option value="<?php echo $i; ?>"><?php echo $label; ?></option>
+                        <?php endfor; ?>
+                    </select>
+                    <?php endif; ?>
+                    <?php if ('IPv6' === $type) : ?>
+                    <select name="subnet" class="regular" id="subnet">
+                        <option value="null">---</option>
+                        <?php for ($i = 128; $i > 0; $i--) : ?>
+                            <?php $label = $i;  ?>
+                            <option value="<?php echo $i; ?>"><?php echo $label; ?></option>
+                        <?php endfor; ?>
+                    </select>
+                    <?php endif; ?>
+                </div>
+                <div class="d-inline-block align-top">
+                <label for="port" style="padding-left: 20px"><?php _e('panel', 'iptables_label_port', 'Port'); ?></label><br />
+                    <span class="seperate">:</span>
                     <select name="port" class="regular" id="port">
                         <option value="all">All</option>
                         <option value="21">FTP - 21</option>
@@ -48,19 +82,23 @@ use function Shieldon\Helper\_e;
                     <input name="port_custom" type="text" value="" class="d-none" id="ip-address" style="width: 60px">
                 </div>
                 <div class="d-inline-block align-top">
-                    <label for="action"><?php _e('panel', 'iptables_label_protocol', 'Protocol'); ?></label><br />
+                    <label for="action" style="padding-left: 20px"><?php _e('panel', 'iptables_label_protocol', 'Protocol'); ?></label><br />
+                    <span class="seperate">(<span>
                     <select name="protocol" class="regular" id="action">
                         <option value="all"><?php _e('panel', 'iptables_label_protocol_all', 'All'); ?></option>
                         <option value="tcp"><?php _e('panel', 'iptables_label_protocol_tcp', 'TCP'); ?></option>
                         <option value="udp"><?php _e('panel', 'iptables_label_protocol_udp', 'UDP'); ?></option>
                     </select>
+                    
                 </div>
                 <div class="d-inline-block align-top">
-                    <label for="action"><?php _e('panel', 'ipma_label_action', 'Action'); ?></label><br />
+                    <label for="action" style="padding-left: 20px"><?php _e('panel', 'ipma_label_action', 'Action'); ?></label><br />
+                    <span class="seperate">)<span>
                     <select name="action" class="regular" id="action">
-                        <option value="allow"><?php _e('panel', 'iptables_label_action_drop', 'DROP'); ?></option>
-                        <option value="deny"><?php _e('panel', 'iptables_label_action_allow', 'ALLOW'); ?></option>
+                        <option value="allow"><?php _e('panel', 'iptables_label_action_allow', 'allow'); ?></option>
+                        <option value="deny"><?php _e('panel', 'iptables_label_action_deny', 'deny'); ?></option>
                     </select>
+                    <input type="hidden" name="remove" value="no">
                 </div>
                 <div class="d-inline-block align-top">
                     <label class="visible">&nbsp;</label><br />
@@ -70,6 +108,19 @@ use function Shieldon\Helper\_e;
         </div>
     </div>
     <br />
+    <?php if (empty($ipCommand)) : ?>
+    <div id="so-table-container" class="so-datatables">
+        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
+            <tbody>
+                <tr>
+                    <td>
+                        <?php _e('panel', 'ipma_text_nodata', 'No data is available now.'); ?>
+                    </td>
+                </tr>
+            </tbdoy>
+        </table>
+    </div>
+    <?php else: ?>
     <div id="so-table-loading" class="so-datatables">
         <div class="lds-css ng-scope">
             <div class="lds-ripple">
@@ -78,6 +129,7 @@ use function Shieldon\Helper\_e;
             </div>
         </div>
     </div>
+    <?php endif; ?>
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>
@@ -85,30 +137,32 @@ use function Shieldon\Helper\_e;
                     <th><?php _e('panel', 'iptables_label_ip', 'IP'); ?></th>
                     <th><?php _e('panel', 'iptables_label_port', 'Port'); ?></th>
                     <th><?php _e('panel', 'iptables_label_protocol', 'Protocol'); ?></th>
-                    <th><?php _e('panel', 'ipma_label_action', 'Action'); ?></label></th>
-                    <th><th><?php _e('panel', 'auth_label_remove', 'Remove'); ?></th>
+                    <th><?php _e('panel', 'ipma_label_action', 'Action'); ?></th>
+                    <th><?php _e('panel', 'auth_label_remove', 'Remove'); ?></th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (! empty($ip_list)) : ?>
-                <?php foreach($ip_list as $i => $ipInfo) : ?>
+                <?php if (! empty($ipCommand)) : ?>
+                <?php foreach($ipCommand as $i => $ipInfo) : ?>
+                <?php $subnet = (! empty($ipInfo[3])) ? '/' . $ipInfo[3] : '' ?>
                 <tr>
                     <td>
                         <?php if ($this->mode === 'demo') : ?>
-                        <?php $ipInfo['ip'] = mask_string($ipInfo['ip']); ?>
+                        <?php $ipInfo[2] = mask_string($ipInfo[2]); ?>
                         <?php endif; ?>
 
-                        <?php echo $ipInfo['ip']; ?>
+                        <?php echo $ipInfo[2] . $subnet; ?>
                     </td>
-                    <td><?php echo $ipInfo['port']; ?></td>
-                    <td><?php echo $ipInfo['protocol']; ?></td>
-                    <td><?php echo $ipInfo['action']; ?></td>
+                    <td><?php echo strtoupper($ipInfo[4]); ?></td>
+                    <td><?php echo strtoupper($ipInfo[5]); ?></td>
+                    <td><?php echo strtoupper($ipInfo[6]); ?></td>
                     <td>
                         <button type="button" class="button btn-remove-ip" 
-                            data-ip="<?php echo $ipInfo['ip']; ?>" 
-                            data-port="<?php echo $ipInfo['port']; ?>" 
-                            data-protocol="<?php echo $ipInfo['protocol']; ?>" 
-                            data-action="<?php echo $ipInfo['action']; ?>">
+                            data-ip="<?php echo $ipInfo[2]; ?>" 
+                            data-subnet="<?php echo $ipInfo[3]; ?>" 
+                            data-port="<?php echo $ipInfo[4]; ?>" 
+                            data-protocol="<?php echo $ipInfo[5]; ?>" 
+                            data-action="<?php echo $ipInfo[6]; ?>">
                             <i class="far fa-trash-alt"></i>
                         </button>
                     </td>
@@ -120,7 +174,7 @@ use function Shieldon\Helper\_e;
     </div>
 </div>
 
-<?php if (! empty($ip_list)) : ?>
+<?php if (! empty($ipCommand)) : ?>
 
 <script>
 
@@ -136,12 +190,18 @@ use function Shieldon\Helper\_e;
         });
 
         $('.so-dashboard').on('click', '.btn-remove-ip', function() {
-            var order = $(this).attr('data-order');
             var ip = $(this).attr('data-ip');
+            var subnet = $(this).attr('data-subnet');
+            var protocol = $(this).attr('data-protocol');
+            var port = $(this).attr('data-port');
+            var action = $(this).attr('data-action');
 
             $('[name=ip]').val(ip);
-            $('[name=order]').val(order);
-            $('[name=action]').val('remove');
+            $('[name=subnet]').val(subnet);
+            $('[name=port]').val(port);
+            $('[name=protocol]').val(protocol);
+            $('[name=action]').val(action);
+            $('[name=remove').val('yes');
             $('#btn-add-rule').trigger('click');
         });
     });

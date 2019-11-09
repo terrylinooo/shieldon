@@ -27,8 +27,8 @@ function showActive(string $key = '')
     }
 }
 
-//$staticSrc = 'http://shieldon-doc.lo/static';
-$staticSrc = 'http://shieldon-io.github.io/static';
+$staticSrc = 'http://shieldon-doc.lo/static';
+// $staticSrc = 'http://shieldon-io.github.io/static';
 
 ?><!doctype html>
 <html lang="<?php echo $this->locate; ?>">
@@ -135,10 +135,44 @@ $staticSrc = 'http://shieldon-io.github.io/static';
                                         <span><?php _e('panel', 'menu_messenger', 'Messenger'); ?></span>
                                     </a>
                                 </li>   
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-shield-alt"></i>
+                                <span><?php _e('panel', 'menu_iptables', 'IPv4'); ?></span>
+                            </a>
+                            <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=system_layer_firewall">
-                                        <i class="fas fa-skull"></i>
-                                        <span><?php _e('panel', 'menu_system_layer', 'System Layer'); ?></span>
+                                    <a href="<?php echo $page_url; ?>?so_page=iptables">
+                                        <i class="fas fa-dice-d20"></i>
+                                        <span><?php _e('panel', 'menu_ipv4_manager', 'Manager'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=iptables_status">
+                                        <i class="far fa-question-circle"></i>
+                                        <span><?php _e('panel', 'menu_ipv4_status', 'Status'); ?></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-shield-alt"></i>
+                                <span><?php _e('panel', 'menu_iptables', 'IPv6'); ?></span>
+                            </a>
+                            <ul class="nav child-menu">
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip6tables">
+                                     <i class="fas fa-dice-d20"></i>
+                                        <span><?php _e('panel', 'menu_ipv4_manager', 'Manager'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip6tables_status">
+                                        <i class="far fa-question-circle"></i>
+                                        <span><?php _e('panel', 'menu_ipv4_status', 'Status'); ?></span>
                                     </a>
                                 </li>
                             </ul>
@@ -243,6 +277,14 @@ $staticSrc = 'http://shieldon-io.github.io/static';
 
         <script>
 
+            function freezeUI() {
+                $('#loader').attr('data-status', 'loading');
+            }
+
+            function unFreezeUI() {
+                $('#loader').attr('data-status', 'waiting');
+            }
+
             $(function() {
 
                 var currentUrl = window.location.href.split('#')[0];
@@ -287,5 +329,10 @@ $staticSrc = 'http://shieldon-io.github.io/static';
             });
 
         </script>
+     
+        <div id="loader" data-status="waiting">
+            <div class="cssload-box-loading"></div>
+        </div>
+       
     </body>
 </html>

@@ -11,6 +11,7 @@
 #-
 #-    -w ?, --watch=?      Watch the directory where the firewall logs are stored.
 #-    -c, --clear          Clear all input records.
+#-    -t, --test           In testing mode.
 #-    -h, --help           Print this help.
 #-    -i, --info           Print script information.
 #-
@@ -35,6 +36,13 @@
 per_second="5"
 debug_mode="0"
 timesamp="$(date +%s)"
+
+# Absolute path to this script.
+SCRIPT=$(readlink -f $0)
+# Absolute path this script is in.
+SCRIPTPATH=`dirname $SCRIPT`
+
+DEV_MODE="false"
 
 #==============================================================================
 # Part 2. Option (DO NOT MODIFY)
@@ -75,6 +83,11 @@ if [ "$#" -gt 0 ]; then
                 iptables -F INPUT
                 exit 1
             ;;
+            # Testing
+            "-t"|"--test")
+                DEV_MODE="true"
+                shift 1
+            ;;
             # Info
             "-i"|"--information")
                 show_script_information
@@ -97,6 +110,7 @@ fi
 #==============================================================================
 
 watch_incoming_command() {
+
     # Assign absolute path.
     iptables_watching_file="${iptables_log_folder}/iptables_queue.log"
     ipv4_status_log_file="${iptables_log_folder}/ipv4_status.log"
@@ -104,27 +118,54 @@ watch_incoming_command() {
     ipv4_command_log_file="${iptables_log_folder}/ipv4_command.log"
     ipv6_command_log_file="${iptables_log_folder}/ipv6_command.log"
 
-    echo "[${timesamp}] Watching ${iptables_watching_file}...(${1})"
+    if [ "${DEV_MODE}" == "true" ]; then
+        iptables_watching_file="${SCRIPTPATH}/test.txt"
+        ipv4_status_log_file="${SCRIPTPATH}/ipv4_status.log"
+        ipv6_status_log_file="${SCRIPTPATH}/ipv6_status.log"
+        ipv4_command_log_file="${SCRIPTPATH}/ipv4_command.log"
+        ipv6_command_log_file="${SCRIPTPATH}/ipv6_command.log"
+    fi
+
+    echo "[${timesamp}] Watching... (${1})"
 
     if [ -e "$iptables_watching_file" ]; then
 
         # command_code, ipv4/6, action, ip, port, protocol, action
-
-        echo "file exist."
         lines=$(<"$iptables_watching_file")
         
-        while IFS=',' read -r command type ip port protocol action; do
+        while IFS=',' read -r command type ip subnet port protocol action; do
 
             if [ "$debug_mode" == "1" ]; then
                 echo "command: $command"
                 echo "type: $type"
                 echo "ip: $ip"
+                echo "subnet: $subnet"
                 echo "port: $port"
                 echo "protocol: $protocol"
                 echo "action: $action"
             fi
 
-            echo "looping"
+            ## Reset iptables INPUT chain.
+            if [ "$command" == "reset" ]; then
+   
+                if [ "$type" == "4" ]; then
+                    iptables -P INPUT ACCEPT
+                    iptables -F INPUT
+                    iptables -Z INPUT
+                    cat /dev/null > "$ipv4_command_log_file"
+                fi
+
+                if [ "$type" == "6" ]; then
+                    ip6tables -P INPUT ACCEPT
+                    ip6tables -F INPUT
+                    ip6tables -Z INPUT
+                    cat /dev/null > "$ipv6_command_log_file"
+                fi
+
+                continue
+            fi
+
+            current_command="${command},${type},${ip},${subnet},${port},${protocol},${action}"
 
             # Check if the port is a number
             this_port=""
@@ -138,6 +179,12 @@ watch_incoming_command() {
             this_command="-A"
 
             this_ip="-s ${ip}"
+
+            this_subnet=""
+
+            if [[ "$subnet" =~ ^[0-9]+$ ]]; then
+                this_subnet="/${subnet}"
+            fi
 
             if [[ "$port" =~ ^[0-9]+$ ]]; then
                 this_port=" --dport ${port}"
@@ -170,10 +217,33 @@ watch_incoming_command() {
 
                     # We have to check the IP whether is a valid IPv4 string.
                     if [[ "${ip}" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-                        iptables_command="${this_command} INPUT ${this_ip}${this_port}${this_protocol}${this_action}"
-                        $(eval iptables "$iptables_command")
-                        echo "Perform command => iptables ${iptables_command}"
-                        echo "$iptables_command" >> "$ipv4_command_log_file"
+
+                        if [[ "$this_protocol" == "" && "$this_port" != "" ]]; then
+
+                            iptables_command="${this_command} INPUT ${this_ip}${this_subnet} -p tcp ${this_port}${this_action}"
+                            $(eval iptables "$iptables_command")
+                            echo "Perform command => iptables ${iptables_command}"
+
+                            iptables_command="${this_command} INPUT ${this_ip}${this_subnet} -p udp ${this_port}${this_action}"
+                            $(eval iptables "$iptables_command")
+                            echo "Perform command => iptables ${iptables_command}"
+
+                            if [ "$command" == "add" ]; then
+                                current_command_1="${command},${type},${ip},${subnet},${port},tcp,${action}"
+                                current_command_2="${command},${type},${ip},${subnet},${port},udp,${action}"
+
+                                echo "$current_command_1" >> "$ipv4_command_log_file"
+                                echo "$current_command_2" >> "$ipv4_command_log_file"
+                            fi
+                        else
+                            iptables_command="${this_command} INPUT ${this_ip}${this_subnet}${this_protocol}${this_port}${this_action}"
+                            $(eval iptables "$iptables_command")
+                            echo "Perform command => iptables ${iptables_command}"
+
+                            if [ "$command" == "add" ]; then
+                                echo "$current_command" >> "$ipv4_command_log_file"
+                            fi
+                        fi
                     else
                         echo "Invalid IPv4 address."
                     fi
@@ -181,12 +251,34 @@ watch_incoming_command() {
 
                 if [ "$type" == "6" ]; then
 
-                    # We have to check the IP whether is a valid IPv6 string.
                     if [[ "$ip" =~ ^([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}$ ]]; then
-                        ip6tables_command="${this_command} INPUT ${this_ip}${this_port}${this_protocol}${this_action}"
-                        $(eval ip6tables "$ip6tables_command")
-                        echo "Perform command => ip6tables ${ip6tables_command}"
-                        echo "$ip6tables_command" >> "$ipv6_command_log_file"
+
+                        if [[ "$this_protocol" == "" && "$this_port" != "" ]]; then
+
+                            ip6tables_command="${this_command} INPUT ${this_ip} -p tcp ${this_port}${this_action}"
+                            $(eval ip6tables "$ip6tables_command")
+                            echo "Perform command => ip6tables ${ip6tables_command}"
+
+                            ip6tables_command="${this_command} INPUT ${this_ip} -p udp ${this_port}${this_action}"
+                            $(eval ip6tables "$ip6tables_command")
+                            echo "Perform command => ip6tables ${ip6tables_command}"
+
+                            if [ "$command" == "add" ]; then
+                                current_command_1="${command},${type},${ip},${subnet},${port},tcp,${action}"
+                                current_command_2="${command},${type},${ip},${subnet},${port},udp,${action}"
+
+                                echo "$current_command_1" >> "$ipv6_command_log_file"
+                                echo "$current_command_2" >> "$ipv6_command_log_file"
+                            fi
+                        else
+                            ip6tables_command="${this_command} INPUT ${this_ip}${this_subnet}${this_protocol}${this_port}${this_action}"
+                            $(eval ip6tables "$ip6tables_command")
+                            echo "Perform command => ip6tables ${ip6tables_command}"
+
+                            if [ "$command" == "add" ]; then
+                                echo "$current_command" >> "$ipv6_command_log_file"
+                            fi
+                        fi
                     else
                         echo "Invalid IPv6 address."
                     fi
@@ -206,7 +298,9 @@ watch_incoming_command() {
         # Part 4. Done. Empty the iptables_queue.log
         #==============================================================================
 
-        truncate -s 0 "$iptables_watching_file"
+        if [ "${DEV_MODE}" == "false" ]; then
+            truncate -s 0 "$iptables_watching_file"
+        fi
 
         # Continue to wait for new commands to come.
     else
@@ -219,9 +313,13 @@ watch_incoming_command() {
 # Part 5. Watch
 #==============================================================================
 
-i="0"
-while [ $i -lt 60 ]; do
-    watch_incoming_command "$i"
-    i=$(($i+$per_second))
-    sleep "$per_second"
-done
+if [ "${DEV_MODE}" == "false" ]; then
+    i="0"
+    while [ $i -lt 60 ]; do
+        watch_incoming_command "$i"
+        i=$(($i+$per_second))
+        sleep "$per_second"
+    done
+else
+    watch_incoming_command
+fi

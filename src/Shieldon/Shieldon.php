@@ -1342,14 +1342,14 @@ class Shieldon
                 $this->isAllowedRule = true;
             } else {
 
-                $attempts = (int) $ipRule['attempts'];
+                $attempts = $ipRule['attempts'];
 
                 $logData['log_ip']     = $ipRule['log_ip'];
                 $logData['ip_resolve'] = $ipRule['ip_resolve'];
                 $logData['time']       = time();
                 $logData['type']       = $ipRule['type'];
                 $logData['reason']     = $ipRule['reason'];
-                $logData['attempts']   = $attempts + 1;
+                $logData['attempts']   = ++$attempts;
 
                 $isTriggerMessenger = false;
                 $isUpdatRuleTable = false;
@@ -1368,6 +1368,9 @@ class Shieldon
                             $isTriggerMessenger = true;
 
                             $logData['type'] = self::ACTION_DENY;
+
+                            // Reset this value for next checking process - iptables.
+                            $logData['attempts'] = 0;
                         }
                     }
                 }
@@ -1380,16 +1383,18 @@ class Shieldon
                         // For the requests that are already banned, but they are still attempting access, that means 
                         // that they are programmably accessing your website. Consider put them in the system-layer fireall
                         // such as IPTABLE.
-                        $buffer = $this->properties['deny_attempt_buffer']['system_firewall'];
+                        $bufferIptable = $this->properties['deny_attempt_buffer']['system_firewall'];
 
-                        if ($attempts >= $buffer) {
+                        if ($attempts === $bufferIptable) {
                             $isTriggerMessenger = true;
-                            
+               
+                            echo 'sent1';
                             $folder = rtrim($this->properties['iptables_watching_folder'], '/');
 
                             if (file_exists($folder) && is_writable($folder)) {
                                 $filePath = $folder . '/iptables_queue.log';
 
+                                echo 'sent2';
                                 // command, ipv4/6, ip, port, protocol, action
                                 // add,4,127.0.0.1,all,all,drop  (example)
                                 // add,4,127.0.0.1,80,tcp,drop   (example)

@@ -6,7 +6,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub Repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
-- **Version: 3.3.0-dev**
+- **Version: 0.3.3**
 
 ## Features
 
@@ -20,8 +20,11 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 - IP manager.
 - Protecting pages via WWW-Authenticate.
 - Detailed statistics and charts.
-- Messenger - Send notifications when specific events occurred.
-- System-layer firwall - The iptables management.
+- Send notifications when specific events occurred. Supported modules:
+    - Slack
+    - Telegram
+    - Line Notify
+- Support system-layer iptables firewall.
 - More features will come...
 
 ## Installation
@@ -29,7 +32,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 Use PHP Composer:
 
 ```php
-composer require terrylinooo/shieldon
+composer require shieldon/shieldon
 ```
 
 Or, download it and include the Shieldon autoloader.
@@ -54,7 +57,7 @@ Here are the guides of integrating with the popular PHP frameworks.
 
 ## Firewall Panel
 
-Since 3.0.0, Shieldon starts providing a Firewall Instance, and it's visualization UI called Firewall Panel. By using Shieldon Firewall, you can easily implement it on your Web application.
+Shieldon provides a Firewall Instance, and it's visualization UI called Firewall Panel. By using Shieldon Firewall, you can easily implement it on your Web application.
 
 ![Firewall Panel](https://i.imgur.com/MELx6Vl.png)
 
@@ -122,12 +125,3 @@ Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 
 MIT
 
-## Todo
-
-The following items will come in the feature updates.
-
-### Notification
-
-- Slack
-- Telegram
-- Line Notify

@@ -25,7 +25,7 @@ $timezone = '';
             <?php _e('panel', 'table_description_rule_2', 'All processes are automatic and instant, you can ignore that.'); ?><br />
             <?php _e('panel', 'table_description_rule_3', 'Rule table will be reset when new cycle begins.'); ?>
         </div>
-        <div class="so-rule-form">
+        <div class="so-rule-form iptables-form">
             <form method="post">
                 <?php $this->_csrf(); ?>
                 <input name="ip" type="text" value="" class="regular-text" placeholder="<?php _e('panel', 'table_ip_placeholder', 'Please fill in an IP address..'); ?>">
@@ -41,6 +41,19 @@ $timezone = '';
         </div>
     </div>
     <br />
+    <?php if (empty($rule_list)) : ?>
+    <div id="so-table-container" class="so-datatables">
+        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
+            <tbody>
+                <tr>
+                    <td>
+                        <?php _e('panel', 'ipma_text_nodata', 'No data is available now.'); ?>
+                    </td>
+                </tr>
+            </tbdoy>
+        </table>
+    </div>
+    <?php else: ?>
     <div id="so-table-loading" class="so-datatables">
         <div class="lds-css ng-scope">
             <div class="lds-ripple">
@@ -49,6 +62,7 @@ $timezone = '';
             </div>
         </div>
     </div>
+    <?php endif; ?>
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>

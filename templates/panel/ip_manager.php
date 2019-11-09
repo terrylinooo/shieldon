@@ -23,8 +23,8 @@ $timezone = '';
         <div class="so-datatable-description">
             <?php _e('panel', 'ipma_description', 'IP Manager is not like Rule Table (effective period depends on the data cycle), everything you have done here is permanent.'); ?><br />
         </div>
-        <div class="so-rule-form">
-            <form method="post">
+        <div class="so-rule-form iptables-form">
+            <form method="post" onsubmit="freezeUI();">
                 <div class="d-inline-block align-top">
                     <label for="url-path"><?php _e('panel', 'auth_label_url_path', 'URL Path'); ?></label><br />
                     <input name="url" type="text" value="" id="url-path" class="regular-text">
@@ -32,7 +32,7 @@ $timezone = '';
                 </div>
                 <div class="d-inline-block align-top">
                     <label for="ip-address"><?php _e('panel', 'ipma_label_ip', 'IP'); ?></label><br />
-                    <input name="ip" type="text" value="" id="ip-address" class="regular-text ">
+                    <input name="ip" type="text" value="" id="ip-address">
                     <span class="form-text text-muted">e.g. <code>1.1.1.1</code> , <code>127.0.0.1/24</code></span>
                 </div>
                 <div class="d-inline-block align-top">
@@ -46,7 +46,7 @@ $timezone = '';
                 </div>
                 <div class="d-inline-block align-top">
                     <label for="order"><?php _e('panel', 'ipma_label_order', 'Order'); ?></label><br />
-                    <input name="order" type="text" value="1" id="order" class="regular-text" placeholder="1">
+                    <input name="order" type="text" value="1" id="order" placeholder="1" style="width: 50px">
                 </div>
                 <div class="d-inline-block align-top">
                     <label class="visible">&nbsp;</label><br />
@@ -56,6 +56,19 @@ $timezone = '';
         </div>
     </div>
     <br />
+    <?php if ( empty($ip_list)) : ?>
+    <div id="so-table-container" class="so-datatables">
+        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
+            <tbody>
+                <tr>
+                    <td>
+                        <?php _e('panel', 'ipma_text_nodata', 'No data is available now.'); ?>
+                    </td>
+                </tr>
+            </tbdoy>
+        </table>
+    </div>
+    <?php else: ?>
     <div id="so-table-loading" class="so-datatables">
         <div class="lds-css ng-scope">
             <div class="lds-ripple">
@@ -64,6 +77,8 @@ $timezone = '';
             </div>
         </div>
     </div>
+    <?php endif; ?>
+
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>

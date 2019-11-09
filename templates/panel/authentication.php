@@ -24,8 +24,8 @@ $timezone = '';
             <?php _e('panel', 'auth_description', 'The HTTP WWW-Authenticate response header defines the authentication method that should be used to gain access to a resource.'); ?>
             <br />
         </div>
-        <div class="so-rule-form">
-            <form method="post">
+        <div class="so-rule-form iptables-form">
+            <form method="post" onsubmit="freezeUI();">
                 <div class="d-inline-block align-top">
                     <label for="url-path"><?php _e('panel', 'auth_label_url_path', 'URL Path'); ?></label><br />
                     <input name="url" type="text" value="" id="url-path" class="regular-text"><br />
@@ -33,11 +33,11 @@ $timezone = '';
                 </div>
                 <div class="d-inline-block align-top">
                     <label for="username"><?php _e('panel', 'auth_label_username', 'Username'); ?></label><br />
-                    <input name="user" type="text" value="" id="username" class="regular-text">
+                    <input name="user" type="text" value="" id="username">
                 </div>
                 <div class="d-inline-block align-top">
                     <label for="password"><?php _e('panel', 'auth_label_password', 'Password'); ?></label><br />
-                    <input name="pass" type="text" value="" id="password" class="regular-text">
+                    <input name="pass" type="text" value="" id="password">
                 </div>
                 <div class="d-inline-block align-top">
                     <label>&nbsp;</label><br />
@@ -50,6 +50,19 @@ $timezone = '';
         </div>
     </div>
     <br />
+    <?php if (empty($authentication_list)) : ?>
+    <div id="so-table-container" class="so-datatables">
+        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
+            <tbody>
+                <tr>
+                    <td>
+                        <?php _e('panel', 'ipma_text_nodata', 'No data is available now.'); ?>
+                    </td>
+                </tr>
+            </tbdoy>
+        </table>
+    </div>
+    <?php else: ?>
     <div id="so-table-loading" class="so-datatables">
         <div class="lds-css ng-scope">
             <div class="lds-ripple">
@@ -58,6 +71,7 @@ $timezone = '';
             </div>
         </div>
     </div>
+    <?php endif; ?>
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>

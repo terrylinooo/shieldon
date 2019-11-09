@@ -24,8 +24,8 @@ $timezone = '';
             <?php _e('panel', 'excl_description', 'Please enter the begin with URLs you want them excluded from Shieldon protection.'); ?>
             <br />
         </div>
-        <div class="so-rule-form">
-            <form method="post">
+        <div class="so-rule-form iptables-form">
+            <form method="post" onsubmit="freezeUI();">
                 <div class="d-inline-block align-top">
                     <label for="url-path"><?php _e('panel', 'auth_label_url_path', 'URL Path'); ?></label><br />
                     <input name="url" id="url-path" type="text" value="" class="regular-text">
@@ -42,6 +42,19 @@ $timezone = '';
         </div>
     </div>
     <br />
+    <?php if (empty($exclusion_list)) : ?>
+    <div id="so-table-container" class="so-datatables">
+        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
+            <tbody>
+                <tr>
+                    <td>
+                        <?php _e('panel', 'ipma_text_nodata', 'No data is available now.'); ?>
+                    </td>
+                </tr>
+            </tbdoy>
+        </table>
+    </div>
+    <?php else: ?>
     <div id="so-table-loading" class="so-datatables">
         <div class="lds-css ng-scope">
             <div class="lds-ripple">
@@ -50,6 +63,7 @@ $timezone = '';
             </div>
         </div>
     </div>
+    <?php endif; ?>
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>
