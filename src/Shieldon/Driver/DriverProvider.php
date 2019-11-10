@@ -149,6 +149,8 @@ class DriverProvider extends AbstractDriver
         return $parsedData;
     }
 
+    // @codeCoverageIgnoreStart
+
     /**
      * Implement fetch.
      *
@@ -232,4 +234,6 @@ class DriverProvider extends AbstractDriver
     {
 
     }
+
+    // @codeCoverageIgnoreEnd
 }

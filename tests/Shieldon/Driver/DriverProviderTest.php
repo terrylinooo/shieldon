@@ -15,21 +15,21 @@ class DriverProviderTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetChannel()
     {
-        $mock = $this->getMockForAbstractClass('Shieldon\Driver\DriverProvider');
-        $mock->setChannel('unittest');
-        $this->assertSame($mock->getChannel(), 'unittest');
+        $driverProvider = new \Shieldon\Driver\DriverProvider();
+        $driverProvider->setChannel('unittest');
+        $this->assertSame($driverProvider->getChannel(), 'unittest');
     }
 
     public function testGetChannel()
     {
-        $mock = $this->getMockForAbstractClass('Shieldon\Driver\DriverProvider');
-        $this->assertSame($mock->getChannel(), '');
+        $driverProvider = new \Shieldon\Driver\DriverProvider();
+        $this->assertSame($driverProvider->getChannel(), '');
     }
 
     public function testParseData()
     {
-        $mock = $this->getMockForAbstractClass('Shieldon\Driver\DriverProvider');
-        $result = $mock->parseData([], 'filter_log');
+        $driverProvider = new \Shieldon\Driver\DriverProvider();
+        $result = $driverProvider->parseData([], 'filter_log');
 
         $fields = [
             'ip'                 => '', 
@@ -53,7 +53,7 @@ class DriverProviderTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($result, $fields);
 
-        $this->assertSame([], $mock->parseData([], 'rule'));
-        $this->assertSame([], $mock->parseData([], 'session'));
+        $this->assertSame([], $driverProvider->parseData([], 'rule'));
+        $this->assertSame([], $driverProvider->parseData([], 'session'));
     }
 }

@@ -155,5 +155,6 @@ function rand_ip()
 }
 
 require __DIR__ . '/../autoload.php';
+require __DIR__ . '/../vendor/shieldon/messenger/autoload.php';
 
 

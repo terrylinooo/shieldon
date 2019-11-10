@@ -938,4 +938,51 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     {
         $this->testGetSessionCount('redis');
     }
+
+    public function testSetMessenger()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+
+        $telegram = new \Messenger\Telegram('test', 'test');
+
+        $shieldon->setMessenger($telegram);
+    }
+
+    public function testSetDialogUI()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+
+        $shieldon->setDialogUI([]);
+    }
+
+    public function testSetExcludedUrls()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+
+        $shieldon->setExcludedUrls([]);
+    }
+
+    public function testSetClosure()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+
+        $shieldon->setClosure('key', function() {
+            return true;
+        });
+    }
+
+    public function testgetCurrentUrl()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+
+        $shieldon->getCurrentUrl();
+    }
+
+    public function testManagedBy()
+    {
+        $shieldon = new \Shieldon\Shieldon();
+
+        $shieldon->managedBy('demo');
+    }
+    
 }

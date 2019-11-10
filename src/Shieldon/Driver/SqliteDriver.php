@@ -50,7 +50,8 @@ class SqliteDriver extends SqlDriverProvider
                     ip_resolve VARCHAR(255), 
                     type TINYINT(3), 
                     reason TINYINT(3), 
-                    time INT(10)
+                    time INT(10),
+                    attempts INT(10)
                 );
             ";
 
