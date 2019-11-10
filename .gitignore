@@ -11,5 +11,7 @@ tests/report
 tmp
 clover.xml
 .phpunit.result.cache
-bin/firewall_test.sh
-bin/test.txt
+bin
+!bin/firewall.sh
+!bin/test.txt
+
