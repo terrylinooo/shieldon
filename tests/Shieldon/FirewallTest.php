@@ -247,7 +247,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
 
     public function testFromPhpPConfig()
     {
-        $config = include(BOOTSTRAP_DIR . '/../config.php');
+        $config = include(BOOTSTRAP_DIR . '/config.php');
         $firewall = new \Shieldon\Firewall($config);
 
         // Get Firewall from Container.

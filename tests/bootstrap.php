@@ -136,8 +136,13 @@ function get_testing_shieldon_instance($driver = 'sqlite')
         default:
             $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
 
-            $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-            $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
+            try {
+                $pdoInstance = new \PDO('sqlite:' . $dbLocation);
+                $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
+            } catch(\PDOException $e) {
+                throw $e->getMessage();
+            }
+  
             break;
     }
 

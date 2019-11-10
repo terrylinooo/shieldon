@@ -1388,13 +1388,11 @@ class Shieldon
                         if ($attempts === $bufferIptable) {
                             $isTriggerMessenger = true;
                
-                            echo 'sent1';
                             $folder = rtrim($this->properties['iptables_watching_folder'], '/');
 
                             if (file_exists($folder) && is_writable($folder)) {
                                 $filePath = $folder . '/iptables_queue.log';
 
-                                echo 'sent2';
                                 // command, ipv4/6, ip, port, protocol, action
                                 // add,4,127.0.0.1,all,all,drop  (example)
                                 // add,4,127.0.0.1,80,tcp,drop   (example)

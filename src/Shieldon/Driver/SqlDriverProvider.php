@@ -353,6 +353,7 @@ class SqlDriverProvider extends DriverProvider
         // @codeCoverageIgnoreStart
         
         } catch(Exception $e) {
+            throw $e->getMessage();
             return false;
         }
 
