@@ -144,7 +144,7 @@ use function Shieldon\Helper\_e;
             <tbody>
                 <?php if (! empty($ipCommand)) : ?>
                 <?php foreach($ipCommand as $i => $ipInfo) : ?>
-                <?php $subnet = (! empty($ipInfo[3])) ? '/' . $ipInfo[3] : '' ?>
+                <?php $subnet = (! empty($ipInfo[3]) && $ipInfo[3] !== 'null') ? '/' . $ipInfo[3] : '' ?>
                 <tr>
                     <td>
                         <?php if ($this->mode === 'demo') : ?>

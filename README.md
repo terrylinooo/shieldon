@@ -6,7 +6,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub Repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
-- **Version: 0.3.3**
+- **Version: 0.1.0**
 
 ## Features
 
@@ -24,7 +24,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
     - Slack
     - Telegram
     - Line Notify
-- Support system-layer iptables firewall.
+- Web UI for System firewall - iptables and ip6tables.
 - More features will come...
 
 ## Installation
@@ -111,12 +111,6 @@ When a user has been permanently banned.
 ![Firewall Dialog 2](https://i.imgur.com/Qy1sADw.png)
 
 
-#### Online Session Control
-
-When a user has reached the online session limit. You can set the online session limit by using `limitSession` API.
-
-![Firewall Dialog 3](https://i.imgur.com/U02w70x.png)
-
 ## Author
 
 Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
@@ -124,4 +118,3 @@ Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 ## License
 
 MIT
-
