@@ -1421,12 +1421,14 @@ class FirewallPanel
                     'admin.user',
                     'admin.pass',
                     'admin.last_modified',
-                    'messenger.telegram.config.apikey',
-                    'messenger.telegram.config.channel',
-                    'messenger.sendgrid.config.apikey',
-                    'messenger.sendgrid.config.sender',
-                    'messenger.sendgrid.config.recipients',
-                    'messenger.line_notify.config.access_token',
+                    'messengers.telegram.config.api_key',
+                    'messengers.telegram.config.channel',
+                    'messengers.sendgrid.config.api_key',
+                    'messengers.sendgrid.config.sender',
+                    'messengers.sendgrid.config.recipients',
+                    'messengers.line_notify.config.access_token',
+                    'iptables.config.watching_folder',
+                    'ip6tables.config.watching_folder',
                 ];
 
                 if (in_array($field, $hiddenForDemo)) {
@@ -1439,7 +1441,21 @@ class FirewallPanel
                 echo $this->getConfig($field);
             }
         } elseif (is_array($this->getConfig($field))) {
-            echo implode("\n", $this->getConfig($field));
+
+            if ('demo' === $this->mode) {
+                $hiddenForDemo = [
+                    'messengers.sendgrid.config.recipients'
+                ];
+
+                if (in_array($field, $hiddenForDemo)) {
+                    echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
+                } else {
+                    echo implode("\n", $this->getConfig($field));
+                }
+
+            } else {
+                echo implode("\n", $this->getConfig($field));
+            }
         }
     }
 

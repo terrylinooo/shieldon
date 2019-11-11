@@ -300,7 +300,12 @@ use function Shieldon\Helper\_e;
             <td class="r1"><?php _e('panel', 'setting_label_cronjob', 'Cron Job'); ?></td>
             <td class="r2">
                 <div>
-                    <code id="code1" style="display: none">* * * * * root bash <?php echo realpath(__DIR__ . '/../../../bin/firewall.sh') ?> --watch=<span id="iptables-watch-folder"></span> >> /var/log/shieldon.log 2>&1</code>
+                    <?php if ($this->mode === 'demo') : ?>
+                        <code id="code1" style="display: none">* * * * * root bash your_project_folder/vendor/shieldon/bin/firewall.sh --watch=your_watching_folder >> /var/log/shieldon.log 2>&1</code>
+                    <?php else: ?>
+                        <code id="code1" style="display: none">* * * * * root bash <?php echo realpath(__DIR__ . '/../../../bin/firewall.sh') ?> --watch=<span id="iptables-watch-folder"></span> >> /var/log/shieldon.log 2>&1</code>
+                    <?php endif; ?>
+                    
                     <textarea id="code2" class="form-control" rows="4" style="font-size: 12px; font-family: monospace;"></textarea>
                 </div><br />
                 <p>

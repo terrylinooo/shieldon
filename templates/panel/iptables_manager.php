@@ -9,6 +9,7 @@
  */
 
 use function Shieldon\Helper\_e;
+use function Shieldon\Helper\mask_string;
 
 ?>
 <div class="so-dashboard">

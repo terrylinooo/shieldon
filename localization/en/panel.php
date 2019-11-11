@@ -329,7 +329,10 @@ return [
     'setting_label_cookie_domain' => 'Cookie Domain',
     'setting_text_leave_blank' => 'Just leave it blank to apply default.',
 
-    // Messenger
+    // 2019/11/11
+    'menu_iptables_manager' => 'Manager',
+    'menu_iptables_status' => 'Status',
+    'menu_messenger' => 'Messenger',
     'messenger_heading_events' => 'Events',
     'messenger_desc_events' => 'When they occur, what are the events that you would like to receive notifications sent by Messenger modules.',
     'messenger_label_event_1' => 'Ban a user permanently in current data cycle.',
@@ -345,10 +348,8 @@ return [
     'messenger_heading_sendgrid' => 'SendGrid',
     'messenger_label_sender' => 'Sender',
     'messenger_label_recipients' => 'Recipients',
-
     'tab_heading_events' => 'Events',
     'tab_heading_modules' => 'Modules',
-
     'setting_heading_deny_attempts' => 'Deny Attempts',
     'setting_desc_deny_attempts' => 'Say goodbye to bad behavior visitors.',
     'error_ip6tables_directory_not_writable' => 'iptables watching folder requires the storage directory writable.',
@@ -358,9 +359,25 @@ return [
     'setting_label_cronjob' => 'Cron Job',
     'setting_note_cronjob' => 'Please use this code into the crontab file on your server.',
     'setting_note_iptables' => '<strong>firewall.sh</strong> will watch the changes in this folder to employ command to iptables.',
-
-    'setting_heading_deny_attempts' => 'Deny Attempts',
-    'setting_desc_deny_attempts' => 'Say goodbye to bad behavior visitors.',
     'setting_label_deny_attempt_buffer' => 'Buffer',
     'setting_desc_deny_attempt_buffer' => 'How many fails in a row will trigger this event.',
+    'iptable_heading' => 'Iptables Manager',
+    'iptable_description_1' => 'This is Web Interface of <strong>iptables</strong>, be careful of using this function.',
+    'iptable_description_2' => 'You can only manage incoming requests here.',
+    'iptable_description_3' => 'After you reboot your server, the rules here will be disappeared. Using <strong>iptables-save</strong> youself to keep the rules exist.',
+    'ip6table_description_1' => 'This is Web Interface of <strong>ip6tables</strong>, be careful of using this function.',
+    'ip6table_description_2' => 'You can only manage incoming requests here.',
+    'ip6table_description_3' => 'After you reboot your server, the rules here will be disappeared. Using <strong>ip6tables-save</strong> youself to keep the rules exist.',
+    'iptables_label_subnet' => 'Subnet',
+    'iptables_label_port' => 'Port',
+    'iptables_label_port_custom' => 'Custom',
+    'iptables_label_protocol' => 'Protocol',
+    'iptables_label_protocol_all' => 'All',
+    'iptables_label_protocol_tcp' => 'TCP',
+    'iptables_label_protocol_udp' => 'UDP',
+    'iptables_label_action_allow' => 'allow',
+    'iptables_label_action_deny' => 'deny',
+    'tab_heading_iptables_status' => 'Status',
+    'iptable_status_description' => 'The following text is the result of command <code>iptables -L</code>.',
+    'ip6table_status_description' => 'The following text is the result of command <code>ip6tables -L</code>.',
 ];

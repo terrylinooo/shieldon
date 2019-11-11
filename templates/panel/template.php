@@ -92,7 +92,6 @@ $staticSrc = 'http://shieldon-doc.lo/static';
                                 </li>
                             </ul>
                         </li>
-                        <?php if ($this->mode === 'managed') : ?>
                         <li>
                             <a href="#">
                                 <i class="fas fa-fire-alt"></i>
@@ -146,13 +145,13 @@ $staticSrc = 'http://shieldon-doc.lo/static';
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=iptables">
                                         <i class="fas fa-dice-d20"></i>
-                                        <span><?php _e('panel', 'menu_ipv4_manager', 'Manager'); ?></span>
+                                        <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=iptables_status">
                                         <i class="far fa-question-circle"></i>
-                                        <span><?php _e('panel', 'menu_ipv4_status', 'Status'); ?></span>
+                                        <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
                                     </a>
                                 </li>
                             </ul>
@@ -166,18 +165,17 @@ $staticSrc = 'http://shieldon-doc.lo/static';
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=ip6tables">
                                      <i class="fas fa-dice-d20"></i>
-                                        <span><?php _e('panel', 'menu_ipv4_manager', 'Manager'); ?></span>
+                                        <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=ip6tables_status">
                                         <i class="far fa-question-circle"></i>
-                                        <span><?php _e('panel', 'menu_ipv4_status', 'Status'); ?></span>
+                                        <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        <?php endif; ?>
                         <?php if (! empty($this->shieldon->logger)) : ?>
                         <li>
                             <a href="#">
