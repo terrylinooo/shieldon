@@ -27,8 +27,13 @@ function showActive(string $key = '')
     }
 }
 
-$staticSrc = 'http://shieldon-doc.lo/static';
-// $staticSrc = 'http://shieldon-io.github.io/static';
+$staticSrc = 'http://shieldon-io.github.io/static';
+
+// `project.lo` is the virtual domain that Terry is using to test Shieldon library.
+if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') !== false)  {
+    // `shieldon-doc.lo` is the virtual domain that Terry is using to design CSS for Firewall Panel UI.
+    $staticSrc = 'http://shieldon-doc.lo/static';
+}
 
 ?><!doctype html>
 <html lang="<?php echo $this->locate; ?>">

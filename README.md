@@ -6,7 +6,6 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub Repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
-- **Version: 0.1.0**
 
 ## Features
 
