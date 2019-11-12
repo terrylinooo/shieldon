@@ -391,4 +391,13 @@ return [
     'overview_text_reset_action_logs' => '您想要重設當前的訪客動作記錄嗎？',
     'reset_data_circle' => '資料週期表已經被重新設定。',
     'reset_action_logs' => '訪客動作記錄已經被清除。',
+
+    // 2019/11/13
+    'overview_heading_messenger' => '通訊器模組',
+    'overview_label_telegram' => 'Telegram',
+    'overview_note_telegram' => '傳送通知到您的 Telegram 頻道。',
+    'overview_label_line_notofy' => 'Line Notify',
+    'overview_note_line_notify' => '傳送通知到您的 Line 群組。',
+    'overview_label_sendgrid' => 'SendGrid',
+    'overview_note_sendgrid' => '透過 SendGrid API 傳送通知到您的 Email。',
 ];

@@ -25,6 +25,7 @@ $timezone = '';
         </div>
         <div class="so-rule-form iptables-form">
             <form method="post" onsubmit="freezeUI();">
+                <?php $this->_csrf(); ?>
                 <div class="d-inline-block align-top">
                     <label for="url-path"><?php _e('panel', 'auth_label_url_path', 'URL Path'); ?></label><br />
                     <input name="url" type="text" value="" id="url-path" class="regular-text">

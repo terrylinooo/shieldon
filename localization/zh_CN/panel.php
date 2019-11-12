@@ -390,4 +390,13 @@ return [
     'overview_text_reset_action_logs' => '您想要重置当前的访客动作日志吗？ ',
     'reset_data_circle' => '资料周期表已经被重新设置。 ',
     'reset_action_logs' => '访客动作日志已经被清除。 ',
+
+    // 2019/11/13
+    'overview_heading_messenger' => '通讯器模组',
+    'overview_label_telegram' => 'Telegram',
+    'overview_note_telegram' => '传送通知到您的 Telegram 频道。 ',
+    'overview_label_line_notofy' => 'Line Notify',
+    'overview_note_line_notify' => '传送通知到您的 Line 群组。 ',
+    'overview_label_sendgrid' => 'SendGrid',
+    'overview_note_sendgrid' => '透过 SendGrid API 传送通知到您的 Email。 ',
 ];

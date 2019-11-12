@@ -391,4 +391,13 @@ return [
     'overview_text_reset_action_logs' => 'Would you like to remove all action logs?',
     'reset_data_circle' => 'Data circle tables have been reset.',
     'reset_action_logs' => 'Action logs have been removed.',
+
+    // 2019/11/13
+    'overview_heading_messenger' => 'Messenger Modules',
+    'overview_label_telegram' => 'Telegram',
+    'overview_note_telegram' => 'Send notifications to your Telegram channel.',
+    'overview_label_line_notofy' => 'Line Notify',
+    'overview_note_line_notify' => 'Send notifications to your Line group.',
+    'overview_label_sendgrid' => 'SendGrid',
+    'overview_note_sendgrid' => 'Send notifications to your email through SendGrid API.',
 ];

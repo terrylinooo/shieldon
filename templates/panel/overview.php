@@ -331,6 +331,43 @@ $timezone = '';
         </div>
     </div>
 </div>
+<div class="so-dashboard">
+    <div class="so-datatables">
+        <div class="so-datatable-heading">
+            <?php _e('panel', 'overview_heading_messenger', 'Messenger Modules'); ?>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="filter-status">
+                    <div class="heading"><?php _e('panel', 'overview_label_telegram', 'Telegram'); ?></div>
+                    <div class="nums">
+                        <?php echo $messengers['telegram']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
+                    </div>
+                    <div class="note"><?php _e('panel', 'overview_note_telegram', 'Send notifications to your Telegram channel.'); ?></div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="filter-status">
+                    <div class="heading"><?php _e('panel', 'overview_label_line_notofy', 'Line Notify'); ?></div>
+                    <div class="nums">
+                        <?php echo $messengers['linenotify']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
+                    </div>
+                    <div class="note"><?php _e('panel', 'overview_note_line_notify', 'Send notifications to your Line group.'); ?></div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="filter-status">
+                    <div class="heading"><?php _e('panel', 'overview_label_sendgrid', 'SendGrid'); ?></div>
+                    <div class="nums">
+                        <?php echo $messengers['sendgrid']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
+                    </div>
+                    <div class="note"><?php _e('panel', 'overview_note_sendgrid', 'Send notifications to your email through SendGrid API.'); ?></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="info-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -353,6 +390,7 @@ $timezone = '';
 <div id="reset-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form method="post" id="form-reset-data">
+        <?php $this->_csrf(); ?>
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>

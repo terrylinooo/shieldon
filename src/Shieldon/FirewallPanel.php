@@ -472,6 +472,8 @@ class FirewallPanel
         | 1. Components.
         | 2. Filters.
         | 3. Configuration.
+        | 4. Captcha modules.
+        | 5. Messenger modules.
         |
         */
 
@@ -533,6 +535,28 @@ class FirewallPanel
             'recaptcha'    => (isset($captcha['Recaptcha']) ? true : false),
             'imagecaptcha' => (isset($captcha['ImageCaptcha']) ? true : false),
         ];
+
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('messengers');
+        $t->setAccessible(true);
+        $messengers = $t->getValue($this->shieldon);
+
+        $operatingMessengers = [
+            'telegram'   => false,
+            'linenotify' => false,
+            'sendgrid'   => false,
+        ];
+
+        foreach ($messengers as $messenger) {
+            $class = get_class($messenger);
+            $class = strtolower(substr($class, strrpos($class, '\\') + 1));
+
+            if (isset($operatingMessengers[$class])) {
+                $operatingMessengers[$class] = true;
+            }
+        }
+
+        $data['messengers'] = $operatingMessengers;
 
         $this->renderPage('panel/overview', $data);
     }
