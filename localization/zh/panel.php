@@ -380,4 +380,15 @@ return [
     'tab_heading_iptables_status' => '狀態',
     'iptable_status_description' => '以下文字是指令 <code>iptables -L</code> 產生的結果。',
     'ip6table_status_description' => '以下文字是指令 <code>ip6tables -L</code> 產生的結果。',
+
+    // 2019/11/12
+    'overview_reset_data_circle' => '重設資料週期',
+    'overview_reset_action_logs' => '重設訪客動作記錄',
+    'overview_thread_rows' => '列',
+    'overview_thread_table' => '表',
+    'overview_text_reset_data_circle_1' => '您想要重設當前的資料週期嗎？',
+    'overview_text_reset_data_circle_2' => '進行這個動作將會移除所有目前資料週期的記錄，以及重建資料表。',
+    'overview_text_reset_action_logs' => '您想要重設當前的訪客動作記錄嗎？',
+    'reset_data_circle' => '資料週期表已經被重新設定。',
+    'reset_action_logs' => '訪客動作記錄已經被清除。',
 ];

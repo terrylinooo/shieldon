@@ -389,4 +389,6 @@ return [
     'overview_text_reset_data_circle_1' => 'Would you like to reset current data circle?',
     'overview_text_reset_data_circle_2' => 'Performing this action will remove all data from current data circle and rebuild data tables.',
     'overview_text_reset_action_logs' => 'Would you like to remove all action logs?',
+    'reset_data_circle' => 'Data circle tables have been reset.',
+    'reset_action_logs' => 'Action logs have been removed.',
 ];
