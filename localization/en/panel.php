@@ -380,4 +380,13 @@ return [
     'tab_heading_iptables_status' => 'Status',
     'iptable_status_description' => 'The following text is the result of command <code>iptables -L</code>.',
     'ip6table_status_description' => 'The following text is the result of command <code>ip6tables -L</code>.',
+
+    // 2019/11/12
+    'overview_reset_data_circle' => 'Reset Data Circle',
+    'overview_reset_action_logs' => 'Reset Action Logs',
+    'overview_thread_rows' => 'Rows',
+    'overview_thread_table' => 'Table',
+    'overview_text_reset_data_circle_1' => 'Would you like to reset current data circle?',
+    'overview_text_reset_data_circle_2' => 'Performing this action will remove all data from current data circle and rebuild data tables.',
+    'overview_text_reset_action_logs' => 'Would you like to remove all action logs?',
 ];

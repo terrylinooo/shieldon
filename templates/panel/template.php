@@ -27,7 +27,7 @@ function showActive(string $key = '')
     }
 }
 
-$staticSrc = 'http://shieldon-io.github.io/static';
+$staticSrc = 'https://shieldon-io.github.io/static';
 
 // `project.lo` is the virtual domain that Terry is using to test Shieldon library.
 if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') !== false)  {

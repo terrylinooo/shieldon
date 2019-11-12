@@ -13,15 +13,17 @@ use function Shieldon\Helper\_e;
 $timezone = '';
 
 ?>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.9/highlight.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.9/languages/php.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.9/styles/atom-one-light.min.css" />
-<script>hljs.initHighlightingOnLoad();</script>
 
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
-            <?php _e('panel', 'overview_heading_data_circle', 'Data Circle'); ?>
+            <?php _e('panel', 'overview_heading_data_circle', 'Data Circle'); ?> 
+                <button type="button" class="btn-shieldon btn-only-icon" onclick="openResetModal(this)" 
+                    data-id="reset-data-circle" 
+                    data-title="<?php _e('panel', 'overview_reset_data_circle', 'Reset Data Circle'); ?>"
+                >
+                    <i class="fas fa-sync"></i>
+                </button>
             <div class="heading-right">
                 <ul>
                     <li><span>shieldon_rule_list</span> <strong><?php echo count($rule_list); ?> <?php _e('panel', 'overview_text_rows', 'rows'); ?><br /></strong></li>
@@ -254,7 +256,13 @@ $timezone = '';
 <div class="so-dashboard">
     <div class="so-datatables">
         <div class="so-datatable-heading">
-            <?php _e('panel', 'overview_heading_logger', 'Logger'); ?>
+            <?php _e('panel', 'overview_heading_logger', 'Logger'); ?> 
+            <button type="button" class="btn-shieldon btn-only-icon" onclick="openResetModal(this)" 
+                    data-id="reset-action-logs" 
+                    data-title="<?php _e('panel', 'overview_reset_action_logs', 'Reset Action Logs'); ?>"
+                >
+                <i class="fas fa-sync"></i>
+            </button>
             <div class="heading-right">
                 <ul>
                     <li><span><?php _e('panel', 'overview_text_since', 'since'); ?></span> <strong><?php echo $logger_started_working_date; ?></strong></li>
@@ -341,6 +349,27 @@ $timezone = '';
         </div>
     </div>
 </div>
+
+<div id="reset-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <form method="post" onsubmit="freezeUI();">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer justify-content-between">
+                <button type="submit" class="btn btn-danger"><?php _e('panel', 'auth_btn_submit', 'Submit'); ?></button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php _e('panel', 'overview_btn_close', 'Close'); ?></button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
 
 <script type="text/template" id="filters-session">
     <pre>
@@ -620,6 +649,49 @@ $shieldon->setCaptcha($captchaInstance);
     </pre>
 </script>
 
+<script type="text/template" id="reset-data-circle">
+    <p><?php _e('panel', 'overview_text_reset_data_circle_1', 'Would you like to reset current data circle?'); ?></p>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <th><?php _e('panel', 'overview_thread_rows', 'Table'); ?></th>
+            <th><?php _e('panel', 'overview_thread_table', 'Rows'); ?></th>
+        </thead>
+        <tr>
+            <td>shieldon_rule_list</td>
+            <td><?php echo count($rule_list); ?></td>
+        <tr>
+        <tr>
+            <td>shieldon_filter_logs</td>
+            <td><?php echo count($ip_log_list); ?></td>
+        <tr>
+        <tr>
+            <td>shieldon_sessions</td>
+            <td><?php echo count($session_list); ?></td>
+        <tr>
+    </table>
+    <input type="hidden" name="action_type" value="reset_data_circle">
+    <p><?php _e('panel', 'overview_text_reset_data_circle_2', 'Performing this action will remove all data from current data circle and rebuild data tables.'); ?></p>
+</script>
+
+<script type="text/template" id="reset-action-logs">
+    <p><?php _e('panel', 'overview_text_reset_action_logs', 'Would you like to remove all action logs?'); ?></p>
+    <table class="table table-bordered">
+        <tr>
+            <td><?php _e('panel', 'overview_text_since', 'since'); ?></td>
+            <td><?php echo $logger_started_working_date; ?></td>
+        <tr>
+        <tr>
+            <td><?php _e('panel', 'overview_text_days', 'days'); ?></td>
+            <td><?php echo $logger_work_days; ?></td>
+        <tr>
+        <tr>
+            <td><?php _e('panel', 'overview_text_size', 'size'); ?></td>
+            <td><?php echo $logger_total_size; ?></td>
+        <tr>
+    </table>
+    <input type="hidden" name="action_type" value="reset_action_logs">
+</script>
+
 <script>
 
     $(function() {
@@ -640,20 +712,17 @@ $shieldon->setCaptcha($captchaInstance);
 
         $('#info-modal').find('.modal-title').html(title);
         $('#info-modal').find('.modal-body').html($('#' + id).html());
-
-        highlight();
-
         $('#btn-document-link').attr('data-url', document);
-
- 
-
         $('#info-modal').modal();
     };
 
-    function highlight() {
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightBlock(block);
-        });
-    }
+    var openResetModal = function(obj) {
+        let id = $(obj).attr('data-id');
+        let title = $(obj).attr('data-title');
+
+        $('#reset-modal').find('.modal-title').html(title);
+        $('#reset-modal').find('.modal-body').html($('#' + id).html());
+        $('#reset-modal').modal();
+    };
 
 </script>

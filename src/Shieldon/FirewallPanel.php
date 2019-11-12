@@ -373,6 +373,23 @@ class FirewallPanel
      */
     protected function overview(): void
     {
+        if (isset($_POST['action_type'])) {
+            switch ($_POST['action_type']) {
+                case 'reset_data_circle':
+                    $this->setConfig('cronjob.reset_circle.config.last_update', date('Y-m-d H:i:s'));
+                    $this->shieldon->driver->rebuild();
+                    break;
+                case 'reset_action_logs':
+                    $this->shieldon->logger->purgeLogs();
+                    break;
+                default:
+            }
+
+            unset($_POST['action_type']);
+
+            $this->saveConfig();
+        }
+
         /*
         |--------------------------------------------------------------------------
         | Logger
