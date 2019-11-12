@@ -20,9 +20,9 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 - Protecting pages via WWW-Authenticate.
 - Detailed statistics and charts.
 - Send notifications when specific events occurred. Supported modules:
-    - Slack
     - Telegram
     - Line Notify
+    - SendGrid
 - Web UI for System firewall - iptables and ip6tables.
 - More features will come...
 
