@@ -257,17 +257,32 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
 
         <?php if (! empty($this->messages)) : ?>
         <div id="message-modal" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-lightbox" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><?php _e('panel', 'logout', 'Message'); ?></h5>
+                    <div class="modal-header <?php echo (count($this->messages) == 1 ? $this->messages[0]['class'] : 'info'); ?>">
+                        <div class="icon-wrapper">
+                            <?php if (count($this->messages) == 1) : ?>
+                                <div class="icon-box">
+                                <?php if ($this->messages[0]['type'] === 'success') : ?>
+                                    <i class="fas fa-check-circle"></i>
+                                <?php endif; ?>
+                                <?php if ($this->messages[0]['type'] === 'error') : ?>
+                                    <i class="fas fa-times-circle"></i>
+                                <?php endif; ?>
+                            </div>
+                            <?php else: ?>
+                                <div class="icon-box">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                            <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <?php foreach ($this->messages as $msgInfo) : ?>
-                            <p class="text-<?php echo $msgInfo['type']; ?>">
+                            <p class="text-<?php echo $msgInfo['class']; ?>">
                                 <?php echo $msgInfo['text']; ?>
                             </p>
                         <?php endforeach; ?>

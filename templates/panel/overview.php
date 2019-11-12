@@ -333,7 +333,7 @@ $timezone = '';
 </div>
 
 <div id="info-modal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>
@@ -351,17 +351,17 @@ $timezone = '';
 </div>
 
 <div id="reset-modal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <form method="post" onsubmit="freezeUI();">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form method="post" id="form-reset-data">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body"></div>
-            <div class="modal-footer justify-content-between">
+            <div class="modal-footer">
                 <button type="submit" class="btn btn-danger"><?php _e('panel', 'auth_btn_submit', 'Submit'); ?></button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php _e('panel', 'overview_btn_close', 'Close'); ?></button>
             </div>
@@ -702,6 +702,13 @@ $shieldon->setCaptcha($captchaInstance);
             if (url !== '') {
                 window.open(url, '_blank');
             }
+        });
+
+        $('#form-reset-data').submit(function() {
+            freezeUI();
+            setTimeout(function() {
+                $('#reset-modal').modal('hide');
+            }, 300);
         });
     });
 

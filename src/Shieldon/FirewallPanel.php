@@ -374,20 +374,42 @@ class FirewallPanel
     protected function overview(): void
     {
         if (isset($_POST['action_type'])) {
+
             switch ($_POST['action_type']) {
+
                 case 'reset_data_circle':
                     $this->setConfig('cronjob.reset_circle.config.last_update', date('Y-m-d H:i:s'));
                     $this->shieldon->driver->rebuild();
+                    sleep(2);
+
+                    unset($_POST['action_type']);
+
+                    $this->saveConfig();
+
+                    $this->responseMessage('success',
+                        __(
+                            'panel',
+                            'reset_data_circle',
+                            'Data circle tables have been reset.'
+                        )
+                    );
                     break;
+
                 case 'reset_action_logs':
                     $this->shieldon->logger->purgeLogs();
+                    sleep(2);
+
+                    $this->responseMessage('success',
+                        __(
+                            'panel',
+                            'reset_action_logs',
+                            'Action logs have been removed.'
+                        )
+                    );
                     break;
+
                 default:
             }
-
-            unset($_POST['action_type']);
-
-            $this->saveConfig();
         }
 
         /*
@@ -1613,13 +1635,16 @@ class FirewallPanel
      */
     private function responseMessage(string $type, string $text)
     {
+        $class = $type;
+
         if ($type == 'error') {
-            $type = 'danger';
+            $class = 'danger';
         }
 
         array_push($this->messages, [
             'type' => $type,
             'text' => $text,
+            'class' => $class,
         ]);
     }
 
