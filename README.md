@@ -74,7 +74,7 @@ Shieldon provides a Firewall Instance, and it's visualization UI called Firewall
 
 ![Firewall Panel](https://i.imgur.com/MELx6Vl.png)
 
-Click [here](/demo/) to view demo.
+Click [here](https://shieldon.io/demo/) to view demo.
 
 - user: `demo`
 - password: `demo`
@@ -122,7 +122,6 @@ When the users or robots are trying to view many your web pages in a short perio
 When a user has been permanently banned.
 
 ![Firewall Dialog 2](https://i.imgur.com/Qy1sADw.png)
-
 
 ## Author
 
