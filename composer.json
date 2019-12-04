@@ -23,12 +23,15 @@
     },
     "autoload": {
         "psr-4": {
-            "Shieldon\\": "src/Shieldon"
-        }
+            "Shieldon\\": "src/Shieldon/"
+        },
+        "files": [
+            "src/Shieldon/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Shieldon\\Tests\\": "tests"
+            "Shieldon\\Tests\\": "tests/"
         }
     },
     "config": {
