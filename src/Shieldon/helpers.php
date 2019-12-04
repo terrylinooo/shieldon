@@ -123,11 +123,8 @@ function mask_string($str)
         $tmp = explode('.', $str);
         $tmp[0] = '*';
         $tmp[1] = '*';
-        $masked = implode('.', $tmp);
-
-    } else {
-        $masked =  str_repeat('*', strlen($str) - 6) . substr(str, -6);
+        return implode('.', $tmp);
     }
 
-    return $masked;
+    return str_repeat('*', strlen($str) - 6) . substr($str, -6);
 }
