@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=master)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://img.shields.io/codecov/c/github/terrylinooo/shieldon.svg)](https://codecov.io/gh/terrylinooo/shieldon) ![PHP from Packagist](https://img.shields.io/packagist/php-v/terrylinooo/shieldon.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minutes only, PHP expert developers will understand how to implement Shiedon Firewall on their Web applications. The goal of this library is to make the PHP community more secure and being extremely use-to-use.
+Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minutes only, PHP expert developers will understand how to implement Shieldon Firewall on their Web applications. The goal of this library is to make the PHP community more secure and being extremely use-to-use.
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub Repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
@@ -113,7 +113,7 @@ Shieldon's Firewall Panel is fully responsive, and you can manage it when you ar
 
 #### Temporarily Ban a User
 
-When the users or robots are trying to view many your web pages in a short period of time, they will temporarily get banned. Get unbanned by solving a Catpcha.
+When the users or robots are trying to view many your web pages in a short period of time, they will temporarily get banned. Get unbanned by solving a Captcha.
 
 ![Firewall Dialog 1](https://i.imgur.com/rlsEwSG.png)
 
