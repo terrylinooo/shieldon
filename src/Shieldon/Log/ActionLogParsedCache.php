@@ -100,8 +100,8 @@ final class ActionLogParsedCache
                 case 'today':
 
                     // Update cache file hourly.
-                    $endTime = strtotime(date('Y-m-d H:i:00', time()));
-                    $beginTime = strtotime(date('Y-m-d H:i:00', strtotime('-1 hour')));
+                    $endTime = strtotime(date('Y-m-d H:00:00', time()));
+                    $beginTime = strtotime(date('Y-m-d H:00:00', strtotime('-1 hour')));
                     break;
             }
 

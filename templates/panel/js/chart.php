@@ -17,10 +17,10 @@
     var captchaCount = <?php echo ($period_data['captcha_count'] ?? 0); ?>;
 
     // Today
-    <?php if (! empty($past_seven_hour)) : ?>
-    var pageviewChartString = [<?php echo ($past_seven_hour['pageview_chart_string'] ?? ''); ?>];
-    var captchaChartString = [<?php echo ($past_seven_hour['captcha_chart_string'] ?? ''); ?>];
-    var labelChartString = [<?php echo ($past_seven_hour['label_chart_string'] ?? ''); ?>];
+    <?php if (! empty($past_seven_hours)) : ?>
+    var pageviewChartString = [<?php echo ($past_seven_hours['pageview_chart_string'] ?? ''); ?>];
+    var captchaChartString = [<?php echo ($past_seven_hours['captcha_chart_string'] ?? ''); ?>];
+    var labelChartString = [<?php echo ($past_seven_hours['label_chart_string'] ?? ''); ?>];
     <?php else : ?>
     var pageviewChartString = [<?php echo ($period_data['pageview_chart_string'] ?? ''); ?>];
     var captchaChartString = [<?php echo ($period_data['captcha_chart_string'] ?? ''); ?>];

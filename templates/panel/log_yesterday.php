@@ -108,6 +108,10 @@ use function Shieldon\Helper\mask_string;
         </table>
     </div>
     <div class="so-timezone">
+        <?php if (! empty($last_cached_time)) : ?>
+            <?php _e('panel', 'log_label_cache_time', 'Report generated time'); ?>: <strong class="text-info"><?php echo $last_cached_time; ?></strong>
+            &nbsp;&nbsp;&nbsp;&nbsp; 
+        <?php endif; ?>
         <?php _e('panel', 'log_label_timezone', 'Timezone'); ?>: <?php echo date_default_timezone_get(); ?>
     </div>
 </div>

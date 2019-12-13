@@ -808,6 +808,8 @@ class FirewallPanel
 
         $data['ip_details'] = [];
         $data['period_data'] = [];
+        
+        $lastCachedTime = '';
 
         if (! empty($this->parser)) {
 
@@ -821,10 +823,11 @@ class FirewallPanel
 
                 $data['ip_details'] = $ipDetailsCachedData['ip_details'];
                 $data['period_data'] = $ipDetailsCachedData['period_data'];
+                $lastCachedTime = date('Y-m-d H:i:s', $ipDetailsCachedData['time']);
     
                 if ('today' === $type ) {
                     $ipDetailsCachedData = $logCacheHandler->get('past_seven_hours');
-                    $data['past_seven_hour'] = $ipDetailsCachedData['period_data'];
+                    $data['past_seven_hours'] = $ipDetailsCachedData['period_data'];
                 }
 
             } else {
@@ -838,16 +841,17 @@ class FirewallPanel
     
                 if ('today' === $type ) {
                     $this->parser->prepare('past_seven_hours');
-                    $data['past_seven_hour'] = $this->parser->getParsedPeriodData();
+                    $data['past_seven_hours'] = $this->parser->getParsedPeriodData();
 
                     $logCacheHandler->save('past_seven_hours', [
-                        'period_data' => $data['past_seven_hour']
+                        'period_data' => $data['past_seven_hours']
                     ]);
                 }
             }
         }
 
         $data['page_availability'] = $this->pageAvailability['logs'];
+        $data['last_cached_time'] = $lastCachedTime;
 
         $data['page_url'] = $this->url('dashboard');
 
