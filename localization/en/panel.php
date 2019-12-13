@@ -400,4 +400,7 @@ return [
     'overview_note_line_notify' => 'Send notifications to your Line group.',
     'overview_label_sendgrid' => 'SendGrid',
     'overview_note_sendgrid' => 'Send notifications to your email through SendGrid API.',
+
+    // 2019/12/13
+    'log_label_cache_time' => 'Report generated time',
 ];

@@ -400,4 +400,7 @@ return [
     'overview_note_line_notify' => '傳送通知到您的 Line 群組。',
     'overview_label_sendgrid' => 'SendGrid',
     'overview_note_sendgrid' => '透過 SendGrid API 傳送通知到您的 Email。',
+
+    // 2019/12/13
+    'log_label_cache_time' => '報告產生時間',
 ];
