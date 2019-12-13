@@ -16,6 +16,7 @@ use Shieldon\Driver\MysqlDriver;
 use Shieldon\Driver\RedisDriver;
 use Shieldon\Driver\SqliteDriver;
 use Shieldon\Log\ActionLogParser;
+use Shieldon\Log\ActionLogParsedCache;
 use Shieldon\Shieldon;
 use Shieldon\FirewallTrait;
 use function Shieldon\Helper\__;
@@ -55,6 +56,17 @@ use function round;
 use function strtotime;
 use function time;
 use function umask;
+
+/**
+ * Increase PHP execution time. Becasue of taking long time to parse logs in a high-traffic site.
+ */
+set_time_limit(3600);
+
+/**
+ * Increase the memory limit. Becasue the log files may be large in a high-traffic site.
+ */
+
+ini_set('memory_limit', '128M');
 
 /**
  * Firewall's Control Panel
@@ -114,7 +126,6 @@ class FirewallPanel
         'user' => 'demo',
         'pass' => '$2y$10$MTi1ROPnHEukp5RwGNdxuOSAyhGdpc4sfQpwNCv9yHoVvgl9tz8Xy',
     ];
-
 
     /**
      * Language code.
@@ -798,17 +809,41 @@ class FirewallPanel
         $data['ip_details'] = [];
         $data['period_data'] = [];
 
-        $data['past_seven_hour'] = [];
-
         if (! empty($this->parser)) {
-            $this->parser->prepare($type);
 
-            $data['ip_details'] = $this->parser->getIpData();
-            $data['period_data'] = $this->parser->getParsedPeriodData();
+            $logCacheHandler = new ActionLogParsedCache($this->parser->getDirectory());
 
-            if ('today' === $type ) {
-                $this->parser->prepare('past_seven_hours');
-                $data['past_seven_hour'] = $this->parser->getParsedPeriodData();
+            $ipDetailsCachedData = $logCacheHandler->get($type);
+
+            // If we have cached data then we don't need to parse them again.
+            // This will save a lot of time in parsing logs.
+            if (! empty($ipDetailsCachedData)) {
+
+                $data['ip_details'] = $ipDetailsCachedData['ip_details'];
+                $data['period_data'] = $ipDetailsCachedData['period_data'];
+    
+                if ('today' === $type ) {
+                    $ipDetailsCachedData = $logCacheHandler->get('past_seven_hours');
+                    $data['past_seven_hour'] = $ipDetailsCachedData['period_data'];
+                }
+
+            } else {
+
+                $this->parser->prepare($type);
+
+                $data['ip_details'] = $this->parser->getIpData();
+                $data['period_data'] = $this->parser->getParsedPeriodData();
+
+                $logCacheHandler->save($type, $data);
+    
+                if ('today' === $type ) {
+                    $this->parser->prepare('past_seven_hours');
+                    $data['past_seven_hour'] = $this->parser->getParsedPeriodData();
+
+                    $logCacheHandler->save('past_seven_hours', [
+                        'period_data' => $data['past_seven_hour']
+                    ]);
+                }
             }
         }
 

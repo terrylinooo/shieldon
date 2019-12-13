@@ -129,11 +129,14 @@ final class ActionLogger
 
             if (file_exists($this->filePath)) {
 
-                $logFile = file_get_contents($this->filePath);
-                $logs = explode("\n", $logFile);
-        
-                foreach ($logs as $l) {
-                    $data = explode(',', $l);
+                $logFile = fopen($this->filePath, 'r');
+
+                while (! feof($logFile)) {
+                    $line = fgets($logFile);
+
+                    if (! empty($line)) {
+                        $data = explode(',', trim($line));
+                    }
         
                     if (! empty($data[0])) {
                         $results[] = [
@@ -143,7 +146,9 @@ final class ActionLogger
                             'timesamp'    => $data[3],
                         ];
                     }
+                    unset($line, $data);
                 }
+                fclose($logFile);
             }
 
         } elseif ('' !== $fromYmd && '' !== $toYmd) {
@@ -161,26 +166,31 @@ final class ActionLogger
             $logFile = '';
     
             foreach ($daterange as $date) {
-                
+
                 $thisDayLogFile = $this->directory . '/' . $date->format('Ymd') . '.' . $this->extension;
 
                 if (file_exists($thisDayLogFile)) {
-                    $logFile .= file_get_contents($thisDayLogFile);
-                }
-            }
 
-            $logs = explode("\n", $logFile);
+                    $logFile = fopen($thisDayLogFile, 'r');
 
-            foreach ($logs as $l) {
-                $data = explode(',', $l);
-    
-                if (! empty($data[0])) {
-                    $results[] = [
-                        'ip'          => $data[0],
-                        'session_id'  => $data[1],
-                        'action_code' => $data[2],
-                        'timesamp'    => $data[3],
-                    ];
+                    while (! feof($logFile)) {
+                        $line = fgets($logFile);
+
+                        if (! empty($line)) {
+                            $data = explode(',', trim($line));
+                        }
+
+                        if (! empty($data[0])) {
+                            $results[] = [
+                                'ip'          => $data[0],
+                                'session_id'  => $data[1],
+                                'action_code' => $data[2],
+                                'timesamp'    => $data[3],
+                            ];
+                        }
+                        unset($line, $data);
+                    }
+                    fclose($logFile);
                 }
             }
         }
@@ -211,7 +221,6 @@ final class ActionLogger
     
         return $result;
     }
-
 
     /**
      * Return current log's directory.

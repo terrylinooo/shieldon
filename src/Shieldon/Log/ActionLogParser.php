@@ -82,6 +82,8 @@ final class ActionLogParser
 
     /**
      * Constructer.
+     *
+     * @param string $directory The directory where to store the logs in.
      */
     public function __construct(string $directory = '') 
     {
@@ -160,6 +162,9 @@ final class ActionLogParser
 
     /**
      * Parse specific period of time of data.
+     * 
+     * Warning: This method may take long time to generate real-time stats on a high-traffic website.
+     * Aprroximately 10,000 rows for 3-5 seconds, depnonds on your server's CPU speed.
      *
      * @return self
      */
@@ -503,5 +508,15 @@ final class ActionLogParser
             $this->periodDetail[$t][$k]['session_limit_count']++;
             $this->ipDetail[$t][$ip]['session_limit_count']++;
         }
+    }
+
+    /**
+     * Return current log's directory.
+     *
+     * @return string
+     */
+    public function getDirectory(): string
+    {
+        return $this->logger->getDirectory();
     }
 }
