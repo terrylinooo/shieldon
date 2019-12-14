@@ -792,6 +792,18 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($enableFiltering);
     }
 
+    public function testIPv6($driver = 'sqlite')
+    {
+        $shieldon = get_testing_shieldon_instance($driver);
+        $shieldon->driver->rebuild();
+        $shieldon->setIp('0:0:0:0:0:ffff:c0a8:5f01');
+        $result = $shieldon->run();
+
+        $ipDetail = $shieldon->driver->get('0:0:0:0:0:ffff:c0a8:5f01', 'filter_log');
+
+        $this->assertSame($ipDetail['ip'], '0:0:0:0:0:ffff:c0a8:5f01'); 
+    }
+
     /***********************************************
      * File Driver 
      ***********************************************/
@@ -839,6 +851,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     public function testGetSessionCount_fileDriver()
     {
         $this->testGetSessionCount('file');
+    }
+
+    public function testIPv6_fileDriver()
+    {
+        $this->testIPv6('file');
     }
 
     /***********************************************
@@ -890,6 +907,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->testGetSessionCount('mysql');
     }
 
+    public function testIPv6_mysqlDriver()
+    {
+        $this->testIPv6('mysql');
+    }
+
     /***********************************************
      * Redis Driver 
      ***********************************************/
@@ -939,6 +961,13 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->testGetSessionCount('redis');
     }
 
+    public function testIPv6_redisDriver()
+    {
+        $this->testIPv6('redis');
+    }
+
+    /*****************/
+
     public function testSetMessenger()
     {
         $shieldon = new \Shieldon\Shieldon();
@@ -984,5 +1013,4 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $shieldon->managedBy('demo');
     }
-    
 }

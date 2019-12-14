@@ -354,6 +354,8 @@ class FileDriver extends DriverProvider
      */
     private function getFilename(string $ip, string $type = 'filter_log'): string
     {
+        $ip = str_replace(':', '-', $ip);
+
         switch ($type) {
             case 'filter_log' : return $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
             case 'session'    : return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
