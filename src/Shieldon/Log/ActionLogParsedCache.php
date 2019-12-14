@@ -10,6 +10,14 @@
 
 namespace Shieldon\Log;
 
+use function date;
+use function file_get_contents;
+use function file_put_contents;
+use function json_encode;
+use function rtrim;
+use function strtotime;
+use function time;
+
 /**
  * Cache the data parsed by ActionLogParser.
  */

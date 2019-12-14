@@ -449,11 +449,14 @@ class FirewallPanel
             $i = 0;
             ksort($loggerInfo);
 
-            foreach ($loggerInfo as $date => $size) {
-                if (0 === $i) {
-                    $data['logger_started_working_date'] = date('Y-m-d', strtotime((string) $date));
+            foreach ($loggerInfo as $filename => $size) {
+                $filename = (string) $filename;
+                if (false === strpos($filename, '.json')) {
+                    if (0 === $i) {
+                        $data['logger_started_working_date'] = date('Y-m-d', strtotime($filename));
+                    }
+                    $i += (int) $size;
                 }
-                $i += (int) $size;
             }
 
             $data['logger_work_days'] = count($loggerInfo);
