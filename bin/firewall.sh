@@ -33,9 +33,10 @@
 # Part 1. Config
 #==============================================================================
 
-per_second="5"
+per_second="1"
 debug_mode="0"
 timesamp="$(date +%s)"
+date="$(date +%Y-%m-%d' '%H:%M:%S)"
 
 # Absolute path to this script.
 SCRIPT=$(readlink -f $0)
@@ -126,7 +127,7 @@ watch_incoming_command() {
         ipv6_command_log_file="${SCRIPTPATH}/ipv6_command.log"
     fi
 
-    echo "[${timesamp}] Watching... (${1})"
+    echo "${1}"
 
     if [ -e "$iptables_watching_file" ]; then
 
@@ -222,11 +223,11 @@ watch_incoming_command() {
 
                             iptables_command="${this_command} INPUT ${this_ip}${this_subnet} -p tcp ${this_port}${this_action}"
                             $(eval iptables "$iptables_command")
-                            echo "Perform command => iptables ${iptables_command}"
+                            echo "[${date}] Perform command => iptables ${iptables_command}"
 
                             iptables_command="${this_command} INPUT ${this_ip}${this_subnet} -p udp ${this_port}${this_action}"
                             $(eval iptables "$iptables_command")
-                            echo "Perform command => iptables ${iptables_command}"
+                            echo "[${date}] Perform command => iptables ${iptables_command}"
 
                             if [ "$command" == "add" ]; then
                                 current_command_1="${command},${type},${ip},${subnet},${port},tcp,${action}"
@@ -238,7 +239,7 @@ watch_incoming_command() {
                         else
                             iptables_command="${this_command} INPUT ${this_ip}${this_subnet}${this_protocol}${this_port}${this_action}"
                             $(eval iptables "$iptables_command")
-                            echo "Perform command => iptables ${iptables_command}"
+                            echo "[${date}] Perform command => iptables ${iptables_command}"
 
                             if [ "$command" == "add" ]; then
                                 echo "$current_command" >> "$ipv4_command_log_file"
@@ -257,11 +258,11 @@ watch_incoming_command() {
 
                             ip6tables_command="${this_command} INPUT ${this_ip} -p tcp ${this_port}${this_action}"
                             $(eval ip6tables "$ip6tables_command")
-                            echo "Perform command => ip6tables ${ip6tables_command}"
+                            echo "[${date}] Perform command => ip6tables ${ip6tables_command}"
 
                             ip6tables_command="${this_command} INPUT ${this_ip} -p udp ${this_port}${this_action}"
                             $(eval ip6tables "$ip6tables_command")
-                            echo "Perform command => ip6tables ${ip6tables_command}"
+                            echo "[${date}] Perform command => ip6tables ${ip6tables_command}"
 
                             if [ "$command" == "add" ]; then
                                 current_command_1="${command},${type},${ip},${subnet},${port},tcp,${action}"
@@ -273,26 +274,28 @@ watch_incoming_command() {
                         else
                             ip6tables_command="${this_command} INPUT ${this_ip}${this_subnet}${this_protocol}${this_port}${this_action}"
                             $(eval ip6tables "$ip6tables_command")
-                            echo "Perform command => ip6tables ${ip6tables_command}"
+                            echo "[${date}] Perform command => ip6tables ${ip6tables_command}"
 
                             if [ "$command" == "add" ]; then
                                 echo "$current_command" >> "$ipv6_command_log_file"
                             fi
                         fi
                     else
-                        echo "Invalid IPv6 address."
+                        echo "[${date}] Invalid IPv6 address."
                     fi
                 fi  
             fi
 
         done <<< "$lines"
 
-        status_iptables=$(iptables -L)
-        status_ip6tables=$(ip6tables -L)
+        if [ ${1} == 1 ]; then
+            status_iptables=$(iptables -L)
+            status_ip6tables=$(ip6tables -L)
 
-        # Update iptables and ip6tables status content.
-        echo "$status_iptables" > "$ipv4_status_log_file"
-        echo "$status_ip6tables" > "$ipv6_status_log_file"
+            # Update iptables and ip6tables status content.
+            echo "${status_iptables}" > "${ipv4_status_log_file}"
+            echo "${status_ip6tables}" > "${ipv6_status_log_file}"
+        fi
 
         #==============================================================================
         # Part 4. Done. Empty the iptables_queue.log
@@ -304,9 +307,8 @@ watch_incoming_command() {
 
         # Continue to wait for new commands to come.
     else
-        echo "Missing file: ${iptables_watching_file}"
+        echo "[${date}] Missing file: ${iptables_watching_file}"
     fi
-
 }
 
 #==============================================================================
