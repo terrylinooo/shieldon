@@ -1358,13 +1358,14 @@ class Shieldon
                  * @since 3.3.0
                  */
                 if ($this->properties['deny_attempt_enable']['data_circle']) {
-                    $isUpdatRuleTable = true;
-    
+
                     if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
+
+                        $isUpdatRuleTable = true;
 
                         $buffer = $this->properties['deny_attempt_buffer']['data_circle'];
 
-                        if ($attempts === $buffer) {
+                        if ($attempts >= $buffer) {
                             $isTriggerMessenger = true;
 
                             $logData['type'] = self::ACTION_DENY;
@@ -1376,18 +1377,19 @@ class Shieldon
                 }
 
                 if ($this->properties['deny_attempt_enable']['system_firewall']) {
-                    $isUpdatRuleTable = true;
-                  
+                    
                     if ($ruleType === self::ACTION_DENY) {
+
+                        $isUpdatRuleTable = true;
 
                         // For the requests that are already banned, but they are still attempting access, that means 
                         // that they are programmably accessing your website. Consider put them in the system-layer fireall
                         // such as IPTABLE.
                         $bufferIptable = $this->properties['deny_attempt_buffer']['system_firewall'];
 
-                        if ($attempts === $bufferIptable) {
+                        if ($attempts >= $bufferIptable) {
                             $isTriggerMessenger = true;
-               
+
                             $folder = rtrim($this->properties['iptables_watching_folder'], '/');
 
                             if (file_exists($folder) && is_writable($folder)) {
@@ -1405,6 +1407,8 @@ class Shieldon
                                 // Add this IP address to itables_queue.log
                                 // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
                                 file_put_contents($filePath, $command . "\n", FILE_APPEND | LOCK_EX);
+
+                                $logData['attempts'] = 0;
                             }
                         }
                     }
