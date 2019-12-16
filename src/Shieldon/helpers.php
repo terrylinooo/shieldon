@@ -131,3 +131,44 @@ function mask_string($str)
 
     return $masked;
 }
+
+/**
+ * Get current CPU usage information.
+ *
+ * This function is only used in sending notifications and it is unavailable on Win system.
+ * If you are using shared hosting and your hosting provider has disabled `sys_getloadavg`
+ * and `shell_exec`, it won't work either.
+ *
+ * @return string
+ */
+function get_cpu_usage()
+{
+    $return = '';
+    $cpuLoads = @sys_getloadavg();
+    $cpuCores = trim(@shell_exec("grep -P '^processor' /proc/cpuinfo|wc -l"));
+
+    if (! empty($cpuCores) && ! empty($cpuLoads)) {
+        $return = round($cpuLoads[1] / ($cpuCores + 1) * 100, 0) . '%';
+    }
+    return $return;
+}
+
+/**
+ * Get current RAM usage information. 
+ *
+ * If you are using shared hosting and your hosting provider has disabled `shell_exec`, 
+ * This function may not work.
+ *
+ * @return string
+ */
+function get_memory_usage()
+{
+    $return = '';
+    $freeResult = explode("\n", trim(@shell_exec('free')));
+
+    if (! empty($freeResult)) {
+        $parsed = preg_split("/[\s]+/", $freeResult[1]);
+        $return = round($parsed[2] / $parsed[1] * 100, 0) . '%';
+    }
+    return $return;
+}
