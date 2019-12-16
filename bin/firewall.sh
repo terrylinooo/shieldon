@@ -127,7 +127,7 @@ watch_incoming_command() {
         ipv6_command_log_file="${SCRIPTPATH}/ipv6_command.log"
     fi
 
-    echo "${1}"
+    # echo "${1}"
 
     if [ -e "$iptables_watching_file" ]; then
 
