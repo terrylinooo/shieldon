@@ -16,5 +16,26 @@ return [
     'online_info' => 'Online users: {0}',
     'keepalive_info' => 'After entering, each user has {0} seconds to view this page.',
     'messenger_notification_subject' => 'Notification for IP: {0} !',
-];
 
+    // @since 0.1.7
+    'messenger_text_ip' => 'IP',
+    'messenger_text_rdns' => 'RDNS',
+    'messenger_text_attempts' => 'Attempts',
+    'messenger_text_time' => 'Time',
+    'messenger_text_timezone' => 'Timezone',
+    'messenger_text_cpu' => 'CPU usage',
+    'messenger_text_memory' => 'Memory usage',
+    'messenger_text_reason' => 'Reason',
+    'messenger_text_system' => 'System status',
+    'messenger_text_reason_code_1' => 'Too many sessions.',
+    'messenger_text_reason_code_2' => 'Too many accesses.',
+    'messenger_text_reason_code_3' => 'Cannot create JS cookies.',
+    'messenger_text_reason_code_4' => 'Empty referrer.',
+    'messenger_text_reason_code_11' => 'Daily limit reached.',
+    'messenger_text_reason_code_12' => 'Hourly limit reached.',
+    'messenger_text_reason_code_13' => 'Minutely limit reached.',
+    'messenger_text_reason_code_14' => 'Secondly limit reached.',
+    'messenger_text_handle' => 'Handle',
+    'messenger_text_handle_type_1' => 'This IP has been permanently banned in current data cycle till reseting data circle.',
+    'messenger_text_handle_type_2' => 'This IP has been placed in iptables’ DROP list till rebooting server.',
+];
