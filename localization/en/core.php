@@ -20,7 +20,6 @@ return [
     // @since 0.1.7
     'messenger_text_ip' => 'IP',
     'messenger_text_rdns' => 'RDNS',
-    'messenger_text_attempts' => 'Attempts',
     'messenger_text_time' => 'Time',
     'messenger_text_timezone' => 'Timezone',
     'messenger_text_cpu' => 'CPU usage',
