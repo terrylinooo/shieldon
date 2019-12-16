@@ -1449,10 +1449,10 @@ class FirewallPanel
         }
 
         // System firewall.
-        $enableIp6tables = $this->getConfig('iptables.enable');
+        $enableIptables = $this->getConfig('iptables.enable');
         $iptablesWatchingFolder = rtrim($this->getConfig('iptables.config.watching_folder'), '\\/ ');
 
-        if ($enableIp6tables) {
+        if ($enableIptables) {
             if (empty($iptablesWatchingFolder)) {
                 $iptablesWatchingFolder = $this->directory . '/iptables';
             }
