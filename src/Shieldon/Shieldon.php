@@ -37,6 +37,9 @@ use Shieldon\Container;
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Log\ActionLogger;
 use Messenger\MessengerInterface;
+use function Shieldon\Helper\get_cpu_usage;
+use function Shieldon\Helper\get_memory_usage;
+use function Shieldon\Helper\__;
 
 use LogicException;
 use RuntimeException;
@@ -1354,6 +1357,8 @@ class Shieldon
                 $isTriggerMessenger = false;
                 $isUpdatRuleTable = false;
 
+                $handleType = 0;
+
                 /**
                  * @since 3.3.0
                  */
@@ -1372,6 +1377,7 @@ class Shieldon
 
                             // Reset this value for next checking process - iptables.
                             $logData['attempts'] = 0;
+                            $handleType = 1;
                         }
                     }
                 }
@@ -1395,13 +1401,13 @@ class Shieldon
                             if (file_exists($folder) && is_writable($folder)) {
                                 $filePath = $folder . '/iptables_queue.log';
 
-                                // command, ipv4/6, ip, port, protocol, action
-                                // add,4,127.0.0.1,all,all,drop  (example)
-                                // add,4,127.0.0.1,80,tcp,drop   (example)
-                                $command = 'add,4,' . $this->ip . ',all,all,deny';
+                                // command, ipv4/6, ip, subnet, port, protocol, action
+                                // add,4,127.0.0.1,null,all,all,drop  (example)
+                                // add,4,127.0.0.1,null,80,tcp,drop   (example)
+                                $command = 'add,4,' . $this->ip . ',null,all,all,deny';
 
                                 if (filter_var($this->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                                    $command = 'add,6,' . $this->ip . ',all,allow';
+                                    $command = 'add,6,' . $this->ip . ',null,all,allow';
                                 }
 
                                 // Add this IP address to itables_queue.log
@@ -1409,6 +1415,7 @@ class Shieldon
                                 file_put_contents($filePath, $command . "\n", FILE_APPEND | LOCK_EX);
 
                                 $logData['attempts'] = 0;
+                                $handleType = 2;
                             }
                         }
                     }
@@ -1423,6 +1430,19 @@ class Shieldon
                  */
                 if ($isTriggerMessenger) {
 
+                    // The data strings that will be appended to message body.
+                    $prepareMessageData = [
+                        __('core', 'messenger_text_ip')       => $logData['log_ip'],
+                        __('core', 'messenger_text_rdns')     => $logData['ip_resolve'],
+                        __('core', 'messenger_text_reason')   => __('core', 'messenger_text_reason_code_' . $logData['reason']),
+                        __('core', 'messenger_text_handle')   => __('core', 'messenger_text_handle_type_' . $handleType),
+                        __('core', 'messenger_text_system')   => '',
+                        __('core', 'messenger_text_cpu')      => get_cpu_usage(),
+                        __('core', 'messenger_text_memory')   => get_memory_usage(),
+                        __('core', 'messenger_text_time')     => date('Y-m-d H:i:s', $logData['time']),
+                        __('core', 'messenger_text_timezone') => date_default_timezone_get(),
+                    ];
+
                     try {
                         foreach ($this->messengers as $messenger) {
                             $messenger->send(
@@ -1431,7 +1451,7 @@ class Shieldon
                                     'Notification for {0}',
                                     array($this->ip)
                                 ),
-                                $logData
+                                $prepareMessageData
                             );
                         }
 

@@ -11,7 +11,7 @@ return [
     'reason_too_many_accesses' => '太多连线',
     'reason_empty_js_cookie' => '无法建立 JS cookie',
     'reason_empty_referer' => '空的来源网址',
-    'reason_reached_limit_day' => '达成每日限制',
+    'reason_reached_limit_day' => '达到每日限制',
     'reason_reached_limit_hour' => '达到每小时限制',
     'reason_reached_limit_minute' => '达到每分限制',
     'reason_reached_limit_second' => '达到每秒限制',
