@@ -65,7 +65,7 @@ class BashScriptTest extends \PHPUnit\Framework\TestCase
         // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
         file_put_contents($queueFilePath, $command . "\n", FILE_APPEND | LOCK_EX);
 
-        @shell_exec($bashScriptPath . ' --watch=' . $this->iptablesWatchingFolder);
+        @shell_exec('sudo ' . $bashScriptPath . ' --watch=' . $this->iptablesWatchingFolder);
 
         $resultString = file_get_contents($commandFilePath);
 
