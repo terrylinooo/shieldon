@@ -108,7 +108,6 @@ Shieldon's Firewall Panel is fully responsive, and you can manage it when you ar
 
 ![Responsive Firewall Panel](https://i.imgur.com/fUz9lZD.png)
 
-
 ### Dialog
 
 #### Temporarily Ban a User
@@ -127,6 +126,16 @@ When a user has been permanently banned.
 
 Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 
+## Contributing
+
+Thank you very much for considering contributing to Shieldon Firewall, yet we need your help to translate our webiste, documentation and i18n files in Shieldon library. Here are the links:
+
+- [Website](https://github.com/shieldon-io/website-translations)
+- [Documentation](https://github.com/shieldon-io/document-translations)
+- [i18n files in Shieldon Library](https://github.com/shieldon-io/library-translations)
+
 ## License
 
-MIT
+Shieldon Firewall is an open-sourced software licensed under the **MIT** license.
+
+
