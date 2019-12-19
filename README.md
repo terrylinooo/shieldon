@@ -122,6 +122,21 @@ When a user has been permanently banned.
 
 ![Firewall Dialog 2](https://i.imgur.com/Qy1sADw.png)
 
+#### Online Session Control
+
+![Firewall Dialog 3](https://i.imgur.com/cAOKIY8.png)
+
+When a user has reached the online session limit.
+
+### Notification
+
+Provided by [Messenger](https://github.com/terrylinooo/messenger) library.
+
+![Telegram](https://i.imgur.com/3lqamO7.png)
+
+Send notification via Telegram API.
+
+
 ## Author
 
 Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
