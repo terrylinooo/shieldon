@@ -35,6 +35,6 @@ return [
     'messenger_text_reason_code_13' => 'Minutely limit reached.',
     'messenger_text_reason_code_14' => 'Secondly limit reached.',
     'messenger_text_handle' => 'Handle',
-    'messenger_text_handle_type_1' => 'This IP has been permanently banned in current data cycle till reseting data circle.',
+    'messenger_text_handle_type_1' => 'This IP has been permanently banned in current data cycle till resetting data circle.',
     'messenger_text_handle_type_2' => 'This IP has been placed in iptables’ DROP list till rebooting server.',
 ];

@@ -24,6 +24,22 @@ $css = <<< EOF
         font-family: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Helvetica", "Arial", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", sans-serif;
     }
 
+    :lang(en) body {
+        font-family: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", sans-serif;
+    }
+
+    :lang(zh) body {
+        font-family: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "微軟正黑體", "Microsoft JhengHei", "SimHei", "Microsoft YaHei", "文泉驛正黑", "WenQuanYi Zen Hei", "儷黑 Pro", "LiHei Pro", "標楷體", "DFKai-SB";
+    }
+
+    :lang(ja) body {
+        font-family: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "MS PGothic";
+    }
+
+    :lang(ko) body {
+        font-family: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Dotum", "Gulim";
+    }
+
     .wrapper {
         position: absolute;
         text-align: center;
