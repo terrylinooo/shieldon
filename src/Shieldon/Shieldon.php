@@ -84,6 +84,17 @@ class Shieldon
     const REASON_REACHED_LIMIT_MINUTE = 13;
     const REASON_REACHED_LIMIT_SECOND = 14;
 
+    const REASON_INVAILD_IP = 40;
+    const REASON_DENY_IP = 41;
+    const REASON_DENY_IP_RANGE  = 42;
+    const REASON_ALLOW_IP = 43;
+    const REASON_ALLOW_IP_RANGE = 44;
+
+    const REASON_COMPONENT_IP = 81;
+    const REASON_COMPONENT_RDNS = 82;
+    const REASON_COMPONENT_HEADER = 83;
+    const REASON_COMPONENT_USERAGENT = 84;
+
     const REASON_MANUAL_BAN = 99;
 
     // Action codes.
@@ -1306,45 +1317,25 @@ class Shieldon
             $this->component[$name]->setStrict($this->strictMode);
         }
 
-        if ($this->getComponent('Ip')) {
+        /*
+        |--------------------------------------------------------------------------
+        | Stage - Looking for rule table.
+        |--------------------------------------------------------------------------
+        */
 
-            $result = $this->getComponent('Ip')->check();
-
-            if (! empty($result)) {
-
-                switch ($result['status']) {
-
-                    case 'allow':
-                        $resultCode = self::RESPONSE_ALLOW;
-                        break;
-    
-                    case 'deny':
-                        $resultCode = self::RESPONSE_DENY;
-                        break;
-                }
-
-                return $this->result = $this->sessionHandler($resultCode);
-            }
-        }
-
-        foreach ($this->component as $component) {
-
-            // First of all, check if is a a bad robot already defined in settings.
-            if ($component->isDenied()) {
-                return $this->result = self::RESPONSE_DENY;
-            }
-        }
-
-        // Looking for rule table.
         $ipRule = $this->driver->get($this->ip, 'rule');
 
         if (! empty($ipRule)) {
+
             $ruleType = (int) $ipRule['type'];
 
             if ($ruleType === self::ACTION_ALLOW) {
                 $this->isAllowedRule = true;
+                
             } else {
 
+                // Current visitor has been blocked. If he still attempts accessing the site, 
+                // then we can drop him into the permanent block list.
                 $attempts = $ipRule['attempts'];
 
                 $logData['log_ip']     = $ipRule['log_ip'];
@@ -1466,7 +1457,18 @@ class Shieldon
             }
         }
 
-        if (! $this->isAllowedRule) {
+        if ($this->isAllowedRule) {
+
+            // The requests that are allowed in rule table will not go into sessionHandler.
+            return $this->result = self::RESPONSE_ALLOW;
+
+        } else {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Statge - Detect popular search engine.
+            |--------------------------------------------------------------------------
+            */
 
             if ($this->getComponent('TrustedBot')) {
  
@@ -1500,12 +1502,67 @@ class Shieldon
                     return $this->result = self::RESPONSE_ALLOW;
                 }
             }
-        } else {
-            // The requests that are allowed in rule table will not go into sessionHandler.
-            return $this->result = self::RESPONSE_ALLOW;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Stage - IP component.
+            |--------------------------------------------------------------------------
+            */
+
+            if ($this->getComponent('Ip')) {
+
+                $result = $this->getComponent('Ip')->check();
+    
+                if (! empty($result)) {
+    
+                    switch ($result['status']) {
+    
+                        case 'allow':
+                            $actionCode = self::ACTION_ALLOW;
+                            $reasonCode = $result['code'];
+                            break;
+        
+                        case 'deny':
+                            $actionCode = self::ACTION_DENY;
+                            $reasonCode = $result['code']; 
+                            break;
+                    }
+    
+                    // @since 0.1.8
+                    $this->action($actionCode, $reasonCode);
+    
+                    // $resultCode = $actionCode
+                    return $this->result = $this->sessionHandler($actionCode);
+                }
+            }
+    
+            /*
+            |--------------------------------------------------------------------------
+            | Stage - Check all other components.
+            |--------------------------------------------------------------------------
+            */
+
+            foreach ($this->component as $component) {
+    
+                // check if is a a bad robot already defined in settings.
+                if ($component->isDenied()) {
+    
+                    // @since 0.1.8
+                    $this->action(self::ACTION_DENY, $component->getDenyStatusCode());
+    
+                    return $this->result = self::RESPONSE_DENY;
+                }
+            }
         }
 
-        // This IP address is not listed in rule table, let's detect it.
+        /*
+        |--------------------------------------------------------------------------
+        | Stage - Filters
+        |--------------------------------------------------------------------------
+        | This IP address is not listed in rule table, let's detect it.
+        |
+        */
+
         if ($this->enableFiltering) {
             return $this->result = $this->sessionHandler($this->filter());
         }
