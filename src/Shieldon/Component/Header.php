@@ -91,4 +91,14 @@ class Header extends ComponentProvider
 
         return $headers;
     }
+
+    /**
+     * Unique deny status code.
+     *
+     * @return int
+     */
+    public function getDenyStatusCode(): int
+    {
+        return 23;
+    }
 }

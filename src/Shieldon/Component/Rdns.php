@@ -67,4 +67,14 @@ class Rdns extends ComponentProvider
 
         return false;
     }
+
+    /**
+     * Unique deny status code.
+     *
+     * @return int
+     */
+    public function getDenyStatusCode(): int
+    {
+        return 22;
+    }
 }
