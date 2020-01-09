@@ -1333,7 +1333,7 @@ class Shieldon
                 $this->isAllowedRule = true;
                 
             } else {
-
+                
                 // Current visitor has been blocked. If he still attempts accessing the site, 
                 // then we can drop him into the permanent block list.
                 $attempts = $ipRule['attempts'];
@@ -1512,7 +1512,7 @@ class Shieldon
             if ($this->getComponent('Ip')) {
 
                 $result = $this->getComponent('Ip')->check();
-    
+
                 if (! empty($result)) {
     
                     switch ($result['status']) {

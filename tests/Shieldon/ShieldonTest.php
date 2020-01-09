@@ -655,6 +655,30 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testIpCompoment($driver = 'sqlite')
+    {
+        $shieldon = new \Shieldon\Shieldon();
+        
+        $shieldon = get_testing_shieldon_instance($driver);
+        $shieldon->driver->rebuild();
+
+        $shieldon->setComponent(new \Shieldon\Component\Ip());
+
+        $shieldon->setIp('8.8.8.8');
+
+        // Set an IP to whitelist.
+        $shieldon->component['Ip']->setAllowedItem('8.8.8.8');
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+
+        // Set an IP to blacklist.
+
+        $shieldon->setIp('8.8.4.4');
+        $shieldon->component['Ip']->setDeniedItem('8.8.4.4');
+        $result = $shieldon->run();
+        $this->assertSame($shieldon::RESPONSE_DENY, $result);
+    }
+
     public function testRun($driver = 'sqlite')
     {
         $shieldon = new \Shieldon\Shieldon();
@@ -671,17 +695,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         // By default, it will block this session because of no common header information
         $shieldon->setStrict(true);
         $shieldon->setIp('8.8.8.8');
-        $result = $shieldon->run();
-        $this->assertSame($shieldon::RESPONSE_DENY, $result);
-
-        // Set an IP to whitelist.
-        $shieldon->component['Ip']->setAllowedItem('8.8.8.8');
-        $result = $shieldon->run();
-        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
-
-        // Set an IP to blacklist.
-        $shieldon->component['Ip']->removeItem('8.8.8.8');
-        $shieldon->component['Ip']->setDeniedItem('8.8.8.8');
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_DENY, $result);
 
