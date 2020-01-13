@@ -18,6 +18,7 @@ use function array_unique;
 use function gethostbyname;
 use function implode;
 use function preg_match;
+use function strstr;
 
 /**
  * TrustedBot
@@ -39,6 +40,13 @@ class TrustedBot extends ComponentProvider
      * @var array
      */
     private $trustedBotList = [];
+
+    /**
+     * For testing purpse. (Unit test)
+     *
+     * @var bool
+     */
+    private $checkFakeRdns = true;
 
     /**
      * Constructor.
@@ -133,20 +141,47 @@ class TrustedBot extends ComponentProvider
             $userAgent = array_unique(array_column($this->trustedBotList, 'userAgent'));
 
             if (! preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgentString)) {
-                
                 return false;
             }
 
             $rdns = array_unique(array_column($this->trustedBotList, 'rdns'));
 
+            $rdnsCheck = false;
+
             // We will check the RDNS record to see if it is in the whitelist.
             if (preg_match('/(' . implode('|', $rdns) . ')/i', $this->ipResolvedHostname)) {
 
-                $ip = gethostbyname($this->ipResolvedHostname);
+                if ($this->checkFakeRdns) {
 
-                // If the IP is different as hostname's resolved IP. It is maybe a fake bot.
-                if ($this->strictMode) {
-                    if ($ip !== $this->ip) {
+                    // To prevent "fake" RDNS such as "abc.google.com.fakedomain.com" pass thorugh our checking process.
+                    // We need to check it one by one.
+                    foreach ($rdns as $r) {
+
+                        // For example:
+                        // $x = strstr('abc.googlebot.com.fake', '.googlebot.com');
+                        // $x will be `.googlebot.com.fake` so that we can identify this is a fake domain.
+                        $x = strstr($this->ipResolvedHostname, $r);
+            
+                        // `.googlebot.com` === `.googlebot.com`
+                        if ($x === $r) {
+                            $rdnsCheck = true;
+                        }
+                    }
+                }
+
+                if ($rdnsCheck) {
+                    $ip = gethostbyname($this->ipResolvedHostname);
+
+                    // If the IP is different as hostname's resolved IP. It is maybe a fake bot.
+                    if ($this->strictMode) {
+                        if ($ip !== $this->ip) {
+                            return false;
+                        }
+                    }
+                }
+
+                if ($this->checkFakeRdns) {
+                    if (! $rdnsCheck) {
                         return false;
                     }
                 }

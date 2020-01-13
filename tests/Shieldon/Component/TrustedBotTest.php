@@ -180,4 +180,43 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
             $this->assertFalse(true);
         }
     }
+
+    /**
+     * Situation 1: Check fake googlebot.
+     */
+    public function testFakeGoogleBot1()
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
+    
+        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent->setIp('111.111.111.111', false);
+        $trustedBotComponent->setRdns('crawl-66-249-66-1.googlebot.com.fakedomain.com');
+
+        $result = $trustedBotComponent->isAllowed();
+
+        $this->assertFalse($result);
+    }
+
+    /**
+     * Situation 2: Disable checking fake googlebot.
+     */
+    public function testFakeGoogleBot2()
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
+    
+        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent->setIp('111.111.111.111', false);
+        $trustedBotComponent->setRdns('crawl-66-249-66-1.googlebot.com.fakedomain.com');
+
+        $reflection = new \ReflectionObject($trustedBotComponent);
+        $t = $reflection->getProperty('checkFakeRdns');
+        $t->setAccessible(true);
+
+        // Disable checking fake RDNS.
+        $t->setValue($trustedBotComponent, false);
+
+        $result = $trustedBotComponent->isAllowed();
+
+        $this->assertTrue($result);
+    }
 }
