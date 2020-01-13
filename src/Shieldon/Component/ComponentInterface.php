@@ -48,4 +48,11 @@ interface ComponentInterface
      * @return void
      */
     function removeItem(string $string): void;
+
+    /**
+     * Unique deny status code.
+     *
+     * @return int
+     */
+    function getDenyStatusCode(): int;
 }

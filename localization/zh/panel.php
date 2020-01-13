@@ -2,19 +2,19 @@
 
 return [
 
-    'reason_manual_ban' => '被管理員手動加入',
-    'reason_is_search_engine' => '搜尋引擎機器人',
-    'reason_is_google' => 'Google 機器人',
-    'reason_is_bing' => 'Bing 機器人',
-    'reason_is_yahoo' => 'Yahoo 機器人',
-    'reason_too_many_sessions' => '太多工作階段',
-    'reason_too_many_accesses' => '太多連線',
-    'reason_empty_js_cookie' => '無法建立 JS cookie',
-    'reason_empty_referer' => '空的來源網址',
-    'reason_reached_limit_day' => '達到每日限制',
-    'reason_reached_limit_hour' => '達到每小時限制',
-    'reason_reached_limit_minute' => '達到每分限制',
-    'reason_reached_limit_second' => '達到每秒限制',
+    'reason_manual_ban' => '被管理員手動加入。',
+    'reason_is_search_engine' => '搜尋引擎機器人。',
+    'reason_is_google' => 'Google 機器人。',
+    'reason_is_bing' => 'Bing 機器人。',
+    'reason_is_yahoo' => 'Yahoo 機器人。',
+    'reason_too_many_sessions' => '太多工作階段。',
+    'reason_too_many_accesses' => '太多連線。',
+    'reason_empty_js_cookie' => '無法建立 JS cookie。',
+    'reason_empty_referer' => '空的來源網址。',
+    'reason_reached_limit_day' => '達到每日限制。',
+    'reason_reached_limit_hour' => '達到每小時限制。',
+    'reason_reached_limit_minute' => '達到每分限制。',
+    'reason_reached_limit_second' => '達到每秒限制。',
 
     // Menu
     'nav_locale' => '語系',
@@ -144,7 +144,7 @@ return [
     'overview_label_trustedbot' => '信賴的機器人',
     'overview_note_ip' => '進階的 IP 位址管理功能。',
     'overview_label_ip' => 'IP',
-    'overview_heading_components' => '組件',
+    'overview_heading_components' => '元件',
     'overview_note_referer' => '檢查 HTTP 來源網址資訊。',
     'overview_label_referer' => '來源網址',
     'overview_note_frequency' => '檢查訪客有多頻繁檢閱網頁。',
@@ -403,4 +403,14 @@ return [
 
     // 2019/12/13
     'log_label_cache_time' => '報告產生時間',
+
+    // @since 0.1.8
+    'reason_invalid_ip' => '無效的 IP 位址。',
+    'reason_deny_ip' => '被 IP 元件拒絕。',
+    'reason_allow_ip' => '由 IP 元件允許。',
+    'reason_component_ip' => '被 IP 元件拒絕。',
+    'reason_component_rdns' => '被 RDNS 元件拒絕。',
+    'reason_component_header' => '被標頭元件拒絕。',
+    'reason_component_useragent' => '被用戶代理元件拒絕。',
+    'reason_component_trusted_robot' => '被辨識為假造搜尋引擎資訊。',
 ];

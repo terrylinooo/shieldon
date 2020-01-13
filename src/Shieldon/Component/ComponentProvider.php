@@ -102,6 +102,16 @@ abstract class ComponentProvider implements ComponentInterface
     }
 
     /**
+     * Unique deny status code.
+     *
+     * @return int
+     */
+    public function getDenyStatusCode(): int
+    {
+        return 80;
+    }
+
+    /**
      * Is denied?
      *
      * @return bool

@@ -78,22 +78,21 @@ class Shieldon
     const REASON_TOO_MANY_ACCESSES = 2;
     const REASON_EMPTY_JS_COOKIE = 3;
     const REASON_EMPTY_REFERER = 4;
-
+    
     const REASON_REACHED_LIMIT_DAY = 11;
     const REASON_REACHED_LIMIT_HOUR = 12;
     const REASON_REACHED_LIMIT_MINUTE = 13;
     const REASON_REACHED_LIMIT_SECOND = 14;
 
-    const REASON_INVAILD_IP = 40;
+    const REASON_INVALID_IP = 40;
     const REASON_DENY_IP = 41;
-    const REASON_DENY_IP_RANGE  = 42;
-    const REASON_ALLOW_IP = 43;
-    const REASON_ALLOW_IP_RANGE = 44;
+    const REASON_ALLOW_IP = 42;
 
     const REASON_COMPONENT_IP = 81;
     const REASON_COMPONENT_RDNS = 82;
     const REASON_COMPONENT_HEADER = 83;
     const REASON_COMPONENT_USERAGENT = 84;
+    const REASON_COMPONENT_TRUSTED_ROBOT = 85;
 
     const REASON_MANUAL_BAN = 99;
 
@@ -1500,6 +1499,13 @@ class Shieldon
 
                     // Allowed robots not join to our traffic handler.
                     return $this->result = self::RESPONSE_ALLOW;
+                }
+
+                // After `isAllowed()` executed, we can check if the currect access is fake by `isFakeRobot()`.
+                if ($this->getComponent('TrustedBot')->isFakeRobot()) {
+                    $this->action(self::ACTION_DENY, self::REASON_COMPONENT_TRUSTED_ROBOT);
+
+                    return $this->result = self::RESPONSE_DENY;
                 }
             }
 

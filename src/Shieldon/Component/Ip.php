@@ -34,9 +34,9 @@ class Ip extends ComponentProvider
     /**
      * Constant
      */
-    const CODE_INVAILD_IP     = 40;
-    const CODE_DENY_IP        = 41;
-    const CODE_ALLOW_IP       = 43;
+    const REASON_INVALID_IP     = 40;
+    const REASON_DENY_IP        = 41;
+    const REASON_ALLOW_IP       = 42;
 
     /**
      * Data pool for hard whitelist.
@@ -70,7 +70,7 @@ class Ip extends ComponentProvider
         if (! filter_var($this->ip, FILTER_VALIDATE_IP)) {
             return [
                 'status' => 'deny',
-                'code' => self::CODE_INVAILD_IP,
+                'code' => self::REASON_INVALID_IP,
                 'comment' => 'Invalid IP.',
             ];
         }
@@ -78,7 +78,7 @@ class Ip extends ComponentProvider
         if ($this->isAllowed()) {
             return [
                 'status' => 'allow',
-                'code' => self::CODE_ALLOW_IP,
+                'code' => self::REASON_ALLOW_IP,
                 'comment' => 'IP is in allowed list.',
             ];
         }
@@ -86,7 +86,7 @@ class Ip extends ComponentProvider
         if ($this->isDenied()) {
             return [
                 'status' => 'deny',
-                'code' => self::CODE_DENY_IP,
+                'code' => self::REASON_DENY_IP,
                 'comment' => 'IP is in denied list.',
             ];
         }
@@ -94,7 +94,7 @@ class Ip extends ComponentProvider
         if ($this->isDenyAll) {
             return [
                 'status' => 'deny',
-                'code' => self::CODE_DENY_IP,
+                'code' => self::REASON_DENY_IP,
                 'comment' => 'Deny all in strict mode.',
             ];
         }
@@ -362,6 +362,6 @@ class Ip extends ComponentProvider
      */
     public function getDenyStatusCode(): int
     {
-        return 21;
+        return 81;
     }
 }

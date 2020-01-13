@@ -912,6 +912,16 @@ class FirewallPanel
             $this->shieldon::REASON_REACHED_LIMIT_HOUR   => __('panel', 'reason_reached_limit_hour', 'Hourly limit reached'),
             $this->shieldon::REASON_REACHED_LIMIT_MINUTE => __('panel', 'reason_reached_limit_minute', 'Minutely limit reached'),
             $this->shieldon::REASON_REACHED_LIMIT_SECOND => __('panel', 'reason_reached_limit_second', 'Secondly limit reached'),
+
+            // @since 0.1.8
+            $this->shieldon::REASON_INVALID_IP              => __('panel', 'reason_invalid_ip', 'Invalid IP address.'),
+            $this->shieldon::REASON_DENY_IP                 => __('panel', 'reason_deny_ip', 'Denied by IP component.'),
+            $this->shieldon::REASON_ALLOW_IP                => __('panel', 'reason_allow_ip', 'Allowed by IP component.'),
+            $this->shieldon::REASON_COMPONENT_IP            => __('panel', 'reason_component_ip', 'Denied by IP component.'),
+            $this->shieldon::REASON_COMPONENT_RDNS          => __('panel', 'reason_component_rdns', 'Denied by RDNS component.'),
+            $this->shieldon::REASON_COMPONENT_HEADER        => __('panel', 'reason_component_header', 'Denied by Header component.'),
+            $this->shieldon::REASON_COMPONENT_USERAGENT     => __('panel', 'reason_component_useragent', 'Denied by User-agent component.'),
+            $this->shieldon::REASON_COMPONENT_TRUSTED_ROBOT => __('panel', 'reason_component_trusted_robot', 'Identified as fake search engine.'),
         ];
 
         $types = [

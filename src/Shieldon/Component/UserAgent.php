@@ -91,6 +91,6 @@ class UserAgent extends ComponentProvider
      */
     public function getDenyStatusCode(): int
     {
-        return 24;
+        return 84;
     }
 }

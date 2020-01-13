@@ -184,7 +184,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     /**
      * Situation 1: Check fake googlebot.
      */
-    public function testFakeGoogleBot1()
+    public function testFakeGoogleBot_1()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
     
@@ -195,12 +195,16 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
         $result = $trustedBotComponent->isAllowed();
 
         $this->assertFalse($result);
+
+        $isFakeGooglebot = $trustedBotComponent->isFakeRobot();
+
+        $this->assertTrue($isFakeGooglebot);
     }
 
     /**
      * Situation 2: Disable checking fake googlebot.
      */
-    public function testFakeGoogleBot2()
+    public function testFakeGoogleBot_2()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
     
@@ -218,5 +222,9 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
         $result = $trustedBotComponent->isAllowed();
 
         $this->assertTrue($result);
+
+        $isFakeGooglebot = $trustedBotComponent->isFakeRobot();
+
+        $this->assertFalse($isFakeGooglebot);
     }
 }

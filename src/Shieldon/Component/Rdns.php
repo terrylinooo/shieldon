@@ -75,6 +75,6 @@ class Rdns extends ComponentProvider
      */
     public function getDenyStatusCode(): int
     {
-        return 22;
+        return 82;
     }
 }

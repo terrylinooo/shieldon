@@ -2,19 +2,19 @@
 
 return [
 
-    'reason_manual_ban' => 'Added manually by administrator',
-    'reason_is_search_engine' => 'Search engine bot',
-    'reason_is_google' => 'Google bot',
-    'reason_is_bing' => 'Bing bot',
-    'reason_is_yahoo' => 'Yahoo bot',
-    'reason_too_many_sessions' => 'Too many sessions',
-    'reason_too_many_accesses' => 'Too many accesses',
-    'reason_empty_js_cookie' => 'Cannot create JS cookies',
-    'reason_empty_referer' => 'Empty referrer',
-    'reason_reached_limit_day' => 'Daily limit reached',
-    'reason_reached_limit_hour' => 'Hourly limit reached',
-    'reason_reached_limit_minute' => 'Minutely limit reached',
-    'reason_reached_limit_second' => 'Secondly limit reached',
+    'reason_manual_ban' => 'Added manually by administrator.',
+    'reason_is_search_engine' => 'Search engine bot.',
+    'reason_is_google' => 'Google bot.',
+    'reason_is_bing' => 'Bing bot.',
+    'reason_is_yahoo' => 'Yahoo bot.',
+    'reason_too_many_sessions' => 'Too many sessions.',
+    'reason_too_many_accesses' => 'Too many accesses.',
+    'reason_empty_js_cookie' => 'Cannot create JS cookies.',
+    'reason_empty_referer' => 'Empty referrer.',
+    'reason_reached_limit_day' => 'Daily limit reached.',
+    'reason_reached_limit_hour' => 'Hourly limit reached.',
+    'reason_reached_limit_minute' => 'Minutely limit reached.',
+    'reason_reached_limit_second' => 'Secondly limit reached.',
 
     // Menu
     'nav_locale' => 'Locale',
@@ -403,4 +403,14 @@ return [
 
     // 2019/12/13
     'log_label_cache_time' => 'Report generated time',
+
+    // @since 0.1.8
+    'reason_invalid_ip' => 'Invalid IP address.',
+    'reason_deny_ip' => 'Denied by IP component.',
+    'reason_allow_ip' => 'Allowed by IP component.',
+    'reason_component_ip' => 'Denied by IP component.',
+    'reason_component_rdns' => 'Denied by RDNS component.',
+    'reason_component_header' => 'Denied by Header component.',
+    'reason_component_useragent' => 'Denied by User-agent component.',
+    'reason_component_trusted_robot' => 'Identified as fake search engine.',
 ];

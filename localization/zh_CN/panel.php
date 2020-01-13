@@ -2,19 +2,19 @@
 
 return [
 
-    'reason_manual_ban' => '被管理员手动加入',
-    'reason_is_search_engine' => '搜寻引擎机器人',
-    'reason_is_google' => 'Google 机器人',
-    'reason_is_bing' => '必应机器人',
-    'reason_is_yahoo' => 'Yahoo 机器人',
-    'reason_too_many_sessions' => '太多工作阶段',
-    'reason_too_many_accesses' => '太多连线',
-    'reason_empty_js_cookie' => '无法建立 JS cookie',
-    'reason_empty_referer' => '空的来源网址',
-    'reason_reached_limit_day' => '达到每日限制',
-    'reason_reached_limit_hour' => '达到每小时限制',
-    'reason_reached_limit_minute' => '达到每分限制',
-    'reason_reached_limit_second' => '达到每秒限制',
+    'reason_manual_ban' => '被管理员手动加入。',
+    'reason_is_search_engine' => '搜寻引擎机器人。',
+    'reason_is_google' => 'Google 机器人。',
+    'reason_is_bing' => '必应机器人。',
+    'reason_is_yahoo' => 'Yahoo 机器人。',
+    'reason_too_many_sessions' => '太多工作阶段。',
+    'reason_too_many_accesses' => '太多连线。',
+    'reason_empty_js_cookie' => '无法建立 JS cookie。',
+    'reason_empty_referer' => '空的来源网址。',
+    'reason_reached_limit_day' => '达到每日限制。',
+    'reason_reached_limit_hour' => '达到每小时限制。',
+    'reason_reached_limit_minute' => '达到每分限制。',
+    'reason_reached_limit_second' => '达到每秒限制。',
 
     // Menu
     'nav_locale' => '语系',
@@ -402,4 +402,14 @@ return [
 
     // 2019/12/13
     'log_label_cache_time' => '报告产生时间',
+
+    
+    'reason_invalid_ip' =>' 无效的 IP 位址。',
+    'reason_deny_ip' => '被 IP 元件拒绝。',
+    'reason_allow_ip' => '由 IP 元件允许。',
+    'reason_component_ip' => '被 IP 元件拒绝。',
+    'reason_component_rdns' => '被 RDNS 元件拒绝。',
+    'reason_component_header' => '被标头元件拒绝。',
+    'reason_component_useragent' => '被用户代理元件拒绝。',
+    'reason_component_trusted_robot' => '被识别为假造搜寻引擎资讯。',
 ];

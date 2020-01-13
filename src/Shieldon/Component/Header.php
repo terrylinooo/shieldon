@@ -99,6 +99,6 @@ class Header extends ComponentProvider
      */
     public function getDenyStatusCode(): int
     {
-        return 23;
+        return 83;
     }
 }

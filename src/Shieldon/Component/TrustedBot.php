@@ -49,6 +49,13 @@ class TrustedBot extends ComponentProvider
     private $checkFakeRdns = true;
 
     /**
+     * Is the current access a fake robot?
+     *
+     * @var bool
+     */
+    private $isFake = false;
+
+    /**
      * Constructor.
      * 
      * It will implement default configuration settings here.
@@ -182,12 +189,20 @@ class TrustedBot extends ComponentProvider
 
                 if ($this->checkFakeRdns) {
                     if (! $rdnsCheck) {
+                        
+                        // We can identify that current access uses a fake RDNS record.
+                        $this->isFake = true;
+
                         return false;
                     }
                 }
 
                 return true;
             }
+
+            // We can identify that current access uses a fake RDNS record.
+            // Because that RDNS record is not valid.
+            $this->isFake = true;
         }
 
         return false;
@@ -313,5 +328,25 @@ class TrustedBot extends ComponentProvider
     public function isDenied(): bool
     {
         return false;
+    }
+
+    /**
+     * Check if the current access a fake robot.
+     *
+     * @return bool
+     */
+    public function isFakeRobot(): bool
+    {
+        return $this->isFake;
+    }
+
+    /**
+     * Unique deny status code.
+     *
+     * @return int
+     */
+    public function getDenyStatusCode(): int
+    {
+        return 85;
     }
 }
