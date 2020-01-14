@@ -94,6 +94,12 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                                         <i class="fas fa-tachometer-alt"></i>
                                         <span><?php _e('panel', 'menu_overview', 'Overview'); ?></span>
                                     </a>
+                                    <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=operation_status">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                        <span><?php _e('panel', 'menu_operation_status', 'Operation'); ?></span>
+                                    </a>
+                                </li>
                                 </li>
                             </ul>
                         </li>
@@ -230,7 +236,7 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=ip_log_table">
                                         <i class="fas fa-chart-area"></i>
-                                        <span><?php _e('panel', 'menu_ip_logs', 'IP Logs'); ?></span>
+                                        <span><?php _e('panel', 'menu_ip_filter_logs', 'Filter Logs'); ?></span>
                                     </a>
                                 </li>
                                 <li>

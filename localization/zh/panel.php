@@ -31,11 +31,12 @@ return [
     'menu_last_7_days' => '過去 7 日',
     'menu_yesterday' => '昨日',
     'menu_today' => '今天',
-    'menu_ip_logs' => 'IP 記錄',
+    'menu_ip_filter_logs' => '過濾器記錄',
     'menu_ip_rules' => 'IP 規則',
     'menu_sessions' => '工作階段',
     'menu_logs' => '記錄',
     'menu_data_circle' => '資料週期',
+    'menu_operation_status' => '運行狀態',
 
     // Message
     'error_mysql_connection' => '無法連接您的 MySQL 資料庫，請檢查設定值。',

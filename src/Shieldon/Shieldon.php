@@ -75,7 +75,7 @@ class Shieldon
 
     // Reason codes (deny)
     const REASON_TOO_MANY_SESSIONS = 1;
-    const REASON_TOO_MANY_ACCESSES = 2;
+    const REASON_TOO_MANY_ACCESSES = 2; // Filter - frequency (not used)
     const REASON_EMPTY_JS_COOKIE = 3;
     const REASON_EMPTY_REFERER = 4;
     

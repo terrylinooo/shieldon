@@ -100,7 +100,7 @@ $timezone = '';
                         ?>
                     </td>
                     <td><?php echo date('Y-m-d H:i:s', $ipInfo['time']); ?></td>
-                    <td><button type="button" class="button btn-remove-ip" data-ip="<?php $ipInfo['log_ip']; ?>"><i class="far fa-trash-alt"></i></button></td>
+                    <td><button type="button" class="button btn-remove-ip" data-ip="<?php echo $ipInfo['log_ip']; ?>"><i class="far fa-trash-alt"></i></button></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>   

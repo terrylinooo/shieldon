@@ -31,11 +31,12 @@ return [
     'menu_last_7_days' => '过去 7 日',
     'menu_yesterday' => '昨日',
     'menu_today' => '今天',
-    'menu_ip_logs' => 'IP 日志',
+    'menu_ip_filter_logs' => '过滤器日志',
     'menu_ip_rules' => 'IP 规则',
     'menu_sessions' => '工作阶段',
     'menu_logs' => '日志',
     'menu_data_circle' => '资料周期',
+    'menu_operation_status' => '运行状态',
     
     // 信息
     'error_mysql_connection' => '无法连接您的 MySQL 资料库，请检查设置值。',

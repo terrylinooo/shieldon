@@ -31,11 +31,12 @@ return [
     'menu_last_7_days' => 'Last 7 days',
     'menu_yesterday' => 'Yesterday',
     'menu_today' => 'Today',
-    'menu_ip_logs' => 'IP Logs',
+    'menu_ip_filter_logs' => 'Filter Logs',
     'menu_ip_rules' => 'IP Rules',
     'menu_sessions' => 'Sessions',
     'menu_logs' => 'Logs',
     'menu_data_circle' => 'Data Circle',
+    'menu_operation_status' => 'Operation',
 
     // Message
     'error_mysql_connection' => 'Cannot access to your MySQL database, please check your settings.',
