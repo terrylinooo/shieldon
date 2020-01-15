@@ -27,6 +27,8 @@ class TrustedBot extends ComponentProvider
 {
     use IpTrait;
 
+    const STATUS_CODE = 85;
+
     /**
      * Robot's user-agent text.
      * 
@@ -332,21 +334,12 @@ class TrustedBot extends ComponentProvider
 
     /**
      * Check if the current access a fake robot.
+     * To get real value from this method, execution must be after `isAllowed`.
      *
      * @return bool
      */
     public function isFakeRobot(): bool
     {
         return $this->isFake;
-    }
-
-    /**
-     * Unique deny status code.
-     *
-     * @return int
-     */
-    public function getDenyStatusCode(): int
-    {
-        return 85;
     }
 }

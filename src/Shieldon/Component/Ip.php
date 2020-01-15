@@ -31,6 +31,8 @@ class Ip extends ComponentProvider
 {
     use IpTrait;
 
+    const STATUS_CODE = 81;
+
     /**
      * Constant
      */
@@ -353,15 +355,5 @@ class Ip extends ComponentProvider
     public function denyAll(): bool
     {
         return $this->isDenyAll = true;
-    }
-
-    /**
-     * Unique deny status code.
-     *
-     * @return int
-     */
-    public function getDenyStatusCode(): int
-    {
-        return 81;
     }
 }

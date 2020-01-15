@@ -212,6 +212,10 @@
             }
         }
     },
+    "record_attempt": {
+        "detection_period": 5,
+        "time_to_reset": 1800
+    },
     "messengers": {
         "telegram": {
             "enable": false,

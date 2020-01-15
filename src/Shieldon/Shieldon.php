@@ -235,6 +235,15 @@ class Shieldon
             'data_circle'     => 10,
             'system_firewall' => 10,
         ],
+        /**
+         * To prevent dropping social platform robots into iptables firewall, such as Facebook, Line, 
+         * and others who scrape snapshots from your web pages, you should adjust the values below 
+         * to fit your needs. (unit: second)
+         */
+        'record_attempt_detection_period' => 5, // 5 seconds.
+
+        // Reset the counter after n second.
+        'reset_attempt_counter' => 1800, // 30 minutes.
 
         /**
          * System-layer firewall, ip6table service watches this folder to receive command created by Shieldon Firewall.
@@ -1336,13 +1345,28 @@ class Shieldon
                 // Current visitor has been blocked. If he still attempts accessing the site, 
                 // then we can drop him into the permanent block list.
                 $attempts = $ipRule['attempts'];
+                $now      = time();
 
                 $logData['log_ip']     = $ipRule['log_ip'];
                 $logData['ip_resolve'] = $ipRule['ip_resolve'];
-                $logData['time']       = time();
+                $logData['time']       = $now;
                 $logData['type']       = $ipRule['type'];
                 $logData['reason']     = $ipRule['reason'];
-                $logData['attempts']   = ++$attempts;
+                $logData['attempts']   = $attempts;
+
+                // @since 0.2.0
+                $attemptPeriod = $this->properties['record_attempt_interval'];
+                $attemptReset  = $this->properties['reset_attempt_counter'];
+
+                $lastTimeDiff = $now - $ipRule['time'];
+
+                if ($lastTimeDiff <= $attemptPeriod) {
+                    $logData['attempts'] = ++$attempts;
+                }
+
+                if ($lastTimeDiff > $attemptReset) {
+                    $logData['attempts'] = 0;
+                }
 
                 $isTriggerMessenger = false;
                 $isUpdatRuleTable = false;

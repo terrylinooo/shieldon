@@ -96,7 +96,7 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                                     </a>
                                     <li>
                                     <a href="<?php echo $page_url; ?>?so_page=operation_status">
-                                        <i class="fas fa-tachometer-alt"></i>
+                                        <i class="fas fa-fan"></i>
                                         <span><?php _e('panel', 'menu_operation_status', 'Operation'); ?></span>
                                     </a>
                                 </li>

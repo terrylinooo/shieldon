@@ -414,4 +414,11 @@ return [
     'reason_component_header' => 'Denied by Header component.',
     'reason_component_useragent' => 'Denied by User-agent component.',
     'reason_component_trusted_robot' => 'Identified as fake search engine.',
+
+    // @since 0.2.0
+    'operation_note_useragent' => 'Block requests without user-agent information.',
+    'operation_note_rdns' => 'Block requests without RDNS record.',
+    'operation_note_header' => 'Block requests without common header information.',
+    'operation_note_trustedbot' => 'Block requests which are identified as fake search engine.',
+    'operation_note_ip' => 'Block requests by the rules set by IP Manager.',
 ];

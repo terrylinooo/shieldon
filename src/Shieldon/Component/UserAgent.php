@@ -22,6 +22,8 @@ class UserAgent extends ComponentProvider
 {
     use IpTrait;
 
+    const STATUS_CODE = 84;
+
     /**
      * Robot's user-agent text.
      * 
@@ -82,15 +84,5 @@ class UserAgent extends ComponentProvider
         }
 
         return false;
-    }
-
-    /**
-     * Unique deny status code.
-     *
-     * @return int
-     */
-    public function getDenyStatusCode(): int
-    {
-        return 84;
     }
 }

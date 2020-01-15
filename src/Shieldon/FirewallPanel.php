@@ -586,36 +586,39 @@ class FirewallPanel
      */
     protected function operationStatus()
     {
-        $reasons = [
-            $this->shieldon::REASON_MANUAL_BAN           => __('panel', 'reason_manual_ban', 'Added manually by administrator'),
-            $this->shieldon::REASON_IS_SEARCH_ENGINE     => __('panel', 'reason_is_search_engine', 'Search engine bot'),
-            $this->shieldon::REASON_IS_GOOGLE            => __('panel', 'reason_is_google', 'Google bot'),
-            $this->shieldon::REASON_IS_BING              => __('panel', 'reason_is_bing', 'Bing bot'),
-            $this->shieldon::REASON_IS_YAHOO             => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
-            $this->shieldon::REASON_TOO_MANY_SESSIONS    => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
-            $this->shieldon::REASON_TOO_MANY_ACCESSES    => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
-            $this->shieldon::REASON_EMPTY_JS_COOKIE      => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'),
-            $this->shieldon::REASON_EMPTY_REFERER        => __('panel', 'reason_empty_referer', 'Empty referrer'),
-            $this->shieldon::REASON_REACHED_LIMIT_DAY    => __('panel', 'reason_reached_limit_day', 'Daily limit reached'),
-            $this->shieldon::REASON_REACHED_LIMIT_HOUR   => __('panel', 'reason_reached_limit_hour', 'Hourly limit reached'),
-            $this->shieldon::REASON_REACHED_LIMIT_MINUTE => __('panel', 'reason_reached_limit_minute', 'Minutely limit reached'),
-            $this->shieldon::REASON_REACHED_LIMIT_SECOND => __('panel', 'reason_reached_limit_second', 'Secondly limit reached'),
-
-            // @since 0.1.8
-            $this->shieldon::REASON_INVALID_IP              => __('panel', 'reason_invalid_ip', 'Invalid IP address.'),
-            $this->shieldon::REASON_DENY_IP                 => __('panel', 'reason_deny_ip', 'Denied by IP component.'),
-            $this->shieldon::REASON_ALLOW_IP                => __('panel', 'reason_allow_ip', 'Allowed by IP component.'),
-            $this->shieldon::REASON_COMPONENT_IP            => __('panel', 'reason_component_ip', 'Denied by IP component.'),
-            $this->shieldon::REASON_COMPONENT_RDNS          => __('panel', 'reason_component_rdns', 'Denied by RDNS component.'),
-            $this->shieldon::REASON_COMPONENT_HEADER        => __('panel', 'reason_component_header', 'Denied by Header component.'),
-            $this->shieldon::REASON_COMPONENT_USERAGENT     => __('panel', 'reason_component_useragent', 'Denied by User-agent component.'),
-            $this->shieldon::REASON_COMPONENT_TRUSTED_ROBOT => __('panel', 'reason_component_trusted_robot', 'Identified as fake search engine.'),
+        $data['components'] = [
+            'Ip'         => (! empty($this->shieldon->component['Ip']))         ? true : false,
+            'TrustedBot' => (! empty($this->shieldon->component['TrustedBot'])) ? true : false,
+            'Header'     => (! empty($this->shieldon->component['Header']))     ? true : false,
+            'Rdns'       => (! empty($this->shieldon->component['Rdns']))       ? true : false,
+            'UserAgent'  => (! empty($this->shieldon->component['UserAgent']))  ? true : false,
         ];
 
-        $types = [
-            $this->shieldon::ACTION_DENY             => 'DENY',
-            $this->shieldon::ACTION_ALLOW            => 'ALLOW',
-            $this->shieldon::ACTION_TEMPORARILY_DENY => 'CAPTCHA',
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('enableCookieCheck');
+        $t->setAccessible(true);
+        $enableCookieCheck = $t->getValue($this->shieldon);
+
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('enableSessionCheck');
+        $t->setAccessible(true);
+        $enableSessionCheck = $t->getValue($this->shieldon);
+
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('enableFrequencyCheck');
+        $t->setAccessible(true);
+        $enableFrequencyCheck = $t->getValue($this->shieldon);
+
+        $reflection = new ReflectionObject($this->shieldon);
+        $t = $reflection->getProperty('enableRefererCheck');
+        $t->setAccessible(true);
+        $enableRefererCheck = $t->getValue($this->shieldon);
+
+        $data['filters'] = [
+            'cookie'    => $enableCookieCheck,
+            'session'   => $enableSessionCheck,
+            'frequency' => $enableFrequencyCheck,
+            'referer'   => $enableRefererCheck,
         ];
 
         $ruleList = $this->shieldon->driver->getAll('rule');
@@ -1371,6 +1374,10 @@ class FirewallPanel
                             preg_split('/\r\n|[\r\n]/',
                             $postData)
                         );
+
+
+                        $detectionPeriod = $recordAttempt['detection_period'] ?? 5;
+                        $timeToReset = $recordAttempt['time_to_reset'] ?? 1800;
                     } else {
                         if (is_numeric($postData)) {
                             $this->setConfig(str_replace('__', '.', $postKey), (int) $postData);

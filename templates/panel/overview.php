@@ -38,7 +38,7 @@ $timezone = '';
                 <div class="filter-status">
                     <div class="heading"><?php _e('panel', 'overview_label_mysql', 'MySQL'); ?></div>
                     <div class="nums">
-                        <?php echo $driver['mysql']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
+                        <?php echo $driver['mysql'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
                     </div>
                     <div class="note"><?php _e('panel', 'overview_note_sql_db', 'SQL database.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
@@ -53,7 +53,7 @@ $timezone = '';
                 <div class="filter-status">
                     <div class="heading"><?php _e('panel', 'overview_label_redis', 'Redis'); ?></div>
                     <div class="nums">
-                        <?php echo $driver['redis']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
+                        <?php echo $driver['redis'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
                     </div>
                     <div class="note"><?php _e('panel', 'overview_note_memory_db', 'In-memory dadabase.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 
@@ -68,7 +68,7 @@ $timezone = '';
                 <div class="filter-status">
                     <div class="heading"><?php _e('panel', 'overview_label_file', 'File'); ?></div>
                     <div class="nums">
-                        <?php echo $driver['file']  ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
+                        <?php echo $driver['file'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-circle"></i>'; ?>
                     </div>
                     <div class="note"><?php _e('panel', 'overview_note_file_system', 'File system.'); ?></div>
                     <button class="note-code" onclick="openInfoModal(this)" 

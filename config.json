@@ -208,6 +208,11 @@
             }
         }
     },
+    "record_attempt": {
+        "detection_period": 5,
+        "time_to_reset": 1800
+    },
+    "check_last_failed_attempt_time": 5,
     "messengers": {
         "telegram": {
             "enable": false,

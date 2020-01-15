@@ -108,7 +108,8 @@ abstract class ComponentProvider implements ComponentInterface
      */
     public function getDenyStatusCode(): int
     {
-        return 80;
+        // Constant is defined at the each extended class.
+        return self::STATUS_CODE;
     }
 
     /**

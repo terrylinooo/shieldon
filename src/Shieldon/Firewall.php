@@ -646,6 +646,15 @@ class Firewall
             'data_circle' => $eventSetting['data_circle']['buffer'] ?? 10,
             'system_firewall' => $eventSetting['data_circle']['buffer'] ?? 10,
         ]);
+
+        // Check the time of the last failed attempt. @since 0.2.0
+        $recordAttempt = $this->getOption('record_attempt');
+
+        $detectionPeriod = $recordAttempt['detection_period'] ?? 5;
+        $timeToReset = $recordAttempt['time_to_reset'] ?? 1800;
+
+        $this->shieldon->setProperty('record_attempt_detection_period', $detectionPeriod);
+        $this->shieldon->setProperty('reset_attempt_counter', $timeToReset);
     }
 
     /**

@@ -26,6 +26,8 @@ class Header extends ComponentProvider
 {
     use IpTrait;
 
+    const STATUS_CODE = 83;
+
     /**
      *  Very common requests from normal users.
      * 
@@ -90,15 +92,5 @@ class Header extends ComponentProvider
         }
 
         return $headers;
-    }
-
-    /**
-     * Unique deny status code.
-     *
-     * @return int
-     */
-    public function getDenyStatusCode(): int
-    {
-        return 83;
     }
 }

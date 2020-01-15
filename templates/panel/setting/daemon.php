@@ -321,7 +321,25 @@ use function Shieldon\Helper\_e;
     <h2><?php _e('panel', 'setting_heading_deny_attempts', 'Deny Attempts'); ?></h2>
 </div>
 <div class="section-body my-0">
-<p><?php _e('panel', 'setting_desc_deny_attempts', 'Say goodbye to bad behavior visitors.'); ?></p>
+    <p><?php _e('panel', 'setting_desc_deny_attempts', 'Say goodbye to bad behavior visitors.'); ?></p>
+    <table class="setting-table">
+        <tr>
+            <td class="r1"><?php _e('panel', 'setting_label_record_attempt_detection_period', 'Interval'); ?></td>
+            <td class="r2">
+                <input type="text" name="record_attempt__detection_period" class="form-control form-control-sm col-sm-3" value="<?php $this->_('record_attempt.detection_period'); ?>"><br />
+                <p><?php _e('panel', 'setting_desc__record_attempt_detection_period', 'Check the time of the last failed attempt. A bigger value of this filed means more strict. (unit: second)'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <td class="r1"><?php _e('panel', 'setting_label_record_attempt_reset', 'Reset'); ?></td>
+            <td class="r2">
+                <input type="text" name="record_attempt__time_to_reset" class="form-control form-control-sm col-sm-3" value="<?php $this->_('record_attempt.time_to_reset'); ?>"><br />
+                <p><?php _e('panel', 'setting_desc__record_attempt_reset', 'Reset the counter after n seconds.'); ?></p>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="section-body my-0">
     <table class="setting-table">
         <tr>
             <td class="r1"><?php _e('panel', 'messenger_label_event_1', 'Ban a user permanently in current data cycle.'); ?></td>
