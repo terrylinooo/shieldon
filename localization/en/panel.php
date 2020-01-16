@@ -421,4 +421,9 @@ return [
     'operation_note_header' => 'Block requests without common header information.',
     'operation_note_trustedbot' => 'Block requests which are identified as fake search engine.',
     'operation_note_ip' => 'Block requests by the rules set by IP Manager.',
+
+    'setting_label_record_attempt_detection_period' => 'Detection Period',
+    'setting_desc_record_attempt_detection_period' => 'Check the time difference between now and last failed attempt. Failure attempts within the time difference are recorded. A bigger value of this filed means more strict. (unit: second)',
+    'setting_label_record_attempt_reset' => 'Reset',
+    'setting_desc_record_attempt_reset' => 'Reset counter after n seconds.',
 ];

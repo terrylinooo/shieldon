@@ -413,4 +413,9 @@ return [
     'reason_component_header' => '被标头元件拒绝。',
     'reason_component_useragent' => '被用户代理元件拒绝。',
     'reason_component_trusted_robot' => '被识别为假造搜寻引擎资讯。',
+
+    'setting_label_record_attempt_detection_period' => '检测期间',
+    'setting_desc_record_attempt_detection_period' => '检查现在和上次尝试失败的时间差。在时间差以内的失败尝试会被记录。数值的数值表示越加严格。（单位：秒数）',
+    'setting_label_record_attempt_reset' => '重设',
+    'setting_desc_record_attempt_reset' => '在 n 秒后重设计数器。',
 ];

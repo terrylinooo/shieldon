@@ -634,28 +634,46 @@ class FirewallPanel
         $data['filter_cookie'] = 0;
         $data['filter_session'] = 0;
 
+        // Components.
+        $data['rule_list']['ip'] = [];
+        $data['rule_list']['trustedbot'] = [];
+        $data['rule_list']['rdns'] = [];
+        $data['rule_list']['header'] = [];
+        $data['rule_list']['useragent'] = [];
+
+        // Filters.
+        $data['rule_list']['frequency'] = [];
+        $data['rule_list']['referer'] = [];
+        $data['rule_list']['cookie'] = [];
+        $data['rule_list']['session'] = [];
+
         foreach ($ruleList as $ruleInfo) {
     
             switch ($ruleInfo['reason']) {
                 case $this->shieldon::REASON_DENY_IP:
                 case $this->shieldon::REASON_COMPONENT_IP:
                     $data['component_ip']++;
+                    $data['rule_list']['ip'][] = $ruleInfo;
                     break;
 
                 case $this->shieldon::REASON_COMPONENT_RDNS:
                     $data['component_rdns']++;
+                    $data['rule_list']['rdns'][] = $ruleInfo;
                     break;
                 
                 case $this->shieldon::REASON_COMPONENT_HEADER:
                     $data['component_header']++;
+                    $data['rule_list']['header'][] = $ruleInfo;
                     break;
 
                 case $this->shieldon::REASON_COMPONENT_USERAGENT:
                     $data['component_useragent']++;
+                    $data['rule_list']['useragent'][] = $ruleInfo;
                     break;
 
                 case $this->shieldon::REASON_COMPONENT_TRUSTED_ROBOT:
                     $data['component_trustedbot']++;
+                    $data['rule_list']['trustedbot'][] = $ruleInfo;
                     break;
 
                 case $this->shieldon::REASON_TOO_MANY_ACCESSES:
@@ -664,21 +682,60 @@ class FirewallPanel
                 case $this->shieldon::REASON_REACHED_LIMIT_MINUTE:
                 case $this->shieldon::REASON_REACHED_LIMIT_SECOND:
                     $data['filter_frequency']++;
+                    $data['rule_list']['frequency'][] = $ruleInfo;
                     break;
 
                 case $this->shieldon::REASON_EMPTY_REFERER:
                     $data['filter_referer']++;
+                    $data['rule_list']['referer'][] = $ruleInfo;
                     break;
 
                 case $this->shieldon::REASON_EMPTY_JS_COOKIE:
                     $data['filter_cookie']++;
+                    $data['rule_list']['cookie'][] = $ruleInfo;
                     break;
 
                 case $this->shieldon::REASON_TOO_MANY_SESSIONS:
                     $data['filter_session']++;
+                    $data['rule_list']['session'][] = $ruleInfo;
                     break;
             }
         }
+
+        $reasons = [
+            $this->shieldon::REASON_MANUAL_BAN           => __('panel', 'reason_manual_ban', 'Added manually by administrator'),
+            $this->shieldon::REASON_IS_SEARCH_ENGINE     => __('panel', 'reason_is_search_engine', 'Search engine bot'),
+            $this->shieldon::REASON_IS_GOOGLE            => __('panel', 'reason_is_google', 'Google bot'),
+            $this->shieldon::REASON_IS_BING              => __('panel', 'reason_is_bing', 'Bing bot'),
+            $this->shieldon::REASON_IS_YAHOO             => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
+            $this->shieldon::REASON_TOO_MANY_SESSIONS    => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
+            $this->shieldon::REASON_TOO_MANY_ACCESSES    => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
+            $this->shieldon::REASON_EMPTY_JS_COOKIE      => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'),
+            $this->shieldon::REASON_EMPTY_REFERER        => __('panel', 'reason_empty_referer', 'Empty referrer'),
+            $this->shieldon::REASON_REACHED_LIMIT_DAY    => __('panel', 'reason_reached_limit_day', 'Daily limit reached'),
+            $this->shieldon::REASON_REACHED_LIMIT_HOUR   => __('panel', 'reason_reached_limit_hour', 'Hourly limit reached'),
+            $this->shieldon::REASON_REACHED_LIMIT_MINUTE => __('panel', 'reason_reached_limit_minute', 'Minutely limit reached'),
+            $this->shieldon::REASON_REACHED_LIMIT_SECOND => __('panel', 'reason_reached_limit_second', 'Secondly limit reached'),
+
+            // @since 0.1.8
+            $this->shieldon::REASON_INVALID_IP              => __('panel', 'reason_invalid_ip', 'Invalid IP address.'),
+            $this->shieldon::REASON_DENY_IP                 => __('panel', 'reason_deny_ip', 'Denied by IP component.'),
+            $this->shieldon::REASON_ALLOW_IP                => __('panel', 'reason_allow_ip', 'Allowed by IP component.'),
+            $this->shieldon::REASON_COMPONENT_IP            => __('panel', 'reason_component_ip', 'Denied by IP component.'),
+            $this->shieldon::REASON_COMPONENT_RDNS          => __('panel', 'reason_component_rdns', 'Denied by RDNS component.'),
+            $this->shieldon::REASON_COMPONENT_HEADER        => __('panel', 'reason_component_header', 'Denied by Header component.'),
+            $this->shieldon::REASON_COMPONENT_USERAGENT     => __('panel', 'reason_component_useragent', 'Denied by User-agent component.'),
+            $this->shieldon::REASON_COMPONENT_TRUSTED_ROBOT => __('panel', 'reason_component_trusted_robot', 'Identified as fake search engine.'),
+        ];
+
+        $types = [
+            $this->shieldon::ACTION_DENY             => 'DENY',
+            $this->shieldon::ACTION_ALLOW            => 'ALLOW',
+            $this->shieldon::ACTION_TEMPORARILY_DENY => 'CAPTCHA',
+        ];
+
+        $data['reason_mapping'] = $reasons;
+        $data['type_mapping'] = $types;
 
         $this->renderPage('panel/operation_status', $data);
     }
@@ -1374,10 +1431,6 @@ class FirewallPanel
                             preg_split('/\r\n|[\r\n]/',
                             $postData)
                         );
-
-
-                        $detectionPeriod = $recordAttempt['detection_period'] ?? 5;
-                        $timeToReset = $recordAttempt['time_to_reset'] ?? 1800;
                     } else {
                         if (is_numeric($postData)) {
                             $this->setConfig(str_replace('__', '.', $postKey), (int) $postData);
@@ -1625,10 +1678,12 @@ class FirewallPanel
     /**
      * Echo the setting string to the template.
      *
-     * @param string $field
+     * @param string $field   Field.
+     * @param mixed  $defailt Default value.
+     *
      * @return string
      */
-    protected function _(string $field)
+    protected function _(string $field, $default = '')
     {
         if (is_string($this->getConfig($field)) || is_numeric($this->getConfig($field))) {
 
@@ -1661,11 +1716,11 @@ class FirewallPanel
                 if (in_array($field, $hiddenForDemo)) {
                     echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
                 } else {
-                    echo $this->getConfig($field);
+                    echo (! empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
                 }
 
             } else {
-                echo $this->getConfig($field);
+                echo (! empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
             }
         } elseif (is_array($this->getConfig($field))) {
 

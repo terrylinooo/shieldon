@@ -324,17 +324,17 @@ use function Shieldon\Helper\_e;
     <p><?php _e('panel', 'setting_desc_deny_attempts', 'Say goodbye to bad behavior visitors.'); ?></p>
     <table class="setting-table">
         <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_record_attempt_detection_period', 'Interval'); ?></td>
+            <td class="r1"><?php _e('panel', 'setting_label_record_attempt_detection_period', 'Detection Period'); ?></td>
             <td class="r2">
-                <input type="text" name="record_attempt__detection_period" class="form-control form-control-sm col-sm-3" value="<?php $this->_('record_attempt.detection_period'); ?>"><br />
-                <p><?php _e('panel', 'setting_desc__record_attempt_detection_period', 'Check the time of the last failed attempt. A bigger value of this filed means more strict. (unit: second)'); ?></p>
+                <input type="text" name="record_attempt__detection_period" class="form-control form-control-sm col-sm-3" value="<?php $this->_('record_attempt.detection_period', 5); ?>"><br />
+                <p><?php _e('panel', 'setting_desc_record_attempt_detection_period', 'Check the time difference between now and last failed attempt. Failure attempts within the time difference are recorded. A bigger value of this filed means more strict. (unit: second)'); ?></p>
             </td>
         </tr>
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_record_attempt_reset', 'Reset'); ?></td>
             <td class="r2">
-                <input type="text" name="record_attempt__time_to_reset" class="form-control form-control-sm col-sm-3" value="<?php $this->_('record_attempt.time_to_reset'); ?>"><br />
-                <p><?php _e('panel', 'setting_desc__record_attempt_reset', 'Reset the counter after n seconds.'); ?></p>
+                <input type="text" name="record_attempt__time_to_reset" class="form-control form-control-sm col-sm-3" value="<?php $this->_('record_attempt.time_to_reset', 1800); ?>"><br />
+                <p><?php _e('panel', 'setting_desc_record_attempt_reset', 'Reset counter after n seconds.'); ?></p>
             </td>
         </tr>
     </table>

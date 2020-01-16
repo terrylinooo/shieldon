@@ -414,4 +414,9 @@ return [
     'reason_component_header' => '被標頭元件拒絕。',
     'reason_component_useragent' => '被用戶代理元件拒絕。',
     'reason_component_trusted_robot' => '被辨識為假造搜尋引擎資訊。',
+
+    'setting_label_record_attempt_detection_period' => '偵測期間',
+    'setting_desc_record_attempt_detection_period' => '檢查現在和上次嘗試失敗的時間差。在時間差以內的失敗嘗試會被記錄。越大的數值表示越加嚴格。（單位：秒數）',
+    'setting_label_record_attempt_reset' => '重設',
+    'setting_desc_record_attempt_reset' => '在 n 秒後重設計數器。',
 ];
