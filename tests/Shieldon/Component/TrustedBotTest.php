@@ -227,4 +227,12 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($isFakeGooglebot);
     }
+
+    public function testGetDenyStatusCode()
+    {
+        $trustedBotComponent = new TrustedBot();
+        $statusCode = $trustedBotComponent->getDenyStatusCode();
+
+        $this->assertSame(85, $statusCode);
+    }
 }

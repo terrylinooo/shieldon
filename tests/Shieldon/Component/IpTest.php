@@ -231,4 +231,12 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('isDenyAll' , $t->name);
         $this->assertTrue($t->getValue($ipComponent));
     }
+
+    public function testGetDenyStatusCode()
+    {
+        $ipComponent = new Ip();
+        $statusCode = $ipComponent->getDenyStatusCode();
+
+        $this->assertSame(81, $statusCode);
+    }
 }

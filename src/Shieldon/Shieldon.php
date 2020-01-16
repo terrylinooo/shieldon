@@ -1355,7 +1355,7 @@ class Shieldon
                 $logData['attempts']   = $attempts;
 
                 // @since 0.2.0
-                $attemptPeriod = $this->properties['record_attempt_interval'];
+                $attemptPeriod = $this->properties['record_attempt_detection_period'];
                 $attemptReset  = $this->properties['reset_attempt_counter'];
 
                 $lastTimeDiff = $now - $ipRule['time'];

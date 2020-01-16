@@ -162,7 +162,6 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->run();
 
         $this->assertEquals($firewall->getShieldon()->getIp(), '5.20.13.14');
-
     }
 
     public function testDataDriverOption()
@@ -197,6 +196,25 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->run();
     }
 
+    public function testDataDriverOptionSqliteEmpty()
+    {
+        $this->testFromJsonConfig();
+        $firewall = \Shieldon\Container::get('firewall');
+
+        $firewall->setConfig('driver_type', 'sqlite');
+        $firewall->setConfig('drivers.sqlite.directory_path', '');
+
+        $firewall->getShieldon()->setIp(rand_ip());
+        $firewall->setup();
+   
+        $reflection = new \ReflectionObject($firewall);
+        $t = $reflection->getProperty('status');
+        $t->setAccessible(true);
+        $firewallStatus = $t->getValue($firewall);
+
+        $this->assertFalse($firewallStatus);
+    }
+
     public function testSetCronJobOption()
     {
         $this->testFromJsonConfig();
@@ -221,7 +239,6 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->setConfig('cronjob.reset_circle.config.last_update', '');
         $firewall->setup();
         $firewall->run();
-
     }
 
     public function testRestfulOption()
@@ -261,5 +278,16 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 1000))]);
 
         $firewall->run();
+    }
+
+    public function testSetMessengers()
+    {
+        $this->testFromJsonConfig();
+        $firewall = \Shieldon\Container::get('firewall');
+        
+        $firewall->setConfig('messengers.telegram.enable', true);
+        $firewall->setConfig('messengers.line_notify.enable', true);
+        $firewall->setConfig('messengers.sendgrid.enable', true);
+        $firewall->setup();  
     }
 }

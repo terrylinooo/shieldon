@@ -114,6 +114,7 @@ final class ActionLogParsedCache
             }
 
             // The cacheTime is between beginTime and endTime.
+            // @codeCoverageIgnoreStart
             if (($beginTime < $cacheTime) && ($endTime > $cacheTime)) {
                 $keepCache = false;
             }
@@ -121,6 +122,7 @@ final class ActionLogParsedCache
             if (! $keepCache) {
                 $data = [];
             }
+            // @codeCoverageIgnoreEnd
         }
 
         return $data;

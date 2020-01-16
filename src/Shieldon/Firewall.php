@@ -118,6 +118,8 @@ class Firewall
      */
     public function setup(): void
     {
+        $this->status = $this->getOption('daemon');
+
         $this->setDriver();
 
         $this->setChannel();
@@ -151,8 +153,6 @@ class Firewall
         $this->setDenyAttempts();
 
         $this->setIptablesWatchingFolder();
-
-        $this->status = $this->getOption('daemon');
     }
 
     /**
@@ -270,7 +270,6 @@ class Firewall
 
                 if (empty($fileSetting['directory_path'])) {
                     $fileSetting['directory_path'] = $this->directory;
-                    $this->status = false;
                 }
 
                 // Use File data driver.
@@ -300,6 +299,8 @@ class Firewall
     
                 // @codeCoverageIgnoreStart
                 } catch(PDOException $e) {
+                    $this->status = false;
+
                     echo $e->getMessage();
                 }
                 // @codeCoverageIgnoreEnd

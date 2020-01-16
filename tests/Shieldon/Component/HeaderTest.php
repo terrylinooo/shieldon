@@ -122,4 +122,12 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($deniedList, []);
     }
+
+    public function testGetDenyStatusCode()
+    {
+        $headerComponent = new Header();
+        $statusCode = $headerComponent->getDenyStatusCode();
+
+        $this->assertSame(83, $statusCode);
+    }
 }

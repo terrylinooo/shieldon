@@ -85,4 +85,14 @@ class UserAgent extends ComponentProvider
 
         return false;
     }
+
+    /**
+     * Unique deny status code.
+     *
+     * @return int
+     */
+    public function getDenyStatusCode(): int
+    {
+        return self::STATUS_CODE;
+    }
 }

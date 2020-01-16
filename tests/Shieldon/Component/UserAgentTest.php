@@ -111,4 +111,12 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
             $this->assertTrue(false);
         }
     }
+
+    public function testGetDenyStatusCode()
+    {
+        $userAgentComponent = new UserAgent();
+        $statusCode = $userAgentComponent->getDenyStatusCode();
+
+        $this->assertSame(84, $statusCode);
+    }
 }

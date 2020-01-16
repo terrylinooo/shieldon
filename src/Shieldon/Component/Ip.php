@@ -356,4 +356,14 @@ class Ip extends ComponentProvider
     {
         return $this->isDenyAll = true;
     }
+
+    /**
+     * Unique deny status code.
+     *
+     * @return int
+     */
+    public function getDenyStatusCode(): int
+    {
+        return self::STATUS_CODE;
+    }
 }

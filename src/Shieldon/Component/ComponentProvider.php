@@ -24,8 +24,8 @@ abstract class ComponentProvider implements ComponentInterface
 
     /**
      * It is really strict.
-     * 
-     * @var boolean
+     *
+     * @var bool
      */
     protected $strictMode = false;
 
@@ -102,20 +102,16 @@ abstract class ComponentProvider implements ComponentInterface
     }
 
     /**
-     * Unique deny status code.
-     *
-     * @return int
-     */
-    public function getDenyStatusCode(): int
-    {
-        // Constant is defined at the each extended class.
-        return self::STATUS_CODE;
-    }
-
-    /**
      * Is denied?
      *
      * @return bool
      */
     abstract function isDenied(): bool;
+
+    /**
+     * Unique deny status code.
+     *
+     * @return int
+     */
+    abstract function getDenyStatusCode(): int;
 }

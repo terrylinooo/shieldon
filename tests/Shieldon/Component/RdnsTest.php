@@ -100,11 +100,31 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
         $result = $rdnsComponent->isDenied();
         $this->assertFalse($result);
 
+        // IP address and its RDNS is not matched.
         $rdnsComponent = new Rdns();
         $rdnsComponent->setStrict(true);
         $rdnsComponent->setRdns('crawl-66-249-66-1.googlebot.com');
         $rdnsComponent->setIp('66.249.66.2');
         $result = $rdnsComponent->isDenied();
         $this->assertTrue($result);
+    }
+
+    public function testIsDenied_2()
+    {
+        // IP address and its RDNS is the same. We don't allow it.
+        $rdnsComponent = new Rdns();
+        $rdnsComponent->setStrict(true);
+        $rdnsComponent->setRdns('66.249.66.2');
+        $rdnsComponent->setIp('66.249.66.2');
+        $result = $rdnsComponent->isDenied();
+        $this->assertTrue($result);
+    }
+
+    public function testGetDenyStatusCode()
+    {
+        $rdnsComponent = new Rdns();
+        $statusCode = $rdnsComponent->getDenyStatusCode();
+
+        $this->assertSame(82, $statusCode);
     }
 }

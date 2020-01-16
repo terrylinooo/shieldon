@@ -339,4 +339,14 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
     
         return $baseTimesamp;
     }
+
+    public function testGetDirectory()
+    {
+        $testLogDir = BOOTSTRAP_DIR . '/../tmp/shieldon/log';
+        $parser = new ActionLogParser($testLogDir);
+
+        $dir = $parser->getDirectory();
+
+        $this->assertSame($dir, $testLogDir);
+    }
 }

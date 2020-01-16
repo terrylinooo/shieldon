@@ -201,10 +201,6 @@ class TrustedBot extends ComponentProvider
 
                 return true;
             }
-
-            // We can identify that current access uses a fake RDNS record.
-            // Because that RDNS record is not valid.
-            $this->isFake = true;
         }
 
         return false;
@@ -341,5 +337,15 @@ class TrustedBot extends ComponentProvider
     public function isFakeRobot(): bool
     {
         return $this->isFake;
+    }
+
+    /**
+     * Unique deny status code.
+     *
+     * @return int
+     */
+    public function getDenyStatusCode(): int
+    {
+        return self::STATUS_CODE;
     }
 }
