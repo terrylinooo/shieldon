@@ -144,6 +144,12 @@ function mask_string($str)
 function get_cpu_usage()
 {
     $return = '';
+
+    // This feature is not available on Windows platform.
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        return $return;
+    }
+
     $cpuLoads = @sys_getloadavg();
     $cpuCores = trim(@shell_exec("grep -P '^processor' /proc/cpuinfo|wc -l"));
 
@@ -164,6 +170,12 @@ function get_cpu_usage()
 function get_memory_usage()
 {
     $return = '';
+
+    // This feature is not available on Windows platform.
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        return $return;
+    }
+
     $freeResult = explode("\n", trim(@shell_exec('free')));
 
     if (! empty($freeResult)) {

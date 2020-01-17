@@ -35,7 +35,7 @@ trait FirewallTrait
     /**
      * If status is false and then Sheldon will stop working.
      *
-     * @var boolean
+     * @var bool
      */
     protected $status = true;
     

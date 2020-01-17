@@ -67,7 +67,7 @@ class Firewall
      * the page will be refeshed after submitting Capatcha form.
      * No refresh? An Error will be occurred while current URL does't support POST method request.
      *
-     * @var boolean
+     * @var bool
      */
     protected $restful = false;
 

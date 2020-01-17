@@ -44,17 +44,20 @@ use function Shieldon\Helper\__;
 use LogicException;
 use RuntimeException;
 use Closure;
-
+use function file_exists;
+use function file_put_contents;
+use function filter_var;
 use function get_class;
 use function gethostbyaddr;
-use function session_id;
-use function strrpos;
-use function strpos;
-use function substr;
-use function ob_start;
+use function is_writable;
 use function ob_end_clean;
+use function ob_start;
 use function php_sapi_name;
+use function session_id;
 use function str_replace;
+use function strpos;
+use function strrpos;
+use function substr;
 use function time;
 
 /**
@@ -149,7 +152,7 @@ class Shieldon
      * so we can check if the cookie can be created by JavaScript.
      * This is hard to prevent headless browser robots, but it can stop probably 70% poor robots.
      *
-     * @var boolean
+     * @var bool
      */
     private $enableCookieCheck = false;
 
@@ -159,7 +162,7 @@ class Shieldon
      * It is almost impossible that modern browsers don't support cookie, so we suspect the user is a robot or web crawler,
      * that is why we need session cookie check.
      *
-     * @var boolean
+     * @var bool
      */
     private $enableSessionCheck = true;
 
@@ -167,7 +170,7 @@ class Shieldon
      * Check how many pageviews an user made in a short period time.
      * For example, limit an user can only view 30 pages in 60 minutes.
      *
-     * @var boolean
+     * @var bool
      */
     private $enableFrequencyCheck = true;
 
@@ -177,7 +180,7 @@ class Shieldon
      * If an user view many pages on your website without HTTP_REFERER information, that means the user is a web crawler
      * and it directly downloads your web pages.
      *
-     * @var boolean
+     * @var bool
      */
     private $enableRefererCheck = true;
 
@@ -185,7 +188,7 @@ class Shieldon
      * If you don't want Shieldon to detect bad robots or crawlers, you can set it FALSE;
      * In this case AntiScriping can still deny users by querying rule table (in MySQL, or Redis, etc.) and $denyIpPool (Array)
      *
-     * @var boolean
+     * @var bool
      */
     private $enableFiltering = true;
 
@@ -311,30 +314,32 @@ class Shieldon
     /**
      * Get online session count
      *
-     * @var integer
+     * @var int
      */
     private $sessionCount = 0;
 
     /**
      * Current session order.
      *
-     * @var integer
+     * @var int
      */
     private $currentSessionOrder = 0;
 
     /**
      * Used on limitSession.
      *
-     * @var integer
+     * @var int
      */
     private $currentWaitNumber = 0;
 
     /**
      * Strict mode.
+     * 
+     * Set by `strictMode()` only. The default value of this propertry is undefined.
      *
-     * @var boolean
+     * @var bool
      */
-    private $strictMode = false;
+    private $strictMode;
 
     /**
      * Vistor's current browsering URL.
@@ -1322,7 +1327,11 @@ class Shieldon
         foreach (array_keys($this->component) as $name) {
             $this->component[$name]->setIp($this->ip);
             $this->component[$name]->setRdns($this->ipResolvedHostname);
-            $this->component[$name]->setStrict($this->strictMode);
+
+            // Apply global strict mode to all components by `strictMode()` if nesscessary.
+            if (isset($this->strictMode)) {
+                $this->component[$name]->setStrict($this->strictMode);
+            }
         }
 
         /*
@@ -1385,7 +1394,10 @@ class Shieldon
                         $buffer = $this->properties['deny_attempt_buffer']['data_circle'];
 
                         if ($attempts >= $buffer) {
-                            $isTriggerMessenger = true;
+
+                            if ($this->properties['deny_attempt_notify']['data_circle']) {
+                                $isTriggerMessenger = true;
+                            }
 
                             $logData['type'] = self::ACTION_DENY;
 
@@ -1408,7 +1420,10 @@ class Shieldon
                         $bufferIptable = $this->properties['deny_attempt_buffer']['system_firewall'];
 
                         if ($attempts >= $bufferIptable) {
-                            $isTriggerMessenger = true;
+
+                            if ($this->properties['deny_attempt_notify']['system_firewall']) {
+                                $isTriggerMessenger = true;
+                            }
 
                             $folder = rtrim($this->properties['iptables_watching_folder'], '/');
 
@@ -1435,6 +1450,9 @@ class Shieldon
                     }
                 }
 
+                // We only update data when `deny_attempt_enable` is enable.
+                // Because we want to get the last visited time and attempt counter.
+                // Otherwise we don't update it everytime to avoid wasting CPU resource.
                 if ($isUpdatRuleTable) {
                     $this->driver->save($this->ip, $logData, 'rule');
                 }

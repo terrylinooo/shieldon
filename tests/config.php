@@ -198,25 +198,25 @@ return [
         // Trusted-bot component.
         'trusted_bot' => [
             'enable'      => true,
-            'strict_mode' => false,
+            'strict_mode' => true,
         ],
 
         // Header filter.
         'header' => [
             'enable'      => true,
-            'strict_mode' => false,
+            'strict_mode' => true,
         ],
 
         // User-agent filter.
         'user_agent' => [
             'enable'      => true,
-            'strict_mode' => false,
+            'strict_mode' => true,
         ],
 
         // RDNS filter.
         'rdns' => [
             'enable'      => true,
-            'strict_mode' => false,
+            'strict_mode' => true,
         ],
     ],
 

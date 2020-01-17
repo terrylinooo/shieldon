@@ -41,7 +41,7 @@ class Csrf
     /**
      * Expiration time for CSRF Protection. (seconds)
      *
-     * @var integer
+     * @var int
      */
     protected $expire = 7200;
 

@@ -1026,4 +1026,106 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $shieldon->managedBy('demo');
     }
+
+    /***********************************************
+     * Test for building bridge to Iptable 
+     ***********************************************/
+
+    public function testDenyAttempts()
+    {
+        $shieldon = get_testing_shieldon_instance('file');
+
+        //$_SERVER['HTTP_USER_AGENT'] = 'google';
+        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
+
+        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->setComponent(new \Shieldon\Component\Ip());
+        $shieldon->setComponent(new \Shieldon\Component\UserAgent());
+        
+        $shieldon->setComponent(new \Shieldon\Component\Rdns());
+
+        $shieldon->setMessenger(new \Shieldon\Mock\Messenger());
+
+        $shieldon->setChannel('test_shieldon_deny_attempt');
+        $shieldon->driver->rebuild();
+
+        $shieldon->setProperty('deny_attempt_enable', [
+            'data_circle' => true,
+            'system_firewall' => true, 
+        ]);
+
+        $shieldon->setProperty('deny_attempt_notify', [
+            'data_circle' => true,
+            'system_firewall' => true, 
+        ]);
+
+        $shieldon->setProperty('deny_attempt_buffer', [
+            'data_circle' => 2,
+            'system_firewall' => 2, 
+        ]);
+
+        $shieldon->setProperty('reset_attempt_counter', 5);
+
+        // Test for IPv4 and IPv6.
+        foreach(['127.0.1.1', '2607:f0d0:1002:51::4'] as $ip) {
+
+            $shieldon->setIp($ip);
+
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_ALLOW);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_ALLOW);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_TEMPORARILY_DENY);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_TEMPORARILY_DENY);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_TEMPORARILY_DENY);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_DENY);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_DENY);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_DENY);
+        }
+
+        // Test for IPv4 and IPv6. 
+        foreach(['127.0.1.2', '2607:f0d0:1002:52::4'] as $ip) {
+
+            $shieldon->setIp($ip);
+
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_ALLOW);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_ALLOW);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_TEMPORARILY_DENY);
+
+            sleep(7);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_TEMPORARILY_DENY);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_TEMPORARILY_DENY);
+
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_TEMPORARILY_DENY);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_DENY);
+    
+            $result = $shieldon->run();
+            $this->assertEquals($result, $shieldon::RESPONSE_DENY);
+        }
+    }
 }
