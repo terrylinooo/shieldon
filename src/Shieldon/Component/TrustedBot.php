@@ -150,6 +150,8 @@ class TrustedBot extends ComponentProvider
             $userAgent = array_unique(array_column($this->trustedBotList, 'userAgent'));
 
             if (! preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgentString)) {
+                // Okay, current request's user-agent string doesn't contain our truested bots' infroamtion.
+                // Ignore it.
                 return false;
             }
 
@@ -191,16 +193,19 @@ class TrustedBot extends ComponentProvider
 
                 if ($this->checkFakeRdns) {
                     if (! $rdnsCheck) {
-                        
+
                         // We can identify that current access uses a fake RDNS record.
                         $this->isFake = true;
-
                         return false;
                     }
                 }
 
                 return true;
             }
+
+            // Here, once a request uses a user-agent that contains search engine information, but it does't pass the RDNS check.
+            // We can identify it is fake.
+            $this->isFake = true;
         }
 
         return false;
