@@ -43,7 +43,10 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testIsDenied()
     {
-        $this->assertFalse(false);
+        $trustedBotComponent = new TrustedBot();
+        $result = $trustedBotComponent->isDenied();
+
+        $this->assertFalse($result);
     }
 
     public function testIsAllowed()
@@ -226,6 +229,33 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
         $isFakeGooglebot = $trustedBotComponent->isFakeRobot();
 
         $this->assertFalse($isFakeGooglebot);
+    }
+
+    /**
+     * Situation 3: Fake user-agent.
+     */
+    public function testFakeGoogleBot_3()
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
+    
+        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent->setIp('127.0.0.1', false);
+        $trustedBotComponent->setRdns('localhost');
+
+        $reflection = new \ReflectionObject($trustedBotComponent);
+        $t = $reflection->getProperty('checkFakeRdns');
+        $t->setAccessible(true);
+
+        // Disable checking fake RDNS.
+        $t->setValue($trustedBotComponent, false);
+
+        $result = $trustedBotComponent->isAllowed();
+
+        $this->assertFalse($result);
+
+        $isFakeGooglebot = $trustedBotComponent->isFakeRobot();
+
+        $this->assertTrue($isFakeGooglebot);
     }
 
     public function testGetDenyStatusCode()

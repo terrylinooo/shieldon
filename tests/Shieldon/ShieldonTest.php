@@ -263,6 +263,17 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
     }
 
+    public function testNoComponentAndFilters()
+    {
+        $shieldon = get_testing_shieldon_instance();
+        $shieldon->setChannel('test_shieldon_detect');
+        $shieldon->setIp('39.27.1.1');
+        $shieldon->disableFiltering();
+        $result = $shieldon->run();
+
+        $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
+    }
+
     public function testGetComponent()
     {
         $shieldon = new \Shieldon\Shieldon();
@@ -398,6 +409,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setProperty('cookie_domain', 'localhost');
         $shieldon->setProperty('display_online_info', true);
         $shieldon->setProperty('display_lineup_info', true);
+        $shieldon->setProperty('display_user_info', true);
 
         $reflection = new \ReflectionObject($shieldon);
         $t = $reflection->getProperty('properties');
@@ -585,7 +597,9 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_URI'] = '/';
 
         $shieldon = get_testing_shieldon_instance($driver);
-        $shieldon->setProperty('display_lineup_info', false);
+        $shieldon->setProperty('display_lineup_info', true);
+        $shieldon->setProperty('display_user_info', true);
+        $shieldon->setProperty('display_online_info', true);
         $shieldon->driver->rebuild();
 
         // Limit
@@ -627,6 +641,10 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         }
 
         $shieldon->setIp('141.112.175.1');
+
+        $shieldon->setProperty('display_lineup_info', false);
+        $shieldon->setProperty('display_user_info', false);
+        $shieldon->setProperty('display_online_info', false);
 
         $shieldon->setProperty('time_unit_quota', [
             's' => 2,
@@ -1127,5 +1145,17 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
             $result = $shieldon->run();
             $this->assertEquals($result, $shieldon::RESPONSE_DENY);
         }
+    }
+
+    public function testFakeTrustedBot()
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'google';
+
+        $shieldon = get_testing_shieldon_instance();
+        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->disableFiltering();
+        $result = $shieldon->run();
+
+        $this->assertSame($shieldon::RESPONSE_DENY, $result);
     }
 }

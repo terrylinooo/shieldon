@@ -1487,10 +1487,14 @@ class Shieldon
                             );
                         }
 
+                    // @codeCoverageIgnoreStart
+
                     } catch (RuntimeException $e) {
                         // echo $e->getMessage();
                         // Do not throw error, becasue the third-party services might be unavailable.
                     }
+
+                    // @codeCoverageIgnoreEnd
                 }
 
                 // For an incoming request already in the rule list, return the rule type immediately.
