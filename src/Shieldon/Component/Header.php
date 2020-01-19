@@ -34,9 +34,10 @@ class Header extends ComponentProvider
      * @var string
      */
     protected $commonHeaderFileds = [
+        'Accept',
         'Accept-Language',
         'Accept-Encoding',
-        'Cache-Control',
+        // 'Cache-Control', (Sometime browers will not send this request header, it is not stable.)
         // 'Upgrade-Insecure-Requests', ( IE doesn't support this..)
     ];
 
@@ -56,6 +57,7 @@ class Header extends ComponentProvider
         if ($this->strictMode) {
 
             foreach ($this->commonHeaderFileds as $fieldName) {
+
                 // If strict mode is on, this value must be found.
                 if (! isset($headers[$fieldName])) {
                     return true;
