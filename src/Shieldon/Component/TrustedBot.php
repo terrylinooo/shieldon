@@ -183,18 +183,20 @@ class TrustedBot extends ComponentProvider
                 if ($rdnsCheck) {
                     $ip = gethostbyname($this->ipResolvedHostname);
 
-                    // If the IP is different as hostname's resolved IP. It is maybe a fake bot.
                     if ($this->strictMode) {
+
+                        // If the IP is different as hostname's resolved IP. It is maybe a fake bot.
                         if ($ip !== $this->ip) {
+                            $this->isFake = true;
                             return false;
                         }
                     }
                 }
 
                 if ($this->checkFakeRdns) {
-                    if (! $rdnsCheck) {
 
-                        // We can identify that current access uses a fake RDNS record.
+                    // We can identify that current access uses a fake RDNS record.
+                    if (! $rdnsCheck) {
                         $this->isFake = true;
                         return false;
                     }

@@ -36,11 +36,8 @@ class Header extends ComponentProvider
     protected $commonHeaderFileds = [
         'Accept-Language',
         'Accept-Encoding',
-        'User-Agent',
-        'Upgrade-Insecure-Requests',
         'Cache-Control',
-        'Connection',
-        'Host',
+        // 'Upgrade-Insecure-Requests', ( IE doesn't support this..)
     ];
 
     /**
