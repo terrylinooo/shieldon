@@ -1475,25 +1475,23 @@ class Shieldon
                         __('core', 'messenger_text_timezone') => date_default_timezone_get(),
                     ];
 
+                    $message = __('core', 'messenger_notification_subject', 'Notification for {0}', [$this->ip]) . "\n\n";
+
+                    foreach ($prepareMessageData as $key => $value) {
+                        $message .= $key . ': ' . $value . "\n";
+                    }
+
                     try {
+
                         foreach ($this->messengers as $messenger) {
-                            $messenger->send(
-                                \Shieldon\Helper\__(
-                                    'core', 'messenger_notification_subject',
-                                    'Notification for {0}',
-                                    array($this->ip)
-                                ),
-                                $prepareMessageData
-                            );
+                            $messenger->send($message);
                         }
 
                     // @codeCoverageIgnoreStart
-
                     } catch (RuntimeException $e) {
                         // echo $e->getMessage();
                         // Do not throw error, becasue the third-party services might be unavailable.
                     }
-
                     // @codeCoverageIgnoreEnd
                 }
 
