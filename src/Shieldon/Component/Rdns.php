@@ -63,6 +63,11 @@ class Rdns extends ComponentProvider
                 return true;
             }
 
+            // Not a valid domain name.
+            if (! filter_var($this->ipResolvedHostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+                return true;
+            }
+
             // confirm hostname's IP again
             $ip = gethostbyname($this->ipResolvedHostname);
 

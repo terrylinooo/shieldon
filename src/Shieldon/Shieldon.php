@@ -36,7 +36,7 @@ use Shieldon\Component\ComponentProvider;
 use Shieldon\Container;
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Log\ActionLogger;
-use Messenger\MessengerInterface;
+use Messenger\Messenger\MessengerInterface;
 use function Shieldon\Helper\get_cpu_usage;
 use function Shieldon\Helper\get_memory_usage;
 use function Shieldon\Helper\__;
