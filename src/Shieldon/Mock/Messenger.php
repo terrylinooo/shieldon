@@ -10,7 +10,7 @@
 
 namespace Shieldon\Mock;
 
-use Messenger\MessengerInterface;
+use Messenger\Messenger\MessengerInterface;
 
 /**
  * For unit-testing purpose.
@@ -31,21 +31,18 @@ class Messenger implements MessengerInterface
     /**
      * @inheritDoc
      */
-    public function send(string $message, array $logData = []): void
+    public function send(string $message): bool
     {
-        echo "\n" . $this->provider() . "\n";;
+        if (! empty($message)) {
+            echo "\n" . $this->provider() . "\n";;
+            echo "\n--- BEGIN - Mock of sending message ---\n\n";
+            echo $message;
+            echo "\n--- END - Mock of sending message ---\n";
 
-        if (! empty($logData)) {
-            $message .= "\n";
-
-            foreach ($logData as $key => $value) {
-                $message .= $key . ': ' . $value . "\n";
-            }
+            return true;
         }
 
-        echo "\n--- BEGIN - Mock of sending message ---\n\n";
-        echo $message;
-        echo "\n--- END - Mock of sending message ---\n";
+        return false;
     }
 
     /**
