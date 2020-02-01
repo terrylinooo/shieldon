@@ -36,7 +36,12 @@ This is basic concepts about how Shieldon works.
 - Send notifications when specific events occurred. Supported modules:
     - Telegram
     - Line Notify
+    - Rocket Chat
+    - Slack
     - SendGrid
+    - Mailgun
+    - Mail (PHP native mail)
+    - SMTP
 - Web UI for System firewall - iptables and ip6tables.
 - More features will come...
 
