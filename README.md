@@ -106,7 +106,6 @@ You can temporarily ban a user here.
 
 ![Firewall Panel - Rule Table](https://i.imgur.com/5Vg2brX.png)
 
-
 #### Responsive
 
 Shieldon's Firewall Panel is fully responsive, and you can manage it when you are not in front of your computer, using your mobile phone at any time.

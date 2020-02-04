@@ -453,6 +453,8 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Messenger
+    | 
+    | Docs: https://github.com/terrylinooo/messenger
     |--------------------------------------------------------------------------
     */
 
@@ -462,15 +464,44 @@ return [
             'enable' => false,
             'config' => [
                 'access_token' => 'your_access_token',
-            ]
-            
+            ],
+            'success_test' => false,
         ],
 
         'telegram' => [
             'enable' => false,
             'config' => [
                 'api_key' => 'your_api_key',
-            ]
+            ],
+            'success_test' => false,
+        ],
+
+        'slack' => [
+            'enable' => false,
+            'config' => [
+                'bot_token' => 'your_bot_token',
+                'channel' => 'your_channel',
+            ],
+            'success_test' => false,
+        ],
+
+        'slack_webhook' => [
+            'enable' => false,
+            'config' => [
+                'webhook_url' => 'your_webhook_url',
+            ],
+            'success_test' => false,
+        ],
+
+        'rocket_chat' => [
+            'enable' => false,
+            'config' => [
+                'server_url' => 'your_server_url',
+                'user_id' => 'your_rocketchat_user_id',
+                'access_token' => 'your_accress_token',
+                'channel' => 'your_channel',
+            ],
+            'success_test' => false,
         ],
 
         'sendgrid' => [
@@ -482,8 +513,35 @@ return [
                     'user1@email.com',
                     'user2@email.com',
                 ]
-            ]
-        ]
+            ],
+            'success_test' => false,
+        ],
+
+        'mailgun' => [
+            'enable' => false,
+            'config' => [
+                'api_key'     => 'your_api_key',
+                'domain_name' => 'your_domain.com',
+                'sender'      => 'your@email.com',
+                'recipients'  => [
+                    'user1@email.com',
+                    'user2@email.com',
+                ]
+            ],
+            'success_test' => false,
+        ],
+
+        'php_native_mail' => [
+            'enable' => false,
+            'config' => [
+                'sender'      => 'your@email.com',
+                'recipients'  => [
+                    'user1@email.com',
+                    'user2@email.com',
+                ]
+            ],
+            'success_test' => false,
+        ],
     ],
 
     /*
