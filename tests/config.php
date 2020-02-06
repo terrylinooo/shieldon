@@ -31,8 +31,7 @@ return [
     |
     | The users who can login Shieldon Firewall's control panel.
     | Deault: shieldon_user / shieldon_pass
-    | This is a basic protection. Please change the user and password instead 
-    | of a complex and strong one.
+    | This is a basic protection. Please change the user and password.
     |
     */
 

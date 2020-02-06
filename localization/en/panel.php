@@ -426,4 +426,24 @@ return [
     'setting_desc_record_attempt_detection_period' => 'Check the time difference between now and last failed attempt. Failure attempts within the time difference are recorded. A bigger value of this filed means more strict. (unit: second)',
     'setting_label_record_attempt_reset' => 'Reset',
     'setting_desc_record_attempt_reset' => 'Reset counter after n seconds.',
+
+    // @since 0.3.0
+    'messenger_label_host' => 'Host',
+    'messenger_label_port' => 'Port',
+    'messenger_label_user' => 'User',
+    'messenger_label_pass' => 'Password',
+    'messenger_label_type' => 'Type',
+    'messenger_heading_mailgun' => 'MailGun',
+    'messenger_heading_smtp' => 'SMTP',
+    'messenger_heading_php_mail' => 'Native PHP Mail',
+    'messenger_label_webhook_url' => 'Webhook URL',
+    'messenger_label_bot_token' => 'Bot Token',
+    'messenger_heading_slack' => 'Slack',
+    'messenger_heading_slack_webhook' => 'Slack Webhook',
+    'messenger_heading_rocket_chat' => 'Rocket Chat',
+    'messenger_label_server_url' => 'Server URL',
+    'login_heading_login' => 'Login to Firewall Panel.',
+    'login_btn_login' => 'Login',
+    'login_message_invalid_captcha' => 'Invalid Captcha',
+    'login_message_invalid_user_or_pass' => 'Invalid username or password.'
 ];

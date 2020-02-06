@@ -11,6 +11,9 @@
 namespace Shieldon;
 
 use Shieldon\Firewall;
+use Shieldon\Captcha\Example;
+use Shieldon\Captcha\ImageCaptcha;
+use Shieldon\Captcha\Recaptcha;
 use Shieldon\Driver\FileDriver;
 use Shieldon\Driver\MysqlDriver;
 use Shieldon\Driver\RedisDriver;
@@ -52,7 +55,10 @@ use function ob_get_contents;
 use function ob_start;
 use function parse_url;
 use function password_verify;
+use function php_sapi_name;
 use function round;
+use function session_start;
+use function session_status;
 use function strtotime;
 use function time;
 use function umask;
@@ -135,6 +141,13 @@ class FirewallPanel
     public $locate = 'en';
 
     /**
+     * Captcha modules.
+     *
+     * @var Interface
+     */
+    private $captcha = [];
+
+    /**
      * Constructor.
      *
      * @param object $instance Shieldon | Firewall
@@ -163,6 +176,12 @@ class FirewallPanel
 
             $this->pageAvailability['logs'] = true;
         }
+
+        if ((php_sapi_name() !== 'cli')) {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+        }
     }
 
      // @codeCoverageIgnoreStart
@@ -176,32 +195,25 @@ class FirewallPanel
      */
     public function entry()
     {
-        if ((php_sapi_name() !== 'cli')) {
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            }
-        }
-
         $this->locate = 'en';
-        if (! empty($_SESSION['shieldon_panel_lang'])) {
-            $this->locate = $_SESSION['shieldon_panel_lang'];
+
+        if (! empty($_SESSION['SHIELDON_PANEL_LANG'])) {
+            $this->locate = $_SESSION['SHIELDON_PANEL_LANG'];
         }
 
         $slug = $_GET['so_page'] ?? '';
 
         if ('logout' === $slug) {
-            if (isset($_SERVER['PHP_AUTH_USER'])) {
-                unset($_SERVER['PHP_AUTH_USER']);
-            }
-            if (isset($_SERVER['PHP_AUTH_PW'])) {
-                unset($_SERVER['PHP_AUTH_PW']);
+
+            if (isset($_SESSION['SHIELDON_USER_LOGIN'])) {
+                unset($_SESSION['SHIELDON_USER_LOGIN']);
             }
 
-            if (isset($_SESSION['shieldon_panel_lang'])) {
-                unset($_SESSION['shieldon_panel_lang']);
+            if (isset($_SESSION['SHIELDON_PANEL_LANG'])) {
+                unset($_SESSION['SHIELDON_PANEL_LANG']);
             }
-            $this->httpAuth();
-            header('Location: ' . $this->url('overview'));
+
+            header('Location: ' . $this->url('login'));
             exit;
         }
 
@@ -281,8 +293,12 @@ class FirewallPanel
                 $this->ajaxChangeLocale();
                 break;
 
+            case 'login':
+                $this->login();
+                break;
+
             default:
-                header('Location: ' . $this->url('overview'));
+                header('Location: ' . $this->url('login'));
                 break;
         }
 
@@ -379,6 +395,76 @@ class FirewallPanel
         }
 
         $this->renderPage('panel/setting', $data);
+    }
+
+    /**
+     * Login reminder
+     *
+     * @return void
+     */
+    protected function login(): void
+    {
+        $this->applyCaptchaForms();
+
+        $login = false;
+        $data['error'] = '';
+
+        if (isset($_POST['s_user']) && isset($_POST['s_pass'])) {
+
+            $admin = $this->getConfig('admin');
+
+            if (
+                // Default password, unencrypted.
+                $admin['user']  === $_POST['s_user'] && 
+                'shieldon_pass' === $_POST['s_pass'] &&
+                'shieldon_pass' === $admin['pass']
+            ) {
+                $login = true;
+
+            } elseif (
+                // User has already changed password, encrypted.
+                $admin['user'] === $_POST['s_user'] && 
+                password_verify($_POST['s_pass'], $admin['pass'])
+            ) {
+                $login = true;
+    
+            } else {
+                $data['error'] = __('panel', 'login_message_invalid_user_or_pass', 'Invalid username or password.');
+            }
+
+            // Check the response from Captcha modules.
+            foreach ($this->captcha as $captcha) {
+                if (! $captcha->response()) {
+                    $login = false;
+                    $data['error'] = __('panel', 'login_message_invalid_captcha', 'Invalid Captcha code.');
+                }
+            }
+        }
+
+        if ($login) {
+            // Mark as logged user.
+            $_SESSION['SHIELDON_USER_LOGIN'] = true;
+
+            // Redirect to overview page if logged in successfully.
+            header('Location: ' . $this->url('overview'));
+        }
+
+        // Start to prompt a login form is not logged.
+        define('SHIELDON_VIEW', true);
+
+        // `$ui` will be used in `css-default.php`. Do not remove it.
+        $ui = [
+            'background_image' => '',
+            'bg_color'         => '#ffffff',
+            'header_bg_color'  => '#212531',
+            'header_color'     => '#ffffff',
+            'shadow_opacity'   => '0.2',
+        ];
+
+        $data['css'] = require $this->shieldon::SHIELDON_DIR . '/../../templates/css-default.php';
+        unset($ui);
+
+        $this->loadView('panel/login', $data, true);
     }
 
     /**
@@ -1923,6 +2009,19 @@ class FirewallPanel
      */
     private function httpAuth()
     {
+        if ('demo' === $this->mode || 'self' === $this->mode) {
+            $admin = $this->demoUser;
+        }
+
+        if (! isset($_SESSION['SHIELDON_USER_LOGIN'])) {
+            $this->login();
+        }
+    }
+
+    /*
+
+    private function httpAuth()
+    {
         $admin = $this->getConfig('admin');
 
         if ('demo' === $this->mode || 'self' === $this->mode) {
@@ -1932,19 +2031,26 @@ class FirewallPanel
         if (! isset($_SERVER['PHP_AUTH_USER']) || ! isset($_SERVER['PHP_AUTH_PW'])) {
             header('WWW-Authenticate: Basic realm=""');
             header('HTTP/1.0 401 Unauthorized');
-            die(__('panel', 'permission_required', 'Permission required.'));
+            die(__('panel', 'permission_required', 'Permission required.') . ' (1)');
         }
 
         if (
+            $admin['user']  === $_SERVER['PHP_AUTH_USER'] && 
+            'shieldon_pass' === $_SERVER['PHP_AUTH_PW'] &&
+            'shieldon_pass' === $admin['pass']
+        ) {
+            // Default password, unencrypted.
+        } elseif (
             $admin['user'] === $_SERVER['PHP_AUTH_USER'] && 
             password_verify($_SERVER['PHP_AUTH_PW'], $admin['pass'])
-        ) {} else {
-            header('HTTP/1.0 401 Unauthorized');
-
-            unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
-            die(__('panel', 'permission_required', 'Permission required.'));
+        ) {
+            // User has already changed password, encrypted.
+        } else {
+        
         }
     }
+
+    */
 
     /**
      * Switch supported language.
@@ -1953,15 +2059,64 @@ class FirewallPanel
      */
     private function ajaxChangeLocale()
     {
-        $_SESSION['shieldon_panel_lang'] = $_GET['langCode'] ?? 'en';
+        $_SESSION['SHIELDON_PANEL_LANG'] = $_GET['langCode'] ?? 'en';
 
         $response['status'] = 'success';
         $response['lang_code'] = $_GET['langCode'];
-        $response['session_lang_code'] = $_SESSION['shieldon_panel_lang'];
+        $response['session_lang_code'] = $_SESSION['SHIELDON_PANEL_LANG'];
  
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($response);
         exit;
+    }
+
+    /**
+     * Set the Captcha modules.
+     *
+     * @return void
+     */
+    protected function applyCaptchaForms(): void
+    {
+        $this->captcha[] = new Example();
+
+        $recaptchaSetting = $this->getConfig('captcha_modules.recaptcha');
+        $imageSetting = $this->getConfig('captcha_modules.image');
+
+        if ($recaptchaSetting['enable']) {
+
+            $googleRecaptcha = [
+                'key'     => $recaptchaSetting['config']['site_key'],
+                'secret'  => $recaptchaSetting['config']['secret_key'],
+                'version' => $recaptchaSetting['config']['version'],
+                'lang'    => $recaptchaSetting['config']['lang'],
+            ];
+
+            $this->captcha[] = new Recaptcha($googleRecaptcha);
+        }
+
+        if ($imageSetting['enable']) {
+
+            $type = $imageSetting['config']['type'] ?? 'alnum';
+            $length = $imageSetting['config']['length'] ?? 8;
+
+            switch ($type) {
+                case 'numeric':
+                    $imageCaptchaConfig['pool'] = '0123456789';
+                    break;
+
+                case 'alpha':
+                    $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyz';
+                    break;
+
+                case 'alnum':
+                default:
+                    $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            }
+
+            $imageCaptchaConfig['word_length'] = $length;
+
+            $this->captcha[] = new ImageCaptcha($imageCaptchaConfig);
+        }
     }
 
     // @codeCoverageIgnoreEnd

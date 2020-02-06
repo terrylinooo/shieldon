@@ -31,15 +31,14 @@ return [
     |
     | The users who can login Shieldon Firewall's control panel.
     | Deault: shieldon_user / shieldon_pass
-    | This is a basic protection. Please change the user and password instead 
-    | of a complex and strong one.
+    | This is a basic protection. Please change the user and password.
     |
     */
 
     'admin' => [
         'user' => 'shieldon_user',
-        'pass' => '$2y$10$x/celAC.L8xBn1UPPq619uG6ZGKoA6yfbjxtAJqAAtB.yLjU3S3Fu',
-        'last_modified' => '1989-06-04',
+        'pass' => 'shieldon_pass',
+        'last_modified' => '2020-02-05',
     ],
 
     /*
@@ -453,8 +452,12 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Messenger
-    | 
+    |--------------------------------------------------------------------------
+    |
     | Docs: https://github.com/terrylinooo/messenger
+    |
+    | The `confirm_test` value is must be True to execute a messener module.
+    | Test the configuration before sending a message.
     |--------------------------------------------------------------------------
     */
 
@@ -465,7 +468,7 @@ return [
             'config' => [
                 'access_token' => 'your_access_token',
             ],
-            'success_test' => false,
+            'confirm_test' => false,
         ],
 
         'telegram' => [
@@ -473,7 +476,7 @@ return [
             'config' => [
                 'api_key' => 'your_api_key',
             ],
-            'success_test' => false,
+            'confirm_test' => false,
         ],
 
         'slack' => [
@@ -482,7 +485,7 @@ return [
                 'bot_token' => 'your_bot_token',
                 'channel' => 'your_channel',
             ],
-            'success_test' => false,
+            'confirm_test' => false,
         ],
 
         'slack_webhook' => [
@@ -490,7 +493,7 @@ return [
             'config' => [
                 'webhook_url' => 'your_webhook_url',
             ],
-            'success_test' => false,
+            'confirm_test' => false,
         ],
 
         'rocket_chat' => [
@@ -501,7 +504,7 @@ return [
                 'access_token' => 'your_accress_token',
                 'channel' => 'your_channel',
             ],
-            'success_test' => false,
+            'confirm_test' => false,
         ],
 
         'sendgrid' => [
@@ -514,7 +517,7 @@ return [
                     'user2@email.com',
                 ]
             ],
-            'success_test' => false,
+            'confirm_test' => false,
         ],
 
         'mailgun' => [
@@ -528,10 +531,10 @@ return [
                     'user2@email.com',
                 ]
             ],
-            'success_test' => false,
+            'confirm_test' => false,
         ],
 
-        'php_native_mail' => [
+        'native_php_mail' => [
             'enable' => false,
             'config' => [
                 'sender'      => 'your@email.com',
@@ -540,7 +543,36 @@ return [
                     'user2@email.com',
                 ]
             ],
-            'success_test' => false,
+            'confirm_test' => false,
+        ],
+
+        'native_php_mail' => [
+            'enable' => false,
+            'config' => [
+                'sender'      => 'your@email.com',
+                'recipients'  => [
+                    'user1@email.com',
+                    'user2@email.com',
+                ]
+            ],
+            'confirm_test' => false,
+        ],
+
+        'smtp' => [
+            'enable' => false,
+            'config' => [
+                'host' => "127.0.0.1",
+                'port' => 25,
+                'type' => '', // null, ssl, tls
+                'user' => '',
+                'pass' => '',
+                'sender'      => 'your@email.com',
+                'recipients'  => [
+                    'user1@email.com',
+                    'user2@email.com',
+                ]
+            ],
+            'confirm_test' => false,
         ],
     ],
 

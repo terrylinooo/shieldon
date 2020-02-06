@@ -3,8 +3,8 @@
     "daemon": false,
     "admin": {
         "user": "shieldon_user",
-        "pass": "$2y$10$x/celAC.L8xBn1UPPq619uG6ZGKoA6yfbjxtAJqAAtB.yLjU3S3Fu",
-        "last_modified": "1989-06-04"
+        "pass": "shieldon_pass",
+        "last_modified": "2020-02-05"
     },
     "channel_id": "",
     "driver_type": "file",
@@ -220,14 +220,14 @@
                 "api_key": "your_api_key",
                 "channel": "@your_channel"
             },
-            "success_test": false
+            "confirm_test": false
         },
         "line_notify": {
             "enable": false,
             "config": {
                 "access_token": "your_access_token"
             },
-            "success_test": false
+            "confirm_test": false
         },
         "slack": {
             "enable": false,
@@ -235,14 +235,14 @@
                 "bot_token": "your_bot_token",
                 "channel": "your_channel"
             },
-            "success_test": false
+            "confirm_test": false
         },
         "slack_webhook": {
             "enable": false,
             "config": {
                 "webhook_url": "your_webhook_url"
             },
-            "success_test": false
+            "confirm_test": false
         },
         "rocket_chat": {
             "enable": false,
@@ -252,7 +252,7 @@
                 "access_token": "your_accress_token",
                 "channel": "your_channel"
             },
-            "success_test": false
+            "confirm_test": false
         },
         "sendgrid": {
             "enable": false,
@@ -264,7 +264,7 @@
                     "user2@email.com"
                 ]
             },
-            "success_test": false
+            "confirm_test": false
         },
         "mailgun": {
             "enable": false,
@@ -277,9 +277,9 @@
                     "user2@email.com"
                 ]
             },
-            "success_test": false
+            "confirm_test": false
         },
-        "php_native_mail": {
+        "native_php_mail": {
             "enable": false,
             "config": {
                 "sender": "your@email.com",
@@ -288,7 +288,23 @@
                     "user2@email.com"
                 ]
             },
-            "success_test": false
+            "confirm_test": false
+        },
+        "smtp": {
+            "enable": false,
+            "config": {
+                "host": "127.0.0.1",
+                "port": 25,
+                "type": "",
+                "user": "",
+                "pass": "",
+                "sender": "your@email.com",
+                "recipients": [
+                    "user1@email.com",
+                    "user2@email.com"
+                ]
+            },
+            "confirm_test": false
         }
     },
     "iptables": {
