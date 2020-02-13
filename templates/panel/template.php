@@ -341,7 +341,7 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                         dataType: 'JSON',
                         cache: false,
                         success: function (data) { 
-                            if (data.status = 'success') {
+                            if (data.status === 'success') {
                                 console.log(data);
                                 location.reload();
                             }

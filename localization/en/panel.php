@@ -445,5 +445,9 @@ return [
     'login_heading_login' => 'Login to Firewall Panel.',
     'login_btn_login' => 'Login',
     'login_message_invalid_captcha' => 'Invalid Captcha',
-    'login_message_invalid_user_or_pass' => 'Invalid username or password.'
+    'login_message_invalid_user_or_pass' => 'Invalid username or password.',
+
+    // @since 1.0.0
+    'test_msg_title' => 'Testing Message from Host: ',
+    'test_msg_body' => 'Messenger module {0} has been tested and confirmed successfully.',
 ];

@@ -21,7 +21,99 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= _e('panel', 'login_heading_login', 'Login to Firewall Panel'); ?></title>
     <?php echo '<style>' . $css . '</style>'; ?>
-    <style>.text-center{text-align:center}.form-input{width:100%;height:40px;line-height:40px;font-size:13px;box-sizing:border-box;padding:0 20px;background-color:#f1f1f1;border:1px #eee solid}.input-box{padding:5px 20px;overflow:hidden}.btn-submit{width:100%;height:40px;line-height:40px;font-size:13px;color:#fff;font-weight:700;box-sizing:border-box;box-shadow:inset 0 1px 0 0 #dcecfb;background:linear-gradient(to bottom,#61b0ff 5%,#4c99e0 100%);background-color:#61b0ff;border:1px solid #84bbf3;text-shadow:0 1px 0 #528ecc;cursor:pointer}.btn-submit:hover{background:linear-gradient(to bottom,#4c99e0 5%,#61b0ff 100%);background-color:#4c99e0}.btn-submit:active{position:relative;top:1px}.logo{height:30px}.main-content{padding:10px}.error-notice{border:1px #eb4141 solid;padding:10px;color:#eb4141;margin:20px;font-weight:700}html{height:100%}body{position:relative;background:linear-gradient(-45deg,#ee7752,#389a76,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradient 15s ease infinite;height:100%}@keyframes gradient{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}.bg-bubbles{position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;overflow:hidden;padding:0;margin:0}.bg-bubbles li{position:absolute;list-style:none;display:block;width:40px;height:40px;background-color:rgba(255,255,255,.15);bottom:-160px;-webkit-animation:square 25s infinite;animation:square 25s infinite;-webkit-transition-timing-function:linear;transition-timing-function:linear}.bg-bubbles li:nth-child(1){left:10%}.bg-bubbles li:nth-child(2){left:20%;width:80px;height:80px;-webkit-animation-delay:2s;animation-delay:2s;-webkit-animation-duration:17s;animation-duration:17s}.bg-bubbles li:nth-child(3){left:25%;-webkit-animation-delay:4s;animation-delay:4s}.bg-bubbles li:nth-child(4){left:40%;width:60px;height:60px;-webkit-animation-duration:22s;animation-duration:22s;background-color:rgba(255,255,255,.25)}.bg-bubbles li:nth-child(5){left:70%}.bg-bubbles li:nth-child(6){left:80%;width:120px;height:120px;-webkit-animation-delay:3s;animation-delay:3s;background-color:rgba(255,255,255,.2)}.bg-bubbles li:nth-child(7){left:32%;width:160px;height:160px;-webkit-animation-delay:7s;animation-delay:7s}.bg-bubbles li:nth-child(8){left:55%;width:20px;height:20px;-webkit-animation-delay:15s;animation-delay:15s;-webkit-animation-duration:40s;animation-duration:40s}.bg-bubbles li:nth-child(9){left:25%;width:10px;height:10px;-webkit-animation-delay:2s;animation-delay:2s;-webkit-animation-duration:40s;animation-duration:40s;background-color:rgba(255,255,255,.3)}.bg-bubbles li:nth-child(10){left:90%;width:160px;height:160px;-webkit-animation-delay:11s;animation-delay:11s}@-webkit-keyframes square{0%{-webkit-transform:translateY(0);transform:translateY(0)}100%{-webkit-transform:translateY(-700px) rotate(600deg);transform:translateY(-700px) rotate(600deg)}}@keyframes square{0%{-webkit-transform:translateY(0);transform:translateY(0)}100%{-webkit-transform:translateY(-700px) rotate(600deg);transform:translateY(-700px) rotate(600deg)}}</style>
+
+    <style>
+        
+        .text-center {
+            text-align: center;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            font-size: 13px;
+            box-sizing: border-box;
+            padding: 0 20px;
+            background-color: #f1f1f1;
+            border: 1px #eeeeee solid;
+        }
+
+        .input-box {
+            padding: 5px 20px;
+            overflow: hidden;
+        }
+
+        .btn-submit {
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            font-size: 13px;
+            color: #fff;
+            font-weight: bold;
+            box-sizing: border-box;
+            box-shadow: inset 0px 1px 0px 0px #dcecfb;
+            background: linear-gradient(to bottom, #61b0ff 5%, #4c99e0 100%);
+	        background-color: #61b0ff;
+            border: 1px solid #84bbf3;
+            text-shadow: 0px 1px 0px #528ecc;
+            cursor:pointer;
+        }
+
+        .btn-submit:hover {
+            background:linear-gradient(to bottom, #4c99e0 5%, #61b0ff 100%);
+	        background-color:#4c99e0;
+        }
+
+        .btn-submit:active {
+            position: relative;
+            top: 1px;
+        }
+
+        .logo {
+            height: 30px;
+        }
+
+        .logo-wrapper {
+          
+        }
+
+        .main-content {
+            padding: 10px;
+        }
+        
+        .error-notice {
+            border: 1px #eb4141 solid;
+            padding: 10px;
+            color: #eb4141;
+            margin: 20px;
+            font-weight: bold;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            position: relative;
+            background: linear-gradient(-45deg, #ee7752, #389a76, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            height: 100%;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="wrapper" class="wrapper">
@@ -62,21 +154,6 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
 				</div>
             </div>
         </div> 
-        
     </div>
-    <ul class="bg-bubbles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
 </body>
 </html>
-
-

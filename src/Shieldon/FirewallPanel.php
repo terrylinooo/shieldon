@@ -22,6 +22,8 @@ use Shieldon\Log\ActionLogParser;
 use Shieldon\Log\ActionLogParsedCache;
 use Shieldon\Shieldon;
 use Shieldon\FirewallTrait;
+use Messenger as MessengerModule;
+
 use function Shieldon\Helper\__;
 
 use PDO;
@@ -291,6 +293,10 @@ class FirewallPanel
 
             case 'ajax_change_locale':
                 $this->ajaxChangeLocale();
+                break;
+
+            case 'ajax_test_messenger_modules':
+                $this->ajaxTestMessengerModules();
                 break;
 
             case 'login':
@@ -1854,6 +1860,25 @@ class FirewallPanel
     }
 
     /**
+     * Echo correspondence string on Messenger setting page.
+     *
+     * @param string $moduleName
+     * @param string $echoType
+     *
+     * @return void
+     */
+    protected function _m(string $moduleName, string $echoType = 'css')
+    {
+        if ('css' === $echoType) {
+            echo $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? 'success' : '';
+        }
+
+        if ('icon' === $echoType) {
+            echo $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation"></i>';
+        }
+    }
+
+    /**
      * Use on HTML select elemets.
      *
      * @param string $value
@@ -2018,40 +2043,6 @@ class FirewallPanel
         }
     }
 
-    /*
-
-    private function httpAuth()
-    {
-        $admin = $this->getConfig('admin');
-
-        if ('demo' === $this->mode || 'self' === $this->mode) {
-            $admin = $this->demoUser;
-        }
-
-        if (! isset($_SERVER['PHP_AUTH_USER']) || ! isset($_SERVER['PHP_AUTH_PW'])) {
-            header('WWW-Authenticate: Basic realm=""');
-            header('HTTP/1.0 401 Unauthorized');
-            die(__('panel', 'permission_required', 'Permission required.') . ' (1)');
-        }
-
-        if (
-            $admin['user']  === $_SERVER['PHP_AUTH_USER'] && 
-            'shieldon_pass' === $_SERVER['PHP_AUTH_PW'] &&
-            'shieldon_pass' === $admin['pass']
-        ) {
-            // Default password, unencrypted.
-        } elseif (
-            $admin['user'] === $_SERVER['PHP_AUTH_USER'] && 
-            password_verify($_SERVER['PHP_AUTH_PW'], $admin['pass'])
-        ) {
-            // User has already changed password, encrypted.
-        } else {
-        
-        }
-    }
-
-    */
-
     /**
      * Switch supported language.
      *
@@ -2066,6 +2057,250 @@ class FirewallPanel
         $response['session_lang_code'] = $_SESSION['SHIELDON_PANEL_LANG'];
  
         header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($response);
+        exit;
+    }
+
+    /**
+     * Test messenger modules.
+     *
+     * @return void
+     */
+    private function ajaxTestMessengerModules()
+    {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $moduleName = $_GET['module'] ?? '';
+
+        $response = [];
+        $response['status'] = 'error';
+        $response['result']['moduleName'] = $moduleName;
+
+        $testMsgTitle = __('panel', 'test_msg_title', 'Testing Message from Host: ') . $_SERVER['SERVER_ADDR'];
+        $testMsgBody = __('panel', 'test_msg_body', 'Messenger module "{0}" has been tested and confirmed successfully.', [$moduleName]);
+    
+        switch($moduleName) {
+
+            case 'telegram':
+                $apiKey = $_GET['apiKey'] ?? '';
+                $channel = $_GET['channel'] ?? '';
+                if (! empty($apiKey) && ! empty($channel)) {
+                    $messenger = new MessengerModule\Telegram($apiKey, $channel);
+                    if ($messenger->send($testMsgBody)) {
+                        $response['status'] = 'success';
+                    }
+                }
+                break;
+
+            case 'line-notify':
+                $accessToken = $_GET['accessToken'] ?? '';
+                if (! empty($accessToken)) {
+                    $messenger = new MessengerModule\LineNotify($accessToken);
+                    if ($messenger->send($testMsgBody)) {
+                        $response['status'] = 'success';
+                    }
+                }
+                break;
+
+            case 'slack':
+                $botToken = $_GET['botToken'] ?? '';
+                $channel = $_GET['channel'] ?? '';
+                if (! empty($botToken) && ! empty($channel)) {
+                    $messenger = new MessengerModule\Slack($botToken, $channel);
+                    if ($messenger->send($testMsgBody)) {
+                        $response['status'] = 'success';
+                    }
+                }
+                break;
+
+            case 'slack-webhook':
+                $webhookUrl = $_GET['webhookUrl'] ?? '';
+                if (! empty($webhookUrl)) {
+                    $messenger = new MessengerModule\SlackWebhook($webhookUrl);
+                    if ($messenger->send($testMsgBody)) {
+                        $response['status'] = 'success';
+                    }
+                }
+                break;
+
+            case 'rocket-chat':
+                $serverUrl = $_GET['serverUrl'] ?? '';
+                $userId = $_GET['userId'] ?? '';
+                $accessToken = $_GET['accessToken'] ?? '';
+                $channel = $_GET['channel'] ?? '';
+
+                if (
+                       ! empty($serverUrl) 
+                    && ! empty($userId)
+                    && ! empty($accessToken)
+                    && ! empty($channel)
+                ) {
+                    $messenger = new MessengerModule\RocketChat($accessToken, $userId, $serverUrl, $channel);
+                    if ($messenger->send($testMsgBody)) {
+                        $response['status'] = 'success';
+                    }
+                }
+                break;
+
+            case 'smtp':
+                $type = $_GET['type'] ?? '';
+                $host = $_GET['host'] ?? '';
+                $user = $_GET['user'] ?? '';
+                $pass = $_GET['pass'] ?? '';
+                $port = $_GET['port'] ?? '';
+
+                $sender = $_GET['sender'] ?? '';
+                $recipients = $_GET['recipients'] ?? '';
+
+                if (
+                    (! filter_var($host, FILTER_VALIDATE_IP) && ! filter_var($host, FILTER_VALIDATE_DOMAIN))
+                    || ! is_numeric($port)
+                    || empty($user)
+                    || empty($pass) 
+                ) {
+                    $response['result']['message'] = 'Invalid fields.';
+                    echo json_encode($response);
+                    exit;
+                }
+
+                if ('ssl' === $type || 'tls' === $type) {
+                    $host = $type . '://' . $host;
+                }
+
+                if (! empty($sender) && $recipients) {
+                    $recipients = str_replace("\r", '|', $recipients);
+                    $recipients = str_replace("\n", '|', $recipients);
+                    $recipients = explode('|', $recipients);
+
+                    $messenger = new MessengerModule\Smtp($user, $pass, $host, (int) $port);
+
+                    foreach($recipients as $recipient) {
+                        if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                            $messenger->addRecipient($recipient);
+                        }
+                    }
+
+                    if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
+                        $messenger->addSender($sender);
+                    }
+
+                    $messenger->setSubject($testMsgTitle);
+
+                    if ($messenger->send($testMsgBody)) {
+                        $response['status'] = 'success';
+                    }
+                }
+                break;
+
+            case 'native-php-mail':
+                $sender = $_GET['sender'] ?? '';
+                $recipients = $_GET['recipients'] ?? '';
+
+                if (! empty($sender) && ! empty($recipients)) {
+                    $recipients = str_replace("\r", '|', $recipients);
+                    $recipients = str_replace("\n", '|', $recipients);
+                    $recipients = explode('|', $recipients);
+
+                    $messenger = new MessengerModule\Mail();
+
+                    foreach($recipients as $recipient) {
+                   
+                        if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                            $messenger->addRecipient($recipient);
+                        }
+                    }
+
+                    if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
+                        $messenger->addSender($sender);
+                    }
+
+                    $messenger->setSubject($testMsgTitle);
+
+                    if ($messenger->send($testMsgBody)) {
+                        $response['status'] = 'success';
+                    }
+                }
+                break;
+
+            case 'sendgrid':
+                $apiKey = $_GET['apiKey'] ?? '';
+                $sender = $_GET['sender'] ?? '';
+                $recipients = $_GET['recipients'] ?? '';
+
+                if (! empty($sender) && ! empty($recipients) && ! empty($apiKey)) {
+                    $recipients = str_replace("\r", '|', $recipients);
+                    $recipients = str_replace("\n", '|', $recipients);
+                    $recipients = explode('|', $recipients);
+
+                    $messenger = new MessengerModule\Sendgrid($apiKey);
+
+                    foreach($recipients as $recipient) {
+                        if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                            $messenger->addRecipient($recipient);
+                        }
+                    }
+
+                    if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
+                        $messenger->addSender($sender);
+                    }
+
+                    $messenger->setSubject($testMsgTitle);
+
+                    if ($messenger->send($testMsgBody)) {
+                        $response['status'] = 'success';
+                    }
+                }
+                break;
+
+            case 'mailgun':
+                $apiKey = $_GET['apiKey'] ?? '';
+                $domain = $_GET['domain'] ?? '';
+                $sender = $_GET['sender'] ?? '';
+                $recipients = $_GET['recipients'] ?? '';
+
+                if (! empty($sender) && ! empty($recipients) && ! empty($apiKey) && ! empty($domain)) {
+                    $recipients = str_replace("\r", '|', $recipients);
+                    $recipients = str_replace("\n", '|', $recipients);
+                    $recipients = explode('|', $recipients);
+
+                    $messenger = new MessengerModule\Mailgun($apiKey, $domain);
+
+                    foreach($recipients as $recipient) {
+                        if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                            $messenger->addRecipient($recipient);
+                        }
+                    }
+
+                    if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
+                        $messenger->addSender($sender);
+                    }
+
+                    $messenger->setSubject($testMsgTitle);
+
+                    if ($messenger->send($testMsgBody)) {
+                        $response['status'] = 'success';
+                    }
+                }
+                break;
+
+            default:
+                $response['status'] = 'undefined';
+        }
+
+        $moduleName = str_replace('-', '_', $moduleName);
+
+        $postKey = 'messengers__' . $moduleName . '__confirm_test';
+
+        if ('success' === $response['status']) {
+            $_POST[$postKey] = 'on';
+            $this->saveConfig();
+        } elseif ('error' === $response['status']) {
+            $_POST[$postKey] = 'off';
+            $this->saveConfig();
+        }
+
+        $response['result']['postKey'] = $postKey;
+
         echo json_encode($response);
         exit;
     }
