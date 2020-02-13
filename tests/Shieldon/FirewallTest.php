@@ -298,8 +298,32 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall = \Shieldon\Container::get('firewall');
         
         $firewall->setConfig('messengers.telegram.enable', true);
+        $firewall->setConfig('messengers.telegram.confirm_test', true);
+
         $firewall->setConfig('messengers.line_notify.enable', true);
+        $firewall->setConfig('messengers.line_notify.confirm_test', true);
+
         $firewall->setConfig('messengers.sendgrid.enable', true);
-        $firewall->setup();  
+        $firewall->setConfig('messengers.sendgrid.confirm_test', true);
+
+        $firewall->setConfig('messengers.native_php_mail.enable', true);
+        $firewall->setConfig('messengers.native_php_mail.confirm_test', true);
+
+        $firewall->setConfig('messengers.smtp.enable', true);
+        $firewall->setConfig('messengers.smtp.confirm_test', true);
+
+        $firewall->setConfig('messengers.mailgun.enable', true);
+        $firewall->setConfig('messengers.mailgun.confirm_test', true);
+
+        $firewall->setConfig('messengers.rocket_chat.enable', true);
+        $firewall->setConfig('messengers.rocket_chat.confirm_test', true);
+
+        $firewall->setConfig('messengers.slack.enable', true);
+        $firewall->setConfig('messengers.slack.confirm_test', true);
+
+        $firewall->setConfig('messengers.slack_webhook.enable', true);
+        $firewall->setConfig('messengers.slack_webhook.confirm_test', true);
+
+        $firewall->setup();
     }
 }

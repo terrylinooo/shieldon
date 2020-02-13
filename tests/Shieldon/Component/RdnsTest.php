@@ -120,6 +120,17 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($result);
     }
 
+    public function testIsDenied_3()
+    {
+        // RDNS is not a FQDN.
+        $rdnsComponent = new Rdns();
+        $rdnsComponent->setStrict(true);
+        $rdnsComponent->setRdns('localhost');
+        $rdnsComponent->setIp('66.249.66.2');
+        $result = $rdnsComponent->isDenied();
+        $this->assertTrue($result);
+    }
+
     public function testGetDenyStatusCode()
     {
         $rdnsComponent = new Rdns();
