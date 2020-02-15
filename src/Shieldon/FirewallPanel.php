@@ -652,9 +652,15 @@ class FirewallPanel
         $messengers = $t->getValue($this->shieldon);
 
         $operatingMessengers = [
-            'telegram'   => false,
-            'linenotify' => false,
-            'sendgrid'   => false,
+            'telegram'     => false,
+            'linenotify'   => false,
+            'sendgrid'     => false,
+            'maingun'      => false,
+            'smtp'         => false,
+            'slack'        => false,
+            'slackwebhook' => false,
+            'rocketchat'   => false,
+            'mail'         => false,
         ];
 
         foreach ($messengers as $messenger) {

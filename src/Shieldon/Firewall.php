@@ -570,8 +570,8 @@ class Firewall
 
         $messageTitle = 'Firewall Notification';
 
-        if ($telegramSetting['enable']) {
-            if ($telegramSetting['confirm_test']) {
+        if (! empty($telegramSetting['enable'])) {
+            if (! empty($telegramSetting['confirm_test'])) {
                 $apiKey = $telegramSetting['config']['api_key'] ?? '';
                 $channel = $telegramSetting['config']['channel'] ?? '';
                 $this->shieldon->setMessenger(
@@ -580,8 +580,8 @@ class Firewall
             }
         }
 
-        if ($linenotodySetting['enable']) {
-            if ($linenotodySetting['confirm_test']) {
+        if (! empty($linenotodySetting['enable'])) {
+            if (! empty($linenotodySetting['confirm_test'])) {
                 $accessToken = $linenotodySetting['config']['access_token'] ?? '';
                 $this->shieldon->setMessenger(
                     new MessengerModule\LineNotify($accessToken)
@@ -589,8 +589,8 @@ class Firewall
             }
         }
 
-        if ($sendgridSetting['enable']) {
-            if ($sendgridSetting['confirm_test']) {
+        if (! empty($sendgridSetting['enable'])) {
+            if (! empty($sendgridSetting['confirm_test'])) {
                 $apiKey = $sendgridSetting['config']['api_key'] ?? '';
                 $sender = $sendgridSetting['config']['sender'] ?? '';
                 $recipients = $sendgridSetting['config']['recipients'] ?? [];
@@ -607,8 +607,8 @@ class Firewall
             }
         }
 
-        if ($phpMailSetting['enable']) {
-            if ($phpMailSetting['confirm_test']) {
+        if (! empty($phpMailSetting['enable'])) {
+            if (! empty($phpMailSetting['confirm_test'])) {
                 $sender = $phpMailSetting['config']['sender'] ?? '';
                 $recipients = $phpMailSetting['config']['recipients'] ?? [];
 
@@ -624,8 +624,8 @@ class Firewall
             }
         }
 
-        if ($smtpSetting['enable']) {
-            if ($smtpSetting['confirm_test']) {
+        if (! empty($smtpSetting['enable'])) {
+            if (! empty($smtpSetting['confirm_test'])) {
                 $sender = $smtpSetting['config']['sender'] ?? '';
                 $recipients = $smtpSetting['config']['recipients'] ?? [];
                 $host = $smtpSetting['config']['host'] ?? '';
@@ -645,8 +645,8 @@ class Firewall
             }
         }
 
-        if ($mailgunSetting['enable']) {
-            if ($mailgunSetting['confirm_test']) {
+        if (! empty($mailgunSetting['enable'])) {
+            if (! empty($mailgunSetting['confirm_test'])) {
                 $apiKey = $mailgunSetting['config']['api_key'] ?? '';
                 $domain = $mailgunSetting['config']['domain_name'] ?? '';
                 $sender = $mailgunSetting['config']['sender'] ?? '';
@@ -664,8 +664,8 @@ class Firewall
             }
         }
 
-        if ($rocketchatSetting['enable']) {
-            if ($rocketchatSetting['confirm_test']) {
+        if (! empty($rocketchatSetting['enable'])) {
+            if (! empty($rocketchatSetting['confirm_test'])) {
                 $serverUrl = $rocketchatSetting['config']['server_url'] ?? '';
                 $userId = $rocketchatSetting['config']['user_id'] ?? '';
                 $accessToken = $rocketchatSetting['config']['access_token'] ?? '';
@@ -679,8 +679,8 @@ class Firewall
             }
         }
 
-        if ($slackSetting['enable']) {
-            if ($slackSetting['confirm_test']) {
+        if (! empty($slackSetting['enable'])) {
+            if (! empty($slackSetting['confirm_test'])) {
                 $botToken = $slackSetting['config']['bot_token'] ?? '';
                 $channel = $slackSetting['config']['channel'] ?? '';
 
@@ -690,8 +690,8 @@ class Firewall
             }
         }
 
-        if ($slackWebhookSetting['enable']) {
-            if ($slackWebhookSetting['confirm_test']) {
+        if (! empty($slackWebhookSetting['enable'])) {
+            if (! empty($slackWebhookSetting['confirm_test'])) {
                 $webhookUrl = $slackWebhookSetting['config']['webhook_url'] ?? '';
 
                 $this->shieldon->setMessenger(
