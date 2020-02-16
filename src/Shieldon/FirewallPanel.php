@@ -195,7 +195,7 @@ class FirewallPanel
      *
      * @return void
      */
-    public function entry()
+    public function entry(): void
     {
         $this->locate = 'en';
 
@@ -682,7 +682,7 @@ class FirewallPanel
      *
      * @return void
      */
-    protected function operationStatus()
+    protected function operationStatus(): void
     {
         $data['components'] = [
             'Ip'         => (! empty($this->shieldon->component['Ip']))         ? true : false,
@@ -843,7 +843,7 @@ class FirewallPanel
      *
      * @return void
      */
-    protected function ipManager()
+    protected function ipManager(): void
     {
         if (isset($_POST['ip']) && filter_var(explode('/', $_POST['ip'])[0], FILTER_VALIDATE_IP)) {
 
@@ -1488,7 +1488,7 @@ class FirewallPanel
      *
      * @return void
      */
-    private function saveConfig()
+    private function saveConfig(): void
     {
         $configFilePath = $this->directory . '/' . $this->filename;
 
@@ -1779,9 +1779,9 @@ class FirewallPanel
      * @param string $field   Field.
      * @param mixed  $defailt Default value.
      *
-     * @return string
+     * @return void
      */
-    protected function _(string $field, $default = '')
+    protected function _(string $field, $default = ''): void
     {
         if (is_string($this->getConfig($field)) || is_numeric($this->getConfig($field))) {
 
@@ -1873,7 +1873,7 @@ class FirewallPanel
      *
      * @return void
      */
-    protected function _m(string $moduleName, string $echoType = 'css')
+    protected function _m(string $moduleName, string $echoType = 'css'): void
     {
         if ('css' === $echoType) {
             echo $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? 'success' : '';
@@ -1947,7 +1947,7 @@ class FirewallPanel
      *
      * @return void
      */
-    private function _include(string $page, array $data = [])
+    private function _include(string $page, array $data = []): void
     {
         if (! defined('SHIELDON_VIEW')) {
             define('SHIELDON_VIEW', true);
@@ -1968,7 +1968,7 @@ class FirewallPanel
      *
      * @return void
      */
-    private function renderPage(string $page, array $data)
+    private function renderPage(string $page, array $data): void
     {
         $channelName = $this->shieldon->driver->getChannel();
 
@@ -1993,7 +1993,7 @@ class FirewallPanel
      *
      * @return void
      */
-    private function responseMessage(string $type, string $text)
+    private function responseMessage(string $type, string $text): void
     {
         $class = $type;
 
@@ -2016,7 +2016,7 @@ class FirewallPanel
      *
      * @return string
      */
-    private function url(string $page = '', string $tab = '')
+    private function url(string $page = '', string $tab = ''): string
     {
         $httpProtocal = 'http://';
 
@@ -2038,7 +2038,7 @@ class FirewallPanel
      *
      * @return void
      */
-    private function httpAuth()
+    private function httpAuth(): void
     {
         if ('demo' === $this->mode || 'self' === $this->mode) {
             $admin = $this->demoUser;
@@ -2054,7 +2054,7 @@ class FirewallPanel
      *
      * @return void
      */
-    private function ajaxChangeLocale()
+    private function ajaxChangeLocale(): void
     {
         $_SESSION['SHIELDON_PANEL_LANG'] = $_GET['langCode'] ?? 'en';
 
@@ -2072,7 +2072,7 @@ class FirewallPanel
      *
      * @return void
      */
-    private function ajaxTestMessengerModules()
+    private function ajaxTestMessengerModules(): void
     {
         header('Content-Type: application/json; charset=utf-8');
 
