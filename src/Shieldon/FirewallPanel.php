@@ -655,7 +655,7 @@ class FirewallPanel
             'telegram'     => false,
             'linenotify'   => false,
             'sendgrid'     => false,
-            'maingun'      => false,
+            'mailgun'      => false,
             'smtp'         => false,
             'slack'        => false,
             'slackwebhook' => false,
