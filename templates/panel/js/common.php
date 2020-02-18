@@ -55,6 +55,24 @@
         });
 
         $('#code2').val($('#code1').text());
+
+        // Keep tabl position after refreshing page.
+        var hash = window.location.hash;
+
+        $('input:radio[name="tabs"]').on('change', function() {
+            window.location.hash = $(this).val();
+            $('form').attr('action', window.location.hash);
+        });
+
+        if (window.location.hash !== '') {
+            $('input:radio[name="tabs"]').each(function() {
+                if (hash === $(this).val()) {
+                    $(this).attr('checked', 'checked');
+                } else {
+                    $(this).attr('checked', '');
+                }
+            });
+        }
     });
 
 </script>
