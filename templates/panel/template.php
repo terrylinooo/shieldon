@@ -195,31 +195,31 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                             </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=today">
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=today">
                                         <i class="far fa-calendar-check"></i>
                                         <span><?php _e('panel', 'menu_today', 'Today'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=yesterday">
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=yesterday">
                                         <i class="fas fa-calendar-day"></i>
                                         <span><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=past_seven_days">
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=past_seven_days">
                                         <i class="fas fa-calendar-week"></i>
                                         <span><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=this_month">
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=this_month">
                                         <i class="far fa-calendar-alt"></i>
                                         <span><?php _e('panel', 'menu_this_month', 'This month'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=dashboard&tab=last_month">
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=last_month">
                                         <i class="fas fa-calendar-alt"></i>
                                         <span><?php _e('panel', 'menu_last_month', 'Last month'); ?></span>
                                     </a>

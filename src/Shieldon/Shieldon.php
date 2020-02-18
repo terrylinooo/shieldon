@@ -1088,7 +1088,7 @@ class Shieldon
      */
     public function setView(string $content, string $type): self
     {
-        if ('limit' === $type || 'stop' === $type || 'deny' === $type) {
+        if ('session_limitation' === $type || 'captcha' === $type || 'rejection' === $type) {
             $this->html[$type] = $content;
         }
 
@@ -1122,12 +1122,11 @@ class Shieldon
         $output = '';
 
         if (self::RESPONSE_TEMPORARILY_DENY === $this->result) {
-            $type = 'stop';
+            $type = 'captcha';
         } elseif (self::RESPONSE_LIMIT === $this->result) {
-            $type = 'limit';
+            $type = 'session_limitation';
         } elseif (self::RESPONSE_DENY === $this->result) {
-            
-            $type = 'deny';
+            $type = 'rejection';
         } else {
 
             // @codeCoverageIgnoreStart
@@ -1157,7 +1156,7 @@ class Shieldon
         // Use default template if there is no custom HTML template.
         if (empty($this->html[$type])) {
 
-            $viewPath = self::SHIELDON_DIR . '/../../templates/' . $type . '.php';
+            $viewPath = self::SHIELDON_DIR . '/../../templates/frontend/' . $type . '.php';
 
             if (empty($this->properties['display_online_info'])) {
                 $showOnlineInformation = false;
@@ -1187,7 +1186,7 @@ class Shieldon
                     'shadow_opacity'   => $this->dialogUI['shadow_opacity'] ?? '0.2',
                 ];
 
-                $css = require self::SHIELDON_DIR . '/../../templates/css-default.php';
+                $css = require self::SHIELDON_DIR . '/../../templates/frontend/css/default.php';
 
                 ob_start();
                 require $viewPath;
@@ -1202,7 +1201,7 @@ class Shieldon
 
             $output = $this->html[$type];
 
-            if ('stop' === $type) {
+            if ('captcha' === $type) {
 
                 // Build captcha form.
                 ob_start();

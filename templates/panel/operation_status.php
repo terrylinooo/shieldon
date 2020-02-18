@@ -234,6 +234,7 @@ $timezone = '';
 <script>
 
     $(function() {
+
         $('.so-datalog').DataTable({
             'responsive': true,
             'pageLength': 25,

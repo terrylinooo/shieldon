@@ -267,8 +267,8 @@ class FirewallPanel
                 $this->ruleTable();
                 break;
 
-            case 'dashboard':
-                $this->dashboard();
+            case 'action_log':
+                $this->actionLog();
                 break;
 
             case 'messenger':
@@ -467,10 +467,10 @@ class FirewallPanel
             'shadow_opacity'   => '0.2',
         ];
 
-        $data['css'] = require $this->shieldon::SHIELDON_DIR . '/../../templates/css-default.php';
+        $data['css'] = require $this->shieldon::SHIELDON_DIR . '/../../templates/frontend/css/default.php';
         unset($ui);
 
-        $this->loadView('panel/login', $data, true);
+        $this->loadView('frontend/login', $data, true);
     }
 
     /**
@@ -1051,11 +1051,11 @@ class FirewallPanel
     }
 
     /**
-     * Dsiplay dashboard.
+     * Dsiplay action logs.
      *
      * @return void
      */
-    protected function dashboard(): void
+    protected function actionLog(): void
     {
         $tab = $_GET['tab'] ?? 'today';
 
@@ -1119,9 +1119,9 @@ class FirewallPanel
         $data['page_availability'] = $this->pageAvailability['logs'];
         $data['last_cached_time'] = $lastCachedTime;
 
-        $data['page_url'] = $this->url('dashboard');
+        $data['page_url'] = $this->url('action_log');
 
-        $this->renderPage('panel/log_' . $type, $data);
+        $this->renderPage('panel/action_log_' . $type, $data);
     }
 
     /**
