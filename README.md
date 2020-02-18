@@ -84,6 +84,8 @@ Click [here](https://shieldon.io/demo/) to view demo.
 - user: `demo`
 - password: `demo`
 
+---
+
 ## Screenshots
 
 Only a few screenshots are listed below.
@@ -140,11 +142,13 @@ Provided by [Messenger](https://github.com/terrylinooo/messenger) library.
 
 Send notification via Telegram API.
 
+---
+
 ## Contributing
 
 ### Core Function
 
-Welcome to contribute your idea to this projects. Before sending your pull request, please make sure everything is tested well without errors.
+Welcome to contribute your idea to this project. Before sending your pull request, please make sure everything is tested well without errors.
 
 #### Requirements
 
@@ -188,6 +192,8 @@ Thank you very much for considering contributing to Shieldon Firewall, yet we ne
 - [Website](https://github.com/shieldon-io/website-translations)
 - [Documentation](https://github.com/shieldon-io/document-translations)
 - [i18n files in Shieldon library](https://github.com/shieldon-io/library-translations)
+
+---
 
 ## Author
 
