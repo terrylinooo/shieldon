@@ -580,12 +580,12 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     public function testSetView()
     {
         $shieldon = new \Shieldon\Shieldon();
-        $shieldon->setView('<html><body>hello</body></html>', 'deny');
+        $shieldon->setView('<html><body>hello</body></html>', 'rejection');
         $reflection = new \ReflectionObject($shieldon);
         $t = $reflection->getProperty('html');
         $t->setAccessible(true);
         $view = $t->getValue($shieldon);
-        if ($view['deny'] === '<html><body>hello</body></html>') {
+        if ($view['rejection'] === '<html><body>hello</body></html>') {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);

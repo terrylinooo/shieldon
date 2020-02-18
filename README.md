@@ -40,10 +40,9 @@ This is basic concepts about how Shieldon works.
     - Slack
     - SendGrid
     - Mailgun
-    - Mail (PHP native mail)
+    - Mail (Using Native PHP mail function.)
     - SMTP
 - Web UI for System firewall - iptables and ip6tables.
-- More features will come...
 
 ## Installation
 
@@ -147,11 +146,44 @@ Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 
 ## Contributing
 
+### Core Function
+
+Welcome to contribute your idea to this projects. Before sending your pull request, please make sure everything is tested well without errors.
+
+### Requirements
+
+- MySQL or MariaDB installed.
+- Redis installed. (Also require PHP extension `php_redis`)
+
+### Steps
+
+1. Run `composer update` to install required libraries.
+2. Create a writable folder `tmp`. (same level with `src` folder.) for temporary testing files.
+3. Create a MySQL database `shieldon_unittest`
+4. Create a user `shieldon'@'localhost` with password `taiwan`.
+5. Grant database permissions on `shieldon_unittest` to `shieldon'@'localhost`.
+
+```
+composer update
+mkdir tmp
+chmod 777 tmp
+mysql -u root -e 'CREATE DATABASE shieldon_unittest;'
+mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
+mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
+```
+
+#### Run test
+```
+composer test
+```
+
+### Help with Transation
+
 Thank you very much for considering contributing to Shieldon Firewall, yet we need your help to translate our webiste, documentation and i18n files in Shieldon library. Here are the links:
 
 - [Website](https://github.com/shieldon-io/website-translations)
 - [Documentation](https://github.com/shieldon-io/document-translations)
-- [i18n files in Shieldon Library](https://github.com/shieldon-io/library-translations)
+- [i18n files in Shieldon library](https://github.com/shieldon-io/library-translations)
 
 ## License
 
