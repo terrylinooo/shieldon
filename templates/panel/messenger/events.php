@@ -20,7 +20,7 @@ use function Shieldon\Helper\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'messenger_label_event_1', 'Ban a user permanently in current data cycle.'); ?></td>
             <td class="r2">
-                <p><?php _e('panel', 'messenger_desc_event_1', 'This event happens typically when a user fails too many times due to invalid CAPTCHA in a row.'); ?></p>
+                <p><?php _e('panel', 'messenger_desc_event_1', 'This event is triggered typically when a user fails too many times due to invalid CAPTCHA in a row.'); ?></p>
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="events__failed_attempts_in_a_row__data_circle__messenger" value="off" />
                     <input type="checkbox" name="events__failed_attempts_in_a_row__data_circle__messenger" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.data_circle.messenger', true); ?>>
@@ -36,7 +36,7 @@ use function Shieldon\Helper\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'messenger_label_event_2', 'Ban a user permanently in system firwall'); ?></td>
             <td class="r2">
-                <p><?php _e('panel', 'messenger_desc_event_2', 'This event happens typically when a user is already banned permanently in curent data cycle, but they are still access the warning pages too many times in a row, we can confirm that they are malicious bots.'); ?></p>
+                <p><?php _e('panel', 'messenger_desc_event_2', 'This event is triggered typically when a user is already banned permanently in curent data cycle, but they are still access the warning pages too many times in a row, we can confirm that they are malicious bots.'); ?></p>
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="events__failed_attempts_in_a_row__system_firewall__messenger" value="off" />
                     <input type="checkbox" name="events__failed_attempts_in_a_row__system_firewall__messenger" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.system_firewall.messenger', true); ?>>

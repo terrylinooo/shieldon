@@ -15,6 +15,14 @@ return [
     'reason_reached_limit_hour' => '達到每小時限制。',
     'reason_reached_limit_minute' => '達到每分限制。',
     'reason_reached_limit_second' => '達到每秒限制。',
+    'reason_invalid_ip' => '無效的 IP 位址。',
+    'reason_deny_ip' => '被 IP 元件拒絕。',
+    'reason_allow_ip' => '由 IP 元件允許。',
+    'reason_component_ip' => '被 IP 元件拒絕。',
+    'reason_component_rdns' => '被 RDNS 元件拒絕。',
+    'reason_component_header' => '被標頭元件拒絕。',
+    'reason_component_useragent' => '被用戶代理元件拒絕。',
+    'reason_component_trusted_robot' => '被辨識為假造搜尋引擎資訊。',
 
     // Menu
     'nav_locale' => '語系',
@@ -37,6 +45,9 @@ return [
     'menu_logs' => '記錄',
     'menu_data_circle' => '資料週期',
     'menu_operation_status' => '運行狀態',
+    'menu_iptables_manager' => '管理器',
+    'menu_iptables_status' => '狀態',
+    'menu_messenger' => '通訊器',
 
     // Message
     'error_mysql_connection' => '無法連接您的 MySQL 資料庫，請檢查設定值。',
@@ -112,7 +123,7 @@ return [
     'log_label_failed' => '已失敗',
     'log_label_displays' => '顯示次數',
     'log_label_timezone' => '時區',
-
+    'log_label_cache_time' => '報告產生時間',
 
     // Overview
     'overview_heading_data_circle' => '資料週期',
@@ -159,6 +170,32 @@ return [
     'overview_note_file_system' => '檔案系統。',
     'overview_label_file' => '檔案',
     'overview_text_more_usages' => '更多用法細節請查閱文件。',
+    'overview_reset_data_circle' => '重設資料週期',
+    'overview_reset_action_logs' => '重設訪客動作記錄',
+    'overview_thread_rows' => '列',
+    'overview_thread_table' => '表',
+    'overview_text_reset_data_circle_1' => '您想要重設當前的資料週期嗎？',
+    'overview_text_reset_data_circle_2' => '進行這個動作將會移除所有目前資料週期的記錄，以及重建資料表。',
+    'overview_text_reset_action_logs' => '您想要重設當前的訪客動作記錄嗎？',
+    'overview_heading_messenger' => '通訊器模組',
+    'overview_label_telegram' => 'Telegram',
+    'overview_note_telegram' => '傳送通知到您的 Telegram 頻道。',
+    'overview_label_linenotofy' => 'Line Notify',
+    'overview_note_linenotify' => '傳送通知到您的 Line 群組。',
+    'overview_label_sendgrid' => 'SendGrid',
+    'overview_note_sendgrid' => '透過 SendGrid API 傳送通知到您的 Email。',
+    'overview_label_slack' => 'Slack',
+    'overview_note_slack' => '透過 Slack API 傳送通知到您的 Slack 頻道。',
+    'overview_label_slackwebhook' => 'Slack Webhook',
+    'overview_note_slackwebhook' => '透過 Slack Webhook 傳送通知到您的 Slack 頻道。',
+    'overview_label_mailgun' => 'MailGun',
+    'overview_note_mailgun' => '透過 MailGun API 傳送通知到您的 Email。',
+    'overview_label_smtp' => 'SMTP',
+    'overview_note_smtp' => '透過 SMTP 伺服器傳送通知到您的 Email。',
+    'overview_label_rocketchat' => 'RocketChat',
+    'overview_note_rocketchat' => '傳送通知到您的 RocketChat 頻道。',
+    'overview_label_mail' => 'Mail',
+    'overview_note_mail' => '透過原生的 PHP 函式傳送通知到您的 Email。',
 
     // IP log table.
     'table_heading_ip_log' => 'IP 記錄表',
@@ -330,10 +367,25 @@ return [
     'setting_label_cookie_domain' => 'Cookie 域名',
     'setting_text_leave_blank' => '只要留空即套用預設值。',
 
+    'setting_heading_deny_attempts' => '拒決多次嘗試',
+    'setting_desc_deny_attempts' => '和意圖不軌的訪客說再見。',
+    'setting_label_system_firewall' => '系統防火牆',
+    'setting_note_install_iptables' => '確定您已經安裝 <strong>iptables</strong> 以及 <strong>ip6tables</strong> 在您的伺服器中，而且在 <strong>crontab</strong> 中正確地採用 <strong>fiewall.sh</strong>。',
+    'setting_label_watching_folder' => '監視資料夾',
+    'setting_label_cronjob' => '系統排程',
+    'setting_note_cronjob' => '請使用這段程式碼到您的伺服器中的 crontab 檔案。',
+    'setting_note_iptables' => '<strong>firewall.sh</strong> 將會監視在此資料夾中的變化來套用指令到 iptables 裡。',
+    'setting_label_deny_attempt_buffer' => '緩衝',
+    'setting_desc_deny_attempt_buffer' => '連續多少次錯誤會觸發此事件。',
+
+    'setting_label_record_attempt_detection_period' => '偵測期間',
+    'setting_desc_record_attempt_detection_period' => '檢查現在和上次嘗試失敗的時間差。在時間差以內的失敗嘗試會被記錄。越大的數值表示越加嚴格。（單位：秒數）',
+    'setting_label_record_attempt_reset' => '重設',
+    'setting_desc_record_attempt_reset' => '在 n 秒後重設計數器。',
     // 2019/11/11
-    'menu_iptables_manager' => '管理器',
-    'menu_iptables_status' => '狀態',
-    'menu_messenger' => '通訊器',
+
+
+    // Messenger
     'messenger_heading_events' => '事件',
     'messenger_desc_events' => '什麼事件是在發生的當下，你想從即時通訊模組接收通知。',
     'messenger_label_event_1' => '在當前的資料週期中永久地封鎖一位使用者。',
@@ -344,24 +396,33 @@ return [
     'messenger_heading_telegram' => 'Telegram',
     'messenger_label_api_key' => 'API 金鑰',
     'messenger_label_channel' => '頻道',
-    'messenger_heading_line_notify' => 'Line Notify',
+    'messenger_heading_linenotify' => 'Line Notify',
     'messenger_label_access_token' => '連接權杖',
     'messenger_heading_sendgrid' => 'SendGrid',
     'messenger_label_sender' => '發信人',
     'messenger_label_recipients' => '收件人',
+    'messenger_label_host' => '主機',
+    'messenger_label_port' => '端口',
+    'messenger_label_user' => '使用者',
+    'messenger_label_pass' => '密碼',
+    'messenger_label_type' => '類型',
+    'messenger_heading_mailgun' => 'MailGun',
+    'messenger_heading_smtp' => 'SMTP',
+    'messenger_heading_php_mail' => '原生 PHP 寄信函式',
+    'messenger_label_webhook_url' => 'Webhook URL',
+    'messenger_label_bot_token' => 'Bot Token',
+    'messenger_heading_slack' => 'Slack',
+    'messenger_heading_slack_webhook' => 'Slack Webhook',
+    'messenger_heading_rocket_chat' => 'Rocket Chat',
+    'messenger_label_server_url' => '伺服器網址',
+
+
     'tab_heading_events' => '事件',
     'tab_heading_modules' => '模組',
-    'setting_heading_deny_attempts' => '拒決多次嘗試',
-    'setting_desc_deny_attempts' => '和意圖不軌的訪客說再見。',
+    'tab_heading_iptables_status' => '狀態',
+
     'error_ip6tables_directory_not_writable' => 'iptables 監視資料夾需要儲存目錄是可寫入狀態。',
-    'setting_label_system_firewall' => '系統防火牆',
-    'setting_note_install_iptables' => '確定您已經安裝 <strong>iptables</strong> 以及 <strong>ip6tables</strong> 在您的伺服器中，而且在 <strong>crontab</strong> 中正確地採用 <strong>fiewall.sh</strong>。',
-    'setting_label_watching_folder' => '監視資料夾',
-    'setting_label_cronjob' => '系統排程',
-    'setting_note_cronjob' => '請使用這段程式碼到您的伺服器中的 crontab 檔案。',
-    'setting_note_iptables' => '<strong>firewall.sh</strong> 將會監視在此資料夾中的變化來套用指令到 iptables 裡。',
-    'setting_label_deny_attempt_buffer' => '緩衝',
-    'setting_desc_deny_attempt_buffer' => '連續多少次錯誤會觸發此事件。',
+
     'iptable_heading' => 'Iptables 管理器',
     'iptable_description_1' => '這是 <strong>iptables</strong> 的網站介面，請小心地使用此功能。',
     'iptable_description_2' => '您只可以管理連線進來的請求。',
@@ -378,45 +439,46 @@ return [
     'iptables_label_protocol_udp' => 'UDP',
     'iptables_label_action_allow' => '允許',
     'iptables_label_action_deny' => '拒絕',
-    'tab_heading_iptables_status' => '狀態',
+    
     'iptable_status_description' => '以下文字是指令 <code>iptables -L</code> 產生的結果。',
     'ip6table_status_description' => '以下文字是指令 <code>ip6tables -L</code> 產生的結果。',
 
     // 2019/11/12
-    'overview_reset_data_circle' => '重設資料週期',
-    'overview_reset_action_logs' => '重設訪客動作記錄',
-    'overview_thread_rows' => '列',
-    'overview_thread_table' => '表',
-    'overview_text_reset_data_circle_1' => '您想要重設當前的資料週期嗎？',
-    'overview_text_reset_data_circle_2' => '進行這個動作將會移除所有目前資料週期的記錄，以及重建資料表。',
-    'overview_text_reset_action_logs' => '您想要重設當前的訪客動作記錄嗎？',
+   
+
     'reset_data_circle' => '資料週期表已經被重新設定。',
     'reset_action_logs' => '訪客動作記錄已經被清除。',
 
     // 2019/11/13
-    'overview_heading_messenger' => '通訊器模組',
-    'overview_label_telegram' => 'Telegram',
-    'overview_note_telegram' => '傳送通知到您的 Telegram 頻道。',
-    'overview_label_line_notofy' => 'Line Notify',
-    'overview_note_line_notify' => '傳送通知到您的 Line 群組。',
-    'overview_label_sendgrid' => 'SendGrid',
-    'overview_note_sendgrid' => '透過 SendGrid API 傳送通知到您的 Email。',
+
+
+    // @since 1.0.0
+
 
     // 2019/12/13
-    'log_label_cache_time' => '報告產生時間',
+
 
     // @since 0.1.8
-    'reason_invalid_ip' => '無效的 IP 位址。',
-    'reason_deny_ip' => '被 IP 元件拒絕。',
-    'reason_allow_ip' => '由 IP 元件允許。',
-    'reason_component_ip' => '被 IP 元件拒絕。',
-    'reason_component_rdns' => '被 RDNS 元件拒絕。',
-    'reason_component_header' => '被標頭元件拒絕。',
-    'reason_component_useragent' => '被用戶代理元件拒絕。',
-    'reason_component_trusted_robot' => '被辨識為假造搜尋引擎資訊。',
 
-    'setting_label_record_attempt_detection_period' => '偵測期間',
-    'setting_desc_record_attempt_detection_period' => '檢查現在和上次嘗試失敗的時間差。在時間差以內的失敗嘗試會被記錄。越大的數值表示越加嚴格。（單位：秒數）',
-    'setting_label_record_attempt_reset' => '重設',
-    'setting_desc_record_attempt_reset' => '在 n 秒後重設計數器。',
+
+
+
+    // @since 0.2.0
+    'operation_note_useragent' => '阻擋沒有使用者代理資訊的請求。',
+    'operation_note_rdns' => '阻擋沒有 RDNS 記錄的請求。',
+    'operation_note_header' => '阻擋沒有常見的檔頭資訊的請求。',
+    'operation_note_trustedbot' => '阻擋被標記為偽造的搜尋引擎的請求。',
+    'operation_note_ip' => '阻擋被設定在 IP 管理器的請求。',
+
+    
+    // @since 0.3.0
+
+    'login_heading_login' => '登入防火牆面板。',
+    'login_btn_login' => '登入',
+    'login_message_invalid_captcha' => '無效的驗證碼',
+    'login_message_invalid_user_or_pass' => '無效的使用者名稱或密碼。',
+    
+    // @since 1.0.0
+    'test_msg_title' => '測試訊息來自主機: ',
+    'test_msg_body' => '通訊器模組 {0} 已被測試且確認成功。',
 ];
