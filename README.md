@@ -139,41 +139,44 @@ Provided by [Messenger](https://github.com/terrylinooo/messenger) library.
 
 Send notification via Telegram API.
 
-
-## Author
-
-Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
-
 ## Contributing
 
 ### Core Function
 
 Welcome to contribute your idea to this projects. Before sending your pull request, please make sure everything is tested well without errors.
 
-### Requirements
+#### Requirements
 
 - MySQL or MariaDB installed.
 - Redis installed. (Also require PHP extension `php_redis`)
 
-### Steps
+#### Steps
 
 1. Run `composer update` to install required libraries.
-2. Create a writable folder `tmp`. (same level with `src` folder.) for temporary testing files.
-3. Create a MySQL database `shieldon_unittest`
-4. Create a user `shieldon'@'localhost` with password `taiwan`.
-5. Grant database permissions on `shieldon_unittest` to `shieldon'@'localhost`.
+    ```bash
+    composer update
+    ```
 
-```
-composer update
-mkdir tmp
-chmod 777 tmp
-mysql -u root -e 'CREATE DATABASE shieldon_unittest;'
-mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
-mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
-```
+2. Create a writable folder `tmp`. (same level with `src` folder.) for temporary testing files.
+    ```bash
+    mkdir tmp
+    chmod 777 tmp
+    ```
+3. Create a MySQL database `shieldon_unittest`
+    ```bash
+    mysql -u root -e 'CREATE DATABASE shieldon_unittest;'
+    ```
+4. Create a user `shieldon'@'localhost` with password `taiwan`.
+    ```bash
+    mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
+    ```
+5. Grant database permissions on `shieldon_unittest` to `shieldon'@'localhost`.
+    ```bash
+    mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
+    ```
 
 #### Run test
-```
+```bash
 composer test
 ```
 
@@ -184,6 +187,10 @@ Thank you very much for considering contributing to Shieldon Firewall, yet we ne
 - [Website](https://github.com/shieldon-io/website-translations)
 - [Documentation](https://github.com/shieldon-io/document-translations)
 - [i18n files in Shieldon library](https://github.com/shieldon-io/library-translations)
+
+## Author
+
+Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 
 ## License
 
