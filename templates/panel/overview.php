@@ -338,33 +338,17 @@ $timezone = '';
         </div>
         <br />
         <div class="row">
+            <?php foreach ($messengers as $k => $v) : ?>
             <div class="col-sm-3">
                 <div class="filter-status">
-                    <div class="heading"><?php _e('panel', 'overview_label_telegram', 'Telegram'); ?></div>
+                    <div class="heading"><?php _e('panel', 'overview_label_' . $k, ''); ?></div>
                     <div class="nums">
-                        <?php echo $messengers['telegram']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
+                        <?php echo $messengers[$k]  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_telegram', 'Send notifications to your Telegram channel.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_' . $k, ''); ?></div>
                 </div>
             </div>
-            <div class="col-sm-3">
-                <div class="filter-status">
-                    <div class="heading"><?php _e('panel', 'overview_label_line_notofy', 'Line Notify'); ?></div>
-                    <div class="nums">
-                        <?php echo $messengers['linenotify']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
-                    </div>
-                    <div class="note"><?php _e('panel', 'overview_note_line_notify', 'Send notifications to your Line group.'); ?></div>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="filter-status">
-                    <div class="heading"><?php _e('panel', 'overview_label_sendgrid', 'SendGrid'); ?></div>
-                    <div class="nums">
-                        <?php echo $messengers['sendgrid']  ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
-                    </div>
-                    <div class="note"><?php _e('panel', 'overview_note_sendgrid', 'Send notifications to your email through SendGrid API.'); ?></div>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>
