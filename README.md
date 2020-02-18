@@ -6,6 +6,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minute
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub Repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
+- [Changelog](https://github.com/terrylinooo/shieldon/wiki/Changelog)
 
 ## Concepts
 
@@ -195,5 +196,8 @@ Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 ## License
 
 Shieldon Firewall is an open-sourced software licensed under the **MIT** license.
+
+
+
 
 
