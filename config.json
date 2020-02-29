@@ -76,7 +76,8 @@
         },
         "trusted_bot": {
             "enable": true,
-            "strict_mode": false
+            "strict_mode": false,
+            "allow_list": []
         },
         "header": {
             "enable": true,

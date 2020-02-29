@@ -160,38 +160,34 @@ use function Shieldon\Helper\_e;
             <td class="r1"><?php _e('panel', 'setting_label_ip_source', 'IP Source'); ?></td>
             <td class="r2">
                 <p><?php _e('panel', 'setting_note_ip_source', 'Is your website behind the CDN service? If you use CDN, you have to set this setting correctly; otherwise, all IP addresses from CDN servers will probably get banned.'); ?></p>
-                <div class="container">
-                    <div ckass="row">
-                        <div class="col-sm-12">
-                            <div class="radio-style">
-                                <input name="ip_variable_source" value="REMOTE_ADDR" type="radio" id="ip-source-1" <?php $this->checked('ip_variable_source.REMOTE_ADDR', true); ?> /> 
-                                <label for="ip-source-1" class="radio-label">
-                                    REMOTE_ADDR
-                                    <small><?php echo ($_SERVER['REMOTE_ADDR']) ?? '<i class="fas fa-times-circle text-danger"></i>'; ?></small>
-                                </label> 
-                            </div>
-                            <div class="radio-style">
-                                <input name="ip_variable_source" value="HTTP_CF_CONNECTING_IP" type="radio" id="ip-source-2" <?php $this->checked('ip_variable_source.HTTP_CF_CONNECTING_IP', true); ?> /> 
-                                <label for="ip-source-2" class="radio-label">
-                                    HTTP_CF_CONNECTING_IP
-                                    <small><?php echo ($_SERVER['HTTP_CF_CONNECTING_IP']) ?? '<i class="fas fa-times-circle text-danger"></i>'; ?></small>
-                                </label> 
-                            </div>
-                            <div class="radio-style">
-                                <input name="ip_variable_source" value="HTTP_X_FORWARDED_FOR" type="radio" id="ip-source-3" <?php $this->checked('ip_variable_source.HTTP_X_FORWARDED_FOR', true); ?> /> 
-                                <label for="ip-source-3" class="radio-label">
-                                    HTTP_X_FORWARDED_FOR
-                                    <small><?php echo ($_SERVER['HTTP_X_FORWARDED_FOR']) ?? '<i class="fas fa-times-circle text-danger"></i>'; ?></small>
-                                </label> 
-                            </div>
-                            <div class="radio-style">
-                                <input name="ip_variable_source" value="HTTP_X_FORWARDED_HOST" type="radio" id="ip-source-4" <?php $this->checked('ip_variable_source.HTTP_X_FORWARDED_HOST', true); ?> /> 
-                                <label for="ip-source-4" class="radio-label">
-                                    HTTP_X_FORWARDED_HOST
-                                    <small><?php echo ($_SERVER['HTTP_X_FORWARDED_HOST']) ?? '<i class="fas fa-times-circle text-danger"></i>'; ?></small>
-                                </label> 
-                            </div>
-                        </div>
+                <div class="col-sm-12">
+                    <div class="radio-style">
+                        <input name="ip_variable_source" value="REMOTE_ADDR" type="radio" id="ip-source-1" <?php $this->checked('ip_variable_source.REMOTE_ADDR', true); ?> /> 
+                        <label for="ip-source-1" class="radio-label">
+                            REMOTE_ADDR
+                            <small><?php echo ($_SERVER['REMOTE_ADDR']) ?? '<i class="fas fa-times-circle text-danger"></i>'; ?></small>
+                        </label> 
+                    </div>
+                    <div class="radio-style">
+                        <input name="ip_variable_source" value="HTTP_CF_CONNECTING_IP" type="radio" id="ip-source-2" <?php $this->checked('ip_variable_source.HTTP_CF_CONNECTING_IP', true); ?> /> 
+                        <label for="ip-source-2" class="radio-label">
+                            HTTP_CF_CONNECTING_IP
+                            <small><?php echo ($_SERVER['HTTP_CF_CONNECTING_IP']) ?? '<i class="fas fa-times-circle text-danger"></i>'; ?></small>
+                        </label> 
+                    </div>
+                    <div class="radio-style">
+                        <input name="ip_variable_source" value="HTTP_X_FORWARDED_FOR" type="radio" id="ip-source-3" <?php $this->checked('ip_variable_source.HTTP_X_FORWARDED_FOR', true); ?> /> 
+                        <label for="ip-source-3" class="radio-label">
+                            HTTP_X_FORWARDED_FOR
+                            <small><?php echo ($_SERVER['HTTP_X_FORWARDED_FOR']) ?? '<i class="fas fa-times-circle text-danger"></i>'; ?></small>
+                        </label> 
+                    </div>
+                    <div class="radio-style">
+                        <input name="ip_variable_source" value="HTTP_X_FORWARDED_HOST" type="radio" id="ip-source-4" <?php $this->checked('ip_variable_source.HTTP_X_FORWARDED_HOST', true); ?> /> 
+                        <label for="ip-source-4" class="radio-label">
+                            HTTP_X_FORWARDED_HOST
+                            <small><?php echo ($_SERVER['HTTP_X_FORWARDED_HOST']) ?? '<i class="fas fa-times-circle text-danger"></i>'; ?></small>
+                        </label> 
                     </div>
                 </div>
             </td>
@@ -219,7 +215,6 @@ use function Shieldon\Helper\_e;
                     <?php _e('panel', 'setting_note_session_limit_1', 'When the online user amount has reached the limitation, other users not in the queue have to line up!'); ?><br />
                     <?php _e('panel', 'setting_note_session_limit_2', 'The following image is an example.'); ?>
                 </p>
-                <p><img src="https://shieldon-io.github.io/static/images/please-line-up.png"></p>
             </td>
         </tr>
         <tr>
@@ -244,7 +239,7 @@ use function Shieldon\Helper\_e;
 </div>
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
-    <h2><?php _e('panel', 'setting_label_logs', 'Logs'); ?></h2>
+    <h2><?php _e('panel', 'setting_label_action_logs', 'Action Logs'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
             <input type="hidden" name="loggers__action__enable" value="off" />
@@ -272,7 +267,7 @@ use function Shieldon\Helper\_e;
     <h2><?php _e('panel', 'setting_label_system_firewall', 'System Firewall'); ?></h2>
     <div class="toggle-container">
         <label class="rocker rocker-md">
-            <input type="hidden" name="loggers__iptables__enable" value="off" />
+            <input type="hidden" name="iptables__enable" value="off" />
             <input type="checkbox" name="iptables__enable" class="toggle-block" value="on" data-target="iptables-section" <?php $this->checked('iptables.enable', true); ?> />
             <span class="switch-left">ON</span>
             <span class="switch-right">OFF</span>

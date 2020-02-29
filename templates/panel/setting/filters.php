@@ -31,7 +31,6 @@ use function Shieldon\Helper\_e;
                     <?php _e('panel', 'setting_note_filter_frequency_1', 'Don’t worry about human visitors, and if they reach the limitation and get banned, they can easily continue surfing your website by solving the CAPTCHA.'); ?><br />
                     <?php _e('panel', 'setting_note_filter_frequency_2', 'The following image is an example.'); ?>
                 </p>
-                <p><img src="https://shieldon-io.github.io/static/images/captcha_form.png"></p>
             </td>
         </tr>
         <tr>

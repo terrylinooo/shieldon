@@ -105,6 +105,115 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                         </li>
                         <li>
                             <a href="#">
+                                <i class="fas fa-table"></i>
+                                <span><?php _e('panel', 'menu_data_circle', 'Data Circle'); ?></span>
+                            </a>
+                            <ul class="nav child-menu">
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_log_table">
+                                        <i class="fas fa-chart-area"></i>
+                                        <span><?php _e('panel', 'menu_ip_filter_logs', 'Filter Logs'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip_rule_table">
+                                        <i class="fas fa-fire-alt"></i>
+                                        <span><?php _e('panel', 'menu_ip_rules', 'IP Rules'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=session_table">
+                                        <i class="fas fa-user-clock"></i>
+                                        <span><?php _e('panel', 'menu_ip_sessions', 'Sessions'); ?>
+                                    </a>
+                                </li>
+                             </ul>
+                        </li>
+                        
+                        <?php if ($this->getConfig('iptables.enable') === true) : ?>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-shield-alt"></i>
+                                <span><?php _e('panel', 'menu_iptables_ipv4', 'IPv4 iptables'); ?></span>
+                            </a>
+                            <ul class="nav child-menu">
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=iptables">
+                                        <i class="fas fa-dice-d20"></i>
+                                        <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=iptables_status">
+                                        <i class="far fa-question-circle"></i>
+                                        <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-shield-alt"></i>
+                                <span><?php _e('panel', 'menu_iptables_ipv6', 'IPv6 iptables'); ?></span>
+                            </a>
+                            <ul class="nav child-menu">
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip6tables">
+                                     <i class="fas fa-dice-d20"></i>
+                                        <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=ip6tables_status">
+                                        <i class="far fa-question-circle"></i>
+                                        <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <?php endif; ?>
+                        <?php if ($this->getConfig('loggers.action.enable') === true) : ?>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-chart-area"></i>
+                                <span><?php _e('panel', 'menu_action_logs', 'Logs'); ?></span>
+                            </a>
+                            <ul class="nav child-menu">
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=today">
+                                        <i class="far fa-calendar-check"></i>
+                                        <span><?php _e('panel', 'menu_today', 'Today'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=yesterday">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <span><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=past_seven_days">
+                                        <i class="fas fa-calendar-week"></i>
+                                        <span><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=this_month">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <span><?php _e('panel', 'menu_this_month', 'This month'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=last_month">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span><?php _e('panel', 'menu_last_month', 'Last month'); ?></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <?php endif; ?>
+                        <li>
+                            <a href="#">
                                 <i class="fas fa-fire-alt"></i>
                                 <span><?php _e('panel', 'menu_firewall', 'Firewall'); ?></span>
                             </a>
@@ -146,112 +255,6 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                                     </a>
                                 </li>   
                             </ul>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-shield-alt"></i>
-                                <span><?php _e('panel', 'menu_iptables', 'IPv4'); ?></span>
-                            </a>
-                            <ul class="nav child-menu">
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=iptables">
-                                        <i class="fas fa-dice-d20"></i>
-                                        <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=iptables_status">
-                                        <i class="far fa-question-circle"></i>
-                                        <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-shield-alt"></i>
-                                <span><?php _e('panel', 'menu_iptables', 'IPv6'); ?></span>
-                            </a>
-                            <ul class="nav child-menu">
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip6tables">
-                                     <i class="fas fa-dice-d20"></i>
-                                        <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip6tables_status">
-                                        <i class="far fa-question-circle"></i>
-                                        <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <?php if (! empty($this->shieldon->logger)) : ?>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-chart-area"></i>
-                                <span><?php _e('panel', 'menu_logs', 'Logs'); ?></span>
-                            </a>
-                            <ul class="nav child-menu">
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=today">
-                                        <i class="far fa-calendar-check"></i>
-                                        <span><?php _e('panel', 'menu_today', 'Today'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=yesterday">
-                                        <i class="fas fa-calendar-day"></i>
-                                        <span><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=past_seven_days">
-                                        <i class="fas fa-calendar-week"></i>
-                                        <span><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=this_month">
-                                        <i class="far fa-calendar-alt"></i>
-                                        <span><?php _e('panel', 'menu_this_month', 'This month'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=last_month">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        <span><?php _e('panel', 'menu_last_month', 'Last month'); ?></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <?php endif; ?>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-table"></i>
-                                <span><?php _e('panel', 'menu_data_circle', 'Data Circle'); ?></span>
-                            </a>
-                            <ul class="nav child-menu">
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_log_table">
-                                        <i class="fas fa-chart-area"></i>
-                                        <span><?php _e('panel', 'menu_ip_filter_logs', 'Filter Logs'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_rule_table">
-                                        <i class="fas fa-fire-alt"></i>
-                                        <span><?php _e('panel', 'menu_ip_rules', 'IP Rules'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=session_table">
-                                        <i class="fas fa-user-clock"></i>
-                                        <span><?php _e('panel', 'menu_ip_sessions', 'Sessions'); ?>
-                                    </a>
-                                </li>
-                             </ul>
                         </li>
                     </ul>
                 </div>

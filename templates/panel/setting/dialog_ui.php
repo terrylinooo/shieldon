@@ -19,28 +19,24 @@ use function Shieldon\Helper\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_language', 'Language'); ?></td>
             <td class="r2">
-                <div class="container">
-                    <div ckass="row">
-                        <div class="col-sm-12">
-                            <div class="radio-style">
-                                <input name="dialog_ui__lang" value="en" type="radio" id="lang-1" <?php $this->checked('dialog_ui.lang', 'en'); ?> /> 
-                                <label for="lang-1" class="radio-label">
-                                    English (en)
-                                </label> 
-                            </div>
-                            <div class="radio-style">
-                                <input name="dialog_ui__lang" value="zh" type="radio" id="lang-2" <?php $this->checked('dialog_ui.lang', 'zh'); ?> /> 
-                                <label for="lang-2" class="radio-label">
-                                    中文 (zh))
-                                </label> 
-                            </div>
-                            <div class="radio-style">
-                                <input name="dialog_ui__lang" value="zh_CN" type="radio" id="lang-3" <?php $this->checked('dialog_ui.lang', 'zh_CN'); ?> /> 
-                                <label for="lang-3" class="radio-label">
-                                    中文 (简体) (zh_CN)
-                                </label> 
-                            </div>
-                        </div>
+                <div class="col-sm-12">
+                    <div class="radio-style">
+                        <input name="dialog_ui__lang" value="en" type="radio" id="lang-1" <?php $this->checked('dialog_ui.lang', 'en'); ?> /> 
+                        <label for="lang-1" class="radio-label">
+                            English (en)
+                        </label> 
+                    </div>
+                    <div class="radio-style">
+                        <input name="dialog_ui__lang" value="zh" type="radio" id="lang-2" <?php $this->checked('dialog_ui.lang', 'zh'); ?> /> 
+                        <label for="lang-2" class="radio-label">
+                            中文 (zh))
+                        </label> 
+                    </div>
+                    <div class="radio-style">
+                        <input name="dialog_ui__lang" value="zh_CN" type="radio" id="lang-3" <?php $this->checked('dialog_ui.lang', 'zh_CN'); ?> /> 
+                        <label for="lang-3" class="radio-label">
+                            中文 (简体) (zh_CN)
+                        </label> 
                     </div>
                 </div>
             </td>

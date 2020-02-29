@@ -49,26 +49,21 @@ use function Shieldon\Helper\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_recaptcha_version', 'Version'); ?></td>
             <td class="r2">
-                <div class="container">
-                    <div ckass="row">
-                        <div class="col-sm-12">
-                            <div class="radio-style">
-                                <input name="captcha_modules__recaptcha__config__version" value="v2" type="radio" id="recaptcha-version-v2" <?php $this->checked('captcha_modules.recaptcha.config.version', 'v2'); ?> /> 
-                                <label for="recaptcha-version-v2" class="radio-label">
-                                    v2
-                                </label> 
-                            </div>
-                            <div class="radio-style">
-                                <input name="captcha_modules__recaptcha__config__version" value="v3" type="radio" id="recaptcha-version-v3" <?php $this->checked('captcha_modules.recaptcha.config.version', 'v3'); ?> /> 
-                                <label for="recaptcha-version-v3" class="radio-label">
-                                    v3
-                                </label> 
-                            </div>
-                            <p><?php _e('panel', 'setting_note_recaptcha_version', 'Please use corresponding key for that version you choose, otherwise it won’t work.'); ?></p>
-                        </div>
+                <div class="col-sm-12">
+                    <div class="radio-style">
+                        <input name="captcha_modules__recaptcha__config__version" value="v2" type="radio" id="recaptcha-version-v2" <?php $this->checked('captcha_modules.recaptcha.config.version', 'v2'); ?> /> 
+                        <label for="recaptcha-version-v2" class="radio-label">
+                            v2
+                        </label> 
                     </div>
+                    <div class="radio-style">
+                        <input name="captcha_modules__recaptcha__config__version" value="v3" type="radio" id="recaptcha-version-v3" <?php $this->checked('captcha_modules.recaptcha.config.version', 'v3'); ?> /> 
+                        <label for="recaptcha-version-v3" class="radio-label">
+                            v3
+                        </label> 
+                    </div>
+                    <p><?php _e('panel', 'setting_note_recaptcha_version', 'Please use corresponding key for that version you choose, otherwise it won’t work.'); ?></p>
                 </div>
-
             </td>
         </tr>
     </table>
@@ -103,28 +98,24 @@ use function Shieldon\Helper\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'table_label_type', 'Type'); ?></td>
             <td class="r2">
-                <div class="container">
-                    <div ckass="row">
-                        <div class="col-sm-12">
-                            <div class="radio-style">
-                                <input name="captcha_modules__image__config__type" value="alnum" type="radio" id="captcha-image-alnum" <?php $this->checked('captcha_modules.image.config.type', 'alnum'); ?> /> 
-                                <label for="captcha-image-alnum" class="radio-label">
-                                    <?php _e('panel', 'setting_note_image_captcha_1', 'Alpha-numeric string with lower and uppercase characters.'); ?>
-                                </label> 
-                            </div>
-                            <div class="radio-style">
-                                <input name="captcha_modules__image__config__type" value="alpha" type="radio" id="captcha-image-alpha" <?php $this->checked('captcha_modules.image.config.type', 'alpha'); ?> /> 
-                                <label for="captcha-image-alpha" class="radio-label">
-                                    <?php _e('panel', 'setting_note_image_captcha_2', 'A string with lower and uppercase letters only.'); ?>
-                                </label> 
-                            </div>
-                            <div class="radio-style">
-                                <input name="captcha_modules__image__config__type" value="numeric" type="radio" id="captcha-image-numeric" <?php $this->checked('captcha_modules.image.config.type', 'numeric'); ?> /> 
-                                <label for="captcha-image-numeric" class="radio-label">
-                                    <?php _e('panel', 'setting_note_image_captcha_3', 'Numeric string only.'); ?>
-                                </label> 
-                            </div>
-                        </div>
+                <div class="col-sm-12">
+                    <div class="radio-style">
+                        <input name="captcha_modules__image__config__type" value="alnum" type="radio" id="captcha-image-alnum" <?php $this->checked('captcha_modules.image.config.type', 'alnum'); ?> /> 
+                        <label for="captcha-image-alnum" class="radio-label">
+                            <?php _e('panel', 'setting_note_image_captcha_1', 'Alpha-numeric string with lower and uppercase characters.'); ?>
+                        </label> 
+                    </div>
+                    <div class="radio-style">
+                        <input name="captcha_modules__image__config__type" value="alpha" type="radio" id="captcha-image-alpha" <?php $this->checked('captcha_modules.image.config.type', 'alpha'); ?> /> 
+                        <label for="captcha-image-alpha" class="radio-label">
+                            <?php _e('panel', 'setting_note_image_captcha_2', 'A string with lower and uppercase letters only.'); ?>
+                        </label> 
+                    </div>
+                    <div class="radio-style">
+                        <input name="captcha_modules__image__config__type" value="numeric" type="radio" id="captcha-image-numeric" <?php $this->checked('captcha_modules.image.config.type', 'numeric'); ?> /> 
+                        <label for="captcha-image-numeric" class="radio-label">
+                            <?php _e('panel', 'setting_note_image_captcha_3', 'Numeric string only.'); ?>
+                        </label> 
                     </div>
                 </div>
             </td>
