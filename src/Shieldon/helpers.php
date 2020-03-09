@@ -43,10 +43,10 @@ function __(): string
     $replacement = ($num > 3) ? func_get_arg(3) : [];
     $lang        = 'en';
 
-    if (isset($_SESSION['shieldon_panel_lang'])) {
-        $lang = $_SESSION['shieldon_panel_lang'];
-    } elseif (isset($_SESSION['shieldon_ui_lang'])) {
-        $lang = $_SESSION['shieldon_ui_lang'];
+    if (isset($_SESSION['SHIELDON_PANEL_LANG'])) {
+        $lang = $_SESSION['SHIELDON_PANEL_LANG'];
+    } elseif (isset($_SESSION['SHIELDON_UI_LANG'])) {
+        $lang = $_SESSION['SHIELDON_UI_LANG'];
     }
 
     if (empty($i18n[$filename]) && empty($fileChecked[$filename])) {

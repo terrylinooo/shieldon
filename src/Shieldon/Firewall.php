@@ -995,7 +995,7 @@ class Firewall
         $ui = $this->getOption('dialog_ui');
 
         if (! empty($ui)) {
-            $_SESSION['shieldon_ui_lang'] = $ui['lang'];
+            $_SESSION['SHIELDON_UI_LANG'] = $ui['lang'];
             $this->shieldon->setDialogUI($this->getOption('dialog_ui'));
         }
     }
