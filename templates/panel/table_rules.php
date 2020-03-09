@@ -43,12 +43,12 @@ $timezone = '';
     <br />
     <?php if (empty($rule_list)) : ?>
     <div id="so-table-container" class="so-datatables">
-        <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
-            <tbody>
+        <table class="cell-border compact stripe responsive" cellspacing="0" width="100%">
+            <thead>
                 <tr>
-                    <td>
+                    <th>
                         <?php _e('panel', 'ipma_text_nodata', 'No data is available now.'); ?>
-                    </td>
+                    </th>
                 </tr>
             </tbdoy>
         </table>
@@ -63,6 +63,7 @@ $timezone = '';
         </div>
     </div>
     <?php endif; ?>
+    <?php if (! empty($rule_list)) : ?>
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>
@@ -105,12 +106,14 @@ $timezone = '';
                 <?php endforeach; ?>
             </tbody>   
         </table>
+        <?php endif; ?>
     </div>
 </div>
 
 <script>
 
     $(function() {
+        
         $('#so-datalog').DataTable({
             'responsive': true,
             'pageLength': 25,

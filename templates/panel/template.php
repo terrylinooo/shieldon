@@ -124,7 +124,7 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                                 <li>
                                     <a href="<?php echo $page_url; ?>?so_page=session_table">
                                         <i class="fas fa-user-clock"></i>
-                                        <span><?php _e('panel', 'menu_ip_sessions', 'Sessions'); ?>
+                                        <span><?php _e('panel', 'menu_sessions', 'Sessions'); ?>
                                     </a>
                                 </li>
                              </ul>
