@@ -394,9 +394,9 @@ class Shieldon
 
         $this->setSessionId();
 
-        // At least load a captcha instance. Example is the base one.
-        // if (! isset($this->captcha['Example'])) {
-        $this->setCaptcha(new \Shieldon\Captcha\Example());
+        // At least load a captcha instance. Foundation is the base one.
+        // if (! isset($this->captcha['Foundation'])) {
+        $this->setCaptcha(new \Shieldon\Captcha\Foundation());
         // }
 
         if (! empty($properties)) {

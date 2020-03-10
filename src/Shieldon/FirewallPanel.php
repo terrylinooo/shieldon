@@ -11,7 +11,7 @@
 namespace Shieldon;
 
 use Shieldon\Firewall;
-use Shieldon\Captcha\Example;
+use Shieldon\Captcha\Foundation;
 use Shieldon\Captcha\ImageCaptcha;
 use Shieldon\Captcha\Recaptcha;
 use Shieldon\Driver\FileDriver;
@@ -2318,7 +2318,7 @@ class FirewallPanel
      */
     protected function applyCaptchaForms(): void
     {
-        $this->captcha[] = new Example();
+        $this->captcha[] = new Foundation();
 
         $recaptchaSetting = $this->getConfig('captcha_modules.recaptcha');
         $imageSetting = $this->getConfig('captcha_modules.image');

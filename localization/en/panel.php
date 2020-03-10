@@ -289,7 +289,7 @@ return [
     'setting_note_component_tb_1' => 'Allow popular search engines to crawl your website.',
     'setting_note_component_tb_2' => 'Notice: Turning this option off will impact your SEO because the bots will be going to the checking process.',
     'setting_label_strict_mode' => 'Strict Mode',
-    'setting_note_component_tb_3' => 'IP resolved hostname and IP address must match with each other.',
+    'setting_note_component_tb_3' => 'IP resolved hostname (PTR) and IP address must match up.',
     'setting_heading_component_header' => 'Header',
     'setting_note_component_header_1' => 'Analyze header information from visitors.',
     'setting_note_component_header_2' => 'Deny all vistors without common header information.',
@@ -298,7 +298,13 @@ return [
     'setting_note_component_useragent_2' => 'Visitors with empty user-agent information will be blocked.',
     'setting_heading_component_rdns' => 'Reverse DNS',
     'setting_note_component_rdns_1' => 'In general, an IP from Internet Service Provider (ISP) often have the RDNS set. This option only works when strict mode is on.',
-    'setting_note_component_rdns_2' => 'Visitors with an empty RDNS record will be blocked.',
+    'setting_note_component_rdns_2' => '
+            Strict mode blocks visitors by the following conditions.<br />
+            - IP address without PTR record.<br />
+            - Returned value of pinging PTR and IP address doesn not match up.<br />
+            - PTR is not a valid FQDN.<br />
+            This option will deny almost Proxy and VPN servers on the Internet, and some ISP might not provide PTR for their IP addresses, therefore use it carefully.
+        ',
 
     // Setting - daemon
     'setting_heading_enable' => 'Enable',

@@ -202,8 +202,3 @@ Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 ## License
 
 Shieldon Firewall is an open-sourced software licensed under the **MIT** license.
-
-
-
-
-

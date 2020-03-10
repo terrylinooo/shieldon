@@ -66,7 +66,7 @@ use function Shieldon\Helper\_e;
                     <span class="switch-left">ON</span>
                     <span class="switch-right">OFF</span>
                 </label>
-                <p><?php _e('panel', 'setting_note_component_tb_3', 'IP resolved hostname and IP address must match with each other.'); ?></p>
+                <p><?php _e('panel', 'setting_note_component_tb_3', 'IP resolved hostname (PTR) and IP address must match up.'); ?></p>
             </td>
         </tr>
     </table>
@@ -104,6 +104,7 @@ use function Shieldon\Helper\_e;
                     <span class="switch-right">OFF</span>
                 </label>
                 <p><?php _e('panel', 'setting_note_component_header_2', 'Deny all vistors without common header information.'); ?></p>
+                <code>Accept, Accept-Language, Accept-Encoding</code>
                 
             </td>
         </tr>
@@ -179,8 +180,7 @@ use function Shieldon\Helper\_e;
                     <span class="switch-right">OFF</span>
                 </label>
                 <p>
-                <?php _e('panel', 'setting_note_component_rdns_2', 'Visitors with an empty RDNS record will be blocked.'); ?><br />
-                <?php _e('panel', 'setting_note_component_tb_3', 'IP resolved hostname and IP address must match with each other.'); ?>
+                    <?php _e('panel', 'setting_note_component_rdns_2', 'Visitors with an empty RDNS record will be blocked.'); ?>
                 </p>
             </td>
         </tr>

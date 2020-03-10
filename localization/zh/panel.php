@@ -296,7 +296,13 @@ return [
     'setting_note_component_useragent_2' => '拒絕所有使用者代理資訊為空值的訪客。',
     'setting_heading_component_rdns' => '反向 DNS',
     'setting_note_component_rdns_1' => '一般而言，從電信業者配發的 IP 都會被設定 RDNS 記錄。此選項只在嚴格模式時運作。',
-    'setting_note_component_rdns_2' => '所有 RDNS 記錄為空值的訪客將會被封鎖。',
+    'setting_note_component_rdns_2' => '
+            嚴格模式封鎖訪客依照以下情況。<br />
+            - IP 位址沒有 PTR 記錄。<br />
+            - Ping 其 PTR 的回傳值和 IP 位址不一致。<br />
+            - PTR 不是有效的 FQDN。<br />
+            這個選項將封鎖幾乎全部的 Proxy 和 VPN 伺服器。而且一些 ISP 也許沒有為他們的 IP 位址提供 PTR 記錄。請小心使用。
+        ',
 
     // Setting - daemon
     'setting_heading_enable' => '啟用',
