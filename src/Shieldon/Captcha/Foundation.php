@@ -10,7 +10,7 @@
 
 namespace Shieldon\Captcha;
 
-class Example implements CaptchaInterface
+class Foundation implements CaptchaInterface
 {
 
     /**

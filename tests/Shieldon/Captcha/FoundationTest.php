@@ -11,11 +11,11 @@
 namespace Shieldon\Captcha;
 
 
-class ExampleTest extends \PHPUnit\Framework\TestCase
+class FoundationTest extends \PHPUnit\Framework\TestCase
 {
     public function testResponse()
     {
-        $captchaInstance = new Example();
+        $captchaInstance = new Foundation();
 
         $result = $captchaInstance->response();
         $this->assertFalse($result);
@@ -31,7 +31,7 @@ class ExampleTest extends \PHPUnit\Framework\TestCase
         $html  = '<input id="shieldon-captcha-example" type="hidden" name="shieldon_captcha">';
         $html .= '<script>document.getElementById("shieldon-captcha-example").value = "ok";</script>';
 
-        $captchaInstance = new Example();
+        $captchaInstance = new Foundation();
 
         $result = $captchaInstance->form();
         $this->assertSame($result, $html);
