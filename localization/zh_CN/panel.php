@@ -57,8 +57,11 @@ return [
     'error_redis_driver_not_supported' => '您的系统不支持 Redis 驱动器。',
     'error_file_directory_not_writable' => '档案资料驱动器需要存储目录可写入。',
     'error_logger_directory_not_writable' => '动作记录器需要存储目录可写入。',
+    'error_invalid_json_file' => '无效的 JSON 文件。',
+    'error_invalid_config_file' => '无效的 Shieldon 组态文件。',
     'success_settings_saved' => '设定值已储存。',
-    
+    'success_json_imported' => 'JSON 资料汇入成功。',
+   
     // 其他。
     'field_not_visible' => '无法在示范模式查看此栏位。',
     'permission_required' => '需要权限。',
@@ -179,7 +182,7 @@ return [
     'overview_heading_messenger' => '通讯器模组',
     'overview_label_telegram' => 'Telegram',
     'overview_note_telegram' => '传送通知到您的 Telegram 频道。',
-    'overview_label_line_notofy' => 'Line Notify',
+    'overview_label_line_notify' => 'Line Notify',
     'overview_note_line_notify' => '传送通知到您的 Line 群组。',
     'overview_label_sendgrid' => 'SendGrid',
     'overview_note_sendgrid' => '透过 SendGrid API 传送通知到您的 Email。',
@@ -319,7 +322,8 @@ return [
     'setting_label_redis_host' => '主机',
     'setting_label_redis_port' => '端口',
     'setting_label_redis_auth' => '授权密码',
-    'setting_note_redis_host' => '只有需要密码时才必填。',
+    'setting_note_redis_auth' => '只有需要密码时才必填。',
+    'setting_note_driver_not_recommended' => '不推荐用于高流量网站。',
     'setting_label_directory' => '目录',
     'setting_note_directory' => '请填写你要存储资料的目录的绝对路径。',
     'setting_label_reset_data_cycle' => '重设资料周期',
@@ -385,6 +389,11 @@ return [
     'setting_desc_record_attempt_detection_period' => '检查现在和上次尝试失败的时间差。在时间差以内的失败尝试会被记录。数值的数值表示越加严格。（单位：秒数）',
     'setting_label_record_attempt_reset' => '重设',
     'setting_desc_record_attempt_reset' => '在 n 秒后重设计数器。',
+
+    'setting_button_choose_file' => '选择文件',
+    'setting_note_import' => '请选择先前汇出的 .json 文件。',
+    'setting_button_export' => '汇出',
+    'setting_button_import' => '汇入',
 
     // Messenger
     'messenger_heading_events' => '事件',

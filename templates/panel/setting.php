@@ -50,7 +50,8 @@ $timezone = '';
 <?php $this->_csrf(); ?>
 <input type="hidden" name="tab" value="daemon">
 <input type="hidden" name="managed_by" value="firewall">
-
 </form>
+
+<?php $this->_include('panel/setting/import_export'); ?>
 
 <?php $this->_include('panel/js/common'); ?>

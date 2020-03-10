@@ -59,7 +59,10 @@ return [
     'error_redis_driver_not_supported' => 'Your system doesn’t support Redis driver.',
     'error_file_directory_not_writable' => 'File data driver requires the storage directory writable.',
     'error_logger_directory_not_writable' => 'Action Logger requires the storage directory writable.',
+    'error_invalid_json_file' => 'Invalid JSON file.',
+    'error_invalid_config_file' => 'Invalid Shieldon configuration file.',
     'success_settings_saved' => 'Settings saved',
+    'success_json_imported' => 'JSON imported successfully.',
 
     // Others.
     'field_not_visible' => 'Cannot view this field in demo mode.',
@@ -322,7 +325,8 @@ return [
     'setting_label_redis_host' => 'Host',
     'setting_label_redis_port' => 'Port',
     'setting_label_redis_auth' => 'Auth',
-    'setting_note_redis_host' => 'Required only if a password is needed.',
+    'setting_note_redis_auth' => 'Required only if a password is needed.',
+    'setting_note_driver_not_recommended' => 'Not recommended for high-traffic website.',
     'setting_label_directory' => 'Directory',
     'setting_note_directory' => 'Please fill in the absolute path of the directory where you store the data.',
     'setting_label_reset_data_cycle' => 'Reset Data Cycle',
@@ -388,6 +392,10 @@ return [
     'setting_desc_record_attempt_detection_period' => 'Check the time difference between now and last failed attempt. Failure attempts within the time difference will be recorded. A larger value of this filed means more strict. (unit: second)',
     'setting_label_record_attempt_reset' => 'Reset',
     'setting_desc_record_attempt_reset' => 'Reset counter after n seconds.',
+    'setting_button_choose_file' => 'Choose file',
+    'setting_note_import' => 'Please select the .json file exported before.',
+    'setting_button_export' => 'Export',
+    'setting_button_import' => 'Import',
 
     // Messenger
     'messenger_heading_events' => 'Events',

@@ -356,10 +356,23 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
             });
 
         </script>
-     
+        <div class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="https://github.com/terrylinooo/shieldon" target="_blank"><i class="fab fa-github"></i></a>
+                        <?php echo SHIELDON_VERSION; ?>
+                    </div>
+                    <div class="col-md-10">
+                        Powered by <a href="https://shieldon.io" target="_blank">Shieldon</a> 
+                        &copy; 2019-<?php echo date('Y'); ?> <a href="https://terryl.in" target="_blank">Terry Lin</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="loader" data-status="waiting">
             <div class="cssload-box-loading"></div>
         </div>
-       
+
     </body>
 </html>

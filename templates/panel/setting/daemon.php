@@ -59,6 +59,7 @@ use function Shieldon\Helper\_e;
                                     <p><?php _e('panel', 'setting_note_directory', 'Please fill in the absolute path of the directory where you store the data.'); ?></p>
                                 </div>
                             </div>
+                            <p class="text-info"><?php _e('panel', 'setting_note_driver_not_recommended', 'Not recommended for high-traffic wwebsite.'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -131,6 +132,7 @@ use function Shieldon\Helper\_e;
                                     <p><?php _e('panel', 'setting_note_directory', 'Please fill in the absolute path of the directory where you store the data.'); ?></p>
                                 </div>
                             </div>
+                            <p class="text-info"><?php _e('panel', 'setting_note_driver_not_recommended', 'Not recommended for high-traffic wwebsite.'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -258,6 +260,7 @@ use function Shieldon\Helper\_e;
                 <input type="text" name="loggers__action__config__directory_path" class="form-control form-control-sm col-sm-7" value="<?php $this->_('loggers.action.config.directory_path'); ?>">
                 <br />
                 <p><?php _e('panel', 'setting_note_directory', 'Please fill in the absolute path of the directory where you store the data.'); ?></p>
+                <p class="text-info"><?php _e('panel', 'setting_note_driver_not_recommended', 'Not recommended for high-traffic wwebsite.'); ?></p>
             </td>
         </tr>
     </table>

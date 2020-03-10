@@ -57,7 +57,10 @@ return [
     'error_redis_driver_not_supported' => '您的系統不支援 Redis 驅動器。',
     'error_file_directory_not_writable' => '檔案資料驅動器需要儲存目錄可寫入。',
     'error_logger_directory_not_writable' => '動作記錄器需要儲存目錄可寫入。',
+    'error_invalid_json_file' => '無效的 JSON 檔。',
+    'error_invalid_config_file' => '無效的 Shieldon 組態檔案。',
     'success_settings_saved' => '設定值已儲存。',
+    'success_json_imported' => 'JSON 資料匯入成功。',
 
     // Others.
     'field_not_visible' => '無法在示範模式檢視此欄位。',
@@ -180,7 +183,7 @@ return [
     'overview_heading_messenger' => '通訊器模組',
     'overview_label_telegram' => 'Telegram',
     'overview_note_telegram' => '傳送通知到您的 Telegram 頻道。',
-    'overview_label_linenotofy' => 'Line Notify',
+    'overview_label_linenotify' => 'Line Notify',
     'overview_note_linenotify' => '傳送通知到您的 Line 群組。',
     'overview_label_sendgrid' => 'SendGrid',
     'overview_note_sendgrid' => '透過 SendGrid API 傳送通知到您的 Email。',
@@ -320,7 +323,8 @@ return [
     'setting_label_redis_host' => '主機',
     'setting_label_redis_port' => '端口',
     'setting_label_redis_auth' => '授權密碼',
-    'setting_note_redis_host' => '只有需要密碼時才必填。',
+    'setting_note_redis_auth' => '只有需要密碼時才必填。',
+    'setting_note_driver_not_recommended' => '高流量網站不建議使用。',
     'setting_label_directory' => '目錄',
     'setting_note_directory' => '請填寫你要儲存資料的目錄的絕對路徑。',
     'setting_label_reset_data_cycle' => '重設資料週期',
@@ -383,13 +387,14 @@ return [
     'setting_note_iptables' => '<strong>firewall.sh</strong> 將會監視在此資料夾中的變化來套用指令到 iptables 裡。',
     'setting_label_deny_attempt_buffer' => '緩衝',
     'setting_desc_deny_attempt_buffer' => '連續多少次錯誤會觸發此事件。',
-
     'setting_label_record_attempt_detection_period' => '偵測期間',
     'setting_desc_record_attempt_detection_period' => '檢查現在和上次嘗試失敗的時間差。在時間差以內的失敗嘗試會被記錄。越大的數值表示越加嚴格。（單位：秒數）',
     'setting_label_record_attempt_reset' => '重設',
     'setting_desc_record_attempt_reset' => '在 n 秒後重設計數器。',
-    // 2019/11/11
-
+    'setting_button_choose_file' => '選擇檔案',
+    'setting_note_import' => '請選擇先前匯出的 .json 檔。',
+    'setting_button_export' => '匯出',
+    'setting_button_import' => '匯入',
 
     // Messenger
     'messenger_heading_events' => '事件',
@@ -422,7 +427,6 @@ return [
     'messenger_heading_rocket_chat' => 'Rocket Chat',
     'messenger_label_server_url' => '伺服器網址',
 
-
     'tab_heading_events' => '事件',
     'tab_heading_modules' => '模組',
     'tab_heading_iptables_status' => '狀態',
@@ -449,42 +453,20 @@ return [
     'iptable_status_description' => '以下文字是指令 <code>iptables -L</code> 產生的結果。',
     'ip6table_status_description' => '以下文字是指令 <code>ip6tables -L</code> 產生的結果。',
 
-    // 2019/11/12
-   
-
     'reset_data_circle' => '資料週期表已經被重新設定。',
     'reset_action_logs' => '訪客動作記錄已經被清除。',
 
-    // 2019/11/13
-
-
-    // @since 1.0.0
-
-
-    // 2019/12/13
-
-
-    // @since 0.1.8
-
-
-
-
-    // @since 0.2.0
     'operation_note_useragent' => '阻擋沒有使用者代理資訊的請求。',
     'operation_note_rdns' => '阻擋沒有 RDNS 記錄的請求。',
     'operation_note_header' => '阻擋沒有常見的檔頭資訊的請求。',
     'operation_note_trustedbot' => '阻擋被標記為偽造的搜尋引擎的請求。',
     'operation_note_ip' => '阻擋被設定在 IP 管理器的請求。',
 
-    
-    // @since 0.3.0
-
     'login_heading_login' => '登入防火牆面板。',
     'login_btn_login' => '登入',
     'login_message_invalid_captcha' => '無效的驗證碼',
     'login_message_invalid_user_or_pass' => '無效的使用者名稱或密碼。',
     
-    // @since 1.0.0
     'test_msg_title' => '測試訊息來自主機: ',
     'test_msg_body' => '通訊器模組 {0} 已被測試且確認成功。',
 ];

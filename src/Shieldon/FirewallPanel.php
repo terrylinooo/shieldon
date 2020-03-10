@@ -184,6 +184,12 @@ class FirewallPanel
                 session_start();
             }
         }
+
+        // Flash message, use it when redirecting page.
+        if (! empty($_SESSION['flash_messages'])) {
+            $this->messages = $_SESSION['flash_messages'];
+            unset($_SESSION['flash_messages']);
+        }
     }
 
      // @codeCoverageIgnoreStart
@@ -301,6 +307,14 @@ class FirewallPanel
 
             case 'login':
                 $this->login();
+                break;
+
+            case 'export_settings':
+                $this->exportSettings();
+                break;
+
+            case 'import_settings':
+                $this->importSettings();
                 break;
 
             default:
@@ -1771,6 +1785,97 @@ class FirewallPanel
                 )
             );
         }
+    }
+
+    /**
+     * Export settings.
+     *
+     * @return void
+     */
+    protected function exportSettings()
+    {
+        header('Content-type: text/plain');
+        header('Content-Disposition: attachment; filename=shieldon-' . date('YmdHis') . '.json');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        echo json_encode($this->configuration);
+    }
+
+    /**
+     * Import settings.
+     *
+     * @return void
+     */
+    protected function importSettings()
+    {
+        if (! empty($_FILES['json_file']['tmp_name'])) {
+            $importedFileContent = file_get_contents($_FILES['json_file']['tmp_name']);
+        }
+
+        if (! empty($importedFileContent)) {
+            $jsonData = json_decode($importedFileContent, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $this->responseMessage('error',
+                    __(
+                        'panel',
+                        'error_invalid_json_file',
+                        'Invalid JSON file.'
+                    )
+                );
+
+                $_SESSION['flash_messages'] = $this->messages;
+                header('Location: ' . $this->url('settings'));
+                exit;
+            }
+
+            $checkFileVaild = true;
+
+            foreach (array_keys($this->configuration) as $key) {
+                if (! isset($jsonData[$key])) {
+                    $checkFileVaild = false;
+                }
+            }
+
+            if ($checkFileVaild) {
+                foreach (array_keys($jsonData) as $key) {
+                    if (isset($this->configuration[$key])) {
+                        unset($this->configuration[$key]);
+                    }
+                }
+
+                $this->configuration = $this->configuration + $jsonData;
+
+                // Save settings into a configuration file.
+                $configFilePath = $this->directory . '/' . $this->filename;
+                file_put_contents($configFilePath, json_encode($this->configuration));
+
+                $this->responseMessage('success',
+                    __(
+                        'panel',
+                        'success_json_imported',
+                        'JSON file imported successfully.'
+                    )
+                );
+
+                $_SESSION['flash_messages'] = $this->messages;
+                header('Location: ' . $this->url('settings'));
+                exit;
+            }
+        }
+
+        $this->responseMessage('error',
+            __(
+                'panel',
+                'error_invalid_config_file',
+                'Invalid Shieldon configuration file.'
+            )
+        );
+
+        $_SESSION['flash_messages'] = $this->messages;
+        header('Location: ' . $this->url('settings'));
+        exit;
     }
 
     /**
