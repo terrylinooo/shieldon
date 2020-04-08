@@ -234,6 +234,41 @@ class Ip extends ComponentProvider
     }
 
     /**
+     * Calculate an IP/CIDR to it's range.
+     * 
+     * For example:
+     * 
+     * '69.63.176.0/20' => [
+     *    0 => '69.63.176.0',    (min)
+     *    1 => '69.63.191.255',  (max)
+     * ];
+     *
+     * @param string $ip4Range  IP/CIDR
+     * @param bool   $isDecimal Return IP string to decimal.
+     *
+     * @return array
+     */
+    public function ipv4range($ip4Range, $isDecimal = false): array
+    {
+        $result = [];
+
+        $ipData = explode('/', $ip4Range);
+
+        $ip = $ipData[0];
+        $cidr = (int) $ipData[1] ?? 32;
+
+		$result[0] = long2ip((ip2long($ip)) & ((-1 << (32 - $cidr))));
+        $result[1] = long2ip((ip2long($ip)) + pow(2, (32 - $cidr)) - 1);
+
+        if ($isDecimal) {
+            $result[0] = ip2long($result[0]);
+            $result[1] = ip2long($result[1]);
+        }
+
+		return $result;
+    }
+
+    /**
      * Get the ipv6 full format and return it as a decimal value.
      *
      * @param string $ip
