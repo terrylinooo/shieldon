@@ -1764,16 +1764,18 @@ class Shieldon
     public function outputJsSnippet(): string
     {
         $tmpCookieName = $this->properties['cookie_name'];
-        $tmpCookieDomain = $this->properties['cookie_domain'];
+
+        if (empty($tmpCookieDomain) && isset($_SERVER['HTTP_HOST'])) {
+            $tmpCookieDomain = $_SERVER['HTTP_HOST'];
+        }
+
         $tmpCookieValue = $this->properties['cookie_value'];
 
         $jsString = <<<"EOF"
-
             <script>
                 var d = new Date();
-                d.setTime(d.getTime()+(7*24*60*60*1000));
-                var expires = "expires="+d.toUTCString();
-                document.cookie = "{$tmpCookieName}={$tmpCookieValue};domain=.{$tmpCookieDomain};"+expires;
+                d.setTime(d.getTime()+(60*60*24*30));
+                document.cookie = "{$tmpCookieName}={$tmpCookieValue};domain=.{$tmpCookieDomain};expires="+d.toUTCString();
             </script>
 EOF;
         return $jsString;
