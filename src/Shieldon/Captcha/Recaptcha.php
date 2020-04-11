@@ -55,10 +55,11 @@ class Recaptcha implements CaptchaInterface
         }
 
         $flag = false;
+        $reCaptchaToken = str_replace(["'", '"'], '', $_POST['g-recaptcha-response']);
 
         $postData = [
             'secret' => $this->secret,
-            'response' => $_POST['g-recaptcha-response'],
+            'response' => $reCaptchaToken,
         ];
 
         $ch = curl_init();
@@ -84,6 +85,8 @@ class Recaptcha implements CaptchaInterface
                 $flag = true;
             }
         }
+
+        curl_close($ch);
 
         // Prevent detecting POST method on RESTful frameworks.
         if (isset($_POST['g-recaptcha-response'])) {
