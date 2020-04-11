@@ -383,21 +383,22 @@ class Shieldon
     /**
      * Constructor.
      * 
+     * @param array  $properties Shieldon configuration settings. (option)
+     * @param string $sessioniD  Customized session ID. (option)
+     * 
      * @return void
      */
-    public function __construct(array $properties = [])
+    public function __construct(array $properties = [],  string $sessionId = '')
     {
         // Set to container.
         Container::set('shieldon', $this);
 
         $this->referer = $_SERVER['HTTP_REFERER'] ?? '';
 
-        $this->setSessionId();
+        $this->setSessionId($sessionId);
 
         // At least load a captcha instance. Foundation is the base one.
-        // if (! isset($this->captcha['Foundation'])) {
         $this->setCaptcha(new \Shieldon\Captcha\Foundation());
-        // }
 
         if (! empty($properties)) {
             $this->setProperties($properties);
