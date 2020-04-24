@@ -39,7 +39,7 @@ use function Shieldon\Helper\_e;
     <div class="toggle-container">
         <label class="rocker rocker-md">
             <input type="hidden" name="components__trusted_bot__enable" value="off" />
-            <input type="checkbox" name="components__trusted_bot__enable" class="toggle-block" value="on" data-target="component-trustedbot-section" <?php $this->checked('online_session_limit.enable', true); ?> />
+            <input type="checkbox" name="components__trusted_bot__enable" class="toggle-block" value="on" data-target="component-trustedbot-section" <?php $this->checked('components.trusted_bot.enable', true); ?> />
             <span class="switch-left">ON</span>
             <span class="switch-right">OFF</span>
         </label>
