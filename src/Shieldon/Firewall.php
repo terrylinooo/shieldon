@@ -464,6 +464,10 @@ class Firewall
         if ($trustedBotSetting['enable']) {
             $componentTrustedBot = new TrustedBot();
 
+            if ($trustedBotSetting['strict_mode']) {
+                $componentTrustedBot->setStrict(true);
+            }
+
             // This component will only allow popular search engline.
             // Other bots will go into the checking process.
             $this->shieldon->setComponent($componentTrustedBot);
