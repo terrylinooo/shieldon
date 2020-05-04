@@ -69,6 +69,8 @@ class TrustedBot extends ComponentProvider
         // They are robots we welcome in this whitelist.
 
         $this->trustedBotList = [
+
+            // Search engline: Google.
             [
                 'userAgent' => 'google',
                 'rdns'      => '.googlebot.com',
@@ -79,6 +81,7 @@ class TrustedBot extends ComponentProvider
                 'rdns'      => '.google.com',
             ],
 
+            // Search engline: Mircosoft.
             [
                 'userAgent' => 'live',
                 'rdns'      => '.live.com',
@@ -90,15 +93,11 @@ class TrustedBot extends ComponentProvider
             ],
 
             [
-                'userAgent' => 'ask',
-                'rdns'      => '.ask.com',
-            ],
-
-            [
                 'userAgent' => 'bing',
                 'rdns'      => '.bing.com',
             ],
 
+            // Search engline: Yahoo.
             [
                 'userAgent' => 'inktomisearch',
                 'rdns'      => '.inktomisearch.com',
@@ -114,6 +113,7 @@ class TrustedBot extends ComponentProvider
                 'rdns'      => '.yahoo.net',
             ],
 
+            // Search engine: Yandex.
             [
                 'userAgent' => 'yandex',
                 'rdns'      => '.yandex.com',
@@ -129,9 +129,28 @@ class TrustedBot extends ComponentProvider
                 'rdns'      => '.yandex.ru',
             ],
 
+            // Facebook crawlers.
+            [
+                'userAgent' => 'facebook',
+                'rdns'      => '.fbsv.net',
+            ],
+
+            // Twitter crawlers.
+            [
+                'userAgent' => 'Twitterbot',
+                'rdns'      => '.twttr.com', // (not twitter.com)
+            ],
+
+            // W3C validation services.
             [
                 'userAgent' => 'w3.org',
                 'rdns'      => '.w3.org',
+            ],
+
+            // Ask.com crawlers.
+            [
+                'userAgent' => 'ask',
+                'rdns'      => '.ask.com',
             ],
         ];
 
