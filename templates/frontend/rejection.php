@@ -17,6 +17,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
 <html lang="<?php echo $langCode ?>">
 <head>
     <meta charset="utf-8">
+	<link rel="icon" href="data:,">
     <meta name="robots" content="noindex, nofollow">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php _e('core', 'deny_title', 'Access denied') ?></title>
