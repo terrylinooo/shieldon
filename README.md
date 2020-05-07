@@ -5,8 +5,8 @@
 Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minutes only, PHP expert developers will understand how to implement Shiedon Firewall on their Web applications. The goal of this library is to make the PHP community more secure and being extremely easy-to-use.
 
 - Website: [https://shieldon.io](https://shieldon.io/)
-- GitHub Repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
-- [Changelog](https://github.com/terrylinooo/shieldon/wiki/Changelog)
+- GitHub repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
+- WordPress plugin: [https://wordpress.org/plugins/wp-shieldon/](https://wordpress.org/plugins/wp-shieldon/)
 
 ## Concepts
 
@@ -193,8 +193,6 @@ Thank you very much for considering contributing to Shieldon Firewall, yet we ne
 - [Documentation](https://github.com/shieldon-io/document-translations)
 - [i18n files in Shieldon library](https://github.com/shieldon-io/library-translations)
 
----
-
 ## Author
 
 Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
@@ -202,3 +200,5 @@ Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 ## License
 
 Shieldon Firewall is an open-sourced software licensed under the **MIT** license.
+
+- [Changelog](https://github.com/terrylinooo/shieldon/wiki/Changelog)
