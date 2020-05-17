@@ -10,13 +10,15 @@
 
 namespace Shieldon\Captcha;
 
+use Shieldon\Component\CaptchaProvider;
+
 use function curl_error;
 use function curl_exec;
 use function curl_init;
 use function curl_setopt;
 use function json_decode;
 
-class Recaptcha implements CaptchaInterface
+class Recaptcha extends CaptchaProvider
 {
     protected $key = '';
     protected $secret = '';
@@ -36,6 +38,8 @@ class Recaptcha implements CaptchaInterface
      */
     public function __construct(array $config = [])
     {
+        parent::__construct();
+        
         foreach ($config as $k => $v) {
             if (isset($this->{$k})) {
                 $this->{$k} = $v;

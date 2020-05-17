@@ -10,7 +10,9 @@
 
 namespace Shieldon\Captcha;
 
-class Csrf implements CaptchaInterface
+use Shieldon\Component\CaptchaProvider;
+
+class Csrf extends CaptchaProvider
 {
     /**
      * Form input name.
@@ -37,6 +39,8 @@ class Csrf implements CaptchaInterface
      */
     public function __construct(array $config = [])
     {
+        parent::__construct();
+
         foreach ($config as $k => $v) {
             if (isset($this->{$k})) {
                 $this->{$k} = $v;

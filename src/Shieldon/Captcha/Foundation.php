@@ -22,9 +22,9 @@ class Foundation implements CaptchaInterface
      *
      * @return void
      */
-    public function __construct(array $config = [])
+    public function __construct()
     {
-
+        parent::__construct();
     }
 
     /**

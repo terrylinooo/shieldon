@@ -10,6 +10,8 @@
 
 namespace Shieldon\Captcha;
 
+use Shieldon\Component\CaptchaProvider;
+
 use function base64_encode;
 use function cos;
 use function function_exists;
@@ -32,7 +34,7 @@ use function random_int;
 use function sin;
 use function strlen;
 
-class ImageCaptcha implements CaptchaInterface
+class ImageCaptcha extends CaptchaProvider
 {
     /**
      * Settings.
@@ -67,6 +69,8 @@ class ImageCaptcha implements CaptchaInterface
      */
     public function __construct(array $config = [])
     {
+        parent::__construct();
+        
         $defaults = [
             'img_width'	  => 250,
             'img_height'  => 50,

@@ -40,6 +40,8 @@ class UserAgent extends ComponentProvider
      */
     public function __construct()
     {
+        parent::__construct();
+
         // Those robots are considered as bad behavior. Therefore we list them here.
         $this->deniedList = [
 
@@ -59,7 +61,7 @@ class UserAgent extends ComponentProvider
             'archive',        // Wayback machine
         ];
 
-        $this->usetAgent = Container::get('request')->getHeaderLine('user-agent');
+        $this->usetAgent = $this->request->getHeaderLine('user-agent');
     }
 
     /**

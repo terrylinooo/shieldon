@@ -66,6 +66,8 @@ class TrustedBot extends ComponentProvider
      */
     public function __construct()
     {
+        parent::__construct();
+
         // They are robots we welcome in this whitelist.
 
         $this->trustedBotList = [
@@ -154,9 +156,7 @@ class TrustedBot extends ComponentProvider
             ],
         ];
 
-        if (Container::get('request')->getHeaderLine('user-agent')) {
-            $this->usetAgent = Container::get('request')->getHeaderLine('user-agent');
-        }
+        $this->usetAgent = $this->request->getHeaderLine('user-agent');
     }
 
     /**

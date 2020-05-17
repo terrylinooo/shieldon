@@ -25,6 +25,14 @@ class Header extends ComponentProvider
     const STATUS_CODE = 83;
 
     /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      *  Very common requests from normal users.
      * 
      * @var string
@@ -42,7 +50,7 @@ class Header extends ComponentProvider
      */
     public function isDenied(): bool
     {
-        $headers = Container::get('request')->getHeaders();
+        $headers = $this->request->getHeaders();
 
         if (! empty($this->deniedList)) {
             if (preg_match('/(' . implode('|', $this->deniedList). ')/i', implode(',', $headers))) {

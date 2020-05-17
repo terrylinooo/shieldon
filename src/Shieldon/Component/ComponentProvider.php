@@ -10,8 +10,6 @@
 
 namespace Shieldon\Component;
 
-use Shieldon\Request;
-
 /**
  * ComponentPrivider
  */
@@ -42,6 +40,14 @@ abstract class ComponentProvider implements ComponentInterface
      * @var \Shieldon\Request
      */
     protected $request;
+
+    /**
+     * Constroctor.
+     */
+    public function __construct()
+    {
+        $this->request = Container::get('request');
+    }
 
     /**
      * Set denied item list. 

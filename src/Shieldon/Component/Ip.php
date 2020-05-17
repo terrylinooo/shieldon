@@ -42,8 +42,18 @@ class Ip extends ComponentProvider
 
     /**
      * Only allow IPs in allowedList, then deny all.
+     * 
+     * @param bool
      */
     protected $isDenyAll = false;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * Check an IP if it exists in Anti-Scraping allow/deny list.
