@@ -34,6 +34,8 @@ use Shieldon\Captcha\CaptchaInterface;
 use Shieldon\Component\ComponentInterface;
 use Shieldon\Component\ComponentProvider;
 use Shieldon\Container;
+use Shieldon\Request;
+use Shieldon\Session;
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Log\ActionLogger;
 use Messenger\Messenger\MessengerInterface;
@@ -53,7 +55,6 @@ use function is_writable;
 use function ob_end_clean;
 use function ob_start;
 use function php_sapi_name;
-use function session_id;
 use function str_replace;
 use function strpos;
 use function strrpos;
@@ -64,7 +65,7 @@ use function time;
  * The primary Shiendon class.
  * 
  * @since   1.0.0
- * @version 3.0.0
+ * @version 1.0.0
  */
 class Shieldon
 {
@@ -118,6 +119,20 @@ class Shieldon
 
     // Shieldon directory.
     const SHIELDON_DIR = __DIR__;
+
+    /**
+     * HTTP Request.
+     *
+     * @var \Shieldon\Request
+     */
+    public $request;
+
+    /**
+     * Sessions
+     *
+     * @var \Shieldon\Session
+     */
+    public $session;
 
     /**
      * Driver for storing data.
@@ -263,13 +278,6 @@ class Shieldon
     private $autoCreateDatabase = true;
 
     /**
-     * The HTTP referer (misspelling of referrer) 
-     *
-     * @var string
-     */
-    private $referer = '';
-
-    /**
      * Container for captcha addons.
      *
      * @var Interface
@@ -282,13 +290,6 @@ class Shieldon
      * @var array
      */
     private $html = [];
-
-    /**
-     * The session ID.
-     *
-     * @var string
-     */
-    private $sessionId = null;
 
     /**
      * Is this IP in the rule list?
@@ -345,7 +346,6 @@ class Shieldon
      * Vistor's current browsering URL.
      *
      * @var string
-     * @since 3.0.0
      */
     private $currentUrl = '';
 
@@ -353,7 +353,6 @@ class Shieldon
      * URLs that are excluded from Shieldon's protection.
      *
      * @var array
-     * @since 3.0.0
      */
     private $excludedUrls = [];
 
@@ -361,7 +360,6 @@ class Shieldon
      * Which type of configuration source that Shieldon firewall managed?
      *
      * @var string
-     * @since 3.0.0
      */
     private $firewallType = 'self'; // managed | config | self | demo
 
@@ -369,7 +367,6 @@ class Shieldon
      * Custom dialog UI settings.
      *
      * @var array
-     * @since 3.1.0
      */
     private $dialogUI = [];
 
@@ -390,12 +387,8 @@ class Shieldon
      */
     public function __construct(array $properties = [],  string $sessionId = '')
     {
-        // Set to container.
-        Container::set('shieldon', $this);
-
-        $this->referer = $_SERVER['HTTP_REFERER'] ?? '';
-
-        $this->setSessionId($sessionId);
+        $this->request = new Request();
+        $this->session = new Session($sessionId);
 
         // At least load a captcha instance. Foundation is the base one.
         $this->setCaptcha(new \Shieldon\Captcha\Foundation());
@@ -405,14 +398,13 @@ class Shieldon
         }
 
         // Get current session's browsing position.
-        $this->currentUrl = $_SERVER['REQUEST_URI'];
-    
-        $this->setIp('', true);
+        $this->currentUrl = $this->request->getServerParams()['REQUEST_URI'];
+        $this->setIp($this->request->getServerParams()['REMOTE_ADDR'], true);
 
-        /**
-         * @since 3.1.0
-         */
         include_once __DIR__ . '/helpers.php';
+
+        // Set to container.
+        Container::set('shieldon', $this);
     }
 
     /**
@@ -451,11 +443,15 @@ class Shieldon
 
         if (! empty($ipDetail['ip'])) {
             $logData['ip']        = $this->ip;
-            $logData['session']   = $this->sessionId;
-            $logData['hostname']  = $this->ipResolvedHostname;
+            $logData['session']   = $this->session->id;
+            $logData['hostname']  = $this->rdns;
             $logData['last_time'] = $now;
 
-            /*** HTTP_REFERER ***/
+            /*
+            |--------------------------------------------------------------------------
+            | HTTP_REFERER
+            |--------------------------------------------------------------------------
+            */
 
             if ($this->enableRefererCheck) {
 
@@ -465,7 +461,7 @@ class Shieldon
                     // If an user is already in your website, it is impossible no referer when he views other pages.
                     $logData['flag_empty_referer'] = $ipDetail['flag_empty_referer'] ?? 0;
 
-                    if (empty($this->referer)) {
+                    if (empty($this->request->getHeaderLine('referer'))) {
                         $logData['flag_empty_referer']++;
                         $isFlaggedAsUnusualBehavior = true;
                     }
@@ -478,7 +474,11 @@ class Shieldon
                 }
             }
 
-            /*** SESSION ***/
+            /*
+            |--------------------------------------------------------------------------
+            | SESSION
+            |--------------------------------------------------------------------------
+            */
 
             if ($this->enableSessionCheck) {
 
@@ -487,7 +487,7 @@ class Shieldon
                     // Get values from data table. We will count it and save it back to data table.
                     $logData['flag_multi_session'] = $ipDetail['flag_multi_session'] ?? 0;
                     
-                    if ($this->sessionId !== $ipDetail['session']) {
+                    if ($this->session->id !== $ipDetail['session']) {
 
                         // Is is possible because of direct access by the same user many times.
                         // Or they don't have session cookie set.
@@ -503,7 +503,11 @@ class Shieldon
                 }
             }
 
-            /*** JAVASCRIPT COOKIE ***/
+            /*
+            |--------------------------------------------------------------------------
+            | JAVASCRIPT COOKIE
+            |--------------------------------------------------------------------------
+            */
 
             // Let's checking cookie created by javascript..
             if ($this->enableCookieCheck) {
@@ -553,7 +557,11 @@ class Shieldon
                 }
             }
 
-            /*** ACCESS FREQUENCY ***/
+            /*
+            |--------------------------------------------------------------------------
+            | ACCESS FREQUENCY
+            |--------------------------------------------------------------------------
+            */
 
             if ($this->enableFrequencyCheck) {
 
@@ -621,8 +629,8 @@ class Shieldon
             // It means that the user is first time visiting our webiste.
 
             $logData['ip']        = $this->ip;
-            $logData['session']   = $this->sessionId;
-            $logData['hostname']  = $this->ipResolvedHostname;
+            $logData['session']   = $this->session->id;
+            $logData['hostname']  = $this->rdns;
             $logData['last_time'] = $now;
 
             foreach ($resetPageviews as $key => $resetStatus) {
@@ -648,13 +656,13 @@ class Shieldon
     {
         $ip = $this->ip;
 
-        $ipResolvedHostname = $this->ipResolvedHostname;
+        $rdns = $this->rdns;
 
         $now = time();
     
         if ('' !== $assignIp) {
             $ip = $assignIp;
-            $ipResolvedHostname = gethostbyaddr($ip);
+            $rdns = gethostbyaddr($ip);
         }
 
         switch ($actionCode) {
@@ -662,7 +670,7 @@ class Shieldon
             case self::ACTION_DENY:  // actually not used.
             case self::ACTION_TEMPORARILY_DENY:
                 $logData['log_ip']     = $ip;
-                $logData['ip_resolve'] = $ipResolvedHostname;
+                $logData['ip_resolve'] = $rdns;
                 $logData['time']       = $now;
                 $logData['type']       = $actionCode;
                 $logData['reason']     = $reasonCode;
@@ -682,7 +690,7 @@ class Shieldon
 
         if (null !== $this->logger) {
             $log['ip']          = $ip;
-            $log['session_id']  = $this->sessionId;
+            $log['session_id']  = $this->session->id;
             $log['action_code'] = $actionCode;
             $log['timesamp']    = $now;
 
@@ -741,7 +749,7 @@ class Shieldon
                     $sessionPools[] = $v['id'];
                     $lasttime = (int) $v['time'];
     
-                    if ($this->sessionId === $v['id']) {
+                    if ($this->session->id === $v['id']) {
                         $currentSessionOrder = $i;
                     }
     
@@ -764,11 +772,11 @@ class Shieldon
             $this->currentSessionOrder = $currentSessionOrder;
             $this->currentWaitNumber = $currentSessionOrder - $limit;
 
-            if (! in_array($this->sessionId, $sessionPools)) {
+            if (! in_array($this->session->id, $sessionPools)) {
                 $this->sessionCount++;
 
                 // New session, record this data.
-                $data['id'] = $this->sessionId;
+                $data['id'] = $this->session->id;
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
 
@@ -776,7 +784,7 @@ class Shieldon
                 $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
                 $data['microtimesamp'] = $microtimesamp;
 
-                $this->driver->save($this->sessionId, $data, 'session');
+                $this->driver->save($this->session->id, $data, 'session');
             }
 
             // Online session count reached the limit. So return RESPONSE_LIMIT response code.
@@ -797,23 +805,26 @@ class Shieldon
      *
      * @return void
      */
+
+    /*
     private function setSessionId(string $sessionId = ''): void
     {
         if ('' !== $sessionId) {
-            $this->sessionId = $sessionId;
+            $this->session->id = $sessionId;
         } else {
             if ((php_sapi_name() !== 'cli')) {
                 if ($this->enableSessionCheck) {
                     if (session_status() === PHP_SESSION_NONE) {
                         session_start();
                     }
-                    if (! $this->sessionId) {
-                        $this->sessionId = session_id();
+                    if (! $this->session->id) {
+                        $this->session->id = session_id();
                     }
                 }
             }
         }
     }
+    */
 
     /**
      * Reset cookie.
@@ -974,7 +985,6 @@ class Shieldon
             
             $class = substr($class, strrpos($class, '\\') + 1);
             $this->component[$class] =& $instance;
-  
         }
 
         return $this;
@@ -1169,8 +1179,8 @@ class Shieldon
 
             if ($showUserInformation) {
                 $dialoguserinfo['ip'] = $this->ip;
-                $dialoguserinfo['rdns'] = $this->ipResolvedHostname;
-                $dialoguserinfo['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? '';
+                $dialoguserinfo['rdns'] = $this->rdns;
+                $dialoguserinfo['user_agent'] = $this->request->getHeaderLine('user-agent');
             }
 
             if (file_exists($viewPath)) {
@@ -1326,7 +1336,7 @@ class Shieldon
 
         foreach (array_keys($this->component) as $name) {
             $this->component[$name]->setIp($this->ip);
-            $this->component[$name]->setRdns($this->ipResolvedHostname);
+            $this->component[$name]->setRdns($this->rdns);
 
             // Apply global strict mode to all components by `strictMode()` if nesscessary.
             if (isset($this->strictMode)) {
@@ -1701,8 +1711,8 @@ class Shieldon
      */
     public function getSessionId(): string
     {
-        if (! empty($this->sessionId)) {
-            return $this->sessionId;
+        if (! empty($this->session->id)) {
+            return $this->session->id;
         }
 
         if ((php_sapi_name() === 'cli')) {
@@ -1710,7 +1720,7 @@ class Shieldon
         }
 
         // @codeCoverageIgnoreStart
-        return $this->sessionId;
+        return $this->session->id;
         // @codeCoverageIgnoreEnd
     }
 
@@ -1765,20 +1775,22 @@ class Shieldon
     public function outputJsSnippet(): string
     {
         $tmpCookieName = $this->properties['cookie_name'];
+        $tmpCookieDomain = $this->properties['cookie_domain'];
 
-        if (empty($tmpCookieDomain) && isset($_SERVER['HTTP_HOST'])) {
-            $tmpCookieDomain = $_SERVER['HTTP_HOST'];
+        if (empty($tmpCookieDomain) && $this->request->getHeaderLine('host')) {
+            $tmpCookieDomain = $this->request->getHeaderLine('host');
         }
 
         $tmpCookieValue = $this->properties['cookie_value'];
 
-        $jsString = <<<"EOF"
+        $jsString = '
             <script>
                 var d = new Date();
                 d.setTime(d.getTime()+(60*60*24*30));
-                document.cookie = "{$tmpCookieName}={$tmpCookieValue};domain=.{$tmpCookieDomain};expires="+d.toUTCString();
+                document.cookie = "' . $tmpCookieName . '=' . $tmpCookieValue . ';domain=.' . $tmpCookieDomain . ';expires="+d.toUTCString();
             </script>
-EOF;
+        ';
+
         return $jsString;
     }
 

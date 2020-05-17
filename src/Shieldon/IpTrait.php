@@ -32,7 +32,7 @@ trait IpTrait
      *
      * @var string
      */
-    protected $ipResolvedHostname = '';
+    protected $rdns = '';
 
     /**
      * Set an IP address.
@@ -43,13 +43,9 @@ trait IpTrait
      *
      * @return void
      */
-    public function setIp(string $ip = '', $queryRdns = false): void
+    public function setIp(string $ip, $queryRdns = false): void
     {
-        if (! empty($ip)) {
-            $_SERVER['REMOTE_ADDR'] = $ip;
-        }
-
-        $this->ip = $_SERVER['REMOTE_ADDR'];
+        $this->ip = $ip;
 
         if ($queryRdns) {
 
@@ -84,7 +80,7 @@ trait IpTrait
      */
     public function setRdns($rdns): void
     {
-        $this->ipResolvedHostname = $rdns;
+        $this->rdns = $rdns;
     }
 
     /**
@@ -94,6 +90,6 @@ trait IpTrait
      */
     public function getRdns(): string
     {
-        return $this->ipResolvedHostname;
+        return $this->rdns;
     }
 }

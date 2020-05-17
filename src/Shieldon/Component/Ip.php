@@ -41,13 +41,6 @@ class Ip extends ComponentProvider
     const REASON_ALLOW_IP       = 42;
 
     /**
-     * Data pool for hard whitelist.
-     *
-     * @var array
-     */
-    protected $allowedList = [];
-
-    /**
      * Only allow IPs in allowedList, then deny all.
      */
     protected $isDenyAll = false;

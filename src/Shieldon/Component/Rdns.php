@@ -46,7 +46,7 @@ class Rdns extends ComponentProvider
     public function isDenied(): bool
     {
         if (! empty($this->deniedList)) {
-            if (preg_match('/(' . implode('|', $this->deniedList). ')/i', $this->ipResolvedHostname)) {
+            if (preg_match('/(' . implode('|', $this->deniedList). ')/i', $this->rdns)) {
                 return true;
             }
         }
@@ -54,22 +54,22 @@ class Rdns extends ComponentProvider
         if ($this->strictMode) {
 
             // If strict mode is on, this value can not be empty.
-            if (empty($this->ipResolvedHostname)) {
+            if (empty($this->rdns)) {
                 return true;
             }
 
             // If the RDNS is an IP adress, not a FQDN.
-            if ($this->ip === $this->ipResolvedHostname) {
+            if ($this->ip === $this->rdns) {
                 return true;
             }
 
             // Not a valid domain name.
-            if (! filter_var($this->ipResolvedHostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+            if (! filter_var($this->rdns, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
                 return true;
             }
 
             // confirm hostname's IP again
-            $ip = gethostbyname($this->ipResolvedHostname);
+            $ip = gethostbyname($this->rdns);
 
             // If the IP is different as hostname's resolved IP.
             if ($ip !== $this->ip) {

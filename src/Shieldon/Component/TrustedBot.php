@@ -34,7 +34,7 @@ class TrustedBot extends ComponentProvider
      * 
      * @var string
      */
-    private $userAgentString = '';
+    private $usetAgent = '';
 
     /**
      * Trusted bot list.
@@ -154,8 +154,8 @@ class TrustedBot extends ComponentProvider
             ],
         ];
 
-        if (! empty($_SERVER['HTTP_USER_AGENT'])) {
-            $this->userAgentString = $_SERVER['HTTP_USER_AGENT'];
+        if (Container::get('request')->getHeaderLine('user-agent')) {
+            $this->usetAgent = Container::get('request')->getHeaderLine('user-agent');
         }
     }
 
@@ -168,7 +168,7 @@ class TrustedBot extends ComponentProvider
 
             $userAgent = array_unique(array_column($this->trustedBotList, 'userAgent'));
 
-            if (! preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgentString)) {
+            if (! preg_match('/(' . implode('|', $userAgent) . ')/i', $this->usetAgent)) {
                 // Okay, current request's user-agent string doesn't contain our truested bots' infroamtion.
                 // Ignore it.
                 return false;
@@ -179,7 +179,7 @@ class TrustedBot extends ComponentProvider
             $rdnsCheck = false;
 
             // We will check the RDNS record to see if it is in the whitelist.
-            if (preg_match('/(' . implode('|', $rdns) . ')/i', $this->ipResolvedHostname)) {
+            if (preg_match('/(' . implode('|', $rdns) . ')/i', $this->rdns)) {
 
                 if ($this->checkFakeRdns) {
 
@@ -190,7 +190,7 @@ class TrustedBot extends ComponentProvider
                         // For example:
                         // $x = strstr('abc.googlebot.com.fake', '.googlebot.com');
                         // $x will be `.googlebot.com.fake` so that we can identify this is a fake domain.
-                        $x = strstr($this->ipResolvedHostname, $r);
+                        $x = strstr($this->rdns, $r);
             
                         // `.googlebot.com` === `.googlebot.com`
                         if ($x === $r) {
@@ -200,7 +200,7 @@ class TrustedBot extends ComponentProvider
                 }
 
                 if ($rdnsCheck) {
-                    $ip = gethostbyname($this->ipResolvedHostname);
+                    $ip = gethostbyname($this->rdns);
 
                     if ($this->strictMode) {
 
@@ -235,18 +235,18 @@ class TrustedBot extends ComponentProvider
     /**
      * Add a trusted bot.
      *
-     * @param string $userAgentString
+     * @param string $usetAgent
      *
      * @param string $rdns
      *
      * @return void
      */
-    public function addItem(string $userAgentString, string $rdns): void
+    public function addItem(string $usetAgent, string $rdns): void
     {
         $_rdns = '.' . trim($rdns, '.');
 
         $this->trustedBotList[] = [
-            'userAgent' => $userAgentString,
+            'userAgent' => $usetAgent,
             'rdns'      => $_rdns,
         ];
     }
@@ -313,7 +313,7 @@ class TrustedBot extends ComponentProvider
      */
     public function isGoogle(): bool
     {
-        if (preg_match('/(google.com|googlebot.com)/i', $this->ipResolvedHostname)) {
+        if (preg_match('/(google.com|googlebot.com)/i', $this->rdns)) {
             return true;
         }
 
@@ -325,7 +325,7 @@ class TrustedBot extends ComponentProvider
      */
     public function isYahoo(): bool
     {
-        if (preg_match('/(yahoo.com|yahoo.net)/i', $this->ipResolvedHostname)) {
+        if (preg_match('/(yahoo.com|yahoo.net)/i', $this->rdns)) {
             return true;
         }
 
@@ -337,7 +337,7 @@ class TrustedBot extends ComponentProvider
      */
     public function isBing(): bool
     {
-        if (preg_match('/(msn.com|bing.com|live.com)/i', $this->ipResolvedHostname)) {
+        if (preg_match('/(msn.com|bing.com|live.com)/i', $this->rdns)) {
             return true;
         }
 

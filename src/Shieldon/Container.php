@@ -35,7 +35,9 @@ class Container
     {
         if (self::has($id)) {
             return self::$instances[$id];
-        }  
+        }
+
+        return false;
     }
 
     /**
@@ -61,7 +63,9 @@ class Container
      */
     public static function set(string $id, $entry): void
     {
-        self::$instances[$id] = $entry;
+        if (! self::has($id)) {
+            self::$instances[$id] = $entry;
+        }
     }
 
     /**
@@ -73,7 +77,9 @@ class Container
      */
     public static function unset(string $id): void
     {
-        self::$instances[$id] = null;
-        unset(self::$instances[$id]);
+        if (self::has($id)) {
+            self::$instances[$id] = null;
+            unset(self::$instances[$id]);
+        }
     }
 }

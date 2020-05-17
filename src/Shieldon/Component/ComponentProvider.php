@@ -10,6 +10,8 @@
 
 namespace Shieldon\Component;
 
+use Shieldon\Request;
+
 /**
  * ComponentPrivider
  */
@@ -23,11 +25,23 @@ abstract class ComponentProvider implements ComponentInterface
     protected $deniedList = [];
 
     /**
+     * Data pool for hard whitelist.
+     *
+     * @var array
+     */
+    protected $allowedList = [];
+
+    /**
      * It is really strict.
      *
      * @var bool
      */
     protected $strictMode = false;
+
+    /**
+     * @var \Shieldon\Request
+     */
+    protected $request;
 
     /**
      * Set denied item list. 

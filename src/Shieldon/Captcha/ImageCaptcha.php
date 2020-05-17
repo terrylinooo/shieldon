@@ -107,13 +107,16 @@ class ImageCaptcha implements CaptchaInterface
      */
     public function response(): bool
     {
-        if (empty($_POST['shieldon_image_captcha']) || empty($_SESSION['shieldon_image_captcha_hash'])) {
+        $body = Container::get('request')->getParsedBody();
+        $session = Container::get('session');
+
+        if (empty($body['shieldon_image_captcha']) || ! $session->get('shieldon_image_captcha_hash')) {
             return false;
         }
 
         $flag = false;
 
-        if (password_verify($_POST['shieldon_image_captcha'], $_SESSION['shieldon_image_captcha_hash'])) {
+        if (password_verify($body['shieldon_image_captcha'], $session->get('shieldon_image_captcha_hash'))) {
             $flag = true;
         }
 
@@ -208,11 +211,11 @@ class ImageCaptcha implements CaptchaInterface
         imagefilledrectangle($im, 0, 0, $this->properties['img_width'], $this->properties['img_height'], $colors['background']);
 
         // Create the spiral pattern.
-        $theta		= 1;
-        $thetac		= 7;
-        $radius		= 16;
-        $circles	= 20;
-        $points		= 32;
+        $theta	 = 1;
+        $thetac	 = 7;
+        $radius	 = 16;
+        $circles = 20;
+        $points	 = 32;
 
         for ($i = 0, $cp = ($circles * $points) - 1; $i < $cp; $i++) {
             $theta += $thetac;
@@ -266,7 +269,7 @@ class ImageCaptcha implements CaptchaInterface
         imagedestroy($im);
 
         // Save hash.
-        $_SESSION['shieldon_image_captcha_hash'] = password_hash($this->word, PASSWORD_BCRYPT);
+        Container::get('session')->save('shieldon_image_captcha_hash', password_hash($this->word, PASSWORD_BCRYPT));
 
         return base64_encode($image_data);
     }
