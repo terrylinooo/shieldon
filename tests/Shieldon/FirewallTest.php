@@ -13,7 +13,6 @@ namespace Shieldon;
 
 class FirewallTest extends \PHPUnit\Framework\TestCase
 {
-
     public function testFromJsonConfig()
     {
         // Remove the configration file if it exists.

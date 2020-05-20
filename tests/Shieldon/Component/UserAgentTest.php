@@ -15,6 +15,9 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $userAgentComponent = new UserAgent();
         $userAgentComponent->setStrict(false);
 
@@ -28,6 +31,9 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
     public function testSetDeniedList()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $list = ['google.com', 'yahoo.com'];
 
         $userAgentComponent = new UserAgent();
@@ -40,6 +46,9 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
     public function testSetDeniedItem()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $string = 'baidu.com';
 
         $userAgentComponent = new UserAgent();
@@ -56,6 +65,9 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDeniedList()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $userAgentComponent = new UserAgent();
         $deniedList = $userAgentComponent->getDeniedList();
 
@@ -74,6 +86,9 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoveItem()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $userAgentComponent = new UserAgent();
         $userAgentComponent->removeItem('Ahrefs');
 
@@ -88,21 +103,25 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
     public function testIsDenied()
     {
-        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)';
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->server->set('HTTP_USER_AGENT', 'Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)');
+        $request->apply();
 
         $userAgentComponent = new UserAgent();
 
         $result = $userAgentComponent->isDenied();
         $this->assertTrue($result);
 
-        $_SERVER['HTTP_USER_AGENT'] = '';
+        $request->server->remove('HTTP_USER_AGENT');
+        $request->apply();
+
         $userAgentComponent = new UserAgent();
         $userAgentComponent->setStrict(true);
         $result = $userAgentComponent->isDenied();
         $this->assertTrue($result);
 
         $reflection = new \ReflectionObject($userAgentComponent);
-        $t = $reflection->getProperty('userAgentString');
+        $t = $reflection->getProperty('userAgent');
         $t->setAccessible(true);
   
         if ($t->getValue($userAgentComponent) === '') {
@@ -114,6 +133,9 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDenyStatusCode()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $userAgentComponent = new UserAgent();
         $statusCode = $userAgentComponent->getDenyStatusCode();
 

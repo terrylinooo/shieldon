@@ -10,8 +10,6 @@
 
 namespace Shieldon\Captcha;
 
-use Shieldon\Component\CaptchaProvider;
-
 use function curl_error;
 use function curl_exec;
 use function curl_init;

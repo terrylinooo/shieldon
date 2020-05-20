@@ -54,14 +54,19 @@ class Request
      */
     public function __construct()
     {
-        if (! isset($this->headers)) {
-            foreach ($this->getServerParams() as $name => $value) {
-                if (substr($name, 0, 5) == 'HTTP_') {
+        if (! isset($this->serverParams)) {
+            if (! empty($_SERVER)) {
+                $this->serverParams =& $_SERVER;
+            } else {
+                $this->serverParams = [];
+            }
+        }
 
-                    // ex: HTTP_ACCEPT_LANGUAGE => accept-language
-                    $key = strtolower(str_replace('_', '-', substr($name, 5)));
-                    $this->headers[$key] = $value;
-                }
+        if (! isset($this->cookieParams)) {
+            if (! empty($_COOKIE)) {
+                $this->cookieParams =& $_COOKIE;
+            } else {
+                $this->cookieParams = [];
             }
         }
 
@@ -75,29 +80,24 @@ class Request
 
         if (! isset($this->parsedBody)) {
             if (! empty($_POST)) {
-                $this->parsedBody = $_POST;
+                $this->parsedBody =& $_POST;
             } else {
                 $this->parsedBody = [];
             }
         }
 
-        if (! isset($this->cookieParams)) {
-            if (! empty($_COOKIE)) {
-                $this->cookieParams = $_COOKIE;
-            } else {
-                $this->cookieParams = [];
+        if (! isset($this->headers)) {
+            foreach ($this->getServerParams() as $name => $value) {
+                if (substr($name, 0, 5) == 'HTTP_') {
+
+                    // ex: HTTP_ACCEPT_LANGUAGE => accept-language
+                    $key = strtolower(str_replace('_', '-', substr($name, 5)));
+                    $this->headers[$key] = $value;
+                }
             }
         }
 
-        if (! isset($this->serverParams)) {
-            if (! empty($_SERVER)) {
-                $this->serverParams = $_SERVER;
-            } else {
-                $this->serverParams = [];
-            }
-        }
-
-        Container::set('request', $this);
+        Container::set('request', $this, true);
     }
 
     /*
@@ -113,7 +113,7 @@ class Request
      */
     public function getHeaders()
     {
-        return $this->headers;
+        return $this->headers ?? [];
     }
 
     /**
@@ -155,7 +155,7 @@ class Request
      */
     public function  getQueryParams()
     {
-        return $this->queryParams;
+        return $this->queryParams ?? [];
     }
 
     /**
@@ -165,7 +165,7 @@ class Request
      */
     public function getParsedBody()
     {
-        return $this->parsedBody;
+        return $this->parsedBody ?? [];
     }
 
     /**
@@ -175,7 +175,7 @@ class Request
      */
     public function getCookieParams()
     {
-        return $this->cookieParams;
+        return $this->cookieParams ?? [];
     }
 
     /**
@@ -185,7 +185,7 @@ class Request
      */
     public function getServerParams()
     {
-        return $this->serverParams;
+        return $this->serverParams ?? [];
     }
 
     /*
@@ -193,6 +193,4 @@ class Request
     | Non-PSR-7 Methods.
     |--------------------------------------------------------------------------
     */
-
-
 }

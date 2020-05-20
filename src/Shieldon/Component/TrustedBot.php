@@ -34,7 +34,7 @@ class TrustedBot extends ComponentProvider
      * 
      * @var string
      */
-    private $usetAgent = '';
+    private $userAgent = '';
 
     /**
      * Trusted bot list.
@@ -156,7 +156,7 @@ class TrustedBot extends ComponentProvider
             ],
         ];
 
-        $this->usetAgent = $this->request->getHeaderLine('user-agent');
+        $this->userAgent = $this->request->getHeaderLine('user-agent');
     }
 
     /**
@@ -168,7 +168,7 @@ class TrustedBot extends ComponentProvider
 
             $userAgent = array_unique(array_column($this->trustedBotList, 'userAgent'));
 
-            if (! preg_match('/(' . implode('|', $userAgent) . ')/i', $this->usetAgent)) {
+            if (! preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgent)) {
                 // Okay, current request's user-agent string doesn't contain our truested bots' infroamtion.
                 // Ignore it.
                 return false;
@@ -235,18 +235,18 @@ class TrustedBot extends ComponentProvider
     /**
      * Add a trusted bot.
      *
-     * @param string $usetAgent
+     * @param string $userAgent
      *
      * @param string $rdns
      *
      * @return void
      */
-    public function addItem(string $usetAgent, string $rdns): void
+    public function addItem(string $userAgent, string $rdns): void
     {
         $_rdns = '.' . trim($rdns, '.');
 
         $this->trustedBotList[] = [
-            'userAgent' => $usetAgent,
+            'userAgent' => $userAgent,
             'rdns'      => $_rdns,
         ];
     }

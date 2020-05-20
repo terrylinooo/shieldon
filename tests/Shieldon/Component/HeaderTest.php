@@ -27,45 +27,54 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
     public function testIsDenied()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->server->clear();
+        $request->server->set('HTTP_TEST_VAR', 'This is a test string.');
+        $request->apply();
+
         $headerComponent = new Header();
-
-        $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
         $headerComponent->setDeniedItem('test');
-
         $result = $headerComponent->isDenied();
+
         $this->assertTrue($result);
 
-        $_SERVER['HTTP_TEST_VAR'] = 'This is a t2est string.';
-
-        $result = $headerComponent->isDenied();
-        $this->assertFalse($result);
+        $request->server->set('HTTP_TEST_VAR', 'This is a t2est string.');
+        $request->apply();
 
         $headerComponent = new Header();
+        $result = $headerComponent->isDenied();
+
+        $this->assertFalse($result);
+
         $headerComponent->setStrict(true);
         $result = $headerComponent->isDenied();
+
         $this->assertTrue($result);
     }
 
     public function testGetHeaders()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->server->clear();
+        $request->server->set('HTTP_TEST_VAR', 'This is a test string.');
+        $request->server->set('HTTP_TEST_VAR2', 'This is a testt string.');
+        $request->apply();
+
         $headerComponent = new Header();
-
-        unset($_SERVER);
-
-        $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
-        $_SERVER['HTTP_TEST_VAR2'] = 'This is a testt string.';
-
         $results = $headerComponent->getHeaders();
 
         $this->assertSame($results, [
-            'Test-Var' => 'This is a test string.',
-            'Test-Var2' => 'This is a testt string.',
+            'test-var' => 'This is a test string.',
+            'test-var2' => 'This is a testt string.',
         ]);
 
-        unset($_SERVER['HTTP_TEST_VAR']);
-        unset($_SERVER['HTTP_TEST_VAR2']);
+        $request->server->remove('HTTP_TEST_VAR');
+        $request->server->remove('HTTP_TEST_VAR2');
+        $request->apply();
 
+        $headerComponent = new Header();
         $results = $headerComponent->getHeaders();
+
         $this->assertSame($results, []);
     }
 
@@ -80,7 +89,6 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($deniedList, $list);
     }
-
 
     public function testSetDeniedItem()
     {

@@ -805,26 +805,12 @@ class Shieldon
      *
      * @return void
      */
-
-    /*
     private function setSessionId(string $sessionId = ''): void
     {
         if ('' !== $sessionId) {
             $this->session->id = $sessionId;
-        } else {
-            if ((php_sapi_name() !== 'cli')) {
-                if ($this->enableSessionCheck) {
-                    if (session_status() === PHP_SESSION_NONE) {
-                        session_start();
-                    }
-                    if (! $this->session->id) {
-                        $this->session->id = session_id();
-                    }
-                }
-            }
         }
     }
-    */
 
     /**
      * Reset cookie.

@@ -20,17 +20,12 @@ use function session_status;
  *
  * @since 1.1.0
  */
-class Session
+class Session extends Collection
 {
     /**
      * @var string
      */
     public $id;
-
-    /**
-     * @var array
-     */
-    protected $sessionParams;
 
     /**
      * Constructor.
@@ -53,60 +48,15 @@ class Session
             }
         }
 
-        $this->sessionParams = $_SESSION;
+        // In CLI environment it will be null so that we give it a default value.
+        if (! isset($_SESSION) || ! is_array($_SESSION)) {
+            $_SESSION = [];
+        }
 
-        Container::set('session', $this);
+        parent::__construct($_SESSION);
+
+        Container::set('session', $this, true);
 
         return $this->id;
-    }
-
-    /**
-     * Get session value from $_SESSION by key.
-     *
-     * @param string $name
-     *
-     * @return string|array
-     */
-    public function get($name)
-    {
-        return $this->sessionParams[$name] ?? '';
-    }
-
-    /**
-     * To store data in the session.
-     *
-     * @param string $name
-     *
-     * @return void
-     */
-    public function save($name, $value)
-    {
-        $this->sessionParams[$name] = $value;
-    }
-
-    /**
-     * To delete data in the session.
-     *
-     * @param string $name
-     *
-     * @return void
-     */
-    public function delete($name)
-    {
-        if (isset($this->sessionParams[$name])) {
-            unset($this->sessionParams[$name]);
-        }
-    }
-
-    /**
-     * To determine if an item is present in the session.
-     *
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function has($name)
-    {
-        return isset($this->sessionParams[$name]);
     }
 }

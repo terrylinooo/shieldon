@@ -56,14 +56,15 @@ class Container
     /**
      * Set an entry into container.
      *
-     * @param object $id    Identifier of the entry to look for.
-     * @param mixed  $entry Entry.
+     * @param object $id        Identifier of the entry to look for.
+     * @param mixed  $entry     Entry.
+     * @param bool   $overwrite Overwrite it even exists.
      *
      * @return void
      */
-    public static function set(string $id, $entry): void
+    public static function set(string $id, $entry, bool $overwrite = true): void
     {
-        if (! self::has($id)) {
+        if (! self::has($id) || $overwrite) {
             self::$instances[$id] = $entry;
         }
     }
@@ -75,7 +76,7 @@ class Container
      *
      * @return void
      */
-    public static function unset(string $id): void
+    public static function remove(string $id): void
     {
         if (self::has($id)) {
             self::$instances[$id] = null;

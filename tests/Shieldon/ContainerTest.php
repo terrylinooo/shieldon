@@ -31,7 +31,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $result = \Shieldon\Container::has('firewall');
         $this->assertTrue($result);
 
-        \Shieldon\Container::unset('firewall');
+        \Shieldon\Container::remove('firewall');
         $result = \Shieldon\Container::has('firewall');
         $this->assertFalse($result);
     }

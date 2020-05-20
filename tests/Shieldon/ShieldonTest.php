@@ -1062,7 +1062,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         
         $shieldon->setComponent(new \Shieldon\Component\Rdns());
 
-        $shieldon->setMessenger(new \Shieldon\Mock\Messenger());
+        $shieldon->setMessenger(new \MockMessenger());
 
         $shieldon->setChannel('test_shieldon_deny_attempt');
         $shieldon->driver->rebuild();

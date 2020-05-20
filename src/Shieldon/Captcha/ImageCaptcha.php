@@ -10,8 +10,6 @@
 
 namespace Shieldon\Captcha;
 
-use Shieldon\Component\CaptchaProvider;
-
 use function base64_encode;
 use function cos;
 use function function_exists;
@@ -111,21 +109,22 @@ class ImageCaptcha extends CaptchaProvider
      */
     public function response(): bool
     {
-        $body = Container::get('request')->getParsedBody();
-        $session = Container::get('session');
-
-        if (empty($body['shieldon_image_captcha']) || ! $session->get('shieldon_image_captcha_hash')) {
+        $body = $this->request->getParsedBody();
+       
+        if (empty($body['shieldon_image_captcha']) || ! $this->session->get('shieldon_image_captcha_hash')) {
             return false;
         }
 
         $flag = false;
 
-        if (password_verify($body['shieldon_image_captcha'], $session->get('shieldon_image_captcha_hash'))) {
+        if (password_verify($body['shieldon_image_captcha'],  $this->session->get('shieldon_image_captcha_hash'))) {
             $flag = true;
         }
 
         // Prevent detecting POST method on RESTful frameworks.
-        unset($_POST['shieldon_image_captcha']);
+        if (isset($_POST)) {
+            unset($_POST);
+        }
 
         return $flag;
     }
@@ -273,7 +272,7 @@ class ImageCaptcha extends CaptchaProvider
         imagedestroy($im);
 
         // Save hash.
-        Container::get('session')->save('shieldon_image_captcha_hash', password_hash($this->word, PASSWORD_BCRYPT));
+        $this->session->set('shieldon_image_captcha_hash', password_hash($this->word, PASSWORD_BCRYPT));
 
         return base64_encode($image_data);
     }

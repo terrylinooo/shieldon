@@ -10,11 +10,13 @@
 
 namespace Shieldon\Component;
 
-
 class TrustedBotTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setStrict(false);
 
@@ -43,19 +45,25 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testIsDenied()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $result = $trustedBotComponent->isDenied();
-
         $this->assertFalse($result);
     }
 
     public function testIsAllowed()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+
         $trustedBotComponent = new TrustedBot();
         $result = $trustedBotComponent->isAllowed();
         $this->assertFalse($result);
 
-        $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
+        $request->server->set('HTTP_USER_AGENT', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('66.249.66.1', true);
         $result = $trustedBotComponent->isAllowed();
@@ -74,6 +82,9 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoveItem()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
 
         $trustedBotComponent->removeItem('google');
@@ -90,8 +101,10 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testAddItem()
     {
-        $trustedBotComponent = new TrustedBot();
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
 
+        $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->addItem('acer', '.acer-euro.com');
         $list = $trustedBotComponent->getList();
 
@@ -99,11 +112,13 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($test['userAgent'] , 'acer');
         $this->assertSame($test['rdns'] , '.acer-euro.com');
-       
     }
 
     public function testAddList()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setList([]);
         $trustedBotComponent->addList([
@@ -127,6 +142,9 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testIsGoogle()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('66.249.66.1', true);
 
@@ -147,6 +165,9 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testIsYahoo()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('8.12.144.1', true);
         if ($trustedBotComponent->isYahoo()) {
@@ -166,6 +187,9 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testIsBing()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('40.77.169.1', true);
 
@@ -189,8 +213,10 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
      */
     public function testFakeGoogleBot_1()
     {
-        $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
-    
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->server->set('HTTP_USER_AGENT', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('111.111.111.111', false);
         $trustedBotComponent->setRdns('crawl-66-249-66-1.googlebot.com.fakedomain.com');
@@ -209,8 +235,10 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
      */
     public function testFakeGoogleBot_2()
     {
-        $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
-    
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->server->set('HTTP_USER_AGENT', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('111.111.111.111', false);
         $trustedBotComponent->setRdns('crawl-66-249-66-1.googlebot.com.fakedomain.com');
@@ -236,8 +264,10 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
      */
     public function testFakeGoogleBot_3()
     {
-        $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
-    
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->server->set('HTTP_USER_AGENT', 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('127.0.0.1', false);
         $trustedBotComponent->setRdns('localhost');
@@ -260,6 +290,9 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDenyStatusCode()
     {
+        $request = new \Shieldon\Mock\MockRequest();
+        $request->apply();
+
         $trustedBotComponent = new TrustedBot();
         $statusCode = $trustedBotComponent->getDenyStatusCode();
 

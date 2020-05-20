@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-namespace Shieldon\Mock;
-
 use Messenger\Messenger\MessengerInterface;
 
 /**
@@ -18,7 +16,7 @@ use Messenger\Messenger\MessengerInterface;
  * @author Terry L. <contact@terryl.in>
  * @since 1.0.0
  */
-class Messenger implements MessengerInterface
+class MockMessenger implements MessengerInterface
 {
     /**
      * Constructor.

@@ -50,7 +50,7 @@ class Header extends ComponentProvider
      */
     public function isDenied(): bool
     {
-        $headers = $this->request->getHeaders();
+        $headers = $this->getHeaders();
 
         if (! empty($this->deniedList)) {
             if (preg_match('/(' . implode('|', $this->deniedList). ')/i', implode(',', $headers))) {
@@ -70,6 +70,16 @@ class Header extends ComponentProvider
         }
 
         return false;
+    }
+
+    /**
+     * Get headers from request.
+     *
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->request->getHeaders();
     }
 
     /**

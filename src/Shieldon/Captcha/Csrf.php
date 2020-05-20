@@ -10,8 +10,6 @@
 
 namespace Shieldon\Captcha;
 
-use Shieldon\Component\CaptchaProvider;
-
 class Csrf extends CaptchaProvider
 {
     /**

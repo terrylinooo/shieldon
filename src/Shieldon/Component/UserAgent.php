@@ -29,7 +29,7 @@ class UserAgent extends ComponentProvider
      * 
      * @var string
      */
-    private $usetAgent = '';
+    private $userAgent = '';
 
     /**
      * Constructor.
@@ -61,7 +61,7 @@ class UserAgent extends ComponentProvider
             'archive',        // Wayback machine
         ];
 
-        $this->usetAgent = $this->request->getHeaderLine('user-agent');
+        $this->userAgent = $this->request->getHeaderLine('user-agent');
     }
 
     /**
@@ -70,7 +70,7 @@ class UserAgent extends ComponentProvider
     public function isDenied(): bool
     {
         if (! empty($this->deniedList)) {
-            if (preg_match('/(' . implode('|', $this->deniedList). ')/i', $this->usetAgent)) {
+            if (preg_match('/(' . implode('|', $this->deniedList). ')/i', $this->userAgent)) {
                 return true;
             }
         }
@@ -78,7 +78,7 @@ class UserAgent extends ComponentProvider
         if ($this->strictMode) {
 
             // If strict mode is on, this value can not be empty.
-            if (empty($this->usetAgent)) {
+            if (empty($this->userAgent)) {
                 return true;
             }
         }
