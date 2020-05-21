@@ -1138,7 +1138,7 @@ class Shieldon
         /**
          * @var string The language of output UI. It is used on views.
          */
-        $langCode = $_SESSION['SHIELDON_UI_LANG'] ?? 'en';
+        $langCode = $this->session->get('SHIELDON_UI_LANG') ?? 'en';
 
         /**
          * @var bool Show online session count. It is used on views.

@@ -358,29 +358,36 @@ class Firewall
     protected function setIpSource(): void
     {
         $ipSourceType = $this->getOption('ip_variable_source');
+        $serverParams = $this->getShieldon()->request->getServerParams();
 
         if ($ipSourceType['REMOTE_ADDR']) {
-            $this->shieldon->setIp($_SERVER['REMOTE_ADDR']);
+            $ip = $serverParams['REMOTE_ADDR'];
 
         // Cloudflare
         } elseif ($ipSourceType['HTTP_CF_CONNECTING_IP']) {
-            $this->shieldon->setIp($_SERVER['HTTP_CF_CONNECTING_IP']);
+            $ip = $serverParams['HTTP_CF_CONNECTING_IP'];
 
         // Google Cloud CDN, Google Load-balancer, AWS.
         } elseif ($ipSourceType['HTTP_X_FORWARDED_FOR']) {
-            $this->shieldon->setIp($_SERVER['HTTP_X_FORWARDED_FOR']);
+            $ip = $serverParams['HTTP_X_FORWARDED_FOR'];
 
         // KeyCDN, or other CDN providers not listed here.
         } elseif ($ipSourceType['HTTP_X_FORWARDED_HOST']) {
-            $this->shieldon->setIp($_SERVER['HTTP_X_FORWARDED_HOST']);
+            $ip = $serverParams['HTTP_X_FORWARDED_HOST'];
 
         // Fallback.
         } else {
 
             // @codeCoverageIgnoreStart
-            $this->shieldon->setIp($_SERVER['REMOTE_ADDR']);
+            $ip = $serverParams['REMOTE_ADDR'];
             // @codeCoverageIgnoreEnd
         }
+
+        if (empty($ip)) {
+            throw new RuntimeException('IP source is not set correctly.');
+        }
+
+        $this->shieldon->setIp($ip);
     }
 
     /**
@@ -999,7 +1006,7 @@ class Firewall
         $ui = $this->getOption('dialog_ui');
 
         if (! empty($ui)) {
-            $_SESSION['SHIELDON_UI_LANG'] = $ui['lang'];
+            $this->getShieldon()->session->set('SHIELDON_UI_LANG', $ui['lang']);
             $this->shieldon->setDialogUI($this->getOption('dialog_ui'));
         }
     }
