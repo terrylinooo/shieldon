@@ -34,8 +34,8 @@ use Shieldon\Captcha\CaptchaInterface;
 use Shieldon\Component\ComponentInterface;
 use Shieldon\Component\ComponentProvider;
 use Shieldon\Container;
-use Shieldon\Request;
 use Shieldon\Session;
+use Shieldon\Http;
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Log\ActionLogger;
 use Messenger\Messenger\MessengerInterface;
@@ -121,23 +121,30 @@ class Shieldon
     const SHIELDON_DIR = __DIR__;
 
     /**
-     * HTTP Request.
+     * HTTP request.
      *
-     * @var \Shieldon\Request
+     * @var Psr\Http\Message\ServerRequestInterface
      */
     public $request;
 
     /**
-     * Sessions
+     * HTTP response.
      *
-     * @var \Shieldon\Session
+     * @var Psr\Http\Message\ResponseInterface
+     */
+    public $response;
+
+    /**
+     * Session.
+     *
+     * @var Shieldon\Utils\Session
      */
     public $session;
 
     /**
      * Driver for storing data.
      *
-     * @var DriverProvider
+     * @var Shieldon\Driver\DriverProvider
      */
     public $driver = null;
 
@@ -213,13 +220,15 @@ class Shieldon
      * @var array
      */
     private $properties = [
+
         'time_unit_quota' => [
             's' => 2,
             'm' => 10,
             'h' => 30,
             'd' => 60
         ],
-        'time_reset_limit'       => 3600,
+
+        'time_reset_limit' => 3600,
         'interval_check_referer' => 5,
         'interval_check_session' => 30,
         'limit_unusual_behavior' => [
@@ -227,11 +236,12 @@ class Shieldon
             'session' => 5,
             'referer' => 10
         ],
-        'cookie_name'         => 'ssjd',
-        'cookie_domain'       => '',
-        'cookie_value'        => '1',
+
+        'cookie_name' => 'ssjd',
+        'cookie_domain' => '',
+        'cookie_value' => '1',
         'display_online_info' => true,
-        'display_user_info'   => false,
+        'display_user_info' => false,
 
         /**
          * If you set this option enabled, Shieldon will record every CAPTCHA fails in a row, 
@@ -253,6 +263,7 @@ class Shieldon
             'data_circle'     => 10,
             'system_firewall' => 10,
         ],
+
         /**
          * To prevent dropping social platform robots into iptables firewall, such as Facebook, Line, 
          * and others who scrape snapshots from your web pages, you should adjust the values below 
@@ -263,9 +274,8 @@ class Shieldon
         // Reset the counter after n second.
         'reset_attempt_counter' => 1800, // 30 minutes.
 
-        /**
-         * System-layer firewall, ip6table service watches this folder to receive command created by Shieldon Firewall.
-         */
+        // System-layer firewall, ip6table service watches this folder to 
+        // receive command created by Shieldon Firewall.
         'iptables_watching_folder' => '/tmp/',
     ];
 
@@ -378,6 +388,13 @@ class Shieldon
     private $messengers = [];
 
     /**
+     * Store the class information used in Shieldon.
+     *
+     * @var array
+     */
+    private $registrar = [];
+
+    /**
      * Constructor.
      * 
      * @param array  $properties Shieldon configuration settings. (option)
@@ -387,8 +404,11 @@ class Shieldon
      */
     public function __construct(array $properties = [],  string $sessionId = '')
     {
-        $this->request = new Request();
-        $this->session = new Session($sessionId);
+        $http = new Http();
+
+        $this->request = $http->createRequest();
+        $this->response = $http->createResponse();
+        $this->session = $http->createSession($sessionId);
 
         // At least load a captcha instance. Foundation is the base one.
         $this->setCaptcha(new \Shieldon\Captcha\Foundation());
@@ -405,6 +425,46 @@ class Shieldon
 
         // Set to container.
         Container::set('shieldon', $this);
+    }
+
+    /**
+     * Register classes to Shieldon core.
+     * setDriver, setLogger, setComponent and setCaptcha are deprecated methods
+     * and no more used.
+     *
+     * @param object $instance Middleware classes that used on Shieldon.
+     *
+     * @return self
+     */
+    public function add($instance): self
+    {
+        $class = get_class($instance);
+        $class = substr($class, strrpos($class, '\\') + 1);
+
+        if ($instance instanceof DriverProvider) {
+            $this->driver = $instance;
+            $type = 'driver';
+        }
+
+        if ($instance instanceof CaptchaInterface) {
+            $this->captcha[$class] = $instance;
+            $type = 'captcha';
+        }
+
+        if ($instance instanceof ComponentProvider) {
+            $this->component[$class] = $instance;
+            $type = 'component';
+        }
+
+        if ($instance instanceof ActionLogger) {
+            $this->logger = $instance;
+            $type = 'logger';
+            
+        }
+
+        $this->registrar[] = [$type, $class];
+
+        return $this;
     }
 
     /**
