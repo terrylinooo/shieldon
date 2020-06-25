@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Shieldon\Driver;
 
@@ -511,6 +513,7 @@ class SqlDriverProvider extends DriverProvider
                     `ip` varchar(46) NOT NULL,
                     `time` int(10) UNSIGNED NOT NULL,
                     `microtimesamp` bigint(20) UNSIGNED NOT NULL,
+                    `data` blob,
                     PRIMARY KEY (`id`)
                 ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
             ";

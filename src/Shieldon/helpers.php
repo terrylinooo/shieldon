@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -7,13 +7,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
+
 namespace Shieldon\Helper;
 
-define('SHIELDON_VERSION', '1.0.0');
-
 /**
- * @since 3.1.0
+ * This value will be only displayed on Firewall Panel.
  */
+define('SHIELDON_VERSION', '2.0');
 
 /**
  * Get locale message.
@@ -23,14 +25,15 @@ define('SHIELDON_VERSION', '1.0.0');
 function __(): string
 {
     /**
-     * Load locale string from i18n files and store them into this array for futher use.
+     * Load locale string from i18n files and store them into this array 
+     * for further use.
      * 
      * @var array 
      */
     static $i18n;
 
     /**
-     * Checking the file exists for not.
+     * Check the file exists for not.
      *
      * @var array 
      */
@@ -184,4 +187,72 @@ function get_memory_usage()
         $return = round($parsed[2] / $parsed[1] * 100, 0) . '%';
     }
     return $return;
+}
+
+/**
+ * The default settings of Shieldon core.
+ *
+ * @return array
+ */
+function get_default_properties(): array
+{
+    return [
+
+        'time_unit_quota' => [
+            's' => 2,
+            'm' => 10,
+            'h' => 30,
+            'd' => 60
+        ],
+
+        'time_reset_limit' => 3600,
+        'interval_check_referer' => 5,
+        'interval_check_session' => 30,
+        'limit_unusual_behavior' => [
+            'cookie'  => 5,
+            'session' => 5,
+            'referer' => 10
+        ],
+
+        'cookie_name' => 'ssjd',
+        'cookie_domain' => '',
+        'cookie_value' => '1',
+        'display_online_info' => true,
+        'display_user_info' => false,
+
+        /**
+         * If you set this option enabled, Shieldon will record every CAPTCHA fails in a row, 
+         * Once that user have reached the limitation number, Shieldon will put it as a blocked IP in rule table,
+         * until the new data cycle begins.
+         * 
+         * Once that user have been blocked, they are still access the warning page, it means that they are not
+         * humain for sure, so let's throw them into the system firewall and say goodbye to them forever.
+         */
+        'deny_attempt_enable' => [
+            'data_circle'     => false,
+            'system_firewall' => false,
+        ],
+        'deny_attempt_notify' => [
+            'data_circle'     => false,
+            'system_firewall' => false,
+        ],
+        'deny_attempt_buffer' => [
+            'data_circle'     => 10,
+            'system_firewall' => 10,
+        ],
+
+        /**
+         * To prevent dropping social platform robots into iptables firewall, such as Facebook, Line, 
+         * and others who scrape snapshots from your web pages, you should adjust the values below 
+         * to fit your needs. (unit: second)
+         */
+        'record_attempt_detection_period' => 5, // 5 seconds.
+
+        // Reset the counter after n second.
+        'reset_attempt_counter' => 1800, // 30 minutes.
+
+        // System-layer firewall, ip6table service watches this folder to 
+        // receive command created by Shieldon Firewall.
+        'iptables_watching_folder' => '/tmp/',
+    ];
 }

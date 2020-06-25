@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Shieldon\Driver;
 
@@ -23,7 +25,6 @@ use function ksort;
  */
 class RedisDriver extends DriverProvider
 {
-
     /**
      * Redis instance.
      *
@@ -88,7 +89,9 @@ class RedisDriver extends DriverProvider
         switch ($type) {
 
             case 'rule':
+                // no break
             case 'filter_log':
+                // no break
             case 'session':
 
                 $keys = $this->redis->keys($this->getNamespace($type) . ':*');
@@ -127,6 +130,7 @@ class RedisDriver extends DriverProvider
         switch ($type) {
 
             case 'rule':
+                // no break
             case 'session':
                 $content = $this->redis->get($this->getKeyName($ip, $type));
                 $resultData = json_decode($content, true);
@@ -205,7 +209,9 @@ class RedisDriver extends DriverProvider
     {
         switch ($type) {
             case 'rule':
+                // no break
             case 'filter_log':
+                // no break
             case 'session':
                 return $this->redis->del($this->getKeyName($ip, $type)) >= 0;
         }
@@ -240,9 +246,12 @@ class RedisDriver extends DriverProvider
     private function getKeyName(string $ip, string $type = 'filter_log'): string
     {
         switch ($type) {
-            case 'filter_log'    : return $this->tableFilterLogs     . ':' . $ip;
-            case 'session': return $this->tableSessions . ':' . $ip;
-            case 'rule'   : return $this->tableRuleList . ':' . $ip;
+            case 'filter_log': 
+                return $this->tableFilterLogs . ':' . $ip;
+            case 'session':
+                return $this->tableSessions . ':' . $ip;
+            case 'rule': 
+                return $this->tableRuleList . ':' . $ip;
         }
         return '';
     }
@@ -257,9 +266,12 @@ class RedisDriver extends DriverProvider
     private function getNamespace(string $type = 'filter_log'): string
     {
         switch ($type) {
-            case 'filter_log'    : return $this->tableFilterLogs;
-            case 'session': return $this->tableSessions;
-            case 'rule'   : return $this->tableRuleList;
+            case 'filter_log':
+                return $this->tableFilterLogs;
+            case 'session':
+                return $this->tableSessions;
+            case 'rule':
+                return $this->tableRuleList;
         }
         return '';
     }

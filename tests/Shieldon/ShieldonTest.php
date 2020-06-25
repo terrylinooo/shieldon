@@ -29,7 +29,8 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
             'display_online_info'    => false,
         ];
 
-        $shieldon = new \Shieldon\Shieldon($properties);
+        $shieldon = new \Shieldon\Shieldon();
+        $shieldon->setProperties($properties);
 
         $reflection = new \ReflectionObject($shieldon);
         $t = $reflection->getProperty('properties');

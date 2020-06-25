@@ -10,7 +10,7 @@
 
 namespace Shieldon\Component;
 
-use Shieldon\Container;
+use Shieldon\Utils\Container;
 
 /**
  * ComponentPrivider

@@ -10,7 +10,7 @@
 
 namespace Shieldon\Captcha;
 
-use Shieldon\Container;
+use Shieldon\Utils\Container;
 
 /**
  * ComponentPrivider

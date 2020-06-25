@@ -62,7 +62,8 @@ class SqliteDriver extends SqlDriverProvider
                     id VARCHAR(40) PRIMARY KEY, 
                     ip VARCHAR(46),
                     time INT(10),
-                    microtimesamp BIGINT(20)
+                    microtimesamp BIGINT(20),
+                    log_data
                 );
             ";
 
@@ -75,7 +76,7 @@ class SqliteDriver extends SqlDriverProvider
             return false;
         }
         // @codeCoverageIgnoreEnd
-        
+ 
     }
 
     /**

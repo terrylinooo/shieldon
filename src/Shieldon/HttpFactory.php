@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Shieldon;
 
-use Shieldon\Psr7\Factory\ServerRequestFactory;
-use Shieldon\Psr7\Factory\ResponseFactory;
+use Shieldon\Psr17\ServerRequestFactory;
+use Shieldon\Psr17\ResponseFactory;
 use Shieldon\Psr7\ServerRequest;
 use Shieldon\Psr7\Response;
 use Shieldon\Utils\Session;
@@ -26,37 +26,32 @@ class HttpFactory
     /**
      * Create a server-side request.
      *
-     * @return ServerRequestFactory
+     * @return ServerRequest
      */
-    public function createRequest(): ServerRequest
+    public static function createRequest(): ServerRequest
     {
-        $serverRequestFactory = new ServerRequestFactory(true);
-        $serverRequest = $serverRequestFactory->createServerRequest('', '');
-
-        return $serverRequest;
+        return ServerRequestFactory::fromGlobal();
     }
 
     /**
-     * Create a server response.
+     * Create a server-side response
      *
-     * @return Response
+     * @return ServerRequest
      */
-    public function createResponse(): Response
+    public static function createResponse(): Response
     {
-        $responseFactory = new ResponseFactory();
-        $response = $responseFactory->createResponse();
-
-        return $response;
+        return ResponseFactory::fromNew();
     }
 
     /**
      * Create a Session collection from superglobal.
+     * This method is not a PSR-7 pattern.
      *
-     * @param $id Session ID
+     * @param string $id Session ID
      *
      * @return Collection
      */
-    public function createSession($id = ''): Session
+    public static function createSession($id = ''): Session
     {
         return new Session($id);
     }

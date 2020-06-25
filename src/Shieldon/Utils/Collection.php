@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Shieldon\Utils;
 
 /*
- * A simple data wrapper.
+ * A simple data wrapper giving ability to control.
  *
  * @since 1.1.0
  */

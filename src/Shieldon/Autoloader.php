@@ -21,53 +21,21 @@ namespace Shieldon;
  */
 class Autoloader
 {
-    /**
-     * Current level directory.
-     *
-     * @var string
-     */
     private $dir;
-
-    /**
-     * The prefix of classes applied to autoloader.
-     *
-     * @var string
-     */
     private $prefix;
 
-    /**
-     * Autoloader constructor.
-     */
     public function __construct()
     {
         $this->dir = __DIR__;
         $this->prefix = __NAMESPACE__ . '\\';
     }
 
-    /**
-     * Register to autoloader.
-     *
-     * @return void
-     */
-    public static function register(): void
+    public static function register()
     {
-        spl_autoload_register(
-            [
-                new self(), 'autoload'
-            ], 
-            true,
-            false
-        );
+        spl_autoload_register(array(new self(), 'autoload'), true, false);
     }
 
-    /**
-     * The rule of autoloader.
-     *
-     * @param string $className The class name, may include namespace.
-     *
-     * @return void
-     */
-    public function autoload(string $className): void
+    public function autoload($className)
     {
         if (0 === strpos($className, $this->prefix)) {
             $parts = explode('\\', substr($className, strlen($this->prefix)));

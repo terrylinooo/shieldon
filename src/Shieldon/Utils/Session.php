@@ -52,6 +52,8 @@ class Session
      */
     public function createFromGlobal(): Collection
     {
+        $this->id = '_php_cli_';
+
         if ((php_sapi_name() !== 'cli')) {
 
             if (session_status() === PHP_SESSION_NONE) {
@@ -68,6 +70,8 @@ class Session
         if (! isset($_SESSION)) {
             $_SESSION = [];
         }
+
+        $_SESSION['id'] = $this->id;
 
         return Collection($_SESSION);
     }

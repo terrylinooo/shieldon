@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Shieldon\Driver;
 
@@ -98,7 +100,9 @@ class FileDriver extends DriverProvider
         switch ($type) {
 
             case 'rule':
+                // no break
             case 'filter_log':
+                // no break
             case 'session':
 
                 $dir = $this->getDirectory($type);
@@ -125,8 +129,8 @@ class FileDriver extends DriverProvider
                     // Sort by ascending timesamp (microtimesamp).
                     ksort($results);
                 }
-
-            break;
+                break;
+            // endswitch
         }
 
         return $results;
@@ -217,7 +221,9 @@ class FileDriver extends DriverProvider
     {
         switch ($type) {
             case 'rule':
+                // no break
             case 'filter_log':
+                // no break
             case 'session':
                 return $this->remove($this->getFilename($ip, $type));
         }
@@ -325,7 +331,9 @@ class FileDriver extends DriverProvider
     protected function checkDirectory(): bool
     {
         if (! is_dir($this->directory) || ! is_writable($this->directory)) {
-            throw new RuntimeException('The directory defined by File Driver must be writable. (' . $this->directory . ')');
+            throw new RuntimeException(
+                'The directory defined by File Driver must be writable. (' . $this->directory . ')'
+            );
         }
 
         return true;
@@ -357,9 +365,12 @@ class FileDriver extends DriverProvider
         $ip = str_replace(':', '-', $ip);
 
         switch ($type) {
-            case 'filter_log' : return $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
-            case 'session'    : return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
-            case 'rule'       : return $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
+            case 'filter_log':
+                return $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
+            case 'session':
+                return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
+            case 'rule':
+                return $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
         }
 
         return '';
@@ -375,9 +386,12 @@ class FileDriver extends DriverProvider
     private function getDirectory(string $type = 'filter_log'): string
     {
         switch ($type) {
-            case 'filter_log'    : return $this->directory . '/' . $this->tableFilterLogs;
-            case 'session': return $this->directory . '/' . $this->tableSessions;
-            case 'rule'   : return $this->directory . '/' . $this->tableRuleList;
+            case 'filter_log':
+                return $this->directory . '/' . $this->tableFilterLogs;
+            case 'session':
+                return $this->directory . '/' . $this->tableSessions;
+            case 'rule':
+                return $this->directory . '/' . $this->tableRuleList;
         }
 
         return '';
