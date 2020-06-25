@@ -77,7 +77,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
     switch ($driver) {
 
         case 'file':
-            $shieldon->setDriver(new \Shieldon\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+            $shieldon->add(new \Shieldon\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
             break;
 
         case 'mysql':
@@ -95,13 +95,13 @@ function get_testing_shieldon_instance($driver = 'sqlite')
                 $db['pass']
             );
 
-            $shieldon->setDriver(new \Shieldon\Driver\MysqlDriver($pdoInstance));
+            $shieldon->add(new \Shieldon\Driver\MysqlDriver($pdoInstance));
             break;
 
         case 'redis':
             $redisInstance = new \Redis();
             $redisInstance->connect('127.0.0.1', 6379); 
-            $shieldon->setDriver(new \Shieldon\Driver\RedisDriver($redisInstance));
+            $shieldon->add(new \Shieldon\Driver\RedisDriver($redisInstance));
             break;
 
         case 'memcache':
@@ -116,7 +116,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
                     die('Cannot connect to Memcache server.');
                 }
             }
-            $shieldon->setDriver(new \Shieldon\Driver\MemcacheDriver($memcacheInstance));
+            $shieldon->add(new \Shieldon\Driver\MemcacheDriver($memcacheInstance));
             break;
 
         case 'mongodb':
@@ -129,7 +129,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
                     die('Cannot connect to MongoDB.');
                 }
             }
-            $shieldon->setDriver(new \Shieldon\Driver\MongoDriver($mongoInstance));
+            $shieldon->add(new \Shieldon\Driver\MongoDriver($mongoInstance));
             break;
 
         case 'sqlite':
@@ -138,7 +138,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
 
             try {
                 $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-                $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
+                $shieldon->add(new \Shieldon\Driver\SqliteDriver($pdoInstance));
             } catch(\PDOException $e) {
                 throw $e->getMessage();
             }

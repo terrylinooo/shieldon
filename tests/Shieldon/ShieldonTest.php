@@ -50,10 +50,10 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon = get_testing_shieldon_instance($driver);
 
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
-        $shieldon->setComponent(new \Shieldon\Component\Ip());
-        $shieldon->setComponent(new \Shieldon\Component\UserAgent());
-        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
-        $shieldon->setComponent(new \Shieldon\Component\Rdns());
+        $shieldon->add(new \Shieldon\Component\Ip());
+        $shieldon->add(new \Shieldon\Component\UserAgent());
+        $shieldon->add(new \Shieldon\Component\TrustedBot());
+        $shieldon->add(new \Shieldon\Component\Rdns());
 
         $shieldon->setChannel('test_shieldon_detect');
         $shieldon->driver->rebuild();
@@ -123,7 +123,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         unset($results);
 
-        // Test 4. Referer.
+        // Test 4. referer.
 
          /*
         $shieldon->setFilters([
@@ -235,10 +235,10 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setLogger(new \Shieldon\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon'));
 
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
-        $shieldon->setComponent(new \Shieldon\Component\Ip());
-        $shieldon->setComponent(new \Shieldon\Component\UserAgent());
-        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
-        $shieldon->setComponent(new \Shieldon\Component\Rdns());
+        $shieldon->add(new \Shieldon\Component\Ip());
+        $shieldon->add(new \Shieldon\Component\UserAgent());
+        $shieldon->add(new \Shieldon\Component\TrustedBot());
+        $shieldon->add(new \Shieldon\Component\Rdns());
 
         $shieldon->setChannel('test_shieldon_detect');
         $shieldon->driver->rebuild();
@@ -278,7 +278,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     public function testGetComponent()
     {
         $shieldon = new \Shieldon\Shieldon();
-        $shieldon->setComponent(new \Shieldon\Component\Ip());
+        $shieldon->add(new \Shieldon\Component\Ip());
 
         $reflection = new \ReflectionObject($shieldon);
         $method = $reflection->getMethod('getComponent');
@@ -539,11 +539,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($result);
     }
 
-    public function testSetComponent()
+    public function testadd()
     {
         $shieldon = new \Shieldon\Shieldon();
         $ipComponent = new \Shieldon\Component\Ip();
-        $shieldon->setComponent($ipComponent);
+        $shieldon->add($ipComponent);
 
         if ($shieldon->component['Ip'] === $ipComponent) {
             $this->assertTrue(true);
@@ -681,7 +681,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon = get_testing_shieldon_instance($driver);
         $shieldon->driver->rebuild();
 
-        $shieldon->setComponent(new \Shieldon\Component\Ip());
+        $shieldon->add(new \Shieldon\Component\Ip());
 
         $shieldon->setIp('8.8.8.8');
 
@@ -705,11 +705,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon = get_testing_shieldon_instance($driver);
         $shieldon->driver->rebuild();
 
-        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
-        $shieldon->setComponent(new \Shieldon\Component\Ip());
-        $shieldon->setComponent(new \Shieldon\Component\Header());
-        $shieldon->setComponent(new \Shieldon\Component\UserAgent());
-        $shieldon->setComponent(new \Shieldon\Component\Rdns());
+        $shieldon->add(new \Shieldon\Component\TrustedBot());
+        $shieldon->add(new \Shieldon\Component\Ip());
+        $shieldon->add(new \Shieldon\Component\Header());
+        $shieldon->add(new \Shieldon\Component\UserAgent());
+        $shieldon->add(new \Shieldon\Component\Rdns());
         
         // By default, it will block this session because of no common header information
         $shieldon->setStrict(true);
@@ -722,7 +722,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         // BING
         $shieldon = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
-        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->add(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('40.77.169.1', true);
         $shieldon->setStrict(false);
         $result = $shieldon->run();
@@ -735,7 +735,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         // GOOGLE
         $shieldon = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
-        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->add(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('66.249.66.1', true);
         $shieldon->setStrict(false);
         $result = $shieldon->run();
@@ -748,7 +748,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         // YAHOO
         $shieldon = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)';
-        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->add(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('8.12.144.1', true);
         $shieldon->setStrict(false);
         $result = $shieldon->run();
@@ -761,7 +761,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         // OTHER
         $shieldon = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)';
-        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->add(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('100.43.90.1', true);
         $shieldon->setStrict(false);
         $result = $shieldon->run();
@@ -1057,11 +1057,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         //$_SERVER['HTTP_USER_AGENT'] = 'google';
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
 
-        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
-        $shieldon->setComponent(new \Shieldon\Component\Ip());
-        $shieldon->setComponent(new \Shieldon\Component\UserAgent());
+        $shieldon->add(new \Shieldon\Component\TrustedBot());
+        $shieldon->add(new \Shieldon\Component\Ip());
+        $shieldon->add(new \Shieldon\Component\UserAgent());
         
-        $shieldon->setComponent(new \Shieldon\Component\Rdns());
+        $shieldon->add(new \Shieldon\Component\Rdns());
 
         $shieldon->setMessenger(new \MockMessenger());
 
@@ -1153,7 +1153,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_USER_AGENT'] = 'google';
 
         $shieldon = get_testing_shieldon_instance();
-        $shieldon->setComponent(new \Shieldon\Component\TrustedBot());
+        $shieldon->add(new \Shieldon\Component\TrustedBot());
         $shieldon->disableFiltering();
         $result = $shieldon->run();
 

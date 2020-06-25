@@ -48,7 +48,7 @@ abstract class ComponentProvider implements ComponentInterface
      */
     public function __construct()
     {
-        $this->request = Container::get('request');
+        $this->request = Container::get('shieldon')->request;
     }
 
     /**

@@ -180,7 +180,7 @@ class Shieldon
          * Check how many pageviews an user made in a short period time.
          * For example, limit an user can only view 30 pages in 60 minutes.
          */
-        'frequency' => false,
+        'frequency' => true,
 
         /**
          * If an user checks any internal link on your website, the user's
@@ -188,7 +188,7 @@ class Shieldon
          * When a user view many pages without HTTP_REFERER information meaning
          * that the user MUST be a web crawler.
          */
-        'referrer' => false,
+        'referer' => false,
 
         /**
          * Most of web crawlers do not render JavaScript, they only get the 
@@ -374,30 +374,32 @@ class Shieldon
 
         if ($instance instanceof DriverProvider) {
             $this->driver = $instance;
-            $type = 'driver';
-        }
-
-        if ($instance instanceof CaptchaInterface) {
-            $this->captcha[$class] = $instance;
-            $type = 'captcha';
-        }
-
-        if ($instance instanceof ComponentProvider) {
-            $this->component[$class] = $instance;
-            $type = 'component';
+            $this->registrar[0] = ['driver' => $class];
         }
 
         if ($instance instanceof ActionLogger) {
             $this->logger = $instance;
-            $type = 'logger';
+            $this->registrar[1] = ['logger' => $class];
+        }
+
+        $i = 2;
+
+        if ($instance instanceof CaptchaInterface) {
+            $this->captcha[$class] = $instance;
+            $this->registrar[$i] = ['captcha' => $class];
+        }
+
+        if ($instance instanceof ComponentProvider) {
+            $this->component[$class] = $instance;
+            $this->registrar[$i] = ['component' => $class];
         }
 
         if ($instance instanceof MessengerInterface) {
             $this->messengers[] = $instance;
-            $type = 'messenger';
+            $this->registrar[$i] = ['messenger' => $class];
         }
 
-        $this->registrar[] = [$type, $class];
+        $i++;
     }
 
     /**
@@ -434,7 +436,7 @@ class Shieldon
 
         $logData['first_time_flag'] = $ipDetail['first_time_flag'];
 
-        if (! empty($ipDetail['ip'])) {
+        if (!empty($ipDetail['ip'])) {
             $logData['ip']        = $this->ip;
             $logData['session']   = $this->session->id;
             $logData['hostname']  = $this->rdns;
@@ -446,7 +448,7 @@ class Shieldon
             |--------------------------------------------------------------------------
             */
 
-            if ($this->filterStatus['referrer']) {
+            if ($this->filterStatus['referer']) {
 
                 if ($now - $ipDetail['last_time'] > $this->properties['interval_check_referer']) {
 
@@ -514,7 +516,7 @@ class Shieldon
                 $jsCookie = $_COOKIE[$c] ?? 0;
 
                 // Checking if a cookie is created by JavaScript.
-                if (! empty($jsCookie)) {
+                if (!empty($jsCookie)) {
 
                     if ($jsCookie == '1') {
                         $logData['pageviews_cookie']++;
@@ -602,11 +604,11 @@ class Shieldon
 
             // Is fagged as unusual beavior? Count the first time.
             if ($isFlaggedAsUnusualBehavior) {
-                $logData['first_time_flag'] = (! empty($logData['first_time_flag'])) ? $logData['first_time_flag'] : $now;
+                $logData['first_time_flag'] = (!empty($logData['first_time_flag'])) ? $logData['first_time_flag'] : $now;
             }
 
             // Reset the flagged factor check.
-            if (! empty($ipDetail['first_time_flag'])) {
+            if (!empty($ipDetail['first_time_flag'])) {
                 if ($now - $ipDetail['first_time_flag'] >= $this->properties['time_reset_limit']) {
                     $logData['flag_multi_session'] = 0;
                     $logData['flag_empty_referer'] = 0;
@@ -726,8 +728,8 @@ class Shieldon
         } else {
 
             // Get the proerties.
-            $limit = (int) ($this->sessionLimit[0] ?? 0);
-            $period = (int) ($this->sessionLimit[1] ?? 300);
+            $limit = (int) ($this->sessionLimit['count'] ?? 0);
+            $period = (int) ($this->sessionLimit['period'] ?? 300);
             $now = time();
 
             $onlineSessions = $this->driver->getAll('session');
@@ -737,7 +739,7 @@ class Shieldon
             $currentSessionOrder = 0;
 
             //die('<pre>' . var_dump($onlineSessions) . '</pre>');
-            if (! empty($onlineSessions)) {
+            if (!empty($onlineSessions)) {
                 foreach ($onlineSessions as $k => $v) {
                     $sessionPools[] = $v['id'];
                     $lasttime = (int) $v['time'];
@@ -765,7 +767,7 @@ class Shieldon
             $this->sessionStatus['order'] = $currentSessionOrder;
             $this->sessionStatus['queue'] = $currentSessionOrder - $limit;
 
-            if (! in_array($this->session->id, $sessionPools)) {
+            if (!in_array($this->session->id, $sessionPools)) {
                 $this->sessionStatus['count']++;
 
                 // New session, record this data.
@@ -852,7 +854,7 @@ class Shieldon
      */
     public function setChannel(string $channel)
     {
-        if (! $this->driver instanceof DriverProvider) {
+        if (!$this->driver instanceof DriverProvider) {
             throw new LogicException('setChannel method requires setDriver set first.');
         } else {
             $this->driver->setChannel($channel);
@@ -871,12 +873,12 @@ class Shieldon
     public function captchaResponse(): bool
     {
         foreach ($this->captcha as $captcha) {
-            if (! $captcha->response()) {
+            if (!$captcha->response()) {
                 return false;
             }
         }
 
-        if (! empty($this->sessionLimit['count'])) {
+        if (!empty($this->sessionLimit['count'])) {
             $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
         }
 
@@ -1067,7 +1069,7 @@ class Shieldon
 
             if (file_exists($viewPath)) {
 
-                if (! defined('SHIELDON_VIEW')) {
+                if (!defined('SHIELDON_VIEW')) {
                     define('SHIELDON_VIEW', true);
                 }
 
@@ -1142,14 +1144,14 @@ class Shieldon
      */
     public function run(): int
     {
-        if (! isset($this->registrar[0]) || $this->registrar[0]['type'] !== 'driver') {
+        if (!isset($this->registrar[0])) {
             throw new RuntimeException(
-                'A data driver must be prior to other classes.'
+                'Must register at least one data driver.'
             );
         }
         
         // Ignore the excluded urls.
-        if (! empty($this->excludedUrls)) {
+        if (!empty($this->excludedUrls)) {
             foreach ($this->excludedUrls as $url) {
                 if (0 === strpos($this->request->getUri()->getPath(), $url)) {
                     return $this->result = self::RESPONSE_ALLOW;
@@ -1237,7 +1239,7 @@ class Shieldon
 
         $ipRule = $this->driver->get($this->ip, 'rule');
 
-        if (! empty($ipRule)) {
+        if (!empty($ipRule)) {
 
             $ruleType = (int) $ipRule['type'];
 
@@ -1458,7 +1460,7 @@ class Shieldon
 
                 $result = $this->getComponent('Ip')->check();
 
-                if (! empty($result)) {
+                if (!empty($result)) {
     
                     switch ($result['status']) {
     
@@ -1510,7 +1512,7 @@ class Shieldon
 
         if (
             $this->filterStatus['frequency'] ||
-            $this->filterStatus['referrer'] ||
+            $this->filterStatus['referer'] ||
             $this->filterStatus['session'] ||
             $this->filterStatus['cookie']
         ) {
