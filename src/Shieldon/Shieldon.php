@@ -30,18 +30,19 @@
 
 namespace Shieldon;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Shieldon\Captcha\CaptchaInterface;
 use Shieldon\Component\ComponentInterface;
 use Shieldon\Component\ComponentProvider;
-use Shieldon\Container;
-use Shieldon\Session;
-use Shieldon\Http;
+use Shieldon\Utils\Container;
+use Shieldon\HttpFactory;
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Log\ActionLogger;
 use Messenger\Messenger\MessengerInterface;
 use function Shieldon\Helper\get_cpu_usage;
 use function Shieldon\Helper\get_memory_usage;
 use function Shieldon\Helper\__;
+use function Shieldon\Helper\get_default_properties;
 
 use LogicException;
 use RuntimeException;
@@ -121,23 +122,23 @@ class Shieldon
     const SHIELDON_DIR = __DIR__;
 
     /**
-     * HTTP request.
+     * PSR-7 HTTP server request
      *
-     * @var Psr\Http\Message\ServerRequestInterface
+     * @var \Psr\Http\Message\ServerRequestInterface
      */
     public $request;
 
     /**
-     * HTTP response.
+     * PSR-7 HTTP response.
      *
-     * @var Psr\Http\Message\ResponseInterface
+     * @var \Psr\Http\Message\ResponseInterface
      */
     public $response;
 
     /**
-     * Session.
+     * Session handler.
      *
-     * @var Shieldon\Utils\Session
+     * @var \Shieldon\Utils\Session
      */
     public $session;
 
@@ -146,7 +147,7 @@ class Shieldon
      *
      * @var Shieldon\Driver\DriverProvider
      */
-    public $driver = null;
+    public $driver;
 
     /**
      * Container for Shieldon components.
@@ -160,124 +161,58 @@ class Shieldon
      *
      * @var ActionLogger
      */
-    public $logger = null;
+    public $logger;
 
     /**
      * The closure functions that will be executed in this->run()
      *
      * @var array
      */
-    private $closures = [];
+    protected $closures = [];
 
     /**
-     * Most of web crawlers do not render JavaScript, they only get text content they want,
-     * so we can check if the cookie can be created by JavaScript.
-     * This is hard to prevent headless browser robots, but it can stop probably 70% poor robots.
+     * Enable or disable the filters.
      *
-     * @var bool
+     * @var array
      */
-    private $enableCookieCheck = false;
+    protected $filterStatus = [
+        /**
+         * Check how many pageviews an user made in a short period time.
+         * For example, limit an user can only view 30 pages in 60 minutes.
+         */
+        'frequency' => false,
 
-    /**
-     * Every unique user has an unique session, but if an user creates different sessions in every connection..
-     * that means the user's browser doesn't support cookie.
-     * It is almost impossible that modern browsers don't support cookie, so we suspect the user is a robot or web crawler,
-     * that is why we need session cookie check.
-     *
-     * @var bool
-     */
-    private $enableSessionCheck = true;
+        /**
+         * If an user checks any internal link on your website, the user's
+         * browser will generate HTTP_REFERER information.
+         * When a user view many pages without HTTP_REFERER information meaning
+         * that the user MUST be a web crawler.
+         */
+        'referrer' => false,
 
-    /**
-     * Check how many pageviews an user made in a short period time.
-     * For example, limit an user can only view 30 pages in 60 minutes.
-     *
-     * @var bool
-     */
-    private $enableFrequencyCheck = true;
+        /**
+         * Most of web crawlers do not render JavaScript, they only get the 
+         * content they want, so we can check whether the cookie can be created
+         * by JavaScript or not.
+         */
+        'cookie' => false,
 
-    /**
-     * Even we can't get HTTP_REFERER information from users come from Google search,
-     * but if an user checks any internal link on your website, the user's browser will generate HTTP_REFERER information.
-     * If an user view many pages on your website without HTTP_REFERER information, that means the user is a web crawler
-     * and it directly downloads your web pages.
-     *
-     * @var bool
-     */
-    private $enableRefererCheck = true;
-
-    /**
-     * If you don't want Shieldon to detect bad robots or crawlers, you can set it FALSE;
-     * In this case AntiScriping can still deny users by querying rule table (in MySQL, or Redis, etc.) and $denyIpPool (Array)
-     *
-     * @var bool
-     */
-    private $enableFiltering = true;
+        /**
+         * Every unique user should only has a unique session, but if a user
+         * creates different sessions every connection... meaning that the 
+         * user's browser doesn't support cookie.
+         * It is almost impossible that modern browsers not support cookie,
+         * therefore the user MUST be a web crawler.
+         */
+        'session' => false,
+    ];
 
     /**
      * default settings
      *
      * @var array
      */
-    private $properties = [
-
-        'time_unit_quota' => [
-            's' => 2,
-            'm' => 10,
-            'h' => 30,
-            'd' => 60
-        ],
-
-        'time_reset_limit' => 3600,
-        'interval_check_referer' => 5,
-        'interval_check_session' => 30,
-        'limit_unusual_behavior' => [
-            'cookie'  => 5,
-            'session' => 5,
-            'referer' => 10
-        ],
-
-        'cookie_name' => 'ssjd',
-        'cookie_domain' => '',
-        'cookie_value' => '1',
-        'display_online_info' => true,
-        'display_user_info' => false,
-
-        /**
-         * If you set this option enabled, Shieldon will record every CAPTCHA fails in a row, 
-         * Once that user have reached the limitation number, Shieldon will put it as a blocked IP in rule table,
-         * until the new data cycle begins.
-         * 
-         * Once that user have been blocked, they are still access the warning page, it means that they are not
-         * humain for sure, so let's throw them into the system firewall and say goodbye to them forever.
-         */
-        'deny_attempt_enable' => [
-            'data_circle'     => false,
-            'system_firewall' => false,
-        ],
-        'deny_attempt_notify' => [
-            'data_circle'     => false,
-            'system_firewall' => false,
-        ],
-        'deny_attempt_buffer' => [
-            'data_circle'     => 10,
-            'system_firewall' => 10,
-        ],
-
-        /**
-         * To prevent dropping social platform robots into iptables firewall, such as Facebook, Line, 
-         * and others who scrape snapshots from your web pages, you should adjust the values below 
-         * to fit your needs. (unit: second)
-         */
-        'record_attempt_detection_period' => 5, // 5 seconds.
-
-        // Reset the counter after n second.
-        'reset_attempt_counter' => 1800, // 30 minutes.
-
-        // System-layer firewall, ip6table service watches this folder to 
-        // receive command created by Shieldon Firewall.
-        'iptables_watching_folder' => '/tmp/',
-    ];
+    protected $properties = [];
 
     /**
      * This is for creating data tables automatically
@@ -285,146 +220,142 @@ class Shieldon
      *
      * @var bool
      */
-    private $autoCreateDatabase = true;
+    protected $autoCreateDatabase = true;
 
     /**
      * Container for captcha addons.
      *
      * @var Interface
      */
-    private $captcha = [];
+    protected $captcha = [];
 
     /**
      * Html output.
      *
      * @var array
      */
-    private $html = [];
+    protected $html = [];
 
     /**
-     * Is this IP in the rule list?
-     *
-     * @var bool
-     */
-    private $isAllowedRule = false;
-
-    /**
-     * Is to limit traffic? This will recond online sessions.
+     * If the IP is in the rule table, the rule status will change.
      *
      * @var array
      */
-    private $isLimitSession = [];
+    protected $ruleStatus = [
+
+        // IP is marked as allow in the rule table.
+        'allow' => false,
+
+        // IP is marked as deny in the rule table.
+        'deny' => false,
+    ];
+
+    /**
+     * Is to limit traffic?
+     *
+     * @var array
+     */
+    protected $sessionLimit = [
+
+        // How many sessions will be available?
+        // 0 = no limit.
+        'count' => 0,
+
+        // How many seconds will a session be availe to visit?
+        // 0 = no limit.
+        'period' => 0, 
+    ];
+
+    /**
+     * Record the online session status.
+     * This will be enabled when $sessionLimit[count] > 0
+     *
+     * @var array
+     */
+    protected $sessionStatus = [
+
+        // Online session count.
+        'count' => 0,
+
+        // Current session order.
+        'order' => 0,
+
+        // Current waiting queue.
+        'queue' => 0,
+    ];
 
     /**
      * Result.
      *
      * @var int
      */
-    private $result = 1;
-
-    /**
-     * Get online session count
-     *
-     * @var int
-     */
-    private $sessionCount = 0;
-
-    /**
-     * Current session order.
-     *
-     * @var int
-     */
-    private $currentSessionOrder = 0;
-
-    /**
-     * Used on limitSession.
-     *
-     * @var int
-     */
-    private $currentWaitNumber = 0;
-
-    /**
-     * Strict mode.
-     * 
-     * Set by `strictMode()` only. The default value of this propertry is undefined.
-     *
-     * @var bool
-     */
-    private $strictMode;
-
-    /**
-     * Vistor's current browsering URL.
-     *
-     * @var string
-     */
-    private $currentUrl = '';
+    protected $result = 1;
 
     /**
      * URLs that are excluded from Shieldon's protection.
      *
      * @var array
      */
-    private $excludedUrls = [];
+    protected $excludedUrls = [];
 
     /**
      * Which type of configuration source that Shieldon firewall managed?
      *
      * @var string
      */
-    private $firewallType = 'self'; // managed | config | self | demo
+    protected $firewallType = 'self'; // managed | config | self | demo
 
     /**
      * Custom dialog UI settings.
      *
      * @var array
      */
-    private $dialogUI = [];
+    protected $dialogUI = [];
 
     /**
      * The ways Shieldon send a message to when someone has been blocked.
      *
      * @var MessengerInterface[]
      */
-    private $messengers = [];
+    protected $messengers = [];
 
     /**
      * Store the class information used in Shieldon.
      *
      * @var array
      */
-    private $registrar = [];
+    protected $registrar = [];
 
     /**
-     * Constructor.
+     * Shieldon constructor.
      * 
-     * @param array  $properties Shieldon configuration settings. (option)
-     * @param string $sessioniD  Customized session ID. (option)
+     * @param ServerRequestInterface|null $request  A PSR-7 server request.
      * 
      * @return void
      */
-    public function __construct(array $properties = [],  string $sessionId = '')
+    public function __construct(?ServerRequestInterface $request  = null, ?ResponseInterface $response = null)
     {
-        $http = new Http();
-
-        $this->request = $http->createRequest();
-        $this->response = $http->createResponse();
-        $this->session = $http->createSession($sessionId);
-
-        // At least load a captcha instance. Foundation is the base one.
-        $this->setCaptcha(new \Shieldon\Captcha\Foundation());
-
-        if (! empty($properties)) {
-            $this->setProperties($properties);
-        }
-
-        // Get current session's browsing position.
-        $this->currentUrl = $this->request->getServerParams()['REQUEST_URI'];
-        $this->setIp($this->request->getServerParams()['REMOTE_ADDR'], true);
+        Container::set('shieldon', $this);
 
         include_once __DIR__ . '/helpers.php';
 
-        // Set to container.
-        Container::set('shieldon', $this);
+        $this->request = $request;
+        $this->response = $response;
+        $this->properties = get_default_properties();
+
+        if (is_null($request)) {
+            $this->request = HttpFactory::createRequest();
+        }
+
+        if (is_null($response)) {
+            $this->response = HttpFactory::createResponse();
+        }
+
+        $this->session = HttpFactory::createSession();
+
+        $this->add(new \Shieldon\Captcha\Foundation());
+
+        include_once __DIR__ . '/helpers.php';
     }
 
     /**
@@ -432,11 +363,11 @@ class Shieldon
      * setDriver, setLogger, setComponent and setCaptcha are deprecated methods
      * and no more used.
      *
-     * @param object $instance Middleware classes that used on Shieldon.
+     * @param object $instance Component classes that used on Shieldon.
      *
-     * @return self
+     * @return void
      */
-    public function add($instance): self
+    public function add($instance)
     {
         $class = get_class($instance);
         $class = substr($class, strrpos($class, '\\') + 1);
@@ -459,18 +390,20 @@ class Shieldon
         if ($instance instanceof ActionLogger) {
             $this->logger = $instance;
             $type = 'logger';
-            
+        }
+
+        if ($instance instanceof MessengerInterface) {
+            $this->messengers[] = $instance;
+            $type = 'messenger';
         }
 
         $this->registrar[] = [$type, $class];
-
-        return $this;
     }
 
     /**
      * Detect and analyze an user's behavior.
      *
-     * @return integer
+     * @return int
      */
     protected function filter(): int
     {
@@ -513,7 +446,7 @@ class Shieldon
             |--------------------------------------------------------------------------
             */
 
-            if ($this->enableRefererCheck) {
+            if ($this->filterStatus['referrer']) {
 
                 if ($now - $ipDetail['last_time'] > $this->properties['interval_check_referer']) {
 
@@ -540,7 +473,7 @@ class Shieldon
             |--------------------------------------------------------------------------
             */
 
-            if ($this->enableSessionCheck) {
+            if ($this->filterStatus['session']) {
 
                 if ($now - $ipDetail['last_time'] > $this->properties['interval_check_session']) {
 
@@ -570,7 +503,7 @@ class Shieldon
             */
 
             // Let's checking cookie created by javascript..
-            if ($this->enableCookieCheck) {
+            if ($this->filterStatus['cookie']) {
 
                 // Get values from data table. We will count it and save it back to data table.
                 $logData['flag_js_cookie']   = $ipDetail['flag_js_cookie']   ?? 0;
@@ -623,7 +556,7 @@ class Shieldon
             |--------------------------------------------------------------------------
             */
 
-            if ($this->enableFrequencyCheck) {
+            if ($this->filterStatus['frequency']) {
 
                 foreach (array_keys($this->properties['time_unit_quota']) as $timeUnit) {
                     switch ($timeUnit) {
@@ -780,21 +713,21 @@ class Shieldon
      *
      * @return int RESPONSE_CODE
      */
-    private function sessionHandler($statusCode): int
+    protected function sessionHandler($statusCode): int
     {
         if (self::RESPONSE_ALLOW !== $statusCode) {
             return $statusCode;
         }
 
         // If you don't enable `limit traffic`, ignore the following steps.
-        if (empty($this->isLimitSession)) {
+        if (empty($this->sessionLimit['count'])) {
             return self::RESPONSE_ALLOW;
 
         } else {
 
             // Get the proerties.
-            $limit = (int) ($this->isLimitSession[0] ?? 0);
-            $period = (int) ($this->isLimitSession[1] ?? 300);
+            $limit = (int) ($this->sessionLimit[0] ?? 0);
+            $period = (int) ($this->sessionLimit[1] ?? 300);
             $now = time();
 
             $onlineSessions = $this->driver->getAll('session');
@@ -828,12 +761,12 @@ class Shieldon
             }
 
             // Count the online sessions.
-            $this->sessionCount = count($sessionPools);
-            $this->currentSessionOrder = $currentSessionOrder;
-            $this->currentWaitNumber = $currentSessionOrder - $limit;
+            $this->sessionStatus['count'] = count($sessionPools);
+            $this->sessionStatus['order'] = $currentSessionOrder;
+            $this->sessionStatus['queue'] = $currentSessionOrder - $limit;
 
             if (! in_array($this->session->id, $sessionPools)) {
-                $this->sessionCount++;
+                $this->sessionStatus['count']++;
 
                 // New session, record this data.
                 $data['id'] = $this->session->id;
@@ -865,7 +798,7 @@ class Shieldon
      *
      * @return void
      */
-    private function setSessionId(string $sessionId = ''): void
+    protected function setSessionId(string $sessionId = ''): void
     {
         if ('' !== $sessionId) {
             $this->session->id = $sessionId;
@@ -877,7 +810,7 @@ class Shieldon
      *
      * @return void
      */
-    private function resetCookie(): void
+    protected function resetCookie(): void
     {
         if ((php_sapi_name() !== 'cli')) {
             setcookie($this->properties['cookie_name'], '', -1, '/');
@@ -895,65 +828,19 @@ class Shieldon
     */
 
     /**
-     * Set a data driver.
-     *
-     * @param DriverProvider $driver Query data from the driver you choose to use.
-     *
-     * @return self
-     */
-    public function setDriver(DriverProvider $driver): self
-    {
-        if ($driver instanceof DriverProvider) {
-            $this->driver = $driver;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set a action log logger.
-     *
-     * @param ActionLogger $logger
-     *
-     * @return self
-     */
-    public function setLogger(ActionLogger $logger): self
-    {
-        if ($logger instanceof ActionLogger) {
-            $this->logger = $logger;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set a messenger
-     *
-     * @param MessengerInterfa $instance
-     *
-     * @return self
-     */
-    public function setMessenger(MessengerInterface $instance): self
-    {
-        $this->messengers[] = $instance;
-
-        return $this;
-    }
-
-    /**
      * For first time installation only. This is for creating data tables automatically.
      * Turning it on will check the data tables exist or not at every single pageview, 
      * it's not good for high traffic websites.
      *
      * @param bool $bool
      * 
-     * @return self
+     * @return void
      */
-    public function createDatabase(bool $bool): self
+    public function createDatabase(bool $bool)
     {
         $this->autoCreateDatabase = $bool;
 
-        return $this;
+        
     }
 
     /**
@@ -961,9 +848,9 @@ class Shieldon
      *
      * @param string $channel Oh, it is a channel.
      *
-     * @return self
+     * @return void
      */
-    public function setChannel(string $channel): self
+    public function setChannel(string $channel)
     {
         if (! $this->driver instanceof DriverProvider) {
             throw new LogicException('setChannel method requires setDriver set first.');
@@ -971,28 +858,10 @@ class Shieldon
             $this->driver->setChannel($channel);
         }
 
-        return $this;
+        
     }
 
-    /**
-     * Set a captcha.
-     *
-     * @param CaptchaInterface $instance
-     *
-     * @return self
-     */
-    public function setCaptcha(CaptchaInterface $instance): self
-    {
-        if ($instance instanceof CaptchaInterface) {
-            // $class = get_class($instance);
-            // $class = substr($class, strrpos($class, '\\') + 1);
-            // $this->captcha[$class] = $instance;
 
-            $this->captcha[] = $instance;
-        }
-
-        return $this;
-    }
 
     /**
      * Return the result from Captchas.
@@ -1007,34 +876,14 @@ class Shieldon
             }
         }
 
-        if (! empty($this->isLimitSession)) {
+        if (! empty($this->sessionLimit['count'])) {
             $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
         }
 
         return true;
     }
 
-    /**
-     * Set a commponent.
-     * Sheildon needs commponents to work.
-     *
-     * @param ComponentProvider $instance
-     *
-     * @return self
-     */
-    public function setComponent(ComponentProvider $instance): self
-    {
-       
-        if ($instance instanceof ComponentProvider) {
-            $class = get_class($instance);
 
-            
-            $class = substr($class, strrpos($class, '\\') + 1);
-            $this->component[$class] =& $instance;
-        }
-
-        return $this;
-    }
 
     /**
      * Ban an IP.
@@ -1043,7 +892,7 @@ class Shieldon
      *
      * @return void
      */
-    public function ban(string $ip = ''): self
+    public function ban(string $ip = '')
     {
         if ('' === $ip) {
             $ip = $this->ip;
@@ -1051,7 +900,7 @@ class Shieldon
  
         $this->action(self::ACTION_DENY, self::REASON_MANUAL_BAN, $ip);
 
-        return $this;
+        
     }
 
     /**
@@ -1059,9 +908,9 @@ class Shieldon
      *
      * @param string $ip
      *
-     * @return self
+     * @return void
      */
-    public function unban(string $ip = ''): self
+    public function unban(string $ip = '')
     {
         if ('' === $ip) {
             $ip = $this->ip;
@@ -1072,30 +921,30 @@ class Shieldon
 
         $this->result = self::RESPONSE_ALLOW;
 
-        return $this;
+        
     }
 
     /**
      * @param string $key
      * @param mixed  $value
      *
-     * @return self
+     * @return void
      */
-    public function setProperty(string $key = '', $value = ''): self
+    public function setProperty(string $key = '', $value = '')
     {
         if (isset($this->properties[$key])) {
             $this->properties[$key] = $value;
         }
 
-        return $this;
+        
     }
 
     /**
      * @param array $settings
      *
-     * @return self
+     * @return void
      */
-    public function setProperties(array $settings): self
+    public function setProperties(array $settings)
     {
         foreach ($this->properties as $k => $v) {
             if (isset($settings[$k])) {
@@ -1103,22 +952,10 @@ class Shieldon
             }
         }
 
-        return $this;
+        
     }
 
-    /**
-     * Strict mode.
-     * 
-     * @param bool $bool Set true to enble strict mode, false to disable it overwise.
-     *
-     * @return self
-     */
-    public function setStrict(bool $bool): self
-    {
-        $this->strictMode = $bool;
 
-        return $this;
-    }
 
     /**
      * Limt online sessions.
@@ -1126,13 +963,16 @@ class Shieldon
      * @param int $count
      * @param int $period
      *
-     * @return self
+     * @return void
      */
-    public function limitSession(int $count = 1000, int $period = 300): self
+    public function limitSession(int $count = 1000, int $period = 300)
     {
-        $this->isLimitSession = [$count, $period];
+        $this->sessionLimit = [
+            'count' => $count,
+            'period' => $period
+        ];
 
-        return $this;
+        
     }
 
     /**
@@ -1141,15 +981,13 @@ class Shieldon
      * @param string $content The HTML text.
      * @param string $type    The page type: stop, limit, deny.
      *
-     * @return self
+     * @return void
      */
-    public function setView(string $content, string $type): self
+    public function setView(string $content, string $type)
     {
         if ('session_limitation' === $type || 'captcha' === $type || 'rejection' === $type) {
             $this->html[$type] = $content;
         }
-
-        return $this;
     }
 
     /**
@@ -1157,13 +995,11 @@ class Shieldon
      *
      * @since 3.1.0
      *
-     * @return self
+     * @return void
      */
-    public function setDialogUI(array $settings): self
+    public function setDialogUI(array $settings)
     {
         $this->dialogUI = $settings;
-
-        return $this;
     }
 
     /**
@@ -1237,10 +1073,10 @@ class Shieldon
 
                 $ui = [
                     'background_image' => $this->dialogUI['background_image'] ?? '',
-                    'bg_color'         => $this->dialogUI['bg_color'] ?? '#ffffff',
-                    'header_bg_color'  => $this->dialogUI['header_bg_color'] ?? '#212531',
-                    'header_color'     => $this->dialogUI['header_color'] ?? '#ffffff',
-                    'shadow_opacity'   => $this->dialogUI['shadow_opacity'] ?? '0.2',
+                    'bg_color'         => $this->dialogUI['bg_color']         ?? '#ffffff',
+                    'header_bg_color'  => $this->dialogUI['header_bg_color']  ?? '#212531',
+                    'header_color'     => $this->dialogUI['header_color']     ?? '#ffffff',
+                    'shadow_opacity'   => $this->dialogUI['shadow_opacity']   ?? '0.2',
                 ];
 
                 $css = require self::SHIELDON_DIR . '/../../templates/frontend/css/default.php';
@@ -1306,10 +1142,16 @@ class Shieldon
      */
     public function run(): int
     {
+        if (! isset($this->registrar[0]) || $this->registrar[0]['type'] !== 'driver') {
+            throw new RuntimeException(
+                'A data driver must be prior to other classes.'
+            );
+        }
+        
         // Ignore the excluded urls.
         if (! empty($this->excludedUrls)) {
             foreach ($this->excludedUrls as $url) {
-                if (0 === strpos($this->currentUrl, $url)) {
+                if (0 === strpos($this->request->getUri()->getPath(), $url)) {
                     return $this->result = self::RESPONSE_ALLOW;
                 }
             }
@@ -1354,13 +1196,13 @@ class Shieldon
      *
      * @return void
      */
-    private function _log(int $actionCode): void
+    protected function _log(int $actionCode): void
     {
         if (null !== $this->logger) {
 
             // Just count the page view.
             $logData['ip']          = $this->getIp();
-            $logData['session_id']  = $this->getSessionId();
+            $logData['session_id']  = $this->session->get('id');
             $logData['action_code'] = $actionCode;
             $logData['timesamp']    = time();
 
@@ -1376,7 +1218,7 @@ class Shieldon
      *
      * @return int RESPONSE_CODE
      */
-    private function _run(): int
+    protected function _run(): int
     {
         $this->driver->init($this->autoCreateDatabase);
 
@@ -1384,10 +1226,7 @@ class Shieldon
             $this->component[$name]->setIp($this->ip);
             $this->component[$name]->setRdns($this->rdns);
 
-            // Apply global strict mode to all components by `strictMode()` if nesscessary.
-            if (isset($this->strictMode)) {
-                $this->component[$name]->setStrict($this->strictMode);
-            }
+
         }
 
         /*
@@ -1403,7 +1242,7 @@ class Shieldon
             $ruleType = (int) $ipRule['type'];
 
             if ($ruleType === self::ACTION_ALLOW) {
-                $this->isAllowedRule = true;
+                $this->ruleStatus['allow'] = true;
                 
             } else {
                 
@@ -1556,7 +1395,7 @@ class Shieldon
             }
         }
 
-        if ($this->isAllowedRule) {
+        if ($this->ruleStatus['allow']) {
 
             // The requests that are allowed in rule table will not go into sessionHandler.
             return $this->result = self::RESPONSE_ALLOW;
@@ -1669,7 +1508,12 @@ class Shieldon
         |
         */
 
-        if ($this->enableFiltering) {
+        if (
+            $this->filterStatus['frequency'] ||
+            $this->filterStatus['referrer'] ||
+            $this->filterStatus['session'] ||
+            $this->filterStatus['cookie']
+        ) {
             return $this->result = $this->sessionHandler($this->filter());
         }
 
@@ -1681,25 +1525,15 @@ class Shieldon
      *
      * @param array $settings filter settings.
      *
-     * @return self
+     * @return void
      */
-    public function setFilters($settings): self
+    public function setFilters(array $settings)
     {
-        $requiredFilters = [
-            'cookie'    => true,
-            'session'   => true,
-            'frequency' => true,
-            'referer'   => true,
-        ];
-
-        foreach ($requiredFilters as $k => $v) {
+        foreach (array_keys($this->filterStatus) as $k) {
             if (isset($settings[$k])) {
-                $u = 'enable' . ucfirst($k) . 'Check';
-                $this->{$u} = $settings[$k] ?? false;
+                $this->filterStatus[$k] = $settings[$k] ?? false;
             }
         }
-
-        return $this;
     }
 
     /**
@@ -1707,67 +1541,24 @@ class Shieldon
      *
      * @param string $filterName
      * @param bool   $value
-     * @since 3.0.0
      *
-     * @return self
+     * @return void
      */
-    public function setFilter($filterName, $value): self
+    public function setFilter(string $filterName, bool $value)
     {
-        $filters = [
-            'cookie'    => true,
-            'session'   => true,
-            'frequency' => true,
-            'referer'   => true,
-        ];
-
-        if (isset($filters[$filterName])) {
-            $u = 'enable' . ucfirst($filterName) . 'Check';
-            $this->{$u} = $value;
+        if (isset($this->filterStatus[$filterName])) {
+            $this->filterStatus[$filterName] = $value;
         }
-
-        return $this;
-    }
-
-    /**
-     * Disable filitering.
-     *
-     * @return self
-     */
-    public function disableFiltering(): self
-    {
-        $this->enableFiltering = false;
-
-        return $this;
     }
 
     /**
      * Get online people count. If enable limitSession.
      *
-     * @return integer
+     * @return int
      */
     public function getSessionCount(): int
     {
-        return $this->sessionCount;
-    }
-
-    /**
-     * Get Session Id.
-     *
-     * @return string
-     */
-    public function getSessionId(): string
-    {
-        if (! empty($this->session->id)) {
-            return $this->session->id;
-        }
-
-        if ((php_sapi_name() === 'cli')) {
-            return '_php_cli_';
-        }
-
-        // @codeCoverageIgnoreStart
-        return $this->session->id;
-        // @codeCoverageIgnoreEnd
+        return $this->sessionStatus['count'];
     }
 
     /**
@@ -1776,12 +1567,12 @@ class Shieldon
      * @param array $urls
      * @since 3.0.0
      *
-     * @return self
+     * @return void
      */
-    public function setExcludedUrls(array $urls = []): self
+    public function setExcludedUrls(array $urls = [])
     {
         $this->excludedUrls = $urls;
-        return $this;
+        
     }
 
     /**
@@ -1791,26 +1582,16 @@ class Shieldon
      * @param Closure $closure
      * @since 3.0.0
      *
-     * @return self
+     * @return void
      */
-    public function setClosure(string $key, Closure $closure): self
+    public function setClosure(string $key, Closure $closure)
     {
         $this->closures[$key] = $closure;
 
-        return $this;
+        
     }
 
-    /**
-     * Return current URL.
-     *
-     * @since 3.0.0
-     *
-     * @return string
-     */
-    public function getCurrentUrl(): string
-    {
-        return $this->currentUrl;
-    }
+
 
     /**
      * Print javascript snippet in your webpages.

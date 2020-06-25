@@ -21,7 +21,7 @@ use Shieldon\Component\Ip;
 use Shieldon\Component\Rdns;
 use Shieldon\Component\TrustedBot;
 use Shieldon\Component\UserAgent;
-use Shieldon\Container;
+use Shieldon\Utils\Container;
 use Shieldon\Driver\FileDriver;
 use Shieldon\Driver\MysqlDriver;
 use Shieldon\Driver\RedisDriver;
@@ -120,7 +120,7 @@ class Firewall
     {
         $this->status = $this->getOption('daemon');
 
-        $this->setDriver();
+        $this->add();
 
         $this->setChannel();
 
@@ -252,7 +252,7 @@ class Firewall
                     }
 
                     // Use Redis data driver.
-                    $this->shieldon->setDriver(new RedisDriver($redis));
+                    $this->shieldon->add(new RedisDriver($redis));
 
                 // @codeCoverageIgnoreStart
                 } catch(RedisException $e) {
@@ -273,7 +273,7 @@ class Firewall
                 }
 
                 // Use File data driver.
-                $this->shieldon->setDriver(new FileDriver($fileSetting['directory_path']));
+                $this->shieldon->add(new FileDriver($fileSetting['directory_path']));
 
                 break;
 
@@ -295,7 +295,7 @@ class Firewall
                     $pdoInstance = new PDO('sqlite:' . $sqliteLocation);
 
                     // Use Sqlite data driver.
-                    $this->shieldon->setDriver(new SqliteDriver($pdoInstance));
+                    $this->shieldon->add(new SqliteDriver($pdoInstance));
     
                 // @codeCoverageIgnoreStart
                 } catch(PDOException $e) {
@@ -325,7 +325,7 @@ class Firewall
                     );
 
                     // Use MySQL data driver.
-                    $this->shieldon->setDriver(new MysqlDriver($pdoInstance));
+                    $this->shieldon->add(new MysqlDriver($pdoInstance));
 
                 // @codeCoverageIgnoreStart
                 } catch(PDOException $e) {
@@ -347,7 +347,7 @@ class Firewall
 
         if ($loggerSetting['enable']) {
             if (! empty($loggerSetting['config']['directory_path'])) {
-                $this->shieldon->setLogger(new ActionLogger($loggerSetting['config']['directory_path']));
+                $this->shieldon->add(new ActionLogger($loggerSetting['config']['directory_path']));
             }
         }
     }
@@ -466,7 +466,7 @@ class Firewall
 
         if ($ipSetting['enable']) {
             $componentIp = new Ip();
-            $this->shieldon->setComponent($componentIp);
+            $this->shieldon->add($componentIp);
             $this->ipManager();
         }
 
@@ -479,7 +479,7 @@ class Firewall
 
             // This component will only allow popular search engline.
             // Other bots will go into the checking process.
-            $this->shieldon->setComponent($componentTrustedBot);
+            $this->shieldon->add($componentTrustedBot);
         }
 
         if ($headerSetting['enable']) {
@@ -490,7 +490,7 @@ class Firewall
                 $componentHeader->setStrict(true);
             }
 
-            $this->shieldon->setComponent($componentHeader);
+            $this->shieldon->add($componentHeader);
         }
 
         if ($userAgentSetting['enable']) {
@@ -501,7 +501,7 @@ class Firewall
                 $componentUserAgent->setStrict(true);
             }
 
-            $this->shieldon->setComponent($componentUserAgent);
+            $this->shieldon->add($componentUserAgent);
         }
 
         if ($rdnsSetting['enable']) {
@@ -513,7 +513,7 @@ class Firewall
                 $componentRdns->setStrict(true);
             }
 
-            $this->shieldon->setComponent($componentRdns);
+            $this->shieldon->add($componentRdns);
         }
     }
 
@@ -536,7 +536,7 @@ class Firewall
                 'lang'    => $recaptchaSetting['config']['lang'],
             ];
 
-            $this->shieldon->setCaptcha(new Recaptcha($googleRecaptcha));
+            $this->shieldon->add(new Recaptcha($googleRecaptcha));
         }
 
         if ($imageSetting['enable']) {
@@ -560,7 +560,7 @@ class Firewall
 
             $imageCaptchaConfig['word_length'] = $length;
 
-            $this->shieldon->setCaptcha(new ImageCaptcha($imageCaptchaConfig));
+            $this->shieldon->add(new ImageCaptcha($imageCaptchaConfig));
         }
     }
 
@@ -587,7 +587,7 @@ class Firewall
             if (! empty($telegramSetting['confirm_test'])) {
                 $apiKey = $telegramSetting['config']['api_key'] ?? '';
                 $channel = $telegramSetting['config']['channel'] ?? '';
-                $this->shieldon->setMessenger(
+                $this->shieldon->add(
                     new MessengerModule\Telegram($apiKey, $channel)
                 );
             }
@@ -596,7 +596,7 @@ class Firewall
         if (! empty($linenotodySetting['enable'])) {
             if (! empty($linenotodySetting['confirm_test'])) {
                 $accessToken = $linenotodySetting['config']['access_token'] ?? '';
-                $this->shieldon->setMessenger(
+                $this->shieldon->add(
                     new MessengerModule\LineNotify($accessToken)
                 );
             }
@@ -616,7 +616,7 @@ class Firewall
                     $sendgrid->addRecipient($recipient);
                 }
 
-                $this->shieldon->setMessenger($sendgrid);
+                $this->shieldon->add($sendgrid);
             }
         }
 
@@ -633,7 +633,7 @@ class Firewall
                     $phpNativeMail->addRecipient($recipient);
                 }
 
-                $this->shieldon->setMessenger($phpNativeMail);
+                $this->shieldon->add($phpNativeMail);
             }
         }
 
@@ -654,7 +654,7 @@ class Firewall
                     $smtpMail->addRecipient($recipient);
                 }
 
-                $this->shieldon->setMessenger($smtpMail);
+                $this->shieldon->add($smtpMail);
             }
         }
 
@@ -673,7 +673,7 @@ class Firewall
                     $mailgun->addRecipient($recipient);
                 }
 
-                $this->shieldon->setMessenger($mailgun);
+                $this->shieldon->add($mailgun);
             }
         }
 
@@ -684,7 +684,7 @@ class Firewall
                 $accessToken = $rocketchatSetting['config']['access_token'] ?? '';
                 $channel = $rocketchatSetting['config']['channel'] ?? [];
 
-                $this->shieldon->setMessenger(
+                $this->shieldon->add(
                     new MessengerModule\RocketChat(
                         $accessToken, $userId, $serverUrl, $channel
                     )
@@ -697,7 +697,7 @@ class Firewall
                 $botToken = $slackSetting['config']['bot_token'] ?? '';
                 $channel = $slackSetting['config']['channel'] ?? '';
 
-                $this->shieldon->setMessenger(
+                $this->shieldon->add(
                     new MessengerModule\Slack($botToken, $channel)
                 );
             }
@@ -707,7 +707,7 @@ class Firewall
             if (! empty($slackWebhookSetting['confirm_test'])) {
                 $webhookUrl = $slackWebhookSetting['config']['webhook_url'] ?? '';
 
-                $this->shieldon->setMessenger(
+                $this->shieldon->add(
                     new MessengerModule\SlackWebhook($webhookUrl)
                 );
             }
