@@ -10,8 +10,12 @@
 
 namespace Shieldon;
 
+use PHPUnit\Framework\TestCase;
+use Shieldon\Utils\Container;
+use Shieldon\Firewall;
+use ReflectionObject;
 
-class FirewallTest extends \PHPUnit\Framework\TestCase
+class FirewallTest extends TestCase
 {
     public function testFromJsonConfig()
     {
@@ -20,7 +24,8 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
             unlink(BOOTSTRAP_DIR . '/../tmp/shieldon/config.firewall.json');
         }
 
-        $firewall = new \Shieldon\Firewall(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall = new Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
         // setChannel()
         $firewall->setConfig('channel_id', 'test_firewall');
@@ -31,14 +36,13 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->setConfig('loggers.action.config.directory_path', BOOTSTRAP_DIR . '/../tmp/shieldon/logs');
         $firewall->setup();
 
-
         // Get Firewall from Container.
-        $firewall = \Shieldon\Container::get('firewall');
-        $shieldon = \Shieldon\Container::get('shieldon');
+        $firewall = Container::get('firewall');
+        $shieldon = Container::get('shieldon');
 
         $firewall->getShieldon()->setIp('141.11.72.12');
 
-        $reflection = new \ReflectionObject($shieldon);
+        $reflection = new ReflectionObject($shieldon);
         $methodSetSessionId = $reflection->getMethod('setSessionId');
         $methodSetSessionId->setAccessible(true);
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 1000))]);
@@ -48,11 +52,10 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     {
         $this->testFromJsonConfig();
 
-        $firewall = \Shieldon\Container::get('firewall');
+        $firewall = Container::get('firewall');
         $firewall->getShieldon()->driver->rebuild();
 
-        $firewall->getShieldon()->setIp('131.122.87.32');
-        
+        $firewall->getShieldon()->setIp('131.122.87.35');
 
         /*
         |--------------------------------------------------------------------------
@@ -98,7 +101,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     {
         $this->testFromJsonConfig();
 
-        $firewall = \Shieldon\Container::get('firewall');
+        $firewall = Container::get('firewall');
         $firewall->getShieldon()->driver->rebuild();
 
         $firewall->getShieldon()->setIp('131.122.87.9');
@@ -122,8 +125,10 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
 
     public function testIpSourceOption()
     {
+        $_SERVER['HTTP_CF_CONNECTING_IP'] = '19.89.6.4';
+
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Container::get('firewall');
+        $firewall = Container::get('firewall');
         $firewall->getShieldon()->driver->rebuild();
 
         $firewall->getShieldon()->setIp('131.132.87.12');
@@ -140,11 +145,17 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', false);
         $firewall->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', false);
 
-        $_SERVER['HTTP_CF_CONNECTING_IP'] = '19.89.6.4';
+        
         $firewall->setup();
         $firewall->run();
 
         $this->assertEquals($firewall->getShieldon()->getIp(), '19.89.6.4');
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '19.80.4.12';
+
+        $this->testFromJsonConfig();
+        $firewall = Container::get('firewall');
+        $firewall->getShieldon()->driver->rebuild();
 
         // HTTP_X_FORWARDED_FOR
         $firewall->setConfig('ip_variable_source.REMOTE_ADDR', false);
@@ -152,19 +163,23 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', true);
         $firewall->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', false);
 
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '19.80.4.12';
         $firewall->setup();
         $firewall->run();
 
         $this->assertEquals($firewall->getShieldon()->getIp(), '19.80.4.12');
 
         // HTTP_X_FORWARDED_HOST
+        $_SERVER['HTTP_X_FORWARDED_HOST'] = '5.20.13.14';
+
+        $this->testFromJsonConfig();
+        $firewall = Container::get('firewall');
+        $firewall->getShieldon()->driver->rebuild();
+
         $firewall->setConfig('ip_variable_source.REMOTE_ADDR', false);
         $firewall->setConfig('ip_variable_source.HTTP_CF_CONNECTING_IP', false);
         $firewall->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', false);
         $firewall->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', true);
 
-        $_SERVER['HTTP_X_FORWARDED_HOST'] = '5.20.13.14';
         $firewall->setup();
         $firewall->run();
 
@@ -174,7 +189,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     public function testDataDriverOption()
     {
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Container::get('firewall');
+        $firewall = Container::get('firewall');
         $firewall->getShieldon()->driver->rebuild();
         
 
@@ -208,7 +223,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     public function testDataDriverOptionSqliteEmpty()
     {
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Container::get('firewall');
+        $firewall = Container::get('firewall');
         $firewall->getShieldon()->driver->rebuild();
 
         $firewall->setConfig('driver_type', 'sqlite');
@@ -217,7 +232,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->getShieldon()->setIp(rand_ip());
         $firewall->setup();
    
-        $reflection = new \ReflectionObject($firewall);
+        $reflection = new ReflectionObject($firewall);
         $t = $reflection->getProperty('status');
         $t->setAccessible(true);
         $firewallStatus = $t->getValue($firewall);
@@ -228,7 +243,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     public function testSetCronJobOption()
     {
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Container::get('firewall');
+        $firewall = Container::get('firewall');
         $firewall->getShieldon()->driver->rebuild();
         
         /*
@@ -242,7 +257,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
 
         // Set a fake session to avoid occuring errors.
         
-        $reflection = new \ReflectionObject($shieldon);
+        $reflection = new ReflectionObject($shieldon);
         $methodSetSessionId = $reflection->getMethod('setSessionId');
         $methodSetSessionId->setAccessible(true);
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 1000))]);
@@ -255,16 +270,16 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     public function testRestfulOption()
     {
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Container::get('firewall');
+        $firewall = Container::get('firewall');
 
         // Test method restful();
         $firewall->restful();
 
-        $reflection = new \ReflectionObject($firewall);
+        $reflection = new ReflectionObject($firewall);
         $methodSetSessionId = $reflection->getMethod('restful');
         $methodSetSessionId->setAccessible(true);
 
-        $reflection = new \ReflectionObject($firewall);
+        $reflection = new ReflectionObject($firewall);
         $p1 = $reflection->getProperty('restful');
         $p1->setAccessible(true);
         
@@ -275,15 +290,15 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
 
     public function testFromPhpPConfig()
     {
-        $config = include(BOOTSTRAP_DIR . '/config.php');
-        $firewall = new \Shieldon\Firewall($config);
+        $firewall = new Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/config.php', 'php');
 
         // Get Firewall from Container.
-        $firewall = \Shieldon\Container::get('firewall');
-        $shieldon = \Shieldon\Container::get('shieldon');
+        $firewall = Container::get('firewall');
+        $shieldon = Container::get('shieldon');
 
         $shieldon->setIp('131.111.11.115');
-        $reflection = new \ReflectionObject($shieldon);
+        $reflection = new ReflectionObject($shieldon);
         $methodSetSessionId = $reflection->getMethod('setSessionId');
         $methodSetSessionId->setAccessible(true);
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 1000))]);
@@ -294,7 +309,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     public function testSetMessengers()
     {
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Container::get('firewall');
+        $firewall = Container::get('firewall');
         
         $firewall->setConfig('messengers.telegram.enable', true);
         $firewall->setConfig('messengers.telegram.confirm_test', true);

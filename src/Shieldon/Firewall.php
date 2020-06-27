@@ -12,8 +12,9 @@ declare(strict_types=1);
 
 namespace Shieldon;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Shieldon\Shieldon;
-
 use Shieldon\Captcha\ImageCaptcha;
 use Shieldon\Captcha\Recaptcha;
 use Shieldon\Component\Header;
@@ -42,16 +43,13 @@ use function defined;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
-use function is_array;
 use function is_dir;
-use function is_string;
 use function json_decode;
 use function json_encode;
 use function mkdir;
 use function rtrim;
 use function strpos;
 use function umask;
-
 /**
  * Managed Firewall.
  * 
@@ -74,37 +72,42 @@ class Firewall
     /**
      * Constructor.
      */
-    public function __construct($source)
+    public function __construct(?ServerRequestInterface $request  = null, ?ResponseInterface $response = null)
     {
-        // Set to container.
         Container::set('firewall', $this);
+        $this->shieldon = new Shieldon($request, $response);
+    }
 
-        $this->shieldon = new Shieldon();
-
-        if (is_string($source)) {
+    /**
+     * Set up the path of the configuration file.
+     *
+     * @param string $source The path.
+     * @param string $type   The type.
+     * 
+     * @return void
+     */
+    public function configure(string $source, string $type = 'json')
+    {
+        if ($type === 'json') {
             $this->directory = rtrim($source, '\\/');
             $configFilePath = $this->directory . '/' . $this->filename;
 
-            if (! file_exists($configFilePath)) {
+            if (file_exists($configFilePath)) {
+                $jsonString = file_get_contents($configFilePath);
 
+            } else {
                 $jsonString = file_get_contents(__DIR__ . '/../../config.json');
 
                 if (defined('PHPUNIT_TEST')) {
                     $jsonString = file_get_contents(__DIR__ . '/../../tests/config.json');
                 }
-                
-            } else {
-                $jsonString = file_get_contents($configFilePath);
             }
 
-            // Identify the configration is from firewall-generated JSON config file.
             $this->configuration = json_decode($jsonString, true);
             $this->shieldon->managedBy('managed');
 
-        } elseif (is_array($source)) {
-
-            // Identify the configration is from PHP config file.
-            $this->configuration = $source;
+        } elseif ($type === 'php') {
+            $this->configuration = require $source;
             $this->shieldon->managedBy('config');
         }
 
@@ -120,7 +123,7 @@ class Firewall
     {
         $this->status = $this->getOption('daemon');
 
-        $this->add();
+        $this->setDriver();
 
         $this->setChannel();
 
