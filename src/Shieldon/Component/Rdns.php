@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Shieldon\Component;
 
@@ -34,8 +36,6 @@ class Rdns extends ComponentProvider
      */
     public function __construct()
     {
-        parent::__construct();
-
         // RDNS for robot's IP address.
         $this->deniedList = [
             '.webcrawler.link',
@@ -47,7 +47,7 @@ class Rdns extends ComponentProvider
      */
     public function isDenied(): bool
     {
-        if (! empty($this->deniedList)) {
+        if (!empty($this->deniedList)) {
             if (preg_match('/(' . implode('|', $this->deniedList). ')/i', $this->rdns)) {
                 return true;
             }
@@ -66,7 +66,7 @@ class Rdns extends ComponentProvider
             }
 
             // Not a valid domain name.
-            if (! filter_var($this->rdns, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+            if (!filter_var($this->rdns, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
                 return true;
             }
 

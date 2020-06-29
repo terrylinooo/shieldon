@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * Original code is from the Secruity class of Codeigniter 2 framework.
  * For more information, please check out the author section blow:
@@ -14,6 +14,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Shieldon\Security;
 

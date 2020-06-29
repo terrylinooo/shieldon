@@ -1,5 +1,4 @@
-<?php declare(strict_types=1);
-
+<?php
 /*
  * @name        Shieldon
  * @author      Terry Lin
@@ -28,9 +27,12 @@
  * THE SOFTWARE.
  */
 
+declare(strict_types=1);
+
 namespace Shieldon;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Shieldon\Captcha\CaptchaInterface;
 use Shieldon\Component\ComponentInterface;
 use Shieldon\Component\ComponentProvider;
@@ -111,7 +113,7 @@ class Shieldon
     const RESPONSE_DENY = 0;
     const RESPONSE_ALLOW = 1;
     const RESPONSE_TEMPORARILY_DENY = 2;
-    const RESPONSE_LIMIT = 3;
+    const RESPONSE_LIMIT_SESSION = 3;
 
     const LOG_LIMIT = 3;
     const LOG_PAGEVIEW = 11;
@@ -230,6 +232,13 @@ class Shieldon
     protected $captcha = [];
 
     /**
+     * The ways Shieldon send a message to when someone has been blocked.
+     *
+     * @var MessengerInterface[]
+     */
+    protected $messengers = [];
+    
+    /**
      * Html output.
      *
      * @var array
@@ -313,18 +322,20 @@ class Shieldon
     protected $dialogUI = [];
 
     /**
-     * The ways Shieldon send a message to when someone has been blocked.
-     *
-     * @var MessengerInterface[]
-     */
-    protected $messengers = [];
-
-    /**
      * Store the class information used in Shieldon.
      *
      * @var array
      */
     protected $registrar = [];
+
+    /**
+     * Strict mode.
+     * 
+     * Set by `strictMode()` only. The default value of this propertry is undefined.
+     *
+     * @var bool
+     */
+    protected $strictMode;
 
     /**
      * Shieldon constructor.
@@ -438,7 +449,7 @@ class Shieldon
 
         if (!empty($ipDetail['ip'])) {
             $logData['ip']        = $this->ip;
-            $logData['session']   = $this->session->id;
+            $logData['session']   = $this->session->get('id');
             $logData['hostname']  = $this->rdns;
             $logData['last_time'] = $now;
 
@@ -482,7 +493,7 @@ class Shieldon
                     // Get values from data table. We will count it and save it back to data table.
                     $logData['flag_multi_session'] = $ipDetail['flag_multi_session'] ?? 0;
                     
-                    if ($this->session->id !== $ipDetail['session']) {
+                    if ($this->session->get('id') !== $ipDetail['session']) {
 
                         // Is is possible because of direct access by the same user many times.
                         // Or they don't have session cookie set.
@@ -624,7 +635,7 @@ class Shieldon
             // It means that the user is first time visiting our webiste.
 
             $logData['ip']        = $this->ip;
-            $logData['session']   = $this->session->id;
+            $logData['session']   = $this->session->get('id');
             $logData['hostname']  = $this->rdns;
             $logData['last_time'] = $now;
 
@@ -685,7 +696,7 @@ class Shieldon
 
         if (null !== $this->logger) {
             $log['ip']          = $ip;
-            $log['session_id']  = $this->session->id;
+            $log['session_id']  = $this->session->get('id');
             $log['action_code'] = $actionCode;
             $log['timesamp']    = $now;
 
@@ -702,10 +713,37 @@ class Shieldon
      */
     public function getComponent(string $name)
     {
-        if (isset($this->component[$name]) && ($this->component[$name] instanceof ComponentInterface)) {
+        if (isset($this->component[$name])) {
             return $this->component[$name];
         }
+
         return null;
+    }
+
+    /**
+     * Strict mode.
+     * This option will take effects to all components.
+     * 
+     * @param bool $bool Set true to enble strict mode, false to disable it overwise.
+     *
+     * @return void
+     */
+    public function setStrict(bool $bool)
+    {
+        $this->strictMode = $bool;
+    }
+
+    /**
+     * Disable filters.
+     */
+    public function disableFilters(): void
+    {
+        $this->setFilters([
+            'session'   => false,
+            'cookie'    => false,
+            'referer'   => false,
+            'frequency' => false,
+        ]);
     }
 
     /**
@@ -744,7 +782,7 @@ class Shieldon
                     $sessionPools[] = $v['id'];
                     $lasttime = (int) $v['time'];
     
-                    if ($this->session->id === $v['id']) {
+                    if ($this->session->get('id') === $v['id']) {
                         $currentSessionOrder = $i;
                     }
     
@@ -767,11 +805,11 @@ class Shieldon
             $this->sessionStatus['order'] = $currentSessionOrder;
             $this->sessionStatus['queue'] = $currentSessionOrder - $limit;
 
-            if (!in_array($this->session->id, $sessionPools)) {
+            if (!in_array($this->session->get('id'), $sessionPools)) {
                 $this->sessionStatus['count']++;
 
                 // New session, record this data.
-                $data['id'] = $this->session->id;
+                $data['id'] = $this->session->get('id');
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
 
@@ -779,12 +817,12 @@ class Shieldon
                 $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
                 $data['microtimesamp'] = $microtimesamp;
 
-                $this->driver->save($this->session->id, $data, 'session');
+                $this->driver->save($this->session->get('id'), $data, 'session');
             }
 
-            // Online session count reached the limit. So return RESPONSE_LIMIT response code.
+            // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
             if ($currentSessionOrder >= $limit) {
-                return self::RESPONSE_LIMIT;
+                return self::RESPONSE_LIMIT_SESSION;
             }
         }
 
@@ -803,7 +841,7 @@ class Shieldon
     protected function setSessionId(string $sessionId = ''): void
     {
         if ('' !== $sessionId) {
-            $this->session->id = $sessionId;
+            $this->session->set('id', $sessionId);
         }
     }
 
@@ -948,16 +986,12 @@ class Shieldon
      */
     public function setProperties(array $settings)
     {
-        foreach ($this->properties as $k => $v) {
+        foreach (array_keys($this->properties) as $k) {
             if (isset($settings[$k])) {
                 $this->properties[$k] = $settings[$k];
             }
         }
-
-        
     }
-
-
 
     /**
      * Limt online sessions.
@@ -973,8 +1007,6 @@ class Shieldon
             'count' => $count,
             'period' => $period
         ];
-
-        
     }
 
     /**
@@ -1018,7 +1050,7 @@ class Shieldon
 
         if (self::RESPONSE_TEMPORARILY_DENY === $this->result) {
             $type = 'captcha';
-        } elseif (self::RESPONSE_LIMIT === $this->result) {
+        } elseif (self::RESPONSE_LIMIT_SESSION === $this->result) {
             $type = 'session_limitation';
         } elseif (self::RESPONSE_DENY === $this->result) {
             $type = 'rejection';
@@ -1177,7 +1209,7 @@ class Shieldon
                 $actionCode = self::LOG_BLACKLIST;
             }
 
-            if ($result === self::RESPONSE_LIMIT) {
+            if ($result === self::RESPONSE_LIMIT_SESSION) {
                 $actionCode = self::LOG_LIMIT;
             }
 
@@ -1228,7 +1260,10 @@ class Shieldon
             $this->component[$name]->setIp($this->ip);
             $this->component[$name]->setRdns($this->rdns);
 
-
+            // Apply global strict mode to all components by `strictMode()` if nesscessary.
+            if (isset($this->strictMode)) {
+                $this->component[$name]->setStrict($this->strictMode);
+            }
         }
 
         /*
@@ -1574,7 +1609,6 @@ class Shieldon
     public function setExcludedUrls(array $urls = [])
     {
         $this->excludedUrls = $urls;
-        
     }
 
     /**
@@ -1589,11 +1623,7 @@ class Shieldon
     public function setClosure(string $key, Closure $closure)
     {
         $this->closures[$key] = $closure;
-
-        
     }
-
-
 
     /**
      * Print javascript snippet in your webpages.
@@ -1621,6 +1651,16 @@ class Shieldon
         ';
 
         return $jsString;
+    }
+
+    /**
+     * Get current visior's path.
+     *
+     * @return string
+     */
+    public function getCurrentUrl(): string
+    {
+        return $this->request->getUri()->getPath();
     }
 
     /**

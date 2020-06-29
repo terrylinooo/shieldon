@@ -10,11 +10,12 @@
 
 namespace Shieldon;
 
+use PHPUnit\Framework\TestCase;
 use Shieldon\Component\ComponentProvider;
 
 use function save_testing_file;
 
-class ShieldonTest extends \PHPUnit\Framework\TestCase
+class ShieldonTest extends TestCase
 {
     public function test__construct()
     {
@@ -45,7 +46,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($properties['display_online_info'], false);
     }
 
-    public function testDetect($driver = 'sqlite')
+    public function testDetectByFilterFrequency($driver = 'sqlite')
     {
         $shieldon = get_testing_shieldon_instance($driver);
 
@@ -79,7 +80,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $result[4]);
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $result[5]);
 
-        // Test 2. Reset the pageview check for specfic time unit.
+        // Reset the pageview check for specfic time unit.
         $shieldon->setIp('141.112.175.2');
         $this->assertSame($shieldon::RESPONSE_ALLOW, $shieldon->run());
         sleep(2);
@@ -91,8 +92,13 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         } else {
             $this->assertTrue(false);
         }
+    }
 
-        // Test 3. Session. Ban this IP if they reached the limit.
+    public function testDetectByFilterSession($driver = 'sqlite')
+    {
+        $shieldon = get_testing_shieldon_instance($driver);
+        $shieldon->setIp('141.112.175.2');
+
         $shieldon->setFilters([
             'session'   => true,
             'cookie'    => false,
@@ -120,25 +126,18 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $results[2]);
         $this->assertSame($shieldon::RESPONSE_ALLOW, $results[3]);
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $results[4]);
+    }
 
-        unset($results);
+    public function testDetectByFilterReferer($driver = 'sqlite')
+    {
+        $shieldon = get_testing_shieldon_instance($driver);
 
-        // Test 4. referer.
-
-         /*
         $shieldon->setFilters([
             'session'   => false,
             'cookie'    => false,
             'referer'   => true,
             'frequency' => false,
         ]);
-        */
-
-       
-        $shieldon->setFilter('session', false);
-        $shieldon->setFilter('cookie', false);
-        $shieldon->setFilter('referer', true);
-        $shieldon->setFilter('frequency', false); 
 
         $shieldon->setProperty('interval_check_referer', 1);
         $shieldon->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
@@ -154,17 +153,16 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $results[2]);
         $this->assertSame($shieldon::RESPONSE_ALLOW, $results[3]);
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $results[4]);
+    }
 
-        unset($results);
+    public function testDetectByFilterCookie($driver = 'sqlite')
+    {
+        $shieldon = get_testing_shieldon_instance($driver);
 
-        // Test 5. JS Cookie
-
-        $shieldon->setFilters([
-            'session'   => false,
-            'cookie'    => true,
-            'referer'   => false,
-            'frequency' => false,
-        ]);
+        $shieldon->setFilter('session', false);
+        $shieldon->setFilter('cookie', true);
+        $shieldon->setFilter('referer', false);
+        $shieldon->setFilter('frequency', false);
 
         $shieldon->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
 
@@ -201,8 +199,12 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $results[7]);
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $results[8]);
         $this->assertSame($shieldon::RESPONSE_TEMPORARILY_DENY, $results[9]);
+    }
 
-        // Test 6. Reset the flagged factor check.
+    public function testResetFilterFlagChecks($driver = 'sqlite')
+    {
+        $shieldon = get_testing_shieldon_instance($driver);
+
         $shieldon->setFilters([
             'session'   => false,
             'cookie'    => false,
@@ -232,7 +234,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $shieldon = get_testing_shieldon_instance($driver);
 
-        $shieldon->setLogger(new \Shieldon\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+        $shieldon->add(new \Shieldon\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon'));
 
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
         $shieldon->add(new \Shieldon\Component\Ip());
@@ -269,7 +271,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon = get_testing_shieldon_instance();
         $shieldon->setChannel('test_shieldon_detect');
         $shieldon->setIp('39.27.1.1');
-        $shieldon->disableFiltering();
+        $shieldon->disableFilters();
         $result = $shieldon->run();
 
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
@@ -315,8 +317,8 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->invokeArgs($shieldon, [$sessionId]);
         $shieldon->run();
 
-        // Test getSessionId
-        $testSessionId = $shieldon->getSessionId();
+        // Test.
+        $testSessionId = $shieldon->session->get('id');
 
         $this->assertSame($sessionId, $testSessionId);
 
@@ -324,21 +326,17 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($sessionHandlerResult, $shieldon::RESPONSE_ALLOW);
 
-        $t = $reflection->getProperty('sessionCount');
+        $t = $reflection->getProperty('sessionStatus');
         $t->setAccessible(true);
-        $sessionCount = $t->getValue($shieldon);
-        $this->assertSame(1, $sessionCount);
+        $sessionStatus = $t->getValue($shieldon);
 
-        $t = $reflection->getProperty('currentSessionOrder');
-        $t->setAccessible(true);
-        $currentSessionOrder = $t->getValue($shieldon);
+        $currentSessionOrder = $sessionStatus['order'];
+        $currentWaitNumber = $sessionStatus['order'] - $_limit;
+
+        $this->assertSame(1, $sessionStatus['count']);
         $this->assertSame(1, $currentSessionOrder);
 
-        $currentWaitNumber = $currentSessionOrder - $_limit;
-        
-        $t = $reflection->getProperty('currentWaitNumber');
-        $t->setAccessible(true);
-        $this->assertSame($currentWaitNumber, $t->getValue($shieldon));
+        $this->assertSame($currentWaitNumber, $sessionStatus['queue']);
 
         // The second visitor.
         $shieldon->setIp('140.112.172.12');
@@ -347,9 +345,12 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 1000))]);
 
         $result = $shieldon->run();
-        $t = $reflection->getProperty('currentSessionOrder');
+        $t = $reflection->getProperty('sessionStatus');
         $t->setAccessible(true);
-        $currentSessionOrder = $t->getValue($shieldon);
+        $sessionStatus = $t->getValue($shieldon);
+
+        $currentSessionOrder = $sessionStatus['order'];
+
         $this->assertSame(2, $currentSessionOrder);
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
@@ -360,9 +361,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1001, 2000))]);
 
         $result = $shieldon->run();
-        $t = $reflection->getProperty('currentSessionOrder');
+        $t = $reflection->getProperty('sessionStatus');
         $t->setAccessible(true);
-        $currentSessionOrder = $t->getValue($shieldon);
+        $sessionStatus = $t->getValue($shieldon);
+
+        $currentSessionOrder = $sessionStatus['order'];
         $this->assertSame(3, $currentSessionOrder);
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
@@ -373,11 +376,13 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(2001, 3000))]);
 
         $result = $shieldon->run();
-        $t = $reflection->getProperty('currentSessionOrder');
+        $t = $reflection->getProperty('sessionStatus');
         $t->setAccessible(true);
-        $currentSessionOrder = $t->getValue($shieldon);
+        $sessionStatus = $t->getValue($shieldon);
+
+        $currentSessionOrder = $sessionStatus['order'];
         $this->assertSame(4, $currentSessionOrder);
-        $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
+        $this->assertSame($shieldon::RESPONSE_LIMIT_SESSION, $result);
 
         // The fifth vistor.
         $shieldon->setIp('140.112.172.15');
@@ -386,14 +391,14 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(1, 999999))]);
 
         $result = $shieldon->run();
-        $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
+        $this->assertSame($shieldon::RESPONSE_LIMIT_SESSION, $result);
 
         // // Remove session if it expires.
         $shieldon->limitSession($_limit, 1);
         sleep(3);
         $result = $shieldon->run();
 
-        $this->assertSame($shieldon::RESPONSE_LIMIT, $result);
+        $this->assertSame($shieldon::RESPONSE_LIMIT_SESSION, $result);
 
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
@@ -424,19 +429,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($properties['cookie_domain'], 'localhost');
     }
 
-    public function testSetStrict()
-    {
-        $shieldon = new \Shieldon\Shieldon();
-        $shieldon->setStrict(false);
-
-        $reflection = new \ReflectionObject($shieldon);
-        $t = $reflection->getProperty('strictMode');
-        $t->setAccessible(true);
-  
-        $this->assertEquals('strictMode' , $t->name);
-        $this->assertFalse($t->getValue($shieldon));
-    }
-
     public function testSetDriver()
     {
         $shieldon = new \Shieldon\Shieldon();
@@ -444,7 +436,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $driver = new \Shieldon\Driver\SqliteDriver($pdoInstance);
-        $shieldon->setDriver($driver);
+        $shieldon->add($driver);
 
         if ($shieldon->driver === $driver) {
             $this->assertTrue(true);
@@ -458,7 +450,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon = new \Shieldon\Shieldon();
   
         $logger = new \Shieldon\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
-        $shieldon->setLogger($logger);
+        $shieldon->add($logger);
 
         if ($shieldon->logger === $logger) {
             $this->assertTrue(true);
@@ -500,14 +492,14 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     {
         $shieldon = new \Shieldon\Shieldon();
         $imageCaptcha = new \Shieldon\Captcha\ImageCaptcha();
-        $shieldon->setCaptcha($imageCaptcha);
+        $shieldon->add($imageCaptcha);
 
         $reflection = new \ReflectionObject($shieldon);
         $t = $reflection->getProperty('captcha');
         $t->setAccessible(true);
         $refectedCaptcha = $t->getValue($shieldon);
 
-        if ($refectedCaptcha[1] instanceof $imageCaptcha) {
+        if ($refectedCaptcha['ImageCaptcha'] instanceof $imageCaptcha) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);
@@ -517,7 +509,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     public function testCaptchaResponse($driver = 'sqlite')
     {
         $shieldon = new \Shieldon\Shieldon();
-        $shieldon->setCaptcha(new \Shieldon\Captcha\ImageCaptcha());
+        $shieldon->add(new \Shieldon\Captcha\ImageCaptcha());
         $result = $shieldon->captchaResponse();
         $this->assertFalse($result);
 
@@ -614,7 +606,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
         $result = $shieldon->run();
-        if ($result === $shieldon::RESPONSE_LIMIT) {
+        if ($result === $shieldon::RESPONSE_LIMIT_SESSION) {
             $output = $shieldon->output(0, false);
 
             if (strpos($output, 'Please line up') !== false) {
@@ -705,14 +697,29 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon = get_testing_shieldon_instance($driver);
         $shieldon->driver->rebuild();
 
-        $shieldon->add(new \Shieldon\Component\TrustedBot());
-        $shieldon->add(new \Shieldon\Component\Ip());
-        $shieldon->add(new \Shieldon\Component\Header());
-        $shieldon->add(new \Shieldon\Component\UserAgent());
-        $shieldon->add(new \Shieldon\Component\Rdns());
+        $headerComponent = new \Shieldon\Component\Header();
+        $headerComponent->setStrict(true);
+
+        $trustedBot = new \Shieldon\Component\TrustedBot();
+        $trustedBot->setStrict(true);
+
+        $ip = new \Shieldon\Component\Ip();
+        $ip->setStrict(true);
+
+        $userAgent = new \Shieldon\Component\UserAgent();
+        $userAgent->setStrict(true);
+
+        $rdns = new \Shieldon\Component\Rdns();
+        $rdns->setStrict(true);
+
+        $shieldon->add($trustedBot);
+        $shieldon->add($ip);
+        $shieldon->add($headerComponent);
+        $shieldon->add($userAgent);
+        $shieldon->add($rdns);
         
         // By default, it will block this session because of no common header information
-        $shieldon->setStrict(true);
+
         $shieldon->setIp('8.8.8.8');
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_DENY, $result);
@@ -724,7 +731,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
         $shieldon->add(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('40.77.169.1', true);
-        $shieldon->setStrict(false);
+   
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
@@ -737,7 +744,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
         $shieldon->add(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('66.249.66.1', true);
-        $shieldon->setStrict(false);
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
@@ -750,7 +756,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)';
         $shieldon->add(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('8.12.144.1', true);
-        $shieldon->setStrict(false);
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
@@ -763,7 +768,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)';
         $shieldon->add(new \Shieldon\Component\TrustedBot());
         $shieldon->setIp('100.43.90.1', true);
-        $shieldon->setStrict(false);
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
@@ -772,7 +776,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
 
         $shieldon = get_testing_shieldon_instance($driver);
-        $shieldon->disableFiltering();
+        $shieldon->disableFilters();
         $result = $shieldon->run();
         $this->assertSame($shieldon::RESPONSE_ALLOW, $result);
     }
@@ -815,13 +819,16 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     public function testDisableFiltering()
     {
         $shieldon = new \Shieldon\Shieldon();
-        $shieldon->disableFiltering();
+        $shieldon->disableFilters();
         $reflection = new \ReflectionObject($shieldon);
-        $t = $reflection->getProperty('enableFiltering');
+        $t = $reflection->getProperty('filterStatus');
         $t->setAccessible(true);
-        $enableFiltering = $t->getValue($shieldon);
+        $filterStatus = $t->getValue($shieldon);
 
-        $this->assertFalse($enableFiltering);
+        $this->assertFalse($filterStatus['frequency']);
+        $this->assertFalse($filterStatus['referer']);
+        $this->assertFalse($filterStatus['cookie']);
+        $this->assertFalse($filterStatus['session']);
     }
 
     public function testIPv6($driver = 'sqlite')
@@ -842,7 +849,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
     public function testDetect_fileDriver()
     {
-        $this->testDetect('file');
+        $this->testDetectByFilterFrequency('file');
+        $this->testDetectByFilterSession('file');
+        $this->testDetectByFilterReferer('file');
+        $this->testDetectByFilterCookie('file');
+        $this->testResetFilterFlagChecks('file');
     }
 
     public function testAction_fileDriver()
@@ -896,7 +907,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
     public function testDetect_mysqlDriver()
     {
-        $this->testDetect('mysql');
+        $this->testDetectByFilterFrequency('mysql');
+        $this->testDetectByFilterSession('mysql');
+        $this->testDetectByFilterReferer('mysql');
+        $this->testDetectByFilterCookie('mysql');
+        $this->testResetFilterFlagChecks('mysql');
     }
 
     public function testAction_mysqlDriver()
@@ -950,7 +965,11 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
     public function testDetect_redisDriver()
     {
-        $this->testDetect('redis');
+        $this->testDetectByFilterFrequency('redis');
+        $this->testDetectByFilterSession('redis');
+        $this->testDetectByFilterReferer('redis');
+        $this->testDetectByFilterCookie('redis');
+        $this->testResetFilterFlagChecks('redis');
     }
 
     public function testAction_redisDriver()
@@ -1006,7 +1025,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $telegram = new \Messenger\Telegram('test', 'test');
 
-        $shieldon->setMessenger($telegram);
+        $shieldon->add($telegram);
     }
 
     public function testSetDialogUI()
@@ -1030,13 +1049,6 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         $shieldon->setClosure('key', function() {
             return true;
         });
-    }
-
-    public function testgetCurrentUrl()
-    {
-        $shieldon = new \Shieldon\Shieldon();
-
-        $shieldon->getCurrentUrl();
     }
 
     public function testManagedBy()
@@ -1063,7 +1075,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
         
         $shieldon->add(new \Shieldon\Component\Rdns());
 
-        $shieldon->setMessenger(new \MockMessenger());
+        $shieldon->add(new \MockMessenger());
 
         $shieldon->setChannel('test_shieldon_deny_attempt');
         $shieldon->driver->rebuild();
@@ -1154,7 +1166,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
 
         $shieldon = get_testing_shieldon_instance();
         $shieldon->add(new \Shieldon\Component\TrustedBot());
-        $shieldon->disableFiltering();
+        $shieldon->disableFilters();
         $result = $shieldon->run();
 
         $this->assertSame($shieldon::RESPONSE_DENY, $result);

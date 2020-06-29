@@ -10,8 +10,9 @@
 
 namespace Shieldon\Log;
 
+use PHPUnit\Framework\TestCase;
 
-class ActionLogParserTest extends \PHPUnit\Framework\TestCase
+class ActionLogParserTest extends TestCase
 {
     public function test__construct()
     {

@@ -10,7 +10,9 @@
 
 namespace Shieldon;
 
-class IpTraitTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class IpTraitTest extends TestCase
 {
     public function testSetIp()
     {

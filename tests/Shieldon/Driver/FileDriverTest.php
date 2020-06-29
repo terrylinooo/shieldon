@@ -10,8 +10,9 @@
 
 namespace Shieldon\Driver;
 
+use PHPUnit\Framework\TestCase;
 
-class FileDriverTest extends \PHPUnit\Framework\TestCase
+class FileDriverTest extends TestCase
 {
     public function test__construct()
     {

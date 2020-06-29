@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,9 +8,13 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Shieldon\Component;
 
 use Shieldon\IpTrait;
+use Psr\Http\Message\ServerRequestInterface;
+use Shieldon\HttpFactory;
 
 use function array_column;
 use function array_merge;
@@ -41,8 +45,92 @@ class TrustedBot extends ComponentProvider
      *
      * @var array
      */
-    private $trustedBotList = [];
+    private $trustedBotList = [
 
+        // Search engline: Google.
+        [
+            'userAgent' => 'google',
+            'rdns'      => '.googlebot.com',
+        ],
+
+        [
+            'userAgent' => 'google',
+            'rdns'      => '.google.com',
+        ],
+
+        // Search engline: Mircosoft.
+        [
+            'userAgent' => 'live',
+            'rdns'      => '.live.com',
+        ],
+
+        [
+            'userAgent' => 'msn',
+            'rdns'      => '.msn.com',
+        ],
+
+        [
+            'userAgent' => 'bing',
+            'rdns'      => '.bing.com',
+        ],
+
+        // Search engline: Yahoo.
+        [
+            'userAgent' => 'inktomisearch',
+            'rdns'      => '.inktomisearch.com',
+        ],
+
+        [
+            'userAgent' => 'yahoo',
+            'rdns'      => '.yahoo.com',
+        ],
+
+        [
+            'userAgent' => 'yahoo',
+            'rdns'      => '.yahoo.net',
+        ],
+
+        // Search engine: Yandex.
+        [
+            'userAgent' => 'yandex',
+            'rdns'      => '.yandex.com',
+        ],
+
+        [
+            'userAgent' => 'yandex',
+            'rdns'      => '.yandex.net',
+        ],
+
+        [
+            'userAgent' => 'yandex',
+            'rdns'      => '.yandex.ru',
+        ],
+
+        // Facebook crawlers.
+        [
+            'userAgent' => 'facebook',
+            'rdns'      => '.fbsv.net',
+        ],
+
+        // Twitter crawlers.
+        [
+            'userAgent' => 'Twitterbot',
+            'rdns'      => '.twttr.com', // (not twitter.com)
+        ],
+
+        // W3C validation services.
+        [
+            'userAgent' => 'w3.org',
+            'rdns'      => '.w3.org',
+        ],
+
+        // Ask.com crawlers.
+        [
+            'userAgent' => 'ask',
+            'rdns'      => '.ask.com',
+        ],
+    ];
+    
     /**
      * For testing purpse. (Unit test)
      *
@@ -64,99 +152,13 @@ class TrustedBot extends ComponentProvider
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct(?ServerRequestInterface $request  = null)
     {
-        parent::__construct();
+        if (is_null($request)) {
+            $request = HttpFactory::createRequest();
+        }
 
-        // They are robots we welcome in this whitelist.
-
-        $this->trustedBotList = [
-
-            // Search engline: Google.
-            [
-                'userAgent' => 'google',
-                'rdns'      => '.googlebot.com',
-            ],
-
-            [
-                'userAgent' => 'google',
-                'rdns'      => '.google.com',
-            ],
-
-            // Search engline: Mircosoft.
-            [
-                'userAgent' => 'live',
-                'rdns'      => '.live.com',
-            ],
-
-            [
-                'userAgent' => 'msn',
-                'rdns'      => '.msn.com',
-            ],
-
-            [
-                'userAgent' => 'bing',
-                'rdns'      => '.bing.com',
-            ],
-
-            // Search engline: Yahoo.
-            [
-                'userAgent' => 'inktomisearch',
-                'rdns'      => '.inktomisearch.com',
-            ],
-   
-            [
-                'userAgent' => 'yahoo',
-                'rdns'      => '.yahoo.com',
-            ],
-
-            [
-                'userAgent' => 'yahoo',
-                'rdns'      => '.yahoo.net',
-            ],
-
-            // Search engine: Yandex.
-            [
-                'userAgent' => 'yandex',
-                'rdns'      => '.yandex.com',
-            ],
-
-            [
-                'userAgent' => 'yandex',
-                'rdns'      => '.yandex.net',
-            ],
-
-            [
-                'userAgent' => 'yandex',
-                'rdns'      => '.yandex.ru',
-            ],
-
-            // Facebook crawlers.
-            [
-                'userAgent' => 'facebook',
-                'rdns'      => '.fbsv.net',
-            ],
-
-            // Twitter crawlers.
-            [
-                'userAgent' => 'Twitterbot',
-                'rdns'      => '.twttr.com', // (not twitter.com)
-            ],
-
-            // W3C validation services.
-            [
-                'userAgent' => 'w3.org',
-                'rdns'      => '.w3.org',
-            ],
-
-            // Ask.com crawlers.
-            [
-                'userAgent' => 'ask',
-                'rdns'      => '.ask.com',
-            ],
-        ];
-
-        $this->userAgent = $this->request->getHeaderLine('user-agent');
+        $this->userAgent = $request->getHeaderLine('user-agent');
     }
 
     /**
@@ -164,11 +166,11 @@ class TrustedBot extends ComponentProvider
      */
     public function isAllowed(): bool
     {
-        if (! empty($this->trustedBotList)) {
+        if (!empty($this->trustedBotList)) {
 
             $userAgent = array_unique(array_column($this->trustedBotList, 'userAgent'));
 
-            if (! preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgent)) {
+            if (!preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgent)) {
                 // Okay, current request's user-agent string doesn't contain our truested bots' infroamtion.
                 // Ignore it.
                 return false;
@@ -215,7 +217,7 @@ class TrustedBot extends ComponentProvider
                 if ($this->checkFakeRdns) {
 
                     // We can identify that current access uses a fake RDNS record.
-                    if (! $rdnsCheck) {
+                    if (!$rdnsCheck) {
                         $this->isFake = true;
                         return false;
                     }
@@ -260,7 +262,7 @@ class TrustedBot extends ComponentProvider
      */
     public function addList(array $list): void
     {
-        if (! empty($list[0]['userAgent']) && ! empty($list[0]['rdns']) && 2 === count($list[0])) {
+        if (!empty($list[0]['userAgent']) && !empty($list[0]['rdns']) && 2 === count($list[0])) {
 
             // Append the new list to the end.
             $this->trustedBotList = array_merge($this->trustedBotList, $list);
@@ -296,11 +298,13 @@ class TrustedBot extends ComponentProvider
      */
     public function removeItem(string $string): void
     {
-        if (! empty($this->trustedBotList)) {
+        if (!empty($this->trustedBotList)) {
             foreach ($this->trustedBotList as $index => $list) {
+
                 if ($list['userAgent'] === $string) {
                     unset($this->trustedBotList[$index]);
                 }
+
                 if ($list['rdns'] === $string) {
                     unset($this->trustedBotList[$index]);
                 }

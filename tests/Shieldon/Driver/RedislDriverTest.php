@@ -10,7 +10,9 @@
 
 namespace Shieldon\Driver;
 
-class RedisDriverTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class RedisDriverTest extends TestCase
 {
     public function test__construct()
     {

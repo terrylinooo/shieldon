@@ -73,6 +73,6 @@ class Session
 
         $_SESSION['id'] = $this->id;
 
-        return Collection($_SESSION);
+        return new Collection($_SESSION);
     }
 }

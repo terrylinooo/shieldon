@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Shieldon\Component;
+declare(strict_types=1);
 
-use Shieldon\Utils\Container;
+namespace Shieldon\Component;
 
 /**
  * ComponentPrivider
@@ -37,19 +37,6 @@ abstract class ComponentProvider implements ComponentInterface
      * @var bool
      */
     protected $strictMode = false;
-
-    /**
-     * @var \Shieldon\Request
-     */
-    protected $request;
-
-    /**
-     * Constroctor.
-     */
-    public function __construct()
-    {
-        $this->request = Container::get('shieldon')->request;
-    }
 
     /**
      * Set denied item list. 
@@ -110,6 +97,7 @@ abstract class ComponentProvider implements ComponentInterface
     {
         if (! empty($this->allowedList)) {
             $key = array_search($string, $this->allowedList);
+
             if (false !==  $key) {
                 unset($this->allowedList[$key]);
             }
@@ -117,6 +105,7 @@ abstract class ComponentProvider implements ComponentInterface
 
         if (! empty($this->deniedList)) {
             $key = array_search($string, $this->deniedList);
+
             if (false !==  $key) {
                 unset($this->deniedList[$key]);
             }

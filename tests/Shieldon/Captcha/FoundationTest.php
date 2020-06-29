@@ -10,8 +10,9 @@
 
 namespace Shieldon\Captcha;
 
+use PHPUnit\Framework\TestCase;
 
-class FoundationTest extends \PHPUnit\Framework\TestCase
+class FoundationTest extends TestCase
 {
     public function testResponse()
     {

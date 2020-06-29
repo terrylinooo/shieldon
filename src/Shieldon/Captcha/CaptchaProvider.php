@@ -18,22 +18,11 @@ use Shieldon\Utils\Container;
 abstract class CaptchaProvider implements CaptchaInterface
 {
     /**
-     * @var \Shieldon\Request
-     */
-    protected $request;
-
-    /**
-     * @var \Shieldon\Session
-     */
-    protected $session;
-
-    /**
      * Constroctor.
      */
     public function __construct()
     {
-        $this->request = Container::get('request');
-        $this->session = Container::get('session');
+
     }
 
     /**

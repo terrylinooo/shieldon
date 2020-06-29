@@ -10,8 +10,9 @@
 
 namespace Shieldon\Driver;
 
+use PHPUnit\Framework\TestCase;
 
-class DriverProviderTest extends \PHPUnit\Framework\TestCase
+class DriverProviderTest extends TestCase
 {
     public function testSetChannel()
     {

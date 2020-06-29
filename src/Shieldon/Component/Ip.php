@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Shieldon\Component;
 
@@ -36,9 +38,9 @@ class Ip extends ComponentProvider
     /**
      * Constant
      */
-    const REASON_INVALID_IP     = 40;
-    const REASON_DENY_IP        = 41;
-    const REASON_ALLOW_IP       = 42;
+    const REASON_INVALID_IP = 40;
+    const REASON_DENY_IP    = 41;
+    const REASON_ALLOW_IP   = 42;
 
     /**
      * Only allow IPs in allowedList, then deny all.
@@ -52,7 +54,7 @@ class Ip extends ComponentProvider
      */
     public function __construct()
     {
-        parent::__construct();
+
     }
 
     /**
@@ -72,7 +74,7 @@ class Ip extends ComponentProvider
             $this->setIp($ip);
         }
 
-        if (! filter_var($this->ip, FILTER_VALIDATE_IP)) {
+        if (!filter_var($this->ip, FILTER_VALIDATE_IP)) {
             return [
                 'status' => 'deny',
                 'code' => self::REASON_INVALID_IP,
@@ -369,7 +371,7 @@ class Ip extends ComponentProvider
      */
     public function setAllowedItem(string $string): void
     {
-        if (! in_array($string, $this->allowedList)) {
+        if (!in_array($string, $this->allowedList)) {
             array_push($this->allowedList, $string);
         }
     }

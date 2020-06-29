@@ -158,6 +158,5 @@ require __DIR__ . '/../autoload.php';
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/shieldon/messenger/autoload.php';
 require __DIR__ . '/Mock/MockMessenger.php';
-require __DIR__ . '/Mock/MockRequest.php';
 
 

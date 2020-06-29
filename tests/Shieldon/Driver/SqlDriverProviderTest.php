@@ -10,8 +10,10 @@
 
 namespace Shieldon\Driver;
 
+use PHPUnit\Framework\TestCase;
 
-class SqlDriverProviderTest extends \PHPUnit\Framework\TestCase
+
+class SqlDriverProviderTest extends TestCase
 {
     public function test__construct()
     {

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,9 +8,15 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Shieldon\Captcha;
 
-class RecaptchaTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+use Shieldon\Captcha\Recaptcha;
+use ReflectionObject;
+
+class RecaptchaTest extends TestCase
 {
     public function test__construct()
     {
@@ -21,7 +27,7 @@ class RecaptchaTest extends \PHPUnit\Framework\TestCase
         
         $captchaInstance = new Recaptcha($captchaConfig);
 
-        $reflection = new \ReflectionObject($captchaInstance);
+        $reflection = new ReflectionObject($captchaInstance);
         $p1 = $reflection->getProperty('key');
         $p1->setAccessible(true);
         $p2 = $reflection->getProperty('secret');
@@ -43,11 +49,13 @@ class RecaptchaTest extends \PHPUnit\Framework\TestCase
         
         $captchaInstance = new Recaptcha($captchaConfig);
         $result = $captchaInstance->response();
+
         $this->assertFalse($result);
 
         $_POST['g-recaptcha-response'] = 'test';
 
         $result = $captchaInstance->response();
+
         $this->assertTrue($result);
     }
 
@@ -58,8 +66,7 @@ class RecaptchaTest extends \PHPUnit\Framework\TestCase
             'secret' => '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe',
         ];
         
-        $captchaInstance = new Recaptcha($captchaConfig);
-        $result = $captchaInstance->form();
+        $result = (new Recaptcha($captchaConfig))->form();
 
         $html  = '<div><div style="display: inline-block">';
         $html .= '<script src="https://www.google.com/recaptcha/api.js?hl=en"></script>';
@@ -75,8 +82,7 @@ class RecaptchaTest extends \PHPUnit\Framework\TestCase
             'lang' => 'zh',
         ];
         
-        $captchaInstance = new Recaptcha($captchaConfig);
-        $result = $captchaInstance->form();
+        $result = (new Recaptcha($captchaConfig))->form();
 
         $html  = '<div><div style="display: inline-block">';
         $html .= '<input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response" value="">';

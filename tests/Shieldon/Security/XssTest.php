@@ -10,7 +10,9 @@
 
 namespace Shieldon\Security;
 
-class XssTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class XssTest extends TestCase
 {
     public function testClean()
     {

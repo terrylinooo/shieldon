@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,9 +8,13 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Shieldon\Component;
 
 use Shieldon\IpTrait;
+use Psr\Http\Message\ServerRequestInterface;
+use Shieldon\HttpFactory;
 
 use function implode;
 use function preg_match;
@@ -32,36 +36,45 @@ class UserAgent extends ComponentProvider
     private $userAgent = '';
 
     /**
+     * Those robots are considered as bad behavior. 
+     * Therefore we list them here.
+     *
+     * @var array
+     */
+    protected $deniedList = [
+
+        // Web information crawlers
+        'domain',     // Domain name information crawlers.
+        'copyright',  // Copyright information crawlers.
+
+        // SEO backlink crawlers
+        'Ahrefs',     // http://ahrefs.com/robot/
+        'roger',      // rogerbot (SEOMOZ)
+        'moz.com',    // SEOMOZ crawlers
+        'MJ12bot',    // Majestic crawlers
+        'findlinks',  // http://wortschatz.uni-leipzig.de/findlinks
+        'Semrush',    // http://www.semrush.com/bot.html
+
+        // Others
+        'archive',    // Wayback machine
+    ];
+
+
+
+    /**
      * Constructor.
      * 
      * @param bool $strictMode
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct(?ServerRequestInterface $request  = null)
     {
-        parent::__construct();
+        if (is_null($request)) {
+            $request = HttpFactory::createRequest();
+        }
 
-        // Those robots are considered as bad behavior. Therefore we list them here.
-        $this->deniedList = [
-
-            // Web information crawlers
-            'domain',         // Block all domain name information crawlers.
-            'copyright',      // Block all copyright information crawlers.
-
-            // SEO backlink crawlers
-            'Ahrefs',         // http://ahrefs.com/robot/
-            'roger',          // rogerbot (SEOMOZ)
-            'moz.com',        // Block all SEOMOZ crawlers
-            'MJ12bot',        // Majestic crawlers
-            'findlinks',      // http://wortschatz.uni-leipzig.de/findlinks
-            'Semrush',        // http://www.semrush.com/bot.html
-
-            // Others
-            'archive',        // Wayback machine
-        ];
-
-        $this->userAgent = $this->request->getHeaderLine('user-agent');
+        $this->userAgent = $request->getHeaderLine('user-agent');
     }
 
     /**
@@ -69,7 +82,7 @@ class UserAgent extends ComponentProvider
      */
     public function isDenied(): bool
     {
-        if (! empty($this->deniedList)) {
+        if (!empty($this->deniedList)) {
             if (preg_match('/(' . implode('|', $this->deniedList). ')/i', $this->userAgent)) {
                 return true;
             }

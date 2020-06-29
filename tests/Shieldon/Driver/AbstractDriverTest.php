@@ -10,8 +10,9 @@
 
 namespace Shieldon\Driver;
 
+use PHPUnit\Framework\TestCase;
 
-class AbstractDriverTest extends \PHPUnit\Framework\TestCase
+class AbstractDriverTest extends TestCase
 {
     public function testHas()
     {

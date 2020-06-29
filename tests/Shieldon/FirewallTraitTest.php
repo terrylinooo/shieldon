@@ -10,7 +10,9 @@
 
 namespace Shieldon;
 
-class FirewallTraitTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class FirewallTraitTest extends TestCase
 {
     public function testConfig()
     {

@@ -45,7 +45,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-clock_96x96.png';
                             <?php _e('core', 'online_info', '', ['<strong>' . $this->sessionStatus['count'] . '</strong>']); ?><br />
                         <?php endif; ?>
 
-                        <br /><small><?php _e('core', 'keepalive_info', '', [$this->isLimitSession[1]]); ?></small>
+                        <br /><small><?php _e('core', 'keepalive_info', '', [$this->sessionLimit['period']]); ?></small>
 
                     </div>
 				</div>

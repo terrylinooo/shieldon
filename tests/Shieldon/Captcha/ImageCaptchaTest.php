@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,15 +8,16 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Shieldon\Captcha;
 
-class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class ImageCaptchaTest extends TestCase
 {
     public function test__construct()
     {
-        $request = new \Shieldon\Mock\MockRequest();
-        $request->apply();
-
         $config = [
             'img_width' => 280,
             'img_height' => 40,
@@ -64,29 +65,22 @@ class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
 
     public function testResponse()
     {
-        $request = new \Shieldon\Mock\MockRequest();
-        $request->session->set('shieldon_image_captcha_hash', password_hash('IA63BXxo', PASSWORD_BCRYPT));
-        $request->post->set('shieldon_image_captcha', '');
-        $request->apply();
+        $_SESSION['shieldon_image_captcha_hash'] = '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.';
+        $_POST['shieldon_image_captcha'] = '';
 
         $captchaInstance = new ImageCaptcha();
         $result = $captchaInstance->response();
 
         $this->assertFalse($result);
 
-        $request->post->set('shieldon_image_captcha', 'IA63BXxo');
-        $request->apply();
+        $_POST['shieldon_image_captcha'] = 'IA63BXxo';
 
-        $captchaInstance = new ImageCaptcha();
         $result = $captchaInstance->response();
         $this->assertTrue($result);
     }
 
     public function testForm()
     {
-        $request = new \Shieldon\Mock\MockRequest();
-        $request->apply();
-
         $config = [
             'colors' => ''
         ];

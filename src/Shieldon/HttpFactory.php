@@ -17,6 +17,7 @@ use Shieldon\Psr17\ResponseFactory;
 use Shieldon\Psr7\ServerRequest;
 use Shieldon\Psr7\Response;
 use Shieldon\Utils\Session;
+use Shieldon\Utils\Collection;
 
 /*
  * An object-oriented layer for the HTTP specification.
@@ -36,7 +37,7 @@ class HttpFactory
     /**
      * Create a server-side response
      *
-     * @return ServerRequest
+     * @return Response
      */
     public static function createResponse(): Response
     {
@@ -51,8 +52,10 @@ class HttpFactory
      *
      * @return Collection
      */
-    public static function createSession($id = ''): Session
+    public static function createSession($id = ''): Collection
     {
-        return new Session($id);
+        $session = new Session($id);
+
+        return $session->createFromGlobal();
     }
 }

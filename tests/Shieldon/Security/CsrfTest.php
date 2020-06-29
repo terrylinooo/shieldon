@@ -10,7 +10,9 @@
 
 namespace Shieldon\Security;
 
-class CsrfTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class CsrfTest extends TestCase
 {
     public function test__construct()
     {

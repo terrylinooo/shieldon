@@ -10,7 +10,9 @@
 
 namespace Shieldon\Driver;
 
-class SqliteDriverTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class SqliteDriverTest extends TestCase
 {
     public function test__construct()
     {

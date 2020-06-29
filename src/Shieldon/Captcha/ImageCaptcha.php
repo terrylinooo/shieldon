@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Shieldon\Captcha;
 
@@ -32,7 +34,7 @@ use function random_int;
 use function sin;
 use function strlen;
 
-class ImageCaptcha extends CaptchaProvider
+class ImageCaptcha implements CaptchaInterface
 {
     /**
      * Settings.
@@ -67,8 +69,6 @@ class ImageCaptcha extends CaptchaProvider
      */
     public function __construct(array $config = [])
     {
-        parent::__construct();
-        
         $defaults = [
             'img_width'	  => 250,
             'img_height'  => 50,
@@ -109,22 +109,18 @@ class ImageCaptcha extends CaptchaProvider
      */
     public function response(): bool
     {
-        $body = $this->request->getParsedBody();
-       
-        if (empty($body['shieldon_image_captcha']) || ! $this->session->get('shieldon_image_captcha_hash')) {
+        if (empty($_POST['shieldon_image_captcha']) || empty($_SESSION['shieldon_image_captcha_hash'])) {
             return false;
         }
 
         $flag = false;
 
-        if (password_verify($body['shieldon_image_captcha'],  $this->session->get('shieldon_image_captcha_hash'))) {
+        if (password_verify($_POST['shieldon_image_captcha'], $_SESSION['shieldon_image_captcha_hash'])) {
             $flag = true;
         }
 
         // Prevent detecting POST method on RESTful frameworks.
-        if (isset($_POST)) {
-            unset($_POST);
-        }
+        unset($_POST['shieldon_image_captcha']);
 
         return $flag;
     }
@@ -214,11 +210,11 @@ class ImageCaptcha extends CaptchaProvider
         imagefilledrectangle($im, 0, 0, $this->properties['img_width'], $this->properties['img_height'], $colors['background']);
 
         // Create the spiral pattern.
-        $theta	 = 1;
-        $thetac	 = 7;
-        $radius	 = 16;
-        $circles = 20;
-        $points	 = 32;
+        $theta		= 1;
+        $thetac		= 7;
+        $radius		= 16;
+        $circles	= 20;
+        $points		= 32;
 
         for ($i = 0, $cp = ($circles * $points) - 1; $i < $cp; $i++) {
             $theta += $thetac;
@@ -272,7 +268,7 @@ class ImageCaptcha extends CaptchaProvider
         imagedestroy($im);
 
         // Save hash.
-        $this->session->set('shieldon_image_captcha_hash', password_hash($this->word, PASSWORD_BCRYPT));
+        $_SESSION['shieldon_image_captcha_hash'] = password_hash($this->word, PASSWORD_BCRYPT);
 
         return base64_encode($image_data);
     }

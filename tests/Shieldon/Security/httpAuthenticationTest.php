@@ -10,7 +10,9 @@
 
 namespace Shieldon\Security;
 
-class httpAuthenticationTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class httpAuthenticationTest extends TestCase
 {
     public function test__construct()
     {

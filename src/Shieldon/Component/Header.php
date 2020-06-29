@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Shieldon\Component;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Shieldon\HttpFactory;
 use Shieldon\IpTrait;
 
 use function implode;
 use function preg_match;
+use function is_null;
 
 /**
  * Robot
@@ -23,14 +28,6 @@ class Header extends ComponentProvider
     use IpTrait;
 
     const STATUS_CODE = 83;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      *  Very common requests from normal users.
@@ -46,24 +43,35 @@ class Header extends ComponentProvider
     ];
 
     /**
+     * Header information.
+     *
+     * @var array
+     */
+    protected $headers = [];
+
+    /**
+     * Header component constructor.
+     */
+    public function __construct(?ServerRequestInterface $request  = null)
+    {
+        if (is_null($request)) {
+            $request = HttpFactory::createRequest();
+        }
+
+        $this->headers = $request->getHeaders();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function isDenied(): bool
     {
-        $headers = $this->getHeaders();
-
-        if (! empty($this->deniedList)) {
-            if (preg_match('/(' . implode('|', $this->deniedList). ')/i', implode(',', $headers))) {
-                return true;
-            }
-        }
-
         if ($this->strictMode) {
 
             foreach ($this->commonHeaderFileds as $fieldName) {
 
                 // If strict mode is on, this value must be found.
-                if (! isset($headers[$fieldName])) {
+                if (!isset($this->headers[$fieldName])) {
                     return true;
                 }
             }
@@ -73,13 +81,13 @@ class Header extends ComponentProvider
     }
 
     /**
-     * Get headers from request.
+     * All request headers.
      *
      * @return array
      */
     public function getHeaders(): array
     {
-        return $this->request->getHeaders();
+        return $this->headers;
     }
 
     /**

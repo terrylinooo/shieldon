@@ -10,12 +10,14 @@
 
 namespace Shieldon;
 
+use PHPUnit\Framework\TestCase;
 
-class ContainerTest extends \PHPUnit\Framework\TestCase
+class ContainerTest extends TestCase
 {
     public function testAll()
     {
-        $firewall = new \Shieldon\Firewall(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall = new \Shieldon\Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
         $firewall = \Shieldon\Container::get('firewall');
 
