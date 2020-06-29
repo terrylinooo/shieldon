@@ -38,8 +38,6 @@ class Header extends ComponentProvider
         'Accept',
         'Accept-Language',
         'Accept-Encoding',
-        // 'Cache-Control', (Sometime browers will not send this request header, it is not stable.)
-        // 'Upgrade-Insecure-Requests', ( IE doesn't support this..)
     ];
 
     /**
@@ -54,11 +52,9 @@ class Header extends ComponentProvider
      */
     public function __construct(?ServerRequestInterface $request  = null)
     {
-        if (is_null($request)) {
-            $request = HttpFactory::createRequest();
-        }
+        parent::__construct($request);
 
-        $this->headers = $request->getHeaders();
+        $this->headers = $this->request->getHeaders();
     }
 
     /**

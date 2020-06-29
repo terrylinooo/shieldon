@@ -52,9 +52,9 @@ class Ip extends ComponentProvider
     /**
      * Constructor.
      */
-    public function __construct()
+    public function __construct(?ServerRequestInterface $request  = null)
     {
-
+        parent::__construct($request);
     }
 
     /**

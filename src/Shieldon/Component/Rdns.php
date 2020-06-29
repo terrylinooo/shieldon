@@ -29,13 +29,11 @@ class Rdns extends ComponentProvider
 
     /**
      * Constructor.
-     * 
-     * @param bool $strictMode
-     * 
-     * @return void
      */
-    public function __construct()
+    public function __construct(?ServerRequestInterface $request  = null)
     {
+        parent::__construct($request);
+
         // RDNS for robot's IP address.
         $this->deniedList = [
             '.webcrawler.link',

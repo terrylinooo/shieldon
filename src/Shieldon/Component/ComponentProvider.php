@@ -39,6 +39,29 @@ abstract class ComponentProvider implements ComponentInterface
     protected $strictMode = false;
 
     /**
+     * PSR-7 server request.
+     *
+     * @var ServerRequestInterface
+     */
+    protected $request;
+
+    /**
+     * Constructor.
+     * 
+     * @param bool $strictMode
+     * 
+     * @return void
+     */
+    public function __construct(?ServerRequestInterface $request  = null)
+    {
+        if (is_null($request)) {
+            $request = HttpFactory::createRequest();
+        }
+
+        $this->request = $request;
+    }
+
+    /**
      * Set denied item list. 
      *
      * @param array $stringList String list.

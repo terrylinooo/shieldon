@@ -59,22 +59,14 @@ class UserAgent extends ComponentProvider
         'archive',    // Wayback machine
     ];
 
-
-
     /**
      * Constructor.
-     * 
-     * @param bool $strictMode
-     * 
-     * @return void
      */
     public function __construct(?ServerRequestInterface $request  = null)
     {
-        if (is_null($request)) {
-            $request = HttpFactory::createRequest();
-        }
+        parent::__construct($request);
 
-        $this->userAgent = $request->getHeaderLine('user-agent');
+        $this->userAgent = $this->request->getHeaderLine('user-agent');
     }
 
     /**

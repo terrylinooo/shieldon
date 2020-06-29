@@ -147,18 +147,12 @@ class TrustedBot extends ComponentProvider
 
     /**
      * Constructor.
-     * 
-     * It will implement default configuration settings here.
-     * 
-     * @return void
      */
     public function __construct(?ServerRequestInterface $request  = null)
     {
-        if (is_null($request)) {
-            $request = HttpFactory::createRequest();
-        }
+        parent::__construct($request);
 
-        $this->userAgent = $request->getHeaderLine('user-agent');
+        $this->userAgent = $this->request->getHeaderLine('user-agent');
     }
 
     /**
