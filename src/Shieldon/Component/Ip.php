@@ -50,14 +50,6 @@ class Ip extends ComponentProvider
     protected $isDenyAll = false;
 
     /**
-     * Constructor.
-     */
-    public function __construct(?ServerRequestInterface $request  = null)
-    {
-        parent::__construct($request);
-    }
-
-    /**
      * Check an IP if it exists in Anti-Scraping allow/deny list.
      *
      * @param string $ip

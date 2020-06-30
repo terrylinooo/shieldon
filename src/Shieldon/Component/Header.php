@@ -12,9 +12,8 @@ declare(strict_types=1);
 
 namespace Shieldon\Component;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Shieldon\HttpFactory;
 use Shieldon\IpTrait;
+use function Shieldon\Helper\get_request;
 
 use function implode;
 use function preg_match;
@@ -50,11 +49,9 @@ class Header extends ComponentProvider
     /**
      * Header component constructor.
      */
-    public function __construct(?ServerRequestInterface $request  = null)
+    public function __construct()
     {
-        parent::__construct($request);
-
-        $this->headers = $this->request->getHeaders();
+        $this->headers = get_request()->getHeaders();
     }
 
     /**

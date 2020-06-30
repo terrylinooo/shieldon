@@ -34,6 +34,7 @@ namespace Shieldon;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Captcha\CaptchaInterface;
+use Shieldon\Captcha\Foundation;
 use Shieldon\Component\ComponentInterface;
 use Shieldon\Component\ComponentProvider;
 use Shieldon\Utils\Container;
@@ -45,6 +46,9 @@ use function Shieldon\Helper\get_cpu_usage;
 use function Shieldon\Helper\get_memory_usage;
 use function Shieldon\Helper\__;
 use function Shieldon\Helper\get_default_properties;
+use function Shieldon\Helper\get_request;
+use function Shieldon\Helper\get_response;
+use function Shieldon\Helper\get_session;
 
 use LogicException;
 use RuntimeException;
@@ -122,27 +126,6 @@ class Shieldon
 
     // Shieldon directory.
     const SHIELDON_DIR = __DIR__;
-
-    /**
-     * PSR-7 HTTP server request
-     *
-     * @var \Psr\Http\Message\ServerRequestInterface
-     */
-    public $request;
-
-    /**
-     * PSR-7 HTTP response.
-     *
-     * @var \Psr\Http\Message\ResponseInterface
-     */
-    public $response;
-
-    /**
-     * Session handler.
-     *
-     * @var \Shieldon\Utils\Session
-     */
-    public $session;
 
     /**
      * Driver for storing data.
@@ -346,27 +329,25 @@ class Shieldon
      */
     public function __construct(?ServerRequestInterface $request  = null, ?ResponseInterface $response = null)
     {
-        Container::set('shieldon', $this);
-
         include_once __DIR__ . '/helpers.php';
 
-        $this->request = $request;
-        $this->response = $response;
-        $this->properties = get_default_properties();
-
         if (is_null($request)) {
-            $this->request = HttpFactory::createRequest();
+            $request = HttpFactory::createRequest();
         }
 
         if (is_null($response)) {
-            $this->response = HttpFactory::createResponse();
+            $response = HttpFactory::createResponse();
         }
 
-        $this->session = HttpFactory::createSession();
+        $session = HttpFactory::createSession();
 
-        $this->add(new \Shieldon\Captcha\Foundation());
+        $this->properties = get_default_properties();
+        $this->add(new Foundation());
 
-        include_once __DIR__ . '/helpers.php';
+        Container::set('request', $request);
+        Container::set('response', $response);
+        Container::set('session', $session);
+        Container::set('shieldon', $this);
     }
 
     /**
@@ -467,7 +448,7 @@ class Shieldon
                     // If an user is already in your website, it is impossible no referer when he views other pages.
                     $logData['flag_empty_referer'] = $ipDetail['flag_empty_referer'] ?? 0;
 
-                    if (empty($this->request->getHeaderLine('referer'))) {
+                    if (empty(get_request()->getHeaderLine('referer'))) {
                         $logData['flag_empty_referer']++;
                         $isFlaggedAsUnusualBehavior = true;
                     }
@@ -1096,7 +1077,7 @@ class Shieldon
             if ($showUserInformation) {
                 $dialoguserinfo['ip'] = $this->ip;
                 $dialoguserinfo['rdns'] = $this->rdns;
-                $dialoguserinfo['user_agent'] = $this->request->getHeaderLine('user-agent');
+                $dialoguserinfo['user_agent'] = get_request()->getHeaderLine('user-agent');
             }
 
             if (file_exists($viewPath)) {
@@ -1185,7 +1166,7 @@ class Shieldon
         // Ignore the excluded urls.
         if (!empty($this->excludedUrls)) {
             foreach ($this->excludedUrls as $url) {
-                if (0 === strpos($this->request->getUri()->getPath(), $url)) {
+                if (0 === strpos(get_request()->getUri()->getPath(), $url)) {
                     return $this->result = self::RESPONSE_ALLOW;
                 }
             }
@@ -1636,8 +1617,8 @@ class Shieldon
         $tmpCookieName = $this->properties['cookie_name'];
         $tmpCookieDomain = $this->properties['cookie_domain'];
 
-        if (empty($tmpCookieDomain) && $this->request->getHeaderLine('host')) {
-            $tmpCookieDomain = $this->request->getHeaderLine('host');
+        if (empty($tmpCookieDomain) && get_request()->getHeaderLine('host')) {
+            $tmpCookieDomain = get_request()->getHeaderLine('host');
         }
 
         $tmpCookieValue = $this->properties['cookie_value'];
@@ -1660,7 +1641,7 @@ class Shieldon
      */
     public function getCurrentUrl(): string
     {
-        return $this->request->getUri()->getPath();
+        return get_request()->getUri()->getPath();
     }
 
     /**

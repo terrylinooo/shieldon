@@ -13,8 +13,7 @@ declare(strict_types=1);
 namespace Shieldon\Component;
 
 use Shieldon\IpTrait;
-use Psr\Http\Message\ServerRequestInterface;
-use Shieldon\HttpFactory;
+use function Shieldon\Helper\get_request;
 
 use function array_column;
 use function array_merge;
@@ -148,11 +147,9 @@ class TrustedBot extends ComponentProvider
     /**
      * Constructor.
      */
-    public function __construct(?ServerRequestInterface $request  = null)
+    public function __construct()
     {
-        parent::__construct($request);
-
-        $this->userAgent = $this->request->getHeaderLine('user-agent');
+        $this->userAgent = get_request()->getHeaderLine('user-agent');
     }
 
     /**

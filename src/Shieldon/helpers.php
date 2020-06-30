@@ -12,6 +12,10 @@ declare(strict_types=1);
 
 namespace Shieldon\Helper;
 
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Shieldon\Utils\Container;
+
 /**
  * This value will be only displayed on Firewall Panel.
  */
@@ -255,4 +259,55 @@ function get_default_properties(): array
         // receive command created by Shieldon Firewall.
         'iptables_watching_folder' => '/tmp/',
     ];
+}
+
+/**
+ * PSR-7 HTTP server request
+ *
+ * @return \Psr\Http\Message\ServerRequestInterface
+ */
+function get_request(): ServerRequestInterface
+{
+    $request = Container::get('request');
+
+    if (is_null($request)) {
+        $request = HttpFactory::createRequest();
+        Container::set('request', $request);
+    }
+
+    return $request;
+}
+
+/**
+ * PSR-7 HTTP response.
+ *
+ * @return \Psr\Http\Message\ResponseInterface
+ */
+function get_response(): ResponseInterface
+{
+    $response = Container::get('response');
+
+    if (is_null($response)) {
+        $response = HttpFactory::createResponse();
+        Container::set('response', $response);
+    }
+
+    return $response;
+}
+
+/**
+ * Session
+ *
+ * @return \Shieldon\Utils\Session
+ */
+function get_session()
+{
+    $session = Container::get('session');
+
+    if (is_null($session)) {
+        $session = HttpFactory::createSession();
+        Container::set('session', $session);
+    }
+
+    return $session;
 }
