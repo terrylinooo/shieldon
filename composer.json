@@ -1,5 +1,5 @@
 {
-    "name": "shieldon/shieldon",
+    "name": "shieldon/firewall",
     "description": "Web application firewall for PHP.",
     "keywords": ["firewall", "web-application-firewall", "anti-scraping", "xss-filter", "xss-protection", "web-security", "www-authenticate"],
     "homepage": "https://github.com/terrylinooo/shieldon",
@@ -26,12 +26,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Shieldon\\": "src/Shieldon"
+            "Shieldon\\Firewall\\": "src/Firewall"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Shieldon\\Tests\\": "tests"
+            "Shieldon\\Firewall\\Tests\\": "tests"
         }
     },
     "config": {

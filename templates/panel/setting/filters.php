@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-use function Shieldon\_e;
+use function Shieldon\Firewall\_e;
 
 ?>
 <div class="section-title bg-glass">
@@ -87,7 +87,7 @@ use function Shieldon\_e;
 
                 <code class="p-3 border bg-light d-inline-block text-dark">
                     <span class="text-muted">// You have to inject this variable to the template to make it work.</span><br />
-                    $jsCode = $firewall->getShieldon()->outputJsSnippet();
+                    $jsCode = $firewall->getKernel()->outputJsSnippet();
                 </code><br /><br />
             </td>
         </tr>

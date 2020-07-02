@@ -2,17 +2,17 @@
 
 <phpunit bootstrap="tests/bootstrap.php" stderr="true" processIsolation="true" colors="true" beStrictAboutTestsThatDoNotTestAnything="false">
     <testsuites>
-        <testsuite name="Shieldon Test Suite">
-            <directory>tests/Shieldon/</directory>
+        <testsuite name="Shieldon Firewall Test Suite">
+            <directory>tests/Firewall/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">src/Shieldon/</directory>
+            <directory suffix=".php">src/Firewall/</directory>
 			<exclude>
-				<file>src/Shieldon/Autoloader.php</file>
-                <file>src/Shieldon/helpers.php</file>
-				<directory suffix=".php">src/Shieldon/Integration/</directory>
+				<file>src/Firewall/Autoloader.php</file>
+                <file>src/Firewall/Helpers.php</file>
+				<directory suffix=".php">src/Firewall/Integration/</directory>
 			</exclude>
         </whitelist>
     </filter>

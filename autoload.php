@@ -9,6 +9,6 @@
  * file that was distributed with this source code.
  */
 
-require __DIR__. '/src/Shieldon/Autoloader.php';
+require __DIR__. '/src/Firewall/Autoloader.php';
 
-Shieldon\Autoloader::register();
+Shieldon\Firewall\Autoloader::register();

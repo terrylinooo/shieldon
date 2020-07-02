@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,14 +8,16 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 date_default_timezone_set('UTC');
 
 define('BOOTSTRAP_DIR', __DIR__);
 define('NO_MOCK_ENV', true);
 
-use Shieldon\Utils\Container;
-use Shieldon\HttpFactory;
-use Shieldon\Helpers;
+use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\HttpFactory;
+use Shieldon\Firewall\Helpers;
 
 require __DIR__ . '/../autoload.php';
 require __DIR__ . '/../vendor/autoload.php';
@@ -82,12 +84,12 @@ if (! isset($_SERVER['HTTP_HOST'])) {
  */
 function get_testing_shieldon_instance($driver = 'sqlite')
 {
-    $shieldon = new \Shieldon\Shieldon();
+    $kernel = new \Shieldon\Firewall\Kernel();
 
     switch ($driver) {
 
         case 'file':
-            $shieldon->add(new \Shieldon\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+            $kernel->add(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
             break;
 
         case 'mysql':
@@ -105,13 +107,13 @@ function get_testing_shieldon_instance($driver = 'sqlite')
                 $db['pass']
             );
 
-            $shieldon->add(new \Shieldon\Driver\MysqlDriver($pdoInstance));
+            $kernel->add(new \Shieldon\Firewall\Driver\MysqlDriver($pdoInstance));
             break;
 
         case 'redis':
             $redisInstance = new \Redis();
             $redisInstance->connect('127.0.0.1', 6379); 
-            $shieldon->add(new \Shieldon\Driver\RedisDriver($redisInstance));
+            $kernel->add(new \Shieldon\Firewall\Driver\RedisDriver($redisInstance));
             break;
 
         case 'memcache':
@@ -126,7 +128,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
                     die('Cannot connect to Memcache server.');
                 }
             }
-            $shieldon->add(new \Shieldon\Driver\MemcacheDriver($memcacheInstance));
+            $kernel->add(new \Shieldon\Firewall\Driver\MemcacheDriver($memcacheInstance));
             break;
 
         case 'mongodb':
@@ -139,7 +141,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
                     die('Cannot connect to MongoDB.');
                 }
             }
-            $shieldon->add(new \Shieldon\Driver\MongoDriver($mongoInstance));
+            $kernel->add(new \Shieldon\Firewall\Driver\MongoDriver($mongoInstance));
             break;
 
         case 'sqlite':
@@ -148,7 +150,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
 
             try {
                 $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-                $shieldon->add(new \Shieldon\Driver\SqliteDriver($pdoInstance));
+                $kernel->add(new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance));
             } catch(\PDOException $e) {
                 throw $e->getMessage();
             }
@@ -156,7 +158,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
             break;
     }
 
-    return $shieldon;
+    return $kernel;
 }
 
 function rand_ip()

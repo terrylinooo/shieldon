@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-use function Shieldon\_e;
+use function Shieldon\Firewall\_e;
 
 $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
 

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-use function Shieldon\_e;
+use function Shieldon\Firewall\_e;
 
 $timezone = '';
 
@@ -396,13 +396,13 @@ $timezone = '';
 <script type="text/template" id="filters-session">
     <pre>
         <code class="php">
-$shieldon->setFilters([
+$kernel->setFilters([
     'session' => true
 ]);
 
 // or
 
-$shieldon->setFilter('session', true);
+$kernel->setFilter('session', true);
         </code>
     </pre>
 </script>
@@ -410,13 +410,13 @@ $shieldon->setFilter('session', true);
 <script type="text/template" id="filters-cookie">
     <pre>
         <code class="php">
-$shieldon->setFilters([
+$kernel->setFilters([
     'cookie' => true
 ]);
 
 // or
 
-$shieldon->setFilter('cookie', true);
+$kernel->setFilter('cookie', true);
         </code>
     </pre>
 </script>
@@ -424,14 +424,14 @@ $shieldon->setFilter('cookie', true);
 <script type="text/template" id="filters-frequency">
     <pre>
         <code class="php">
-$shieldon->setFilters([
+$kernel->setFilters([
     'frequency' => true
 ]);
 
 // or
-$shieldon->setFilter('frequency', true);
+$kernel->setFilter('frequency', true);
 
-$shieldon->setProperty('time_unit_quota', [
+$kernel->setProperty('time_unit_quota', [
     's' => 4,
     'm' => 20, 
     'h' => 60, 
@@ -445,13 +445,13 @@ $shieldon->setProperty('time_unit_quota', [
 <script type="text/template" id="filters-referer">
     <pre>
         <code class="php">
-$shieldon->setFilters([
+$kernel->setFilters([
     'referer' => true
 ]);
 
 // or
 
-$shieldon->setFilter('referer', true);
+$kernel->setFilter('referer', true);
         </code>
     </pre>
 </script>
@@ -459,8 +459,8 @@ $shieldon->setFilter('referer', true);
 <script type="text/template" id="components-ip">
     <pre>
         <code class="php">
-$ip = new \Shieldon\Component\Ip();
-$shieldon->setComponent($ip);
+$ip = new \Shieldon\Firewall\Component\Ip();
+$kernel->setComponent($ip);
         </code>
     </pre>
     <h5>API</h5>
@@ -482,8 +482,8 @@ $shieldon->setComponent($ip);
 <script type="text/template" id="components-trustedbot">
     <pre>
         <code class="php">
-$robot = new \Shieldon\Component\TrustedBot();
-$shieldon->setComponent($robot);
+$robot = new \Shieldon\Firewall\Component\TrustedBot();
+$kernel->setComponent($robot);
         </code>
     </pre>
     <h5>API</h5>
@@ -508,8 +508,8 @@ $shieldon->setComponent($robot);
 <script type="text/template" id="components-header">
     <pre>
         <code class="php">
-$header = new \Shieldon\Component\Header();
-$shieldon->setComponent($header);
+$header = new \Shieldon\Firewall\Component\Header();
+$kernel->setComponent($header);
         </code>
     </pre>
     <h5>API</h5>
@@ -528,8 +528,8 @@ $shieldon->setComponent($header);
 <script type="text/template" id="components-rdns">
     <pre>
         <code class="php">
-$rdns = new \Shieldon\Component\Rdns();
-$shieldon->setComponent($rdns);
+$rdns = new \Shieldon\Firewall\Component\Rdns();
+$kernel->setComponent($rdns);
         </code>
     </pre>
     <h5>API</h5>
@@ -548,8 +548,8 @@ $shieldon->setComponent($rdns);
 <script type="text/template" id="components-useragent">
     <pre>
         <code class="php">
-$agent = new \Shieldon\Component\UserAgent();
-$shieldon->setComponent($agent);
+$agent = new \Shieldon\Firewall\Component\UserAgent();
+$kernel->setComponent($agent);
         </code>
     </pre>
     <h5>API</h5>
@@ -585,8 +585,8 @@ $pdoInstance = new \PDO(
     , $db['pass']
 );
 
-$shieldon->setDriver(
-    new \Shieldon\Driver\MysqlDriver($pdoInstance)
+$kernel->setDriver(
+    new \Shieldon\Firewall\Driver\MysqlDriver($pdoInstance)
 );
         </code>
     </pre>
@@ -598,8 +598,8 @@ $shieldon->setDriver(
 $redisInstance = new \Redis();
 $redisInstance->connect('127.0.0.1', 6379); 
 
-$shieldon->setDriver(
-    new \Shieldon\Driver\RedisDriver($redisInstance)
+$kernel->setDriver(
+    new \Shieldon\Firewall\Driver\RedisDriver($redisInstance)
 );
         </code>
     </pre>
@@ -612,8 +612,8 @@ $shieldon->setDriver(
 // $path:
 // Absolute path of the directory where you store the data in.
 
-$shieldon->setDriver(
-    new \Shieldon\Driver\FileDriver($path)
+$kernel->setDriver(
+    new \Shieldon\Firewall\Driver\FileDriver($path)
 );
         </code>
     </pre>
@@ -627,7 +627,7 @@ $shieldon->setDriver(
 
 $dbLocation = APPPATH . 'cache/shieldon.sqlite3';
 $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-$shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
+$kernel->setDriver(new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance));
         </code>
     </pre>
 </script>
@@ -638,8 +638,8 @@ $shieldon->setDriver(new \Shieldon\Driver\SqliteDriver($pdoInstance));
 // $logDirectory:
 // Absolute path of the directory where the logs will be stored in.
 
-$logger = new \Shieldon\Log\ActionLogger($logDirectory);
-$shieldon->setLogger($logger);
+$logger = new \Shieldon\Firewall\Log\ActionLogger($logDirectory);
+$kernel->setLogger($logger);
         </code>
     </pre>
 </script>
@@ -652,8 +652,8 @@ $captchaConfig = [
     'secret' => '6LfkOaUUAAAAAJddZ6k-1j4hZC1rOqYZ9gLm0WQh',
 ];
 
-$captchaInstance = new \Shieldon\Captcha\Recaptcha($captchaConfig);
-$shieldon->setCaptcha($captchaInstance);
+$captchaInstance = new \Shieldon\Firewall\Captcha\Recaptcha($captchaConfig);
+$kernel->setCaptcha($captchaInstance);
         </code>
     </pre>
 </script>
@@ -665,8 +665,8 @@ $config = [
     'word_length' => 6,
 ];
 
-$captchaInstance = new \Shieldon\Captcha\ImageCaptcha($config);
-$shieldon->setCaptcha($captchaInstance);
+$captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha($config);
+$kernel->setCaptcha($captchaInstance);
         </code>
     </pre>
 </script>

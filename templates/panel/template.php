@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use function Shieldon\_e;
+use function Shieldon\Firewall\_e;
 
 /**
  * Hightlight current page position in sidebar menu.
@@ -361,7 +361,7 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                 <div class="row">
                     <div class="col-md-2">
                         <a href="https://github.com/terrylinooo/shieldon" target="_blank"><i class="fab fa-github"></i></a>
-                        <?php echo SHIELDON_VERSION; ?>
+                        <?php echo SHIELDON_FIREWALL_VERSION; ?>
                     </div>
                     <div class="col-md-10">
                         Powered by <a href="https://shieldon.io" target="_blank">Shieldon</a> 

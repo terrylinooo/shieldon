@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-use function Shieldon\_e;
-use function Shieldon\__;
-use function Shieldon\mask_string;
+use function Shieldon\Firewall\_e;
+use function Shieldon\Firewall\__;
+use function Shieldon\Firewall\mask_string;
 
 $timezone = '';
 
