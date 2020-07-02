@@ -11,10 +11,10 @@
 declare(strict_types=1);
 
 namespace Shieldon\Captcha;
+use function Shieldon\get_request;
 
 class Foundation extends CaptchaProvider
 {
-
     /**
      * Constructor.
      *
@@ -36,13 +36,15 @@ class Foundation extends CaptchaProvider
      */
     public function response(): bool
     {
-        if (empty($_POST['shieldon_captcha'])) {
+        $post = get_request()->getParsedBody();
+
+        if (empty($post['shieldon_captcha'])) {
             return false;
         }
 
         $flag = false;
 
-        if ($_POST['shieldon_captcha'] === 'ok') {
+        if ($post['shieldon_captcha'] === 'ok') {
             $flag = true;
         }
 

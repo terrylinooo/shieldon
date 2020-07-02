@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Shieldon\Captcha;
 
+use function Shieldon\get_request;
+use function Shieldon\get_session;
 use function base64_encode;
 use function cos;
 use function function_exists;
@@ -109,13 +111,16 @@ class ImageCaptcha implements CaptchaInterface
      */
     public function response(): bool
     {
-        if (empty($_POST['shieldon_image_captcha']) || empty($_SESSION['shieldon_image_captcha_hash'])) {
+        $post = get_request()->getParsedBody();
+        $sessionCaptchaHash = get_session()->get('shieldon_image_captcha_hash');
+        
+        if (empty($post['shieldon_image_captcha']) || empty($sessionCaptchaHash)) {
             return false;
         }
 
         $flag = false;
 
-        if (password_verify($_POST['shieldon_image_captcha'], $_SESSION['shieldon_image_captcha_hash'])) {
+        if (password_verify($post['shieldon_image_captcha'], $sessionCaptchaHash)) {
             $flag = true;
         }
 
@@ -268,7 +273,7 @@ class ImageCaptcha implements CaptchaInterface
         imagedestroy($im);
 
         // Save hash.
-        $_SESSION['shieldon_image_captcha_hash'] = password_hash($this->word, PASSWORD_BCRYPT);
+        get_session()->set('shieldon_image_captcha_hash', password_hash($this->word, PASSWORD_BCRYPT));
 
         return base64_encode($image_data);
     }

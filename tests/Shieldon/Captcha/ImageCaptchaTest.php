@@ -67,6 +67,7 @@ class ImageCaptchaTest extends TestCase
     {
         $_SESSION['shieldon_image_captcha_hash'] = '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.';
         $_POST['shieldon_image_captcha'] = '';
+        reload_request();
 
         $captchaInstance = new ImageCaptcha();
         $result = $captchaInstance->response();
@@ -74,6 +75,7 @@ class ImageCaptchaTest extends TestCase
         $this->assertFalse($result);
 
         $_POST['shieldon_image_captcha'] = 'IA63BXxo';
+        reload_request();
 
         $result = $captchaInstance->response();
         $this->assertTrue($result);

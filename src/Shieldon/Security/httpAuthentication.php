@@ -14,18 +14,9 @@ namespace Shieldon\Security;
 
  /**
   * WWW-Authenticate
-  *
-  * @since 3.0.0
   */
 class httpAuthentication
 {
-    /**
-     * User's current visiting URL.
-     *
-     * @var string
-     */
-    protected $currentUrl = '';
-
     /**
      * The URL list that you want to protect.
      *
@@ -62,8 +53,6 @@ class httpAuthentication
      */
     public function __construct(array $protectedUrlList = [])
     {
-        $this->currentUrl = $_SERVER['REQUEST_URI'];
-
         $this->set($protectedUrlList);
     }
 
@@ -91,20 +80,26 @@ class httpAuthentication
      */
     public function check(): void
     {
+        $currentUrl = get_request()->getUri()->getPath();
+        $serverParams = get_request()->getServerParams();
+
         foreach ($this->protectedUrlList as $urlInfo) {
 
             // If we have set the protection for current URL.
-            if (0 === strpos($this->currentUrl, $urlInfo['url'])) {
+            if (0 === strpos($currentUrl, $urlInfo['url'])) {
 
                 // Prompt a window to ask for username and password.
-                if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
+                if (!isset($serverParams['PHP_AUTH_USER']) || !isset($serverParams['PHP_AUTH_PW'])) {
                     header('WWW-Authenticate: Basic realm="' . $this->realm . '"');
                     header('HTTP/1.0 401 Unauthorized');
                     die('Permission required.');
                 }
                 
                 // Identify the username and password for current URL.
-                if ($urlInfo['user'] === $_SERVER['PHP_AUTH_USER'] && password_verify($_SERVER['PHP_AUTH_PW'], $urlInfo['pass'])) {
+                if (
+                    $urlInfo['user'] === $serverParams['PHP_AUTH_USER'] &&
+                    password_verify($serverParams['PHP_AUTH_PW'], $urlInfo['pass'])
+                ) {
                     // nothing to do right now.
                 } else {
                     header('HTTP/1.0 401 Unauthorized');

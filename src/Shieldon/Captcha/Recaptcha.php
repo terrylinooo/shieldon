@@ -54,12 +54,14 @@ class Recaptcha extends CaptchaProvider
      */
     public function response(): bool
     {
-        if (empty($_POST['g-recaptcha-response'])) {
+        $post = get_request()->getParsedBody();
+
+        if (empty($post['g-recaptcha-response'])) {
             return false;
         }
 
         $flag = false;
-        $reCaptchaToken = str_replace(["'", '"'], '', $_POST['g-recaptcha-response']);
+        $reCaptchaToken = str_replace(["'", '"'], '', $post['g-recaptcha-response']);
 
         $postData = [
             'secret' => $this->secret,
@@ -93,9 +95,7 @@ class Recaptcha extends CaptchaProvider
         curl_close($ch);
 
         // Prevent detecting POST method on RESTful frameworks.
-        if (isset($_POST['g-recaptcha-response'])) {
-            unset($_POST['g-recaptcha-response']);
-        }
+        unset($_POST['g-recaptcha-response']);
 
         return $flag;
     }

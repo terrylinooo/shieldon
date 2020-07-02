@@ -16,17 +16,11 @@ class httpAuthenticationTest extends TestCase
 {
     public function test__construct()
     {
-
         $_SERVER['REQUEST_URI'] = '/wp-amdin';
 
         $httpAuthInstance = new httpAuthentication();
 
         $reflection = new \ReflectionObject($httpAuthInstance);
-        $t = $reflection->getProperty('currentUrl');
-        $t->setAccessible(true);
-        $currentUrl = $t->getValue($httpAuthInstance);
-        
-        $this->assertSame($currentUrl, '/wp-amdin');
 
         $httpAuthInstance->set([
             [
