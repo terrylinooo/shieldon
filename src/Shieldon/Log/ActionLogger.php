@@ -96,7 +96,7 @@ final class ActionLogger
      */
     public function add(array $record): void
     {
-        if (! empty($record['session_id'])) {
+        if (!empty($record['session_id'])) {
             $record['session_id'] = substr($record['session_id'], 0, 4);
         }
 
@@ -133,14 +133,14 @@ final class ActionLogger
 
                 $logFile = fopen($this->filePath, 'r');
 
-                while (! feof($logFile)) {
+                while (!feof($logFile)) {
                     $line = fgets($logFile);
 
-                    if (! empty($line)) {
+                    if (!empty($line)) {
                         $data = explode(',', trim($line));
                     }
         
-                    if (! empty($data[0])) {
+                    if (!empty($data[0])) {
                         $results[] = [
                             'ip'          => $data[0],
                             'session_id'  => $data[1],
@@ -175,14 +175,14 @@ final class ActionLogger
 
                     $logFile = fopen($thisDayLogFile, 'r');
 
-                    while (! feof($logFile)) {
+                    while (!feof($logFile)) {
                         $line = fgets($logFile);
 
-                        if (! empty($line)) {
+                        if (!empty($line)) {
                             $data = explode(',', trim($line));
                         }
 
-                        if (! empty($data[0])) {
+                        if (!empty($data[0])) {
                             $results[] = [
                                 'ip'          => $data[0],
                                 'session_id'  => $data[1],
@@ -209,14 +209,14 @@ final class ActionLogger
     {
         $result = true;
 
-        if (! is_dir($this->directory)) {
+        if (!is_dir($this->directory)) {
             $originalUmask = umask(0);
             $result = @mkdir($this->directory, 0777, true);
             umask($originalUmask);
         }
 
         // @codeCoverageIgnoreStart
-        if (! is_writable($this->directory)) {
+        if (!is_writable($this->directory)) {
             throw new RuntimeException('The directory usded by ActionLogger must be writable. (' . $this->directory . ')');
         }
         // @codeCoverageIgnoreEnd

@@ -27,17 +27,18 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
     public function testIsDenied()
     {
-       
-
         $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
+        reload_request();
+
         $headerComponent = new Header();
         
-        $headerComponent->setDeniedItem('test');
+        $headerComponent->setDeniedItem('test', 'test-var');
 
         $result = $headerComponent->isDenied();
         $this->assertTrue($result);
 
         $_SERVER['HTTP_TEST_VAR'] = 'This is a t2est string.';
+        reload_request();
 
         $result = $headerComponent->isDenied();
         $this->assertFalse($result);
@@ -50,23 +51,25 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
     public function testGetHeaders()
     {
-        $headerComponent = new Header();
-
         unset($_SERVER);
 
         $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
         $_SERVER['HTTP_TEST_VAR2'] = 'This is a testt string.';
+        reload_request();
 
+        $headerComponent = new Header();
         $results = $headerComponent->getHeaders();
 
         $this->assertSame($results, [
-            'Test-Var' => 'This is a test string.',
-            'Test-Var2' => 'This is a testt string.',
+            'test-var' => ['This is a test string.'],
+            'test-var2' => ['This is a testt string.'],
         ]);
 
         unset($_SERVER['HTTP_TEST_VAR']);
         unset($_SERVER['HTTP_TEST_VAR2']);
+        reload_request();
 
+        $headerComponent = new Header();
         $results = $headerComponent->getHeaders();
         $this->assertSame($results, []);
     }
@@ -76,9 +79,9 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $list = ['gzip', 'robot'];
 
         $headerComponent = new Header();
-        $headerComponent->setDeniedList($list);
+        $headerComponent->setDeniedItems($list);
 
-        $deniedList = $headerComponent->getDeniedList();
+        $deniedList = $headerComponent->getDeniedItems();
 
         $this->assertSame($deniedList, $list);
     }
@@ -91,7 +94,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $headerComponent = new Header();
         $headerComponent->setDeniedItem($string);
 
-        $deniedList = $headerComponent->getDeniedList();
+        $deniedList = $headerComponent->getDeniedItems();
 
         if (in_array($string, $deniedList)) {
             $this->assertTrue(true);
@@ -103,7 +106,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
     public function testGetDeniedList()
     {
         $headerComponent = new Header();
-        $deniedList = $headerComponent->getDeniedList();
+        $deniedList = $headerComponent->getDeniedItems();
 
         $this->assertSame($deniedList, []);
     }
@@ -115,12 +118,12 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $headerComponent = new Header();
         $headerComponent->setDeniedItem($string);
 
-        $deniedList = $headerComponent->getDeniedList();
+        $deniedList = $headerComponent->getDeniedItems();
 
         $this->assertSame($deniedList, ['gzip']);
 
-        $headerComponent->removeItem('gzip');
-        $deniedList = $headerComponent->getDeniedList();
+        $headerComponent->removeDeniedItems();
+        $deniedList = $headerComponent->getDeniedItems();
 
         $this->assertSame($deniedList, []);
     }

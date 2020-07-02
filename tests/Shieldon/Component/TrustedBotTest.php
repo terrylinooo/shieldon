@@ -10,7 +10,6 @@
 
 namespace Shieldon\Component;
 
-
 class TrustedBotTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
@@ -53,6 +52,8 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
 
+        reload_request();
+
         $trustedBotComponent = new TrustedBot();
         $result = $trustedBotComponent->isAllowed();
         $this->assertFalse($result);
@@ -68,7 +69,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
         $result = $trustedBotComponent->isAllowed();
         $this->assertFalse($result);
 
-        $trustedBotComponent->setList([]);
+        $trustedBotComponent->setAllowedItems([]);
         $result = $trustedBotComponent->isAllowed();
         $this->assertFalse($result);
     }
@@ -77,8 +78,8 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     {
         $trustedBotComponent = new TrustedBot();
 
-        $trustedBotComponent->removeItem('google');
-        $list = $trustedBotComponent->getList();
+        $trustedBotComponent->removeAllowedItem('google');
+        $list = $trustedBotComponent->getAllowedItems();
 
         $result = array_column($list, 'google');
 
@@ -89,31 +90,29 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testAddItem()
+    public function testAddTrustedBot()
     {
         $trustedBotComponent = new TrustedBot();
 
-        $trustedBotComponent->addItem('acer', '.acer-euro.com');
-        $list = $trustedBotComponent->getList();
-
-        $test = $list[count($list)-1];
+        $trustedBotComponent->addTrustedBot('acer', 'acer', '.acer-euro.com');
+        $list = $trustedBotComponent->getAllowedItems();
+        
+        $test = $list['acer'];
 
         $this->assertSame($test['userAgent'] , 'acer');
         $this->assertSame($test['rdns'] , '.acer-euro.com');
-       
     }
 
     public function testAddList()
     {
         $trustedBotComponent = new TrustedBot();
-        $trustedBotComponent->setList([]);
-        $trustedBotComponent->addList([
+        $trustedBotComponent->setAllowedItems([
             ['userAgent' => 'hk', 'rdns' => 'free'],
             ['userAgent' => 'tw', 'rdns' => 'free'],
         ]);
 
         $reflection = new \ReflectionObject($trustedBotComponent);
-        $t = $reflection->getProperty('trustedBotList');
+        $t = $reflection->getProperty('allowedList');
         $t->setAccessible(true);
 
         $v = $t->getValue($trustedBotComponent);
@@ -191,6 +190,8 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     public function testFakeGoogleBot_1()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
+
+        reload_request();
     
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('111.111.111.111', false);
@@ -211,6 +212,8 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     public function testFakeGoogleBot_2()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
+
+        reload_request();
     
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('111.111.111.111', false);
@@ -238,6 +241,8 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     public function testFakeGoogleBot_3()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
+
+        reload_request();
     
         $trustedBotComponent = new TrustedBot();
         $trustedBotComponent->setIp('127.0.0.1', false);

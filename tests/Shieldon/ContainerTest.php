@@ -10,9 +10,7 @@
 
 namespace Shieldon;
 
-use PHPUnit\Framework\TestCase;
-
-class ContainerTest extends TestCase
+class ContainerTest extends \PHPUnit\Framework\TestCase
 {
     public function testAll()
     {

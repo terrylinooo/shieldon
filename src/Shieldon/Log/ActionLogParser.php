@@ -89,7 +89,7 @@ final class ActionLogParser
      */
     public function __construct(string $directory = '') 
     {
-        if (! isset($this->logger)) {
+        if (!isset($this->logger)) {
             $this->logger = new Logger($directory);
         }
 
@@ -254,12 +254,12 @@ final class ActionLogParser
 
                     // Initialize all the counters.
                     foreach ($this->fields as $field) {
-                        if (! isset($this->periodDetail[$t][$k][$field])) {
+                        if (!isset($this->periodDetail[$t][$k][$field])) {
                             $this->periodDetail[$t][$k][$field] = 0;
                         }
 
                         if ($logTimesamp >= $detailTimesampBegin && $logTimesamp < $detailTimesampEnd) {
-                            if (! isset($this->ipDetail[$t][$logIp][$field])) {
+                            if (!isset($this->ipDetail[$t][$logIp][$field])) {
                                 $this->ipDetail[$t][$logIp][$field] = 0;
                             }
                         }
@@ -299,7 +299,7 @@ final class ActionLogParser
      */
     public function getPeriodData()
     {
-        if (! empty($this->periodDetail[$this->type])) {
+        if (!empty($this->periodDetail[$this->type])) {
             return $this->periodDetail[$this->type];
         }
         return [];
@@ -312,7 +312,7 @@ final class ActionLogParser
      */
     public function getIpData()
     {
-        if (! empty($this->ipDetail[$this->type])) {
+        if (!empty($this->ipDetail[$this->type])) {
             return $this->ipDetail[$this->type];
         }
         return [];
@@ -349,7 +349,7 @@ final class ActionLogParser
 
         $ipdData = $this->getIpData();
 
-        if (! empty($ipdData)) {
+        if (!empty($ipdData)) {
 
             foreach ($ipdData as $ipKey => $ipInfo) {
 
@@ -403,7 +403,7 @@ final class ActionLogParser
         $results['blacklist_count'] = 0;            // integer
         $results['session_limit_count'] = 0;        // integer
 
-        if (! empty($periodData)) {
+        if (!empty($periodData)) {
 
             $chartCaptcha = [];
             $chartPageview = [];

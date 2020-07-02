@@ -78,8 +78,8 @@ class FileDriver extends DriverProvider
      */
     protected function doInitialize(bool $dbCheck = true): void
     {
-        if (! $this->isInitialized) {
-            if (! empty($this->channel)) {
+        if (!$this->isInitialized) {
+            if (!empty($this->channel)) {
                 $this->setChannel($this->channel);
             }
 
@@ -143,7 +143,7 @@ class FileDriver extends DriverProvider
     {
         $results = [];
 
-        if (! file_exists($this->getFilename($ip, $type))) {
+        if (!file_exists($this->getFilename($ip, $type))) {
             return $results;
         }
 
@@ -163,7 +163,7 @@ class FileDriver extends DriverProvider
                 $fileContent = file_get_contents($this->getFilename($ip, $type));
                 $resultData = json_decode($fileContent, true);
 
-                if (! empty($resultData['log_data'])) {
+                if (!empty($resultData['log_data'])) {
                     $results = $resultData['log_data']; 
                 }
                 break;
@@ -274,9 +274,9 @@ class FileDriver extends DriverProvider
 
         // Check if are Shieldon directories removed or not.
         $result = (
-            ! is_dir($this->getDirectory('filter_log')) && 
-            ! is_dir($this->getDirectory('rule'))       && 
-            ! is_dir($this->getDirectory('session'))
+            !is_dir($this->getDirectory('filter_log')) && 
+            !is_dir($this->getDirectory('rule'))       && 
+            !is_dir($this->getDirectory('session'))
         );
 
         $this->createDirectory();
@@ -295,18 +295,18 @@ class FileDriver extends DriverProvider
 
         $checkingFile = $this->directory . '/' . $this->channel . '_' . $this->checkPoint;
 
-        if (! file_exists($checkingFile)) {
+        if (!file_exists($checkingFile)) {
             $originalUmask = umask(0);
 
-            if (! is_dir($this->getDirectory('filter_log'))) {
+            if (!is_dir($this->getDirectory('filter_log'))) {
                 $resultA = @mkdir($this->getDirectory('filter_log'), 0777, true);
             }
     
-            if (! is_dir($this->getDirectory('rule'))) {
+            if (!is_dir($this->getDirectory('rule'))) {
                 $resultB = @mkdir($this->getDirectory('rule'), 0777, true);
             }
     
-            if (! is_dir($this->getDirectory('session'))) {
+            if (!is_dir($this->getDirectory('session'))) {
                 $resultC = @mkdir($this->getDirectory('session'), 0777, true);
             }
 
@@ -330,7 +330,7 @@ class FileDriver extends DriverProvider
      */
     protected function checkDirectory(): bool
     {
-        if (! is_dir($this->directory) || ! is_writable($this->directory)) {
+        if (!is_dir($this->directory) || !is_writable($this->directory)) {
             throw new RuntimeException(
                 'The directory defined by File Driver must be writable. (' . $this->directory . ')'
             );

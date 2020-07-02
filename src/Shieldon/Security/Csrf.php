@@ -81,7 +81,7 @@ class Csrf
         // Let's start checking process.
 
         // Do the tokens exist in both the _POST and _SESSION?
-        if (! isset($_POST[$this->name], $_SESSION[$this->name])) {
+        if (!isset($_POST[$this->name], $_SESSION[$this->name])) {
             return false;
         }
 

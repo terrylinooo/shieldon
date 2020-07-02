@@ -121,7 +121,7 @@ final class ActionLogParsedCache
                 $keepCache = false;
             }
 
-            if (! $keepCache) {
+            if (!$keepCache) {
                 $data = [];
             }
             // @codeCoverageIgnoreEnd

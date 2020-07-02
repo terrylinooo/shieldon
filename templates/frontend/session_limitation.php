@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-use function Shieldon\Helper\_e;
+use function Shieldon\_e;
 
 $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-clock_96x96.png';
 

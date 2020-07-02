@@ -60,14 +60,14 @@ class Session
                 session_start();
             }
 
-            if (! $this->id) {
+            if (!$this->id) {
                 $this->id = session_id();
             }
         }
 
         // If null, we give it a default value.
         // It happens as in CLI environment.
-        if (! isset($_SESSION)) {
+        if (!isset($_SESSION)) {
             $_SESSION = [];
         }
 

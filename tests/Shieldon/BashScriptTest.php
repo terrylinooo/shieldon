@@ -10,9 +10,7 @@
 
 namespace Shieldon;
 
-use PHPUnit\Framework\TestCase;
-
-class BashScriptTest extends TestCase
+class BashScriptTest extends \PHPUnit\Framework\TestCase
 {
     protected $iptablesWatchingFolder = '';
 

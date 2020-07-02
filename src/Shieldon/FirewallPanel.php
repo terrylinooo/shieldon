@@ -26,7 +26,7 @@ use Shieldon\Shieldon;
 use Shieldon\FirewallTrait;
 use Messenger as MessengerModule;
 
-use function Shieldon\Helper\__;
+use function Shieldon\__;
 
 use PDO;
 use PDOException;

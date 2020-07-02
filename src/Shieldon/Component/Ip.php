@@ -32,6 +32,7 @@ use function unpack;
 class Ip extends ComponentProvider
 {
     use IpTrait;
+    use AllowedTrait;
 
     const STATUS_CODE = 81;
 
@@ -340,43 +341,6 @@ class Ip extends ComponentProvider
         }
 
         return false;
-    }
-
-    /**
-     * Add IP addresses to the whitelist pool.
-     *
-     * @param array $stringList String list.
-     *
-     * @return void
-     */
-    public function setAllowedList(array $stringList): void
-    {
-        $this->allowedList = $stringList;
-    }
-
-    /**
-     * Add an allowed item to the whitelist pool.
-     *
-     * @param string $string
-     *
-     * @return void
-     */
-    public function setAllowedItem(string $string): void
-    {
-        if (!in_array($string, $this->allowedList)) {
-            array_push($this->allowedList, $string);
-        }
-    }
-
-    /**
-     * Get IP addresses from the whitelist pool.
-     *
-     * @return array
-     */
-    public function getAllowedList(): array
-    {
-        return $this->allowedList;
-        
     }
 
     /**

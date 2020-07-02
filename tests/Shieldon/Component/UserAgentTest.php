@@ -10,7 +10,6 @@
 
 namespace Shieldon\Component;
 
-
 class UserAgentTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
@@ -31,9 +30,9 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
         $list = ['google.com', 'yahoo.com'];
 
         $userAgentComponent = new UserAgent();
-        $userAgentComponent->setDeniedList($list);
+        $userAgentComponent->setDeniedItems($list);
 
-        $deniedList = $userAgentComponent->getDeniedList();
+        $deniedList = $userAgentComponent->getDeniedItems();
 
         $this->assertSame($deniedList, $list);
     }
@@ -45,7 +44,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
         $userAgentComponent = new UserAgent();
         $userAgentComponent->setDeniedItem($string);
 
-        $deniedList = $userAgentComponent->getDeniedList();
+        $deniedList = $userAgentComponent->getDeniedItems();
 
         if (in_array($string, $deniedList)) {
             $this->assertTrue(true);
@@ -57,17 +56,17 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
     public function testGetDeniedList()
     {
         $userAgentComponent = new UserAgent();
-        $deniedList = $userAgentComponent->getDeniedList();
+        $deniedList = $userAgentComponent->getDeniedItems();
 
-        $this->assertSame($deniedList, [
-            'domain',
-            'copyright',
+        $this->assertSame(array_values($deniedList), [
             'Ahrefs',
             'roger',
             'moz.com',
             'MJ12bot',
             'findlinks',
             'Semrush',
+            'domain',
+            'copyright',
             'archive',
         ]);
     }
@@ -75,9 +74,9 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
     public function testRemoveItem()
     {
         $userAgentComponent = new UserAgent();
-        $userAgentComponent->removeItem('Ahrefs');
+        $userAgentComponent->removeDeniedItem('0');
 
-        $deniedList = $userAgentComponent->getDeniedList();
+        $deniedList = $userAgentComponent->getDeniedItems();
 
         if (! in_array('Ahrefs', $deniedList)) {
             $this->assertTrue(true);
@@ -89,6 +88,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
     public function testIsDenied()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)';
+        reload_request();
 
         $userAgentComponent = new UserAgent();
 
@@ -96,13 +96,15 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($result);
 
         $_SERVER['HTTP_USER_AGENT'] = '';
+        reload_request();
+
         $userAgentComponent = new UserAgent();
         $userAgentComponent->setStrict(true);
         $result = $userAgentComponent->isDenied();
         $this->assertTrue($result);
 
         $reflection = new \ReflectionObject($userAgentComponent);
-        $t = $reflection->getProperty('userAgentString');
+        $t = $reflection->getProperty('userAgent');
         $t->setAccessible(true);
   
         if ($t->getValue($userAgentComponent) === '') {

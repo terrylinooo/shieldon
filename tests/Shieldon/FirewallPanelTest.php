@@ -10,16 +10,11 @@
 
 namespace Shieldon;
 
-use PHPUnit\Framework\TestCase;
-use Shieldon\Firewall;
-use Shieldon\Shieldon;
-use Shieldon\Log\ActionLogger;
-
-class FirewallPanelTest extends TestCase
+class FirewallPanelTest extends \PHPUnit\Framework\TestCase
 {
     public function testFirewall()
     {
-        $firewall = new Firewall();
+        $firewall = new \Shieldon\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
         $_SERVER['PHP_AUTH_USER'] = 'shieldon_user';
@@ -30,8 +25,8 @@ class FirewallPanelTest extends TestCase
 
     public function testShieldon()
     {
-        $shieldon = new Shieldon();
-        $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $shieldon = new \Shieldon\Shieldon();
+        $logger = new \Shieldon\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
         $shieldon->add($logger);
 
         $_SERVER['PHP_AUTH_USER'] = 'shieldon_user';

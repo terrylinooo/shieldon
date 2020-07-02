@@ -76,7 +76,7 @@ class httpAuthentication
      */
     public function set(array $protectedUrlList = []): void
     {
-        if (! empty($protectedUrlList)) {
+        if (!empty($protectedUrlList)) {
             $this->protectedUrlList = $protectedUrlList;
         }
     }
@@ -97,7 +97,7 @@ class httpAuthentication
             if (0 === strpos($this->currentUrl, $urlInfo['url'])) {
 
                 // Prompt a window to ask for username and password.
-                if (! isset($_SERVER['PHP_AUTH_USER']) || ! isset($_SERVER['PHP_AUTH_PW'])) {
+                if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
                     header('WWW-Authenticate: Basic realm="' . $this->realm . '"');
                     header('HTTP/1.0 401 Unauthorized');
                     die('Permission required.');

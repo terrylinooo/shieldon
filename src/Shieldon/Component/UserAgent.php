@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Shieldon\Component;
 
 use Shieldon\IpTrait;
-use function Shieldon\Helper\get_request;
+use function Shieldon\get_request;
 
 use function implode;
 use function preg_match;
@@ -35,35 +35,33 @@ class UserAgent extends ComponentProvider
     private $userAgent = '';
 
     /**
-     * Those robots are considered as bad behavior. 
-     * Therefore we list them here.
-     *
-     * @var array
-     */
-    protected $deniedList = [
-
-        // Web information crawlers
-        'domain',     // Domain name information crawlers.
-        'copyright',  // Copyright information crawlers.
-
-        // SEO backlink crawlers
-        'Ahrefs',     // http://ahrefs.com/robot/
-        'roger',      // rogerbot (SEOMOZ)
-        'moz.com',    // SEOMOZ crawlers
-        'MJ12bot',    // Majestic crawlers
-        'findlinks',  // http://wortschatz.uni-leipzig.de/findlinks
-        'Semrush',    // http://www.semrush.com/bot.html
-
-        // Others
-        'archive',    // Wayback machine
-    ];
-
-    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->userAgent = get_request()->getHeaderLine('user-agent');
+
+        /**
+         * Those robots are considered as bad behavior. 
+         * Therefore we list them here.
+         */
+        $this->deniedList = [
+
+            // Backlink crawlers
+            'Ahrefs',     // http://ahrefs.com/robot/
+            'roger',      // rogerbot (SEOMOZ)
+            'moz.com',    // SEOMOZ crawlers
+            'MJ12bot',    // Majestic crawlers
+            'findlinks',  // http://wortschatz.uni-leipzig.de/findlinks
+            'Semrush',    // http://www.semrush.com/bot.html
+    
+            // Web information crawlers
+            'domain',     // Domain name information crawlers.
+            'copyright',  // Copyright information crawlers.
+    
+            // Others
+            'archive',    // Wayback machine
+        ];
     }
 
     /**
@@ -89,9 +87,7 @@ class UserAgent extends ComponentProvider
     }
 
     /**
-     * Unique deny status code.
-     *
-     * @return int
+     * {@inheritDoc}
      */
     public function getDenyStatusCode(): int
     {

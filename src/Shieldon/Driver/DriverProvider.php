@@ -63,7 +63,7 @@ class DriverProvider extends AbstractDriver
     {
         $this->channel = $channel;
 
-        if (! empty($this->channel)) {
+        if (!empty($this->channel)) {
             $this->tableFilterLogs = $this->channel . '_shieldon_filter_logs';
             $this->tableRuleList = $this->channel . '_shieldon_rule_list';
             $this->tableSessions = $this->channel . '_shieldon_sessions';

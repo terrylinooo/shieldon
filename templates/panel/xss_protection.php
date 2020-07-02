@@ -10,8 +10,8 @@
 
 $timezone = '';
 
-use function Shieldon\Helper\_e;
-use function Shieldon\Helper\mask_string;
+use function Shieldon\_e;
+use function Shieldon\mask_string;
 
 ?>
 

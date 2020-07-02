@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Shieldon\Component;
 
 use Shieldon\IpTrait;
-use function Shieldon\Helper\get_request;
+use function Shieldon\get_request;
 
 use function array_column;
 use function array_merge;
@@ -29,6 +29,7 @@ use function strstr;
 class TrustedBot extends ComponentProvider
 {
     use IpTrait;
+    use AllowedTrait;
 
     const STATUS_CODE = 85;
 
@@ -39,97 +40,6 @@ class TrustedBot extends ComponentProvider
      */
     private $userAgent = '';
 
-    /**
-     * Trusted bot list.
-     *
-     * @var array
-     */
-    private $trustedBotList = [
-
-        // Search engline: Google.
-        [
-            'userAgent' => 'google',
-            'rdns'      => '.googlebot.com',
-        ],
-
-        [
-            'userAgent' => 'google',
-            'rdns'      => '.google.com',
-        ],
-
-        // Search engline: Mircosoft.
-        [
-            'userAgent' => 'live',
-            'rdns'      => '.live.com',
-        ],
-
-        [
-            'userAgent' => 'msn',
-            'rdns'      => '.msn.com',
-        ],
-
-        [
-            'userAgent' => 'bing',
-            'rdns'      => '.bing.com',
-        ],
-
-        // Search engline: Yahoo.
-        [
-            'userAgent' => 'inktomisearch',
-            'rdns'      => '.inktomisearch.com',
-        ],
-
-        [
-            'userAgent' => 'yahoo',
-            'rdns'      => '.yahoo.com',
-        ],
-
-        [
-            'userAgent' => 'yahoo',
-            'rdns'      => '.yahoo.net',
-        ],
-
-        // Search engine: Yandex.
-        [
-            'userAgent' => 'yandex',
-            'rdns'      => '.yandex.com',
-        ],
-
-        [
-            'userAgent' => 'yandex',
-            'rdns'      => '.yandex.net',
-        ],
-
-        [
-            'userAgent' => 'yandex',
-            'rdns'      => '.yandex.ru',
-        ],
-
-        // Facebook crawlers.
-        [
-            'userAgent' => 'facebook',
-            'rdns'      => '.fbsv.net',
-        ],
-
-        // Twitter crawlers.
-        [
-            'userAgent' => 'Twitterbot',
-            'rdns'      => '.twttr.com', // (not twitter.com)
-        ],
-
-        // W3C validation services.
-        [
-            'userAgent' => 'w3.org',
-            'rdns'      => '.w3.org',
-        ],
-
-        // Ask.com crawlers.
-        [
-            'userAgent' => 'ask',
-            'rdns'      => '.ask.com',
-        ],
-    ];
-    
     /**
      * For testing purpse. (Unit test)
      *
@@ -150,16 +60,104 @@ class TrustedBot extends ComponentProvider
     public function __construct()
     {
         $this->userAgent = get_request()->getHeaderLine('user-agent');
+
+        $this->allowedList = [
+
+            // Search engline: Google.
+            'google_1' => [
+                'userAgent' => 'google',
+                'rdns'      => '.googlebot.com',
+            ],
+    
+            'google_2' => [
+                'userAgent' => 'google',
+                'rdns'      => '.google.com',
+            ],
+    
+            // Search engline: Mircosoft.
+            'bing_1' => [
+                'userAgent' => 'live',
+                'rdns'      => '.live.com',
+            ],
+    
+            'bing_2' => [
+                'userAgent' => 'msn',
+                'rdns'      => '.msn.com',
+            ],
+    
+            'bing_3' => [
+                'userAgent' => 'bing',
+                'rdns'      => '.bing.com',
+            ],
+    
+            // Search engline: Yahoo.
+            'yahoo_1' => [
+                'userAgent' => 'inktomisearch',
+                'rdns'      => '.inktomisearch.com',
+            ],
+    
+            'yahoo_2' => [
+                'userAgent' => 'yahoo',
+                'rdns'      => '.yahoo.com',
+            ],
+    
+            'yahoo_3' => [
+                'userAgent' => 'yahoo',
+                'rdns'      => '.yahoo.net',
+            ],
+    
+            // Search engine: Yandex.
+            'yandex_1' => [
+                'userAgent' => 'yandex',
+                'rdns'      => '.yandex.com',
+            ],
+    
+            'yandex_2' => [
+                'userAgent' => 'yandex',
+                'rdns'      => '.yandex.net',
+            ],
+    
+            'yandex_3' => [
+                'userAgent' => 'yandex',
+                'rdns'      => '.yandex.ru',
+            ],
+    
+            // Facebook crawlers.
+            'facebook' => [
+                'userAgent' => 'facebook',
+                'rdns'      => '.fbsv.net',
+            ],
+    
+            // Twitter crawlers.
+            'twitter' => [
+                'userAgent' => 'Twitterbot',
+                'rdns'      => '.twttr.com', // (not twitter.com)
+            ],
+    
+            // W3C validation services.
+            'w3' => [
+                'userAgent' => 'w3.org',
+                'rdns'      => '.w3.org',
+            ],
+    
+            // Ask.com crawlers.
+            'ask' => [
+                'userAgent' => 'ask',
+                'rdns'      => '.ask.com',
+            ],
+        ];
+
+        $this->deniedList = [];
     }
 
     /**
-     * {@inheritDoc}
+     * Check the user-agent string and rdns in the trusted list.
      */
     public function isAllowed(): bool
     {
-        if (!empty($this->trustedBotList)) {
+        if (!empty($this->allowedList)) {
 
-            $userAgent = array_unique(array_column($this->trustedBotList, 'userAgent'));
+            $userAgent = array_unique(array_column($this->allowedList, 'userAgent'));
 
             if (!preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgent)) {
                 // Okay, current request's user-agent string doesn't contain our truested bots' infroamtion.
@@ -167,7 +165,7 @@ class TrustedBot extends ComponentProvider
                 return false;
             }
 
-            $rdns = array_unique(array_column($this->trustedBotList, 'rdns'));
+            $rdns = array_unique(array_column($this->allowedList, 'rdns'));
 
             $rdnsCheck = false;
 
@@ -223,84 +221,6 @@ class TrustedBot extends ComponentProvider
         }
 
         return false;
-    }
-
-    /**
-     * Add a trusted bot.
-     *
-     * @param string $userAgent
-     *
-     * @param string $rdns
-     *
-     * @return void
-     */
-    public function addItem(string $userAgent, string $rdns): void
-    {
-        $_rdns = '.' . trim($rdns, '.');
-
-        $this->trustedBotList[] = [
-            'userAgent' => $userAgent,
-            'rdns'      => $_rdns,
-        ];
-    }
-
-    /**
-     * Add trusted bot list.
-     *
-     * @param array $list
-     *
-     * @return void
-     */
-    public function addList(array $list): void
-    {
-        if (!empty($list[0]['userAgent']) && !empty($list[0]['rdns']) && 2 === count($list[0])) {
-
-            // Append the new list to the end.
-            $this->trustedBotList = array_merge($this->trustedBotList, $list);
-        }
-    }
-
-    /**
-     * Get trusted list.
-     *
-     * @return array
-     */
-    public function getList(): array
-    {
-        return $this->trustedBotList;
-    }
-
-    /**
-     * Set trusted list.
-     *
-     * @return void
-     */
-    public function setList(array $list): void
-    {
-        $this->trustedBotList = $list;
-    }
-
-    /**
-     * Remove item.
-     *
-     * @param string $string
-     *
-     * @return void
-     */
-    public function removeItem(string $string): void
-    {
-        if (!empty($this->trustedBotList)) {
-            foreach ($this->trustedBotList as $index => $list) {
-
-                if ($list['userAgent'] === $string) {
-                    unset($this->trustedBotList[$index]);
-                }
-
-                if ($list['rdns'] === $string) {
-                    unset($this->trustedBotList[$index]);
-                }
-            }
-        }
     }
 
     /**
@@ -368,5 +288,22 @@ class TrustedBot extends ComponentProvider
     public function getDenyStatusCode(): int
     {
         return self::STATUS_CODE;
+    }
+
+    /**
+     * Add new items to the allowed list.
+     *
+     * @param string $name      The key for this inforamtion.
+     * @param string $useragent A piece of user-agent string that can identify.
+     * @param string $rdns      The RDNS inforamtion of the bot.
+     *
+     * @return void
+     */
+    public function addTrustedBot(string $name, string $useragent, string $rdns)
+    {
+        $this->setAllowedItem([
+            'userAgent' => $useragent,
+            'rdns' => $rdns,
+        ], $name);
     }
 }

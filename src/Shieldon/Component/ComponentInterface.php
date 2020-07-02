@@ -20,36 +20,71 @@ interface ComponentInterface
     /**
      * Set denied item list. 
      *
-     * @param array $stringList String list.
+     * @param array $itemList String list.
      *
      * @return void
      */
-    function setDeniedList(array $stringList): void;
+    function setDeniedItems(array $itemList): void;
 
     /**
      * Set denied item.
      *
-     * @param string $string
+     * @param string|array $value
+     * @param string       $key
      *
      * @return void
      */
-    function setDeniedItem(string $string): void;
+    function setDeniedItem($value, string $key): void;
 
     /**
      * Return current denied list.
      *
      * @return array
      */
-    function getDeniedList(): array;
+    function getDeniedItems(): array;
 
     /**
      * Remove a denied item.
      *
-     * @param string $string
+     * @param string $key
      *
      * @return void
      */
-    function removeItem(string $string): void;
+    function removeDeniedItem(string $key): void;
+
+    /**
+     * Remove all items.
+     *
+     * @return void
+     */
+    function removeDeniedItems(): void;
+
+    /**
+     * Check if a denied item exists.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    function hasDeniedItem(string $key): bool;
+
+    /**
+     * Get denied items have the same prefix.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    function getDeniedItemsWithPrefix(string $key): array;
+
+    /**
+     * Remove denied items with the same prefix.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    function removeDeniedItemsWithPrefix(string $key): void;
 
     /**
      * Unique deny status code.

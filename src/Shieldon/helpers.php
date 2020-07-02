@@ -10,16 +10,25 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Helper;
+namespace Shieldon;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Shieldon\HttpFactory;
 use Shieldon\Utils\Container;
 
 /**
  * This value will be only displayed on Firewall Panel.
  */
 define('SHIELDON_VERSION', '2.0');
+
+/**
+ * Just use PSR-4 autoloader to load those helper functions.
+ */
+class Helpers
+{
+
+}
 
 /**
  * Get locale message.

@@ -318,7 +318,7 @@ class ShieldonTest extends TestCase
         $shieldon->run();
 
         // Test.
-        $testSessionId = $shieldon->session->get('id');
+        $testSessionId = get_session()->get('id');
 
         $this->assertSame($sessionId, $testSessionId);
 

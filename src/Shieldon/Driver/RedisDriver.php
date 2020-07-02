@@ -53,7 +53,7 @@ class RedisDriver extends DriverProvider
     {
         $this->channel = $channel;
 
-        if (! empty($this->channel)) {
+        if (!empty($this->channel)) {
             $this->tableFilterLogs = $this->channel . ':shieldon_filter_logs';
             $this->tableRuleList = $this->channel . ':shieldon_rule_list';
             $this->tableSessions = $this->channel . ':shieldon_sessions';
@@ -70,8 +70,8 @@ class RedisDriver extends DriverProvider
      */
     protected function doInitialize(bool $dbCheck = true): void
     {
-        if (! $this->isInitialized) {
-            if (! empty($this->channel)) {
+        if (!$this->isInitialized) {
+            if (!empty($this->channel)) {
                 $this->setChannel($this->channel);
             }
         }
@@ -123,7 +123,7 @@ class RedisDriver extends DriverProvider
     {
         $results = [];
 
-        if (! $this->checkExist($ip, $type)) {
+        if (!$this->checkExist($ip, $type)) {
             return $results;
         }
 
@@ -143,7 +143,7 @@ class RedisDriver extends DriverProvider
                 $content = $this->redis->get($this->getKeyName($ip, $type));
                 $resultData = json_decode($content, true);
 
-                if (! empty($resultData['log_data'])) {
+                if (!empty($resultData['log_data'])) {
                     $results = $resultData['log_data']; 
                 }
         }
@@ -226,7 +226,7 @@ class RedisDriver extends DriverProvider
         foreach (['rule', 'filter_log', 'session'] as $type) {
             $keys = $this->redis->keys($this->getNamespace($type) . ':*');
 
-            if (! empty($keys)) {
+            if (!empty($keys)) {
                 foreach($keys as $key) {
                     $this->redis->del($key);
                 }

@@ -12,25 +12,16 @@ declare(strict_types=1);
 
 namespace Shieldon\Component;
 
+use function array_keys;
+use function array_push;
+use function in_array;
+use function strpos;
+
 /**
  * ComponentPrivider
  */
 abstract class ComponentProvider implements ComponentInterface
 {
-    /**
-     * Data pool for Blacklist.
-     *
-     * @var array
-     */
-    protected $deniedList = [];
-
-    /**
-     * Data pool for hard whitelist.
-     *
-     * @var array
-     */
-    protected $allowedList = [];
-
     /**
      * It is really strict.
      *
@@ -39,40 +30,11 @@ abstract class ComponentProvider implements ComponentInterface
     protected $strictMode = false;
 
     /**
-     * Set denied item list. 
+     * Data pool for Blacklist.
      *
-     * @param array $stringList String list.
-     *
-     * @return void
+     * @var array
      */
-    public function setDeniedList(array $stringList): void
-    {
-        $this->deniedList = $stringList;
-    }
-
-    /**
-     * Set denied item.
-     *
-     * @param string $string
-     *
-     * @return void
-     */
-    public function setDeniedItem(string $string): void
-    {
-        if (! in_array($string, $this->deniedList)) {
-            array_push($this->deniedList, $string);
-        }
-    }
-
-    /**
-     * Return current denied list.
-     *
-     * @return array
-     */
-    public function getDeniedList(): array
-    {
-        return $this->deniedList;
-    }
+    protected $deniedList = [];
 
     /**
      * Enable strict mode.
@@ -87,27 +49,117 @@ abstract class ComponentProvider implements ComponentInterface
     }
 
     /**
-     * Remove item.
+     * Set denied item list. 
      *
-     * @param string $string
+     * @param array $itemList An array contains string items.
      *
      * @return void
      */
-    public function removeItem(string $string): void
+    public function setDeniedItems(array $itemList): void
     {
-        if (! empty($this->allowedList)) {
-            $key = array_search($string, $this->allowedList);
+        $this->deniedList = $itemList;
+    }
 
-            if (false !==  $key) {
-                unset($this->allowedList[$key]);
+    /**
+     * Set denied item.
+     *
+     * @param string|array $value The value of a item.
+     * @param string       $key   The key of a item.
+     *
+     * @return void
+     */
+    public function setDeniedItem($value, string $key = ''): void
+    {
+        if (!empty($key)) {
+            $this->deniedList[$key] = $value;
+
+        } elseif (!in_array($value, $this->deniedList)) {
+            array_push($this->deniedList, $value);
+        }
+    }
+
+    /**
+     * Return the denied item if exists.
+     *
+     * @return string
+     */
+    public function getDeniedItem(string $key): string
+    {
+        return $this->deniedList[$key] ?? '';
+    }
+
+    /**
+     * Return current denied list.
+     *
+     * @return array
+     */
+    public function getDeniedItems(): array
+    {
+        return $this->deniedList;
+    }
+
+    /**
+     * Return the denied item if exists.
+     *
+     * @return string
+     */
+    public function removeDeniedItem(string $key): void
+    {
+        unset($this->deniedList[$key]);
+    }
+
+    /**
+     * Remove all items.
+     *
+     * @return void
+     */
+    public function removeDeniedItems(): void
+    {
+        $this->deniedList = [];
+    }
+
+    /**
+     * Check if a denied item exists.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    function hasDeniedItem(string $key): bool
+    {
+        return isset($this->deniedList[$key]);
+    }
+
+    /**
+     * Check if a denied item exists have the same prefix.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    function getDeniedItemsWithPrefix(string $key): array
+    {
+        $temp = [];
+        foreach ($this->deniedList as $keyName => $value) {
+            if (strpos($keyName, $key) === 0) {
+                $temp[$keyName] = $value;
             }
         }
+        return $temp;
+    }
 
-        if (! empty($this->deniedList)) {
-            $key = array_search($string, $this->deniedList);
-
-            if (false !==  $key) {
-                unset($this->deniedList[$key]);
+    /**
+     * Remove denied items with the same prefix.
+     *
+     * @param string $key
+     *
+     * @return void
+     */
+    function removeDeniedItemsWithPrefix(string $key): void
+    {
+        foreach (array_keys($this->deniedList) as $keyName) {
+            if (strpos($keyName, $key) === 0) {
+                unset($this->deniedList[$keyName]);
             }
         }
     }

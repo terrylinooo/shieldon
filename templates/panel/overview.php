@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-use function Shieldon\Helper\_e;
+use function Shieldon\_e;
 
 $timezone = '';
 
@@ -466,12 +466,12 @@ $shieldon->setComponent($ip);
     <h5>API</h5>
     <ul>
         <li>inRange</li>
-        <li>setAllowedList</li>
+        <li>setAllowedItems</li>
         <li>setAllowedItem</li>
-        <li>getAllowedList</li>
-        <li>setDeniedList</li>
+        <li>getAllowedItems</li>
+        <li>setDeniedItems</li>
         <li>setDeniedItem</li>
-        <li>getDeniedList</li>
+        <li>getDeniedItems</li>
         <li>removeItem</li>
     </ul>
     <p>
@@ -495,9 +495,9 @@ $shieldon->setComponent($robot);
         <li>isYahoo</li>
         <li>isBing</li>
         <li>addItem</li>
-        <li>setDeniedList</li>
+        <li>setDeniedItems</li>
         <li>setDeniedItem</li>
-        <li>getDeniedList</li>
+        <li>getDeniedItems</li>
         <li>removeItem</li>
     </ul>
     <p>
@@ -515,9 +515,9 @@ $shieldon->setComponent($header);
     <h5>API</h5>
     <ul>
         <li>setStrict</li>
-        <li>setDeniedList</li>
+        <li>setDeniedItems</li>
         <li>setDeniedItem</li>
-        <li>getDeniedList</li>
+        <li>getDeniedItems</li>
         <li>removeItem</li>
     </ul>
     <p>
@@ -535,9 +535,9 @@ $shieldon->setComponent($rdns);
     <h5>API</h5>
     <ul>
         <li>setStrict</li>
-        <li>setDeniedList</li>
+        <li>setDeniedItems</li>
         <li>setDeniedItem</li>
-        <li>getDeniedList</li>
+        <li>getDeniedItems</li>
         <li>removeItem</li>
     </ul>
     <p>
@@ -555,9 +555,9 @@ $shieldon->setComponent($agent);
     <h5>API</h5>
     <ul>
         <li>setStrict</li>
-        <li>setDeniedList</li>
+        <li>setDeniedItems</li>
         <li>setDeniedItem</li>
-        <li>getDeniedList</li>
+        <li>getDeniedItems</li>
         <li>removeItem</li>
     </ul>
     <p>

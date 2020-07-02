@@ -149,8 +149,8 @@ class IpTest extends \PHPUnit\Framework\TestCase
     {
         $ipComponent = new Ip();
         $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
-        $ipComponent->setAllowedList($s);
-        $t = $ipComponent->getAllowedList();
+        $ipComponent->setAllowedItems($s);
+        $t = $ipComponent->getAllowedItems();
         if ($s === $t) {
             $this->assertTrue(true);
         }
@@ -169,7 +169,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
     public function testGetAllowedList()
     {
         $ipComponent = new Ip();
-        $t = $ipComponent->getAllowedList();
+        $t = $ipComponent->getAllowedItems();
         $this->assertIsArray($t);
     }
 
@@ -177,8 +177,8 @@ class IpTest extends \PHPUnit\Framework\TestCase
     {
         $ipComponent = new Ip();
         $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
-        $ipComponent->setDeniedList($s);
-        $t = $ipComponent->getDeniedList();
+        $ipComponent->setDeniedItems($s);
+        $t = $ipComponent->getDeniedItems();
         if ($s === $t) {
             $this->assertTrue(true);
         }
@@ -197,7 +197,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
     public function testGetDeniedList()
     {
         $ipComponent = new Ip();
-        $t = $ipComponent->getDeniedList();
+        $t = $ipComponent->getDeniedItems();
         $this->assertIsArray($t);
     }
 
@@ -205,9 +205,9 @@ class IpTest extends \PHPUnit\Framework\TestCase
     {
         $ipComponent = new Ip();
         $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
-        $ipComponent->setAllowedList($s);
-        $ipComponent->removeItem('127.33.33.33');
-        $t = $ipComponent->getAllowedList();
+        $ipComponent->setAllowedItems($s);
+        $ipComponent->removeAllowedItem('127.33.33.33');
+        $t = $ipComponent->getAllowedItems();
         if (! in_array('127.33.33.33', $t)) {
             $this->assertTrue(true);
         }

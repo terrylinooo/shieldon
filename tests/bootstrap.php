@@ -11,6 +11,16 @@
 date_default_timezone_set('UTC');
 
 define('BOOTSTRAP_DIR', __DIR__);
+define('NO_MOCK_ENV', true);
+
+use Shieldon\Utils\Container;
+use Shieldon\HttpFactory;
+use Shieldon\Helpers;
+
+require __DIR__ . '/../autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/shieldon/messenger/autoload.php';
+require __DIR__ . '/Mock/MockMessenger.php';
 
 /**
  * Create a writable directrory for unit testing.
@@ -154,9 +164,12 @@ function rand_ip()
     return rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255);
 }
 
-require __DIR__ . '/../autoload.php';
-require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../vendor/shieldon/messenger/autoload.php';
-require __DIR__ . '/Mock/MockMessenger.php';
+new Helpers();
 
+function reload_request() 
+{
+    Container::set('request', HttpFactory::createRequest(), true);
+    Container::set('response', HttpFactory::createResponse(), true);
+    Container::set('session', HttpFactory::createSession(), true);
+}
 

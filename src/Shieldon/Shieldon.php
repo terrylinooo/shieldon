@@ -42,13 +42,13 @@ use Shieldon\HttpFactory;
 use Shieldon\Driver\DriverProvider;
 use Shieldon\Log\ActionLogger;
 use Messenger\Messenger\MessengerInterface;
-use function Shieldon\Helper\get_cpu_usage;
-use function Shieldon\Helper\get_memory_usage;
-use function Shieldon\Helper\__;
-use function Shieldon\Helper\get_default_properties;
-use function Shieldon\Helper\get_request;
-use function Shieldon\Helper\get_response;
-use function Shieldon\Helper\get_session;
+use Shieldon\Helpers;
+use function Shieldon\get_cpu_usage;
+use function Shieldon\get_memory_usage;
+use function Shieldon\__;
+use function Shieldon\get_default_properties;
+use function Shieldon\get_request;
+use function Shieldon\get_session;
 
 use LogicException;
 use RuntimeException;
@@ -329,7 +329,7 @@ class Shieldon
      */
     public function __construct(?ServerRequestInterface $request  = null, ?ResponseInterface $response = null)
     {
-        include_once __DIR__ . '/helpers.php';
+        new Helpers();
 
         if (is_null($request)) {
             $request = HttpFactory::createRequest();
@@ -430,7 +430,7 @@ class Shieldon
 
         if (!empty($ipDetail['ip'])) {
             $logData['ip']        = $this->ip;
-            $logData['session']   = $this->session->get('id');
+            $logData['session']   = get_session()->get('id');
             $logData['hostname']  = $this->rdns;
             $logData['last_time'] = $now;
 
@@ -474,7 +474,7 @@ class Shieldon
                     // Get values from data table. We will count it and save it back to data table.
                     $logData['flag_multi_session'] = $ipDetail['flag_multi_session'] ?? 0;
                     
-                    if ($this->session->get('id') !== $ipDetail['session']) {
+                    if (get_session()->get('id') !== $ipDetail['session']) {
 
                         // Is is possible because of direct access by the same user many times.
                         // Or they don't have session cookie set.
@@ -616,7 +616,7 @@ class Shieldon
             // It means that the user is first time visiting our webiste.
 
             $logData['ip']        = $this->ip;
-            $logData['session']   = $this->session->get('id');
+            $logData['session']   = get_session()->get('id');
             $logData['hostname']  = $this->rdns;
             $logData['last_time'] = $now;
 
@@ -677,7 +677,7 @@ class Shieldon
 
         if (null !== $this->logger) {
             $log['ip']          = $ip;
-            $log['session_id']  = $this->session->get('id');
+            $log['session_id']  = get_session()->get('id');
             $log['action_code'] = $actionCode;
             $log['timesamp']    = $now;
 
@@ -763,7 +763,7 @@ class Shieldon
                     $sessionPools[] = $v['id'];
                     $lasttime = (int) $v['time'];
     
-                    if ($this->session->get('id') === $v['id']) {
+                    if (get_session()->get('id') === $v['id']) {
                         $currentSessionOrder = $i;
                     }
     
@@ -786,11 +786,11 @@ class Shieldon
             $this->sessionStatus['order'] = $currentSessionOrder;
             $this->sessionStatus['queue'] = $currentSessionOrder - $limit;
 
-            if (!in_array($this->session->get('id'), $sessionPools)) {
+            if (!in_array(get_session()->get('id'), $sessionPools)) {
                 $this->sessionStatus['count']++;
 
                 // New session, record this data.
-                $data['id'] = $this->session->get('id');
+                $data['id'] = get_session()->get('id');
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
 
@@ -798,7 +798,7 @@ class Shieldon
                 $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
                 $data['microtimesamp'] = $microtimesamp;
 
-                $this->driver->save($this->session->get('id'), $data, 'session');
+                $this->driver->save(get_session()->get('id'), $data, 'session');
             }
 
             // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
@@ -822,7 +822,7 @@ class Shieldon
     protected function setSessionId(string $sessionId = ''): void
     {
         if ('' !== $sessionId) {
-            $this->session->set('id', $sessionId);
+            get_session()->set('id', $sessionId);
         }
     }
 
@@ -1049,7 +1049,7 @@ class Shieldon
         /**
          * @var string The language of output UI. It is used on views.
          */
-        $langCode = $this->session->get('SHIELDON_UI_LANG') ?? 'en';
+        $langCode = get_session()->get('SHIELDON_UI_LANG') ?? 'en';
 
         /**
          * @var bool Show online session count. It is used on views.
@@ -1217,7 +1217,7 @@ class Shieldon
 
             // Just count the page view.
             $logData['ip']          = $this->getIp();
-            $logData['session_id']  = $this->session->get('id');
+            $logData['session_id']  = get_session()->get('id');
             $logData['action_code'] = $actionCode;
             $logData['timesamp']    = time();
 

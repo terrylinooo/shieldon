@@ -13,11 +13,7 @@ declare(strict_types=1);
 namespace Shieldon\Component;
 
 use Shieldon\IpTrait;
-use function Shieldon\Helper\get_request;
-
-use function implode;
-use function preg_match;
-use function is_null;
+use function Shieldon\get_request;
 
 /**
  * Robot
@@ -52,6 +48,7 @@ class Header extends ComponentProvider
     public function __construct()
     {
         $this->headers = get_request()->getHeaders();
+        $this->deniedList = [];
     }
 
     /**
@@ -59,6 +56,19 @@ class Header extends ComponentProvider
      */
     public function isDenied(): bool
     {
+        if (!empty($this->deniedList)) {
+            $intersect = array_intersect_key($this->deniedList, $this->headers);
+
+            foreach ($intersect as $headerName => $headerValue) {
+                $requestHeader = get_request()->getHeaderLine($headerName);
+
+                // When found a header field contains a prohibited string.
+                if (stripos($requestHeader, $headerValue) !== false) {
+                    return true;
+                }
+            }
+        }
+
         if ($this->strictMode) {
 
             foreach ($this->commonHeaderFileds as $fieldName) {

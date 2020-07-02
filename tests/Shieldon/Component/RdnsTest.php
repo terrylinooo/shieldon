@@ -31,9 +31,9 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
         $list = ['.example.com', '.hello.com'];
 
         $rdnsComponent = new Rdns();
-        $rdnsComponent->setDeniedList($list);
+        $rdnsComponent->setDeniedItems($list);
 
-        $deniedList = $rdnsComponent->getDeniedList();
+        $deniedList = $rdnsComponent->getDeniedItems();
 
         $this->assertSame($deniedList, $list);
     }
@@ -46,7 +46,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
         $rdnsComponent = new Rdns();
         $rdnsComponent->setDeniedItem($string);
 
-        $deniedList = $rdnsComponent->getDeniedList();
+        $deniedList = $rdnsComponent->getDeniedItems();
 
         if (in_array($string, $deniedList)) {
             $this->assertTrue(true);
@@ -58,26 +58,31 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
     public function testGetDeniedList()
     {
         $rdnsComponent = new Rdns();
-        $deniedList = $rdnsComponent->getDeniedList();
+        $deniedList = $rdnsComponent->getDeniedItems();
 
-        $this->assertSame($deniedList, ['.webcrawler.link']);
+        $this->assertSame($deniedList, [
+            'unknown_1' => '.webcrawler.link']
+        );
     }
 
     public function testRemoveItem()
     {
-        $string = '.yahoo.com';
-
         $rdnsComponent = new Rdns();
-        $rdnsComponent->setDeniedItem($string);
+        $rdnsComponent->setDeniedItem('.yahoo.com', 'yahoo');
 
-        $deniedList = $rdnsComponent->getDeniedList();
+        $deniedList = $rdnsComponent->getDeniedItems();
 
-        $this->assertSame($deniedList, ['.webcrawler.link', '.yahoo.com']);
+        $this->assertSame($deniedList, [
+            'unknown_1' => '.webcrawler.link',
+            'yahoo' => '.yahoo.com'
+        ]);
 
-        $rdnsComponent->removeItem('.yahoo.com');
-        $deniedList = $rdnsComponent->getDeniedList();
+        $rdnsComponent->removeDeniedItem('yahoo');
+        $deniedList = $rdnsComponent->getDeniedItems();
 
-        $this->assertSame($deniedList, ['.webcrawler.link']);
+        $this->assertSame($deniedList, [
+            'unknown_1' => '.webcrawler.link'
+        ]);
     }
 
     public function testIsDenied()

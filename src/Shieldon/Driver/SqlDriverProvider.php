@@ -62,12 +62,12 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function doInitialize(bool $dbCheck = true): void
     {
-        if (! $this->isInitialized) {
-            if (! empty($this->channel)) {
+        if (!$this->isInitialized) {
+            if (!empty($this->channel)) {
                 $this->setChannel($this->channel);
             }
 
-            if ($dbCheck && ! $this->checkTableExists()) {
+            if ($dbCheck && !$this->checkTableExists()) {
                 $this->installSql();
             }
         }
@@ -95,7 +95,7 @@ class SqlDriverProvider extends DriverProvider
                 $resultData = $query->fetch($this->db::FETCH_ASSOC);
 
                 // No data found.
-                if (is_bool($resultData) && ! $resultData) {
+                if (is_bool($resultData) && !$resultData) {
                     $resultData = [];
                 }
 
@@ -115,11 +115,11 @@ class SqlDriverProvider extends DriverProvider
                 $resultData = $query->fetch($this->db::FETCH_ASSOC);
 
                 // No data found.
-                if (is_bool($resultData) && ! $resultData) {
+                if (is_bool($resultData) && !$resultData) {
                     $resultData = [];
                 }
 
-                if (! empty($resultData['log_data'])) {
+                if (!empty($resultData['log_data'])) {
                     $results = json_decode($resultData['log_data'], true); 
                 }
                 break;
@@ -135,7 +135,7 @@ class SqlDriverProvider extends DriverProvider
                 $resultData = $query->fetch($this->db::FETCH_ASSOC);
 
                 // No data found.
-                if (is_bool($resultData) && ! $resultData) {
+                if (is_bool($resultData) && !$resultData) {
                     $resultData = [];
                 }
 
@@ -230,7 +230,7 @@ class SqlDriverProvider extends DriverProvider
         $query->execute();
         $result = $query->fetch();
 
-        if (! empty($result[$field])) {
+        if (!empty($result[$field])) {
             return true; 
         }
 

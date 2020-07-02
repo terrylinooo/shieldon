@@ -32,6 +32,7 @@ use Shieldon\Security\Xss;
 use Shieldon\Security\httpAuthentication;
 use Shieldon\FirewallTrait;
 use Messenger as MessengerModule;
+use function Shieldon\get_request;
 
 use PDO;
 use PDOException;
@@ -363,7 +364,7 @@ class Firewall
     protected function setIpSource(): void
     {
         $ipSourceType = $this->getOption('ip_variable_source');
-        $serverParams = $this->getShieldon()->request->getServerParams();
+        $serverParams = get_request()->getServerParams();
 
         if ($ipSourceType['REMOTE_ADDR']) {
             $ip = $serverParams['REMOTE_ADDR'];
@@ -993,11 +994,11 @@ class Firewall
         }
 
         if (! empty($allowedList)) {
-            $this->shieldon->component['Ip']->setAllowedList($allowedList);
+            $this->shieldon->component['Ip']->setAllowedItems($allowedList);
         }
 
         if (! empty($deniedList)) {
-            $this->shieldon->component['Ip']->setDeniedList($deniedList);
+            $this->shieldon->component['Ip']->setDeniedItems($deniedList);
         }
     }
 
@@ -1011,7 +1012,7 @@ class Firewall
         $ui = $this->getOption('dialog_ui');
 
         if (! empty($ui)) {
-            $this->getShieldon()->session->set('SHIELDON_UI_LANG', $ui['lang']);
+            get_session()->set('SHIELDON_UI_LANG', $ui['lang']);
             $this->shieldon->setDialogUI($this->getOption('dialog_ui'));
         }
     }

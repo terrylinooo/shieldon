@@ -395,7 +395,7 @@ class Xss
         $originExif = @exif_read_data($imageAbsPath);
         $filteredExif = [];
 
-        if (! empty($originExif)) {
+        if (!empty($originExif)) {
             $filteredExif = $this->clean($originExif, true);
         }
 
@@ -562,7 +562,7 @@ class Xss
 
             /*
             if (preg_match_all('/\&[a-z]{2,}(?![a-z;])/i', $str, $matches)) {
-                if (! isset($_entities)) {
+                if (!isset($_entities)) {
                     $_entities = array_map(
                         'strtolower',
                         $this->isPHP('5.3.4')
@@ -636,7 +636,7 @@ class Xss
             '%3d'		// =
         ];
 
-        if (! $relativePath) {
+        if (!$relativePath) {
             $bad[] = './';
             $bad[] = '/';
         }
@@ -723,7 +723,7 @@ class Xss
                 // of numerous XSS issues we've had.
                 $matches['attributes'] = preg_replace('#^[^a-z]+#i', '', $matches['attributes']);
 
-                if (! preg_match($attributesPattern, $matches['attributes'], $attribute, PREG_OFFSET_CAPTURE)) {
+                if (!preg_match($attributesPattern, $matches['attributes'], $attribute, PREG_OFFSET_CAPTURE)) {
                     // No (valid) attribute found? Discard everything else inside the tag
                     break;
                 }
@@ -902,7 +902,7 @@ class Xss
 
 		$version = (string) $version;
 
-		if (! isset($_isPHP[$version])) {
+		if (!isset($_isPHP[$version])) {
 			$_isPHP[$version] = version_compare(PHP_VERSION, $version, '>=');
 		}
 

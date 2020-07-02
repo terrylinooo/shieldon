@@ -34,8 +34,8 @@ class Rdns extends ComponentProvider
     {
         // RDNS for robot's IP address.
         $this->deniedList = [
-            '.webcrawler.link',
-        ];
+            'unknown_1' => '.webcrawler.link',
+        ]; 
     }
 
     /**

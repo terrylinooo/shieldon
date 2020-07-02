@@ -37,7 +37,7 @@ class Container
             return self::$instances[$id];
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -64,7 +64,7 @@ class Container
      */
     public static function set(string $id, $entry, bool $overwrite = true): void
     {
-        if (! self::has($id) || $overwrite) {
+        if (!self::has($id) || $overwrite) {
             self::$instances[$id] = $entry;
         }
     }
