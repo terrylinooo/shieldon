@@ -2,4 +2,4 @@
 
 Shieldon 2 is still under development.
 
-Please do use.
+Please don't use.
