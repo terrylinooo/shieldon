@@ -20,8 +20,6 @@ declare(strict_types=1);
 namespace Shieldon\Security;
 
 use function array_keys;
-use function array_map;
-use function get_html_translation_table;
 use function html_entity_decode;
 use function implode;
 use function mt_rand;
@@ -31,7 +29,6 @@ use function preg_match_all;
 use function preg_replace;
 use function preg_replace_callback;
 use function rawurldecode;
-use function str_ireplace;
 use function str_replace;
 use function stripslashes;
 use function substr;
@@ -555,45 +552,7 @@ class Xss
             : ENT_COMPAT;
 
         do {
-
             $strCompare = $str;
-
-            // Decode standard entities, avoiding false positives
-
-            /*
-            if (preg_match_all('/\&[a-z]{2,}(?![a-z;])/i', $str, $matches)) {
-                if (!isset($_entities)) {
-                    $_entities = array_map(
-                        'strtolower',
-                        $this->isPHP('5.3.4')
-                            ? get_html_translation_table(HTML_ENTITIES, $flag, $this->charset)
-                            : get_html_translation_table(HTML_ENTITIES, $flag)
-                    );
-
-                    // If we're not on PHP 5.4+, add the possibly dangerous HTML 5
-                    // entities to the array manually
-                    if ($flag === ENT_COMPAT) {
-                        $_entities[':']  = '&colon;';
-                        $_entities['(']  = '&lpar;';
-                        $_entities[')']  = '&rpar;';
-                        $_entities["\n"] = '&newline;';
-                        $_entities["\t"] = '&tab;';
-                    }
-                }
-
-                $replace = [];
-                $matches = array_unique(array_map('strtolower', $matches[0]));
-
-                foreach ($matches as &$match) {
-                    if (($char = array_search($match.';', $_entities, true)) !== false) {
-                        $replace[$match] = $char;
-                    }
-                }
-
-                $str = str_ireplace(array_keys($replace), array_values($replace), $str);
-            }
-
-            */
 
             // Decode numeric & UTF16 two byte entities
             $str = html_entity_decode(

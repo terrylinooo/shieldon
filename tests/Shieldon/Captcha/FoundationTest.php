@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Shieldon\Captcha;
 
-use PHPUnit\Framework\TestCase;
-
-class FoundationTest extends TestCase
+class FoundationTest extends \PHPUnit\Framework\TestCase
 {
     public function testResponse()
     {
@@ -22,6 +22,7 @@ class FoundationTest extends TestCase
         $this->assertFalse($result);
 
         $_POST['shieldon_captcha'] = 'ok';
+        reload_request();
 
         $result = $captchaInstance->response();
         $this->assertTrue($result);

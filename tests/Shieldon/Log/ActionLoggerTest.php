@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php 
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Shieldon\Log;
 
-use PHPUnit\Framework\TestCase;
-
-class ActionLoggerTest extends TestCase
+class ActionLoggerTest extends \PHPUnit\Framework\TestCase
 {
     public function test__construct()
     {

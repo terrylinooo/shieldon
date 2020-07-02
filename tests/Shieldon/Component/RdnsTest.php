@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,8 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Shieldon\Component;
+declare(strict_types=1);
 
+namespace Shieldon\Component;
 
 class RdnsTest extends \PHPUnit\Framework\TestCase
 {

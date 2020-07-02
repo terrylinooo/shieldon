@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php 
 /*
  * This file is part of the Messenger package.
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-use Messenger\Messenger\MessengerInterface;
+declare(strict_types=1);
 
 /**
  * For unit-testing purpose.
@@ -16,7 +16,7 @@ use Messenger\Messenger\MessengerInterface;
  * @author Terry L. <contact@terryl.in>
  * @since 1.0.0
  */
-class MockMessenger implements MessengerInterface
+class MockMessenger implements \Messenger\Messenger\MessengerInterface
 {
     /**
      * Constructor.

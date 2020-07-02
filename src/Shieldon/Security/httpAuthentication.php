@@ -12,6 +12,11 @@ declare(strict_types=1);
 
 namespace Shieldon\Security;
 
+use function Shieldon\get_request;
+use function header;
+use function password_verify;
+use function strpos;
+
  /**
   * WWW-Authenticate
   */

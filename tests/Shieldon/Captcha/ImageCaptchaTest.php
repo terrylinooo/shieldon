@@ -12,9 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Captcha;
 
-use PHPUnit\Framework\TestCase;
-
-class ImageCaptchaTest extends TestCase
+class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
 {
     public function test__construct()
     {

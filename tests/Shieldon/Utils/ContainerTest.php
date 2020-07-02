@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,7 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Shieldon;
+declare(strict_types=1);
+
+namespace Shieldon\Utils;
 
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {
@@ -17,7 +19,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
         $firewall = new \Shieldon\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
-        $firewall = \Shieldon\Container::get('firewall');
+        $firewall = \Shieldon\Utils\Container::get('firewall');
 
         if ($firewall instanceof \Shieldon\Firewall) {
             $this->assertTrue(true);
@@ -25,14 +27,14 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
             $this->assertTrue(false);
         }
 
-        $typo = \Shieldon\Container::get('firewall_typo');
+        $typo = \Shieldon\Utils\Container::get('firewall_typo');
         $this->assertEquals($typo, null);
 
-        $result = \Shieldon\Container::has('firewall');
+        $result = \Shieldon\Utils\Container::has('firewall');
         $this->assertTrue($result);
 
-        \Shieldon\Container::remove('firewall');
-        $result = \Shieldon\Container::has('firewall');
+        \Shieldon\Utils\Container::remove('firewall');
+        $result = \Shieldon\Utils\Container::has('firewall');
         $this->assertFalse($result);
     }
 }

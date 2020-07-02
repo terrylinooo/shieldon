@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Captcha;
 
+use function Shieldon\get_request;
 use function curl_error;
 use function curl_exec;
 use function curl_init;

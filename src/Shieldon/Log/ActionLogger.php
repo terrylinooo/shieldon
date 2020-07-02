@@ -22,7 +22,6 @@ use RuntimeException;
 use function date;
 use function explode;
 use function file_exists;
-use function file_get_contents;
 use function file_put_contents;
 use function is_dir;
 use function is_writable;

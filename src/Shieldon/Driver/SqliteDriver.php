@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Driver;
 
+use Exception;
 use PDO;
 
 /**
@@ -75,7 +76,7 @@ class SqliteDriver extends SqlDriverProvider
             return true;
 
         // @codeCoverageIgnoreStart
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
         // @codeCoverageIgnoreEnd

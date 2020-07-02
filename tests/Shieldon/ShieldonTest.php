@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php 
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,14 +8,11 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Shieldon;
 
-use PHPUnit\Framework\TestCase;
-use Shieldon\Component\ComponentProvider;
-
-use function save_testing_file;
-
-class ShieldonTest extends TestCase
+class ShieldonTest extends \PHPUnit\Framework\TestCase
 {
     public function test__construct()
     {
@@ -287,7 +284,7 @@ class ShieldonTest extends TestCase
         $method->setAccessible(true);
         $result = $method->invokeArgs($shieldon, ['Ip']);
 
-        if ($result instanceof ComponentProvider) {
+        if ($result instanceof \Shieldon\Component\ComponentProvider) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);
@@ -515,6 +512,8 @@ class ShieldonTest extends TestCase
 
         $shieldon = new \Shieldon\Shieldon();
         $_POST['shieldon_captcha'] = 'ok';
+        reload_request();
+
         $result = $shieldon->captchaResponse();
         $this->assertTrue($result);
 
@@ -527,6 +526,8 @@ class ShieldonTest extends TestCase
         $methodSetSessionId->invokeArgs($shieldon, [md5(date('YmdHis') . mt_rand(2001, 3000))]);
         $result = $shieldon->run();
         $_POST['shieldon_captcha'] = 'ok';
+        reload_request();
+
         $result = $shieldon->captchaResponse();
         $this->assertTrue($result);
     }
@@ -588,6 +589,7 @@ class ShieldonTest extends TestCase
     public function testOutput($driver = 'sqlite')
     {
         $_SERVER['REQUEST_URI'] = '/';
+        reload_request();
 
         $shieldon = get_testing_shieldon_instance($driver);
         $shieldon->setProperty('display_lineup_info', true);
