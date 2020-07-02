@@ -1,5 +1,5 @@
 {
-    "name": "shieldon/firewall",
+    "name": "shieldon/shieldon",
     "description": "Web application firewall for PHP.",
     "keywords": ["firewall", "web-application-firewall", "anti-scraping", "xss-filter", "xss-protection", "web-security", "www-authenticate"],
     "homepage": "https://github.com/terrylinooo/shieldon",

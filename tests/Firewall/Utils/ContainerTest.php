@@ -21,7 +21,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
         $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
 
-        if ($firewall instanceof \Shieldon\Firewall) {
+        if ($firewall instanceof \Shieldon\Firewall\Firewall) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);

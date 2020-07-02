@@ -1,11 +1,11 @@
 <?php
 /*
- * @name        Shieldon
+ * @name        Shieldon Firewall
  * @author      Terry Lin
  * @link        https://github.com/terrylinooo/shieldon
  * @package     Shieldon
  * @since       1.0.0
- * @version     3.0.0
+ * @version     2.0.0
  * @license     MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -70,9 +70,6 @@ use function time;
 
 /**
  * The primary Shiendon class.
- * 
- * @since   1.0.0
- * @version 1.0.0
  */
 class Kernel
 {
