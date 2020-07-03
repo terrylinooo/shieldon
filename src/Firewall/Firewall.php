@@ -31,7 +31,7 @@ use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Security\Xss;
 use Shieldon\Firewall\Security\httpAuthentication;
 use Shieldon\Firewall\FirewallTrait;
-use Messenger as MessengerModule;
+use Shieldon\Messenger as MessengerModule;
 use function Shieldon\Firewall\get_request;
 
 use PDO;

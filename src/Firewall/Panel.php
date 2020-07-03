@@ -24,7 +24,7 @@ use Shieldon\Firewall\Log\ActionLogParser;
 use Shieldon\Firewall\Log\ActionLogParsedCache;
 use Shieldon\Firewall\Shieldon;
 use Shieldon\Firewall\FirewallTrait;
-use Messenger as MessengerModule;
+use Shieldon\Messenger as MessengerModule;
 
 use function Shieldon\Firewall\__;
 
