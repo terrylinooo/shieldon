@@ -1,7 +1,6 @@
 <?php
-
 /*
- * This file is part of the Shieldon package.
+ * This file is part of the Shieldon Firewall package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
@@ -9,6 +8,38 @@
  * file that was distributed with this source code.
  */
 
-require __DIR__. '/src/Firewall/Autoloader.php';
+declare(strict_types=1);
 
-Shieldon\Firewall\Autoloader::register();
+/**
+ * Register to PSR-4 autoloader.
+ *
+ * @return void
+ */
+function shieldon_firewall_register()
+{
+    spl_autoload_register('shieldon_firewall_autoload', true, false);
+}
+
+/**
+ * PSR-4 autoloader.
+ *
+ * @param string $className
+ * 
+ * @return void
+ */
+function shieldon_firewall_autoload($className)
+{
+    $prefix = 'Shieldon\\Firewall\\';
+    $dir = __DIR__ . '/src/Firewall';
+
+    if (0 === strpos($className, $prefix)) {
+        $parts = explode('\\', substr($className, strlen($prefix)));
+        $filepath = $dir . '/' . implode('/', $parts) . '.php';
+
+        if (is_file($filepath)) {
+            require $filepath;
+        }
+    }
+}
+
+shieldon_firewall_register();

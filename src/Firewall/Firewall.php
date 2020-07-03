@@ -14,7 +14,7 @@ namespace Shieldon\Firewall;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Shieldon\Firewall\Shieldon;
+use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Captcha\ImageCaptcha;
 use Shieldon\Firewall\Captcha\Recaptcha;
 use Shieldon\Firewall\Component\Header;
