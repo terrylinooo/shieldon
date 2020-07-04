@@ -51,10 +51,9 @@ use function mkdir;
 use function rtrim;
 use function strpos;
 use function umask;
+
 /**
  * Managed Firewall.
- * 
- * @since 3.0.0
  */
 class Firewall
 {
