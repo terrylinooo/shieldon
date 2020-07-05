@@ -49,6 +49,7 @@ use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\unset_superglobal;
 
 use LogicException;
 use RuntimeException;
@@ -789,7 +790,7 @@ class Kernel
 
                 $c = $this->properties['cookie_name'];
 
-                $jsCookie = $_COOKIE[$c] ?? 0;
+                $jsCookie = get_request()->getCookieParams()[$c] ?? 0;
 
                 // Checking if a cookie is created by JavaScript.
                 if (!empty($jsCookie)) {
@@ -812,6 +813,7 @@ class Kernel
 
                     // Ban this IP if they reached the limit.
                     $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_EMPTY_JS_COOKIE);
+
                     return self::RESPONSE_TEMPORARILY_DENY;
                 }
 
@@ -822,9 +824,7 @@ class Kernel
                     $logData['pageviews_cookie'] = 0;
                     $logData['flag_js_cookie']   = 0;
 
-                    // Remove cookie.
-                    unset($_COOKIE[$this->properties['cookie_name']]);
-                    $this->resetCookie();
+                    unset_superglobal($c, 'cookie');
                 }
             }
 
@@ -1064,18 +1064,6 @@ class Kernel
     {
         if ('' !== $sessionId) {
             get_session()->set('id', $sessionId);
-        }
-    }
-
-    /**
-     * Reset cookie.
-     *
-     * @return void
-     */
-    protected function resetCookie(): void
-    {
-        if ((php_sapi_name() !== 'cli')) {
-            setcookie($this->properties['cookie_name'], '', -1, '/');
         }
     }
 

@@ -16,6 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Utils\Collection;
 
 /**
  * This value will be only displayed on Firewall Panel.
@@ -134,7 +135,7 @@ function _e(): void
  *
  * @return string
  */
-function mask_string($str)
+function mask_string($str): string
 {
     if (filter_var($str, FILTER_VALIDATE_IP) !== false) {
         $tmp = explode('.', $str);
@@ -158,7 +159,7 @@ function mask_string($str)
  *
  * @return string
  */
-function get_cpu_usage()
+function get_cpu_usage(): string
 {
     $return = '';
 
@@ -184,7 +185,7 @@ function get_cpu_usage()
  *
  * @return string
  */
-function get_memory_usage()
+function get_memory_usage(): string
 {
     $return = '';
 
@@ -307,9 +308,9 @@ function get_response(): ResponseInterface
 /**
  * Session
  *
- * @return \Shieldon\Firewall\Utils\Session
+ * @return \Shieldon\Firewall\Utils\Collection
  */
-function get_session()
+function get_session(): Collection
 {
     $session = Container::get('session');
 
@@ -319,4 +320,79 @@ function get_session()
     }
 
     return $session;
+}
+
+/**
+ * Set a PSR-7 HTTP server request into container.
+ *
+ * @param \Psr\Http\Message\ServerRequestInterface $request
+ *
+ * @return void
+ */
+function set_request(ServerRequestInterface $request): void
+{
+    Container::set('request', $request, true);
+}
+
+/**
+ * Set a PSR-7 HTTP response into container.
+ *
+ * @param \Psr\Http\Message\ResponseInterface $response
+ *
+ * @return void
+ */
+function set_response(ResponseInterface $response): void
+{
+    Container::set('response', $response, true);
+}
+
+/**
+ * Unset a variable of superglobal.
+ *
+ * @param mixed $varName The name (key) in the array of the superglobal.
+ *
+ * @return void
+ */
+function unset_superglobal($varName, string $type): void
+{
+    switch ($type) {
+        case 'cookie':
+            $cookieParams = get_request()->getCookieParams();
+            unset($cookieParams[$varName]);
+
+            // Prevent direct access to this variable in $_COOKIE superglobal.
+            unset($_COOKIE[$varName]);
+            set_request(get_request()->withCookieParams($cookieParams));
+            set_response(get_response()->withHeader(
+                'Set-Cookie',
+                "$varName=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+            ));
+            break;
+
+        case 'post':
+            $postParams = get_request()->getParsedBody();
+            unset($postParams[$varName]);
+
+            // Prevent direct access to this variable in $_POST superglobal.
+            unset($_POST[$varName]);
+            set_request(get_request()->withParsedBody($postParams));
+            break;
+
+        case 'get':
+            $getParams = get_request()->getQueryParams();
+            unset($getParams[$varName]);
+
+            // Prevent direct access to this variable in $_GET superglobal.
+            unset($_GET[$varName]);
+            set_request(get_request()->withQueryParams($getParams));
+            break;
+
+        case 'session':
+            get_session()->remove($varName);
+            unset($_SESSION[$varName]);
+            break;
+
+        default:
+            break;
+    }
 }
