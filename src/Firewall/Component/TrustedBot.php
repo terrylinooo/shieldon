@@ -26,7 +26,7 @@ use function preg_match;
 use function strstr;
 
 /**
- * TrustedBot
+ * TrustedBot component.
  */
 class TrustedBot extends ComponentProvider
 {

@@ -19,7 +19,7 @@ use function round;
 use function strtotime;
 
 /**
- * Parse the log files that created by ActionLogger
+ * Parse the log files that created by ActionLogger.
  */
 final class ActionLogParser
 {

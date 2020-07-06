@@ -1392,7 +1392,7 @@ class Kernel
      */
     public function setTemplateDirectory(string $directory)
     {
-        if (! is_dar($directory)) {
+        if (!is_dar($directory)) {
             throw new InvalidArgumentException('The template directory does not exist.');
         }
         $this->templateDirectory = $directory;

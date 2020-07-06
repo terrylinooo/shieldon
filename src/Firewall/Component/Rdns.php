@@ -20,7 +20,7 @@ use function implode;
 use function preg_match;
 
 /**
- * Robot
+ * Rdns component.
  */
 class Rdns extends ComponentProvider
 {

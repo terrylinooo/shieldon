@@ -32,7 +32,8 @@ use function umask;
 use function unlink;
 
 /**
- * Action Logger only support storing log into files, I don't want to make it complex, that's it.
+ * Action Logger only support storing log into files, 
+ * I don't want to make it complex, that's it.
  */
 final class ActionLogger
 {

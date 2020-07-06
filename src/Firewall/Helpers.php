@@ -96,7 +96,7 @@ function __(): string
     // If we don't get the string from the localization file, use placeholder instead.
     $resultString = $placeholder;
 
-    if (! empty($i18n[$filename][$langcode])) {
+    if (!empty($i18n[$filename][$langcode])) {
         $resultString = $i18n[$filename][$langcode];
     }
 
@@ -176,7 +176,7 @@ function get_cpu_usage(): string
     $cpuLoads = @sys_getloadavg();
     $cpuCores = trim(@shell_exec("grep -P '^processor' /proc/cpuinfo|wc -l"));
 
-    if (! empty($cpuCores) && ! empty($cpuLoads)) {
+    if (!empty($cpuCores) && !empty($cpuLoads)) {
         $return = round($cpuLoads[1] / ($cpuCores + 1) * 100, 0) . '%';
     }
     return $return;
@@ -201,7 +201,7 @@ function get_memory_usage(): string
 
     $freeResult = explode("\n", trim(@shell_exec('free')));
 
-    if (! empty($freeResult)) {
+    if (!empty($freeResult)) {
         $parsed = preg_split("/[\s]+/", $freeResult[1]);
         $return = round($parsed[2] / $parsed[1] * 100, 0) . '%';
     }

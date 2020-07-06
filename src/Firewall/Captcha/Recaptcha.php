@@ -22,6 +22,9 @@ use function curl_init;
 use function curl_setopt;
 use function json_decode;
 
+/**
+ * Google reCaptcha.
+ */
 class Recaptcha extends CaptchaProvider
 {
     protected $key = '';

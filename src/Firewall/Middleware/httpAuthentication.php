@@ -17,14 +17,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-
 use InvalidArgumentException;
 
 use function password_verify;
 use function strpos;
 
  /**
-  * WWW-Authenticate - PSR-15 middleware.
+  * A PSR-15 middleware provides WWW-Authenticate protection.
   */
 class httpAuthentication implements MiddlewareInterface
 {

@@ -21,7 +21,7 @@ use function stripos;
 /*
  * Display the final result.
  */
-class ResponseResolver
+class HttpResolver
 {
     /**
      * Constructor.
@@ -56,9 +56,7 @@ class ResponseResolver
             );
         }
 
-        $body = $response->getBody();
-        echo $body->getContents();
-
+        echo $response->getBody()->getContents();
         exit;
     }
 }

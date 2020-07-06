@@ -22,7 +22,7 @@ use function json_encode;
 use function ksort;
 
 /**
- * Redis Driver
+ * Redis Driver.
  */
 class RedisDriver extends DriverProvider
 {

@@ -28,7 +28,7 @@ use function substr_count;
 use function unpack;
 
 /**
- * Ip
+ * Ip component.
  */
 class Ip extends ComponentProvider
 {

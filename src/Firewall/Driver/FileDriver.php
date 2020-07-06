@@ -30,7 +30,7 @@ use function umask;
 use function unlink;
 
 /**
- * File Driver
+ * File Driver.
  */
 class FileDriver extends DriverProvider
 {

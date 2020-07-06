@@ -15,7 +15,7 @@ namespace Shieldon\Firewall\Driver;
 use Shieldon\Firewall\Driver\AbstractDriver;
 
 /**
- * DriverProvider
+ * Driver Provider.
  */
 class DriverProvider extends AbstractDriver
 {

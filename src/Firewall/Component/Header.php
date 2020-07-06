@@ -17,7 +17,7 @@ use Shieldon\Firewall\IpTrait;
 use function Shieldon\Firewall\get_request;
 
 /**
- * Robot
+ * Header component.
  */
 class Header extends ComponentProvider
 {

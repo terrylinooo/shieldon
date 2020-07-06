@@ -20,7 +20,7 @@ use function implode;
 use function preg_match;
 
 /**
- * UserAgent
+ * UserAgent component.
  */
 class UserAgent extends ComponentProvider
 {

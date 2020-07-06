@@ -247,11 +247,11 @@ class Firewall
                     $host = '127.0.0.1';
                     $port = 6379;
 
-                    if (! empty($redisSetting['host'])) {
+                    if (!empty($redisSetting['host'])) {
                         $host = $redisSetting['host'];
                     }
 
-                    if (! empty($redisSetting['port'])) {
+                    if (!empty($redisSetting['port'])) {
                         $port = $redisSetting['port'];
                     }
 
@@ -259,7 +259,7 @@ class Firewall
                     $redis = new Redis();
                     $redis->connect($host, $port);
 
-                    if (! empty($redisSetting['auth'])) {
+                    if (!empty($redisSetting['auth'])) {
 
                         // @codeCoverageIgnoreStart
                         $redis->auth($redisSetting['auth']);
@@ -361,7 +361,7 @@ class Firewall
         $loggerSetting = $this->getOption('action', 'loggers');
 
         if ($loggerSetting['enable']) {
-            if (! empty($loggerSetting['config']['directory_path'])) {
+            if (!empty($loggerSetting['config']['directory_path'])) {
                 $this->kernel->add(new ActionLogger($loggerSetting['config']['directory_path']));
             }
         }
@@ -598,8 +598,8 @@ class Firewall
 
         $messageTitle = 'Firewall Notification';
 
-        if (! empty($telegramSetting['enable'])) {
-            if (! empty($telegramSetting['confirm_test'])) {
+        if (!empty($telegramSetting['enable'])) {
+            if (!empty($telegramSetting['confirm_test'])) {
                 $apiKey = $telegramSetting['config']['api_key'] ?? '';
                 $channel = $telegramSetting['config']['channel'] ?? '';
                 $this->kernel->add(
@@ -608,8 +608,8 @@ class Firewall
             }
         }
 
-        if (! empty($linenotodySetting['enable'])) {
-            if (! empty($linenotodySetting['confirm_test'])) {
+        if (!empty($linenotodySetting['enable'])) {
+            if (!empty($linenotodySetting['confirm_test'])) {
                 $accessToken = $linenotodySetting['config']['access_token'] ?? '';
                 $this->kernel->add(
                     new MessengerModule\LineNotify($accessToken)
@@ -617,8 +617,8 @@ class Firewall
             }
         }
 
-        if (! empty($sendgridSetting['enable'])) {
-            if (! empty($sendgridSetting['confirm_test'])) {
+        if (!empty($sendgridSetting['enable'])) {
+            if (!empty($sendgridSetting['confirm_test'])) {
                 $apiKey = $sendgridSetting['config']['api_key'] ?? '';
                 $sender = $sendgridSetting['config']['sender'] ?? '';
                 $recipients = $sendgridSetting['config']['recipients'] ?? [];
@@ -635,8 +635,8 @@ class Firewall
             }
         }
 
-        if (! empty($phpMailSetting['enable'])) {
-            if (! empty($phpMailSetting['confirm_test'])) {
+        if (!empty($phpMailSetting['enable'])) {
+            if (!empty($phpMailSetting['confirm_test'])) {
                 $sender = $phpMailSetting['config']['sender'] ?? '';
                 $recipients = $phpMailSetting['config']['recipients'] ?? [];
 
@@ -652,8 +652,8 @@ class Firewall
             }
         }
 
-        if (! empty($smtpSetting['enable'])) {
-            if (! empty($smtpSetting['confirm_test'])) {
+        if (!empty($smtpSetting['enable'])) {
+            if (!empty($smtpSetting['confirm_test'])) {
                 $sender = $smtpSetting['config']['sender'] ?? '';
                 $recipients = $smtpSetting['config']['recipients'] ?? [];
                 $host = $smtpSetting['config']['host'] ?? '';
@@ -673,8 +673,8 @@ class Firewall
             }
         }
 
-        if (! empty($mailgunSetting['enable'])) {
-            if (! empty($mailgunSetting['confirm_test'])) {
+        if (!empty($mailgunSetting['enable'])) {
+            if (!empty($mailgunSetting['confirm_test'])) {
                 $apiKey = $mailgunSetting['config']['api_key'] ?? '';
                 $domain = $mailgunSetting['config']['domain_name'] ?? '';
                 $sender = $mailgunSetting['config']['sender'] ?? '';
@@ -692,8 +692,8 @@ class Firewall
             }
         }
 
-        if (! empty($rocketchatSetting['enable'])) {
-            if (! empty($rocketchatSetting['confirm_test'])) {
+        if (!empty($rocketchatSetting['enable'])) {
+            if (!empty($rocketchatSetting['confirm_test'])) {
                 $serverUrl = $rocketchatSetting['config']['server_url'] ?? '';
                 $userId = $rocketchatSetting['config']['user_id'] ?? '';
                 $accessToken = $rocketchatSetting['config']['access_token'] ?? '';
@@ -707,8 +707,8 @@ class Firewall
             }
         }
 
-        if (! empty($slackSetting['enable'])) {
-            if (! empty($slackSetting['confirm_test'])) {
+        if (!empty($slackSetting['enable'])) {
+            if (!empty($slackSetting['confirm_test'])) {
                 $botToken = $slackSetting['config']['bot_token'] ?? '';
                 $channel = $slackSetting['config']['channel'] ?? '';
 
@@ -718,8 +718,8 @@ class Firewall
             }
         }
 
-        if (! empty($slackWebhookSetting['enable'])) {
-            if (! empty($slackWebhookSetting['confirm_test'])) {
+        if (!empty($slackWebhookSetting['enable'])) {
+            if (!empty($slackWebhookSetting['confirm_test'])) {
                 $webhookUrl = $slackWebhookSetting['config']['webhook_url'] ?? '';
 
                 $this->kernel->add(
@@ -840,7 +840,7 @@ class Firewall
 
             $lastResetTime = $cronjobSetting['config']['last_update'];
 
-            if (! empty($lastResetTime) ) {
+            if (!empty($lastResetTime) ) {
                 $lastResetTime = strtotime($lastResetTime);
             } else {
                 // @codeCoverageIgnoreStart
@@ -871,7 +871,7 @@ class Firewall
     {
         $excludedUrls = $this->getOption('excluded_urls');
 
-        if (! empty($excludedUrls)) {
+        if (!empty($excludedUrls)) {
             $list = array_column($excludedUrls, 'url');
 
             $this->kernel->setExcludedUrls($list);
@@ -891,7 +891,7 @@ class Firewall
 
         if ($xssProtectionOptions['post']) {
             $this->kernel->setClosure('xss_post', function() use ($xssFilter) {
-                if (! empty($_POST)) {
+                if (!empty($_POST)) {
                     foreach (array_keys($_POST) as $k) {
                         $_POST[$k] = $xssFilter->clean($_POST[$k]);
                     }
@@ -901,7 +901,7 @@ class Firewall
 
         if ($xssProtectionOptions['get']) {
             $this->kernel->setClosure('xss_get', function() use ($xssFilter) {
-                if (! empty($_GET)) {
+                if (!empty($_GET)) {
                     foreach (array_keys($_GET) as $k) {
                         $_GET[$k] = $xssFilter->clean($_GET[$k]);
                     }
@@ -911,7 +911,7 @@ class Firewall
 
         if ($xssProtectionOptions['cookie']) {
             $this->kernel->setClosure('xss_cookie', function() use ($xssFilter) {
-                if (! empty($_COOKIE)) {
+                if (!empty($_COOKIE)) {
                     foreach (array_keys($_COOKIE) as $k) {
                         $_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
                     }
@@ -921,7 +921,7 @@ class Firewall
 
         $xssProtectedList = $this->getOption('xss_protected_list');
 
-        if (! empty($xssProtectedList)) {
+        if (!empty($xssProtectedList)) {
         
             $this->kernel->setClosure('xss_protection', function() use ($xssFilter, $xssProtectedList) {
 
@@ -932,21 +932,21 @@ class Firewall
 
                         case 'get':
 
-                            if (! empty($_GET[$k])) {
+                            if (!empty($_GET[$k])) {
                                 $_GET[$k] = $xssFilter->clean($_GET[$k]);
                             }
                             break;
     
                         case 'post':
     
-                            if (! empty($_POST[$k])) {
+                            if (!empty($_POST[$k])) {
                                 $_POST[$k] = $xssFilter->clean($_POST[$k]);
                             }
                             break;
     
                         case 'cookie':
 
-                            if (! empty($_COOKIE[$k])) {
+                            if (!empty($_COOKIE[$k])) {
                                 $_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
                             }
                             break;
@@ -980,7 +980,7 @@ class Firewall
         $allowedList = [];
         $deniedList = [];
 
-        if (! empty($ipList)) {
+        if (!empty($ipList)) {
             foreach ($ipList as $ip) {
 
                 if (0 === strpos($this->kernel->getCurrentUrl(), $ip['url']) ) {
@@ -996,11 +996,11 @@ class Firewall
             }
         }
 
-        if (! empty($allowedList)) {
+        if (!empty($allowedList)) {
             $this->kernel->component['Ip']->setAllowedItems($allowedList);
         }
 
-        if (! empty($deniedList)) {
+        if (!empty($deniedList)) {
             $this->kernel->component['Ip']->setDeniedItems($deniedList);
         }
     }
@@ -1014,7 +1014,7 @@ class Firewall
     {
         $ui = $this->getOption('dialog_ui');
 
-        if (! empty($ui)) {
+        if (!empty($ui)) {
             get_session()->set('SHIELDON_UI_LANG', $ui['lang']);
             $this->kernel->setDialogUI($this->getOption('dialog_ui'));
         }
@@ -1033,11 +1033,11 @@ class Firewall
      */
     private function getOption(string $option, string $section = '')
     {
-        if (! empty($this->configuration[$section][$option])) {
+        if (!empty($this->configuration[$section][$option])) {
             return $this->configuration[$section][$option];
         }
 
-        if (! empty($this->configuration[$option]) && $section === '') {
+        if (!empty($this->configuration[$option]) && $section === '') {
             return $this->configuration[$option];
         }
 
@@ -1053,8 +1053,8 @@ class Firewall
     {
         $configFilePath = $this->directory . '/' . $this->filename;
 
-        if (! file_exists($configFilePath)) {
-            if (! is_dir($this->directory)) {
+        if (!file_exists($configFilePath)) {
+            if (!is_dir($this->directory)) {
                 // @codeCoverageIgnoreStart
                 $originalUmask = umask(0);
                 @mkdir($this->directory, 0777, true);

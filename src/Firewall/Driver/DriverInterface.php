@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Driver;
 
+/**
+ * Interface for Data drivers.
+ */
 interface DriverInterface
 {
     /**

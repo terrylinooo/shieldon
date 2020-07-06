@@ -14,6 +14,9 @@ namespace Shieldon\Firewall\Captcha;
 
 use Shieldon\Firewall\Captcha\CaptchaProvider;
 
+/**
+ * Add form fields for the CSRF features of some frameworks.
+ */
 class Csrf extends CaptchaProvider
 {
     /**

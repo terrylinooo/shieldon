@@ -17,6 +17,9 @@ use Shieldon\Firewall\Captcha\CaptchaProvider;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\unset_superglobal;
 
+/**
+ * Basic form.
+ */
 class Foundation extends CaptchaProvider
 {
     /**

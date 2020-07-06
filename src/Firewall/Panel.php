@@ -27,9 +27,14 @@ use Shieldon\Firewall\FirewallTrait;
 use Shieldon\Messenger as MessengerModule;
 
 use function Shieldon\Firewall\__;
+use function Shieldon\Firewall\get_request;
+use function Shieldon\Firewall\get_response;
+use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\unset_superglobal;
 
 use PDO;
 use PDOException;
+use Psr\Http\Message\ResponseInterface;
 use Redis;
 use RedisException;
 use ReflectionObject;
@@ -134,7 +139,7 @@ class Panel
      */
     protected $demoUser = [
         'user' => 'demo',
-        'pass' => '$2y$10$MTi1ROPnHEukp5RwGNdxuOSAyhGdpc4sfQpwNCv9yHoVvgl9tz8Xy',
+        'pass' => 'demo',
     ];
 
     /**
@@ -170,7 +175,7 @@ class Panel
             $this->filename      = $instance->getFilename();
         }
 
-        if (! empty($this->kernel->logger)) {
+        if (!empty($this->kernel->logger)) {
 
             // We need to know where the logs stored in.
             $logDirectory = $this->kernel->logger->getDirectory();
@@ -188,7 +193,7 @@ class Panel
         }
 
         // Flash message, use it when redirecting page.
-        if (! empty($_SESSION['flash_messages'])) {
+        if (!empty($_SESSION['flash_messages'])) {
             $this->messages = $_SESSION['flash_messages'];
             unset($_SESSION['flash_messages']);
         }
@@ -201,36 +206,41 @@ class Panel
      *
      * @param string $slug
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function entry(): void
+    public function entry(): ResponseInterface
     {
         $this->locate = 'en';
 
-        if (! empty($_SESSION['SHIELDON_PANEL_LANG'])) {
-            $this->locate = $_SESSION['SHIELDON_PANEL_LANG'];
+        $sessionParams = get_session();
+        $request = get_request();
+        $response = get_response();
+
+        if (!empty($sessionParams['SHIELDON_PANEL_LANG'])) {
+            $this->locate = $sessionParams['SHIELDON_PANEL_LANG'];
         }
 
-        $slug = $_GET['so_page'] ?? '';
+        $slug = $request->getQueryParams()['so_page'] ?? '';
 
         if ('logout' === $slug) {
 
-            if (isset($_SESSION['SHIELDON_USER_LOGIN'])) {
-                unset($_SESSION['SHIELDON_USER_LOGIN']);
+            if (isset($sessionParams['SHIELDON_USER_LOGIN'])) {
+                unset_superglobal('SHIELDON_USER_LOGIN', 'session');
             }
 
-            if (isset($_SESSION['SHIELDON_PANEL_LANG'])) {
-                unset($_SESSION['SHIELDON_PANEL_LANG']);
+            if (isset($sessionParams['SHIELDON_PANEL_LANG'])) {
+                unset_superglobal('SHIELDON_PANEL_LANG', 'session');
             }
 
-            header('Location: ' . $this->url('login'));
-            exit;
+            return $response->withdHeader('Location', $this->url('login'));
         }
 
         $this->httpAuth();
 
-        if (isset($_POST) && 'demo' === $this->mode) {
-            unset($_POST);
+        if ('demo' === $this->mode) {
+            // Post is not allowed in Demo mode.
+            $request = $request->withParsedBody([])->withMethod('GET');
+            unset($postParams);
         }
 
         switch($slug) {
@@ -325,7 +335,7 @@ class Panel
         }
 
         if (isset($_GET)) unset($_GET);
-        if (isset($_POST)) unset($_POST);
+        if (isset($postParams)) unset($postParams);
     }
 
     /**
@@ -350,15 +360,15 @@ class Panel
 
         } elseif (2 === count($csrfparams)) {
 
-            if (! empty($csrfparams[0]) && is_string($csrfparams[0])) {
+            if (!empty($csrfparams[0]) && is_string($csrfparams[0])) {
                 $csrfKey = $csrfparams[0];
             }
     
-            if (! empty($csrfparams[1]) && is_string($csrfparams[1])) {
+            if (!empty($csrfparams[1]) && is_string($csrfparams[1])) {
                 $csrfValue = $csrfparams[1];
             }
 
-            if (! empty($csrfKey)) {
+            if (!empty($csrfKey)) {
                 $this->csrfField[] = [
                     'name' => $csrfKey,
                     'value' => $csrfValue,
@@ -374,7 +384,7 @@ class Panel
      */
     public function _csrf(): void
     {
-        if (! empty($this->csrfField)) {
+        if (!empty($this->csrfField)) {
             foreach ($this->csrfField as $value) {
                 echo '<input type="hidden" name="' . $value['name'] . '" value="' . $value['value'] . '" id="csrf-field">';
             }
@@ -391,11 +401,11 @@ class Panel
      */
     public function demo(string $user = '', string $pass = ''): void
     {
-        if (! empty($user)) {
+        if (!empty($user)) {
             $this->demoUser['user'] = $user;
         }
 
-        if (! empty($pass)) {
+        if (!empty($pass)) {
             $this->demoUser['pass'] = $pass;
         }
 
@@ -411,8 +421,10 @@ class Panel
     {
         $data[] = [];
 
-        if (isset($_POST['tab'])) {
-            unset($_POST['tab']);
+        $postParams = get_request()->getParsedBody();
+
+        if (isset($postParams['tab'])) {
+            unset_superglobal('tab', 'post');
             $this->saveConfig();
         }
 
@@ -428,25 +440,27 @@ class Panel
     {
         $this->applyCaptchaForms();
 
+        $postParams = get_request()->getParsedBody();
+
         $login = false;
         $data['error'] = '';
 
-        if (isset($_POST['s_user']) && isset($_POST['s_pass'])) {
+        if (isset($postParams['s_user']) && isset($postParams['s_pass'])) {
 
             $admin = $this->getConfig('admin');
 
             if (
                 // Default password, unencrypted.
-                $admin['user']  === $_POST['s_user'] && 
-                'shieldon_pass' === $_POST['s_pass'] &&
+                $admin['user']  === $postParams['s_user'] && 
+                'shieldon_pass' === $postParams['s_pass'] &&
                 'shieldon_pass' === $admin['pass']
             ) {
                 $login = true;
 
             } elseif (
                 // User has already changed password, encrypted.
-                $admin['user'] === $_POST['s_user'] && 
-                password_verify($_POST['s_pass'], $admin['pass'])
+                $admin['user'] === $postParams['s_user'] && 
+                password_verify($postParams['s_pass'], $admin['pass'])
             ) {
                 $login = true;
     
@@ -456,7 +470,7 @@ class Panel
 
             // Check the response from Captcha modules.
             foreach ($this->captcha as $captcha) {
-                if (! $captcha->response()) {
+                if (!$captcha->response()) {
                     $login = false;
                     $data['error'] = __('panel', 'login_message_invalid_captcha', 'Invalid Captcha code.');
                 }
@@ -465,7 +479,7 @@ class Panel
 
         if ($login) {
             // Mark as logged user.
-            $_SESSION['SHIELDON_USER_LOGIN'] = true;
+            get_session()->set('SHIELDON_USER_LOGIN', true);
 
             // Redirect to overview page if logged in successfully.
             header('Location: ' . $this->url('overview'));
@@ -496,16 +510,18 @@ class Panel
      */
     protected function overview(): void
     {
-        if (isset($_POST['action_type'])) {
+        $postParams = get_request()->getParsedBody();
 
-            switch ($_POST['action_type']) {
+        if (isset($postParams['action_type'])) {
+
+            switch ($postParams['action_type']) {
 
                 case 'reset_data_circle':
                     $this->setConfig('cronjob.reset_circle.config.last_update', date('Y-m-d H:i:s'));
                     $this->kernel->driver->rebuild();
                     sleep(2);
 
-                    unset($_POST['action_type']);
+                    unset_superglobal('action_type', 'post');
 
                     $this->saveConfig();
 
@@ -547,7 +563,7 @@ class Panel
 
         $data['action_logger'] = false;
 
-        if (! empty($this->kernel->logger)) {
+        if (!empty($this->kernel->logger)) {
             $loggerInfo = $this->kernel->logger->getCurrentLoggerInfo();
             $data['action_logger'] = true;
         }
@@ -556,7 +572,7 @@ class Panel
         $data['logger_work_days'] = '0 day';
         $data['logger_total_size'] = '0 MB';
 
-        if (! empty($loggerInfo)) {
+        if (!empty($loggerInfo)) {
 
             $i = 0;
             ksort($loggerInfo);
@@ -604,11 +620,11 @@ class Panel
         */
 
         $data['components'] = [
-            'Ip'         => (! empty($this->kernel->component['Ip']))         ? true : false,
-            'TrustedBot' => (! empty($this->kernel->component['TrustedBot'])) ? true : false,
-            'Header'     => (! empty($this->kernel->component['Header']))     ? true : false,
-            'Rdns'       => (! empty($this->kernel->component['Rdns']))       ? true : false,
-            'UserAgent'  => (! empty($this->kernel->component['UserAgent']))  ? true : false,
+            'Ip'         => (!empty($this->kernel->component['Ip']))         ? true : false,
+            'TrustedBot' => (!empty($this->kernel->component['TrustedBot'])) ? true : false,
+            'Header'     => (!empty($this->kernel->component['Header']))     ? true : false,
+            'Rdns'       => (!empty($this->kernel->component['Rdns']))       ? true : false,
+            'UserAgent'  => (!empty($this->kernel->component['UserAgent']))  ? true : false,
         ];
 
         $reflection = new ReflectionObject($this->kernel);
@@ -701,11 +717,11 @@ class Panel
     protected function operationStatus(): void
     {
         $data['components'] = [
-            'Ip'         => (! empty($this->kernel->component['Ip']))         ? true : false,
-            'TrustedBot' => (! empty($this->kernel->component['TrustedBot'])) ? true : false,
-            'Header'     => (! empty($this->kernel->component['Header']))     ? true : false,
-            'Rdns'       => (! empty($this->kernel->component['Rdns']))       ? true : false,
-            'UserAgent'  => (! empty($this->kernel->component['UserAgent']))  ? true : false,
+            'Ip'         => (!empty($this->kernel->component['Ip']))         ? true : false,
+            'TrustedBot' => (!empty($this->kernel->component['TrustedBot'])) ? true : false,
+            'Header'     => (!empty($this->kernel->component['Header']))     ? true : false,
+            'Rdns'       => (!empty($this->kernel->component['Rdns']))       ? true : false,
+            'UserAgent'  => (!empty($this->kernel->component['UserAgent']))  ? true : false,
         ];
 
         $reflection = new ReflectionObject($this->kernel);
@@ -861,12 +877,17 @@ class Panel
      */
     protected function ipManager(): void
     {
-        if (isset($_POST['ip']) && filter_var(explode('/', $_POST['ip'])[0], FILTER_VALIDATE_IP)) {
+        $postParams = get_request()->getParsedBody();
 
-            $url = $_POST['url'];
-            $ip = $_POST['ip'];
-            $rule = $_POST['action'];
-            $order = (int) $_POST['order'];
+        if (
+            isset($postParams['ip']) &&
+            filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)
+        ) {
+
+            $url = $postParams['url'];
+            $ip = $postParams['ip'];
+            $rule = $postParams['action'];
+            $order = (int) $postParams['order'];
 
             if ($order > 0) {
                 $order--;
@@ -878,7 +899,7 @@ class Panel
 
                 $newIpList = [];
 
-                if (! empty($ipList)) {
+                if (!empty($ipList)) {
                     foreach ($ipList as $i => $ipInfo) {
                         $key = $i + 1;
                         if ($order === $i) {
@@ -907,10 +928,10 @@ class Panel
                 $this->setConfig('ip_manager', $ipList);
             }
 
-            if (isset($_POST['url']))    unset($_POST['url']);
-            if (isset($_POST['ip']))     unset($_POST['ip']);
-            if (isset($_POST['action'])) unset($_POST['action']);
-            if (isset($_POST['order']))  unset($_POST['order']);
+            unset_superglobal('url', 'post');
+            unset_superglobal('ip', 'post');
+            unset_superglobal('action', 'post');
+            unset_superglobal('order', 'post');
 
             $this->saveConfig();
         }
@@ -927,11 +948,13 @@ class Panel
      */
     protected function exclusion(): void
     {
-        if (isset($_POST['url'])) {
+        $postParams = get_request()->getParsedBody();
 
-            $url = $_POST['url'] ?? '';
-            $action = $_POST['action'] ?? '';
-            $order = (int) $_POST['order'];
+        if (isset($postParams['url'])) {
+
+            $url = $postParams['url'] ?? '';
+            $action = $postParams['action'] ?? '';
+            $order = (int) $postParams['order'];
 
             $excludedUrls = $this->getConfig('excluded_urls');
 
@@ -948,9 +971,9 @@ class Panel
 
             $this->setConfig('excluded_urls', $excludedUrls);
 
-            if (isset($_POST['url']))    unset($_POST['url']);
-            if (isset($_POST['action'])) unset($_POST['action']);
-            if (isset($_POST['order']))  unset($_POST['order']);
+            unset_superglobal('url', 'post');
+            unset_superglobal('action', 'post');
+            unset_superglobal('order', 'post');
 
             $this->saveConfig();
         }
@@ -967,13 +990,19 @@ class Panel
      */
     protected function authentication(): void
     {
-        if (isset($_POST['url']) && isset($_POST['user']) && isset($_POST['pass'])) {
+        $postParams = get_request()->getParsedBody();
 
-            $url = $_POST['url'] ?? '';
-            $user = $_POST['user'] ?? '';
-            $pass = $_POST['pass'] ?? '';
-            $action = $_POST['action'] ?? '';
-            $order = (int) $_POST['order'];
+        if (
+            isset($postParams['url']) && 
+            isset($postParams['user']) && 
+            isset($postParams['pass'])
+        ) {
+
+            $url = $postParams['url'] ?? '';
+            $user = $postParams['user'] ?? '';
+            $pass = $postParams['pass'] ?? '';
+            $action = $postParams['action'] ?? '';
+            $order = (int) $postParams['order'];
 
             $authenticatedList = $this->getConfig('www_authenticate');
 
@@ -991,11 +1020,11 @@ class Panel
 
             $this->setConfig('www_authenticate', $authenticatedList);
 
-            if (isset($_POST['url']))    unset($_POST['url']);
-            if (isset($_POST['user']))   unset($_POST['user']);
-            if (isset($_POST['pass']))   unset($_POST['pass']);
-            if (isset($_POST['action'])) unset($_POST['action']);
-            if (isset($_POST['order']))  unset($_POST['order']);
+            unset_superglobal('url', 'post');
+            unset_superglobal('user', 'post');
+            unset_superglobal('pass', 'post');
+            unset_superglobal('action', 'post');
+            unset_superglobal('order', 'post');
 
             $this->saveConfig();
         }
@@ -1012,16 +1041,18 @@ class Panel
      */
     protected function xssProtection(): void
     {
-        if (isset($_POST['xss'])) {
-            unset($_POST['xss']);
+        $postParams = get_request()->getParsedBody();
 
-            $type = $_POST['type'] ?? '';
-            $variable = $_POST['variable'] ?? '';
-            $action = $_POST['action'] ?? '';
-            $order = (int) $_POST['order'];
+        if (isset($postParams['xss'])) {
+            unset_superglobal('xss', 'post');
+
+            $type = $postParams['type'] ?? '';
+            $variable = $postParams['variable'] ?? '';
+            $action = $postParams['action'] ?? '';
+            $order = (int) $postParams['order'];
 
             // Check variable name. Should be mixed with a-zA-Z and underscore.
-            if (! ctype_alnum(str_replace('_', '', $variable))) {
+            if (!ctype_alnum(str_replace('_', '', $variable))) {
 
                 // Ignore the `add` process.
                 $action = 'undefined';
@@ -1053,10 +1084,10 @@ class Panel
 
             $this->setConfig('xss_protected_list', $xssProtectedList);
 
-            if (isset($_POST['type']))     unset($_POST['type']);
-            if (isset($_POST['variable'])) unset($_POST['variable']);
-            if (isset($_POST['action']))   unset($_POST['action']);
-            if (isset($_POST['order']))    unset($_POST['order']);
+            unset_superglobal('type', 'post');
+            unset_superglobal('variable', 'post');
+            unset_superglobal('action', 'post');
+            unset_superglobal('order', 'post');
 
             $this->saveConfig();
         }
@@ -1093,7 +1124,7 @@ class Panel
         
         $lastCachedTime = '';
 
-        if (! empty($this->parser)) {
+        if (!empty($this->parser)) {
 
             $logCacheHandler = new ActionLogParsedCache($this->parser->getDirectory());
 
@@ -1101,7 +1132,7 @@ class Panel
 
             // If we have cached data then we don't need to parse them again.
             // This will save a lot of time in parsing logs.
-            if (! empty($ipDetailsCachedData)) {
+            if (!empty($ipDetailsCachedData)) {
 
                 $data['ip_details'] = $ipDetailsCachedData['ip_details'];
                 $data['period_data'] = $ipDetailsCachedData['period_data'];
@@ -1149,10 +1180,12 @@ class Panel
      */
     protected function ruleTable(): void
     {
-        if (isset($_POST['ip'])) {
+        $postParams = get_request()->getParsedBody();
 
-            $ip = $_POST['ip'];
-            $action = $_POST['action'];
+        if (isset($postParams['ip'])) {
+
+            $ip = $postParams['ip'];
+            $action = $postParams['action'];
 
             $actionCode['temporarily_ban'] = $this->kernel::ACTION_TEMPORARILY_DENY;
             $actionCode['permanently_ban'] = $this->kernel::ACTION_DENY;
@@ -1271,8 +1304,10 @@ class Panel
     {
         $data[] = [];
 
-        if (isset($_POST['tab'])) {
-            unset($_POST['tab']);
+        $postParams = get_request()->getParsedBody();
+
+        if (isset($postParams['tab'])) {
+            unset_superglobal('tab', 'post');
             $this->saveConfig();
         }
 
@@ -1286,6 +1321,8 @@ class Panel
      */
     protected function iptables(string $type = 'IPv4'): void
     {
+        $postParams = get_request()->getParsedBody();
+
         $reflection = new ReflectionObject($this->kernel);
         $t = $reflection->getProperty('properties');
         $t->setAccessible(true);
@@ -1302,23 +1339,49 @@ class Panel
 
         $iptablesQueueFile = $iptablesWatchingFolder . '/iptables_queue.log';
 
-        if (
-               (isset($_POST['ip'])       && (filter_var(explode('/', $_POST['ip'])[0], FILTER_VALIDATE_IP)))
-            && (isset($_POST['port'])     && (is_numeric($_POST['port']) || ($_POST['port'] === 'all') || ($_POST['port'] === 'custom')))
-            && (isset($_POST['subnet'])   && (is_numeric($_POST['subnet']) || ($_POST['subnet'] === 'null')))
-            && (isset($_POST['protocol']) && (in_array($_POST['protocol'], ['tcp', 'udp', 'all'])))
-            && (isset($_POST['action'])   && (in_array($_POST['action'], ['allow', 'deny'])))
-        ) {
-            $ip       = $_POST['ip'];
-            $port     = $_POST['port'];
-            $subnet   = $_POST['subnet'];
-            $protocol = $_POST['protocol'];
-            $action   = $_POST['action'];
-            $cPort    = $_POST['port_custom'] ?? 'all';
+        $con1 = (
+            isset($postParams['ip']) &&
+            filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)
+        );
+
+        $con2 = (
+            isset($postParams['port']) &&
+            (
+                is_numeric($postParams['port']) ||
+                $postParams['port'] === 'all' ||
+                $postParams['port'] === 'custom'
+            )
+        );
+
+        $con3 = (
+            isset($postParams['subnet']) && 
+            (
+                is_numeric($postParams['subnet']) || 
+                $postParams['subnet'] === 'null'
+            )
+        );
+
+        $con4 = (
+            isset($postParams['protocol']) && 
+            in_array($postParams['protocol'], ['tcp', 'udp', 'all'])
+        );
+
+        $con5 = (
+            isset($postParams['action']) && 
+            in_array($postParams['action'], ['allow', 'deny'])
+        );
+
+        if ($con1 && $con2 && $con3 && $con4 && $con5) {
+            $ip       = $postParams['ip'];
+            $port     = $postParams['port'];
+            $subnet   = $postParams['subnet'];
+            $protocol = $postParams['protocol'];
+            $action   = $postParams['action'];
+            $cPort    = $postParams['port_custom'] ?? 'all';
 
             $isRemoval = false;
 
-            if (isset($_POST['remove']) && $_POST['remove'] === 'yes') {
+            if (isset($postParams['remove']) && $postParams['remove'] === 'yes') {
                 $isRemoval = true;
             }
 
@@ -1355,7 +1418,7 @@ class Panel
             // Add a command to the watching file.
             file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
 
-            if (! $isRemoval) {
+            if (!$isRemoval) {
 
                 // Becase we need system cronjob done, and then the web page will show the actual results.
                 sleep(10);
@@ -1377,7 +1440,7 @@ class Panel
                 $line = trim($file->fgets());
                 $ipInfo = explode(',', $line);
 
-                if (! empty($ipInfo[4])) {
+                if (!empty($ipInfo[4])) {
                     $ipCommand[] = $ipInfo;
                 }
             }
@@ -1432,10 +1495,12 @@ class Panel
      */
     protected function ip6tables(): void
     {
+        $postParams = get_request()->getParsedBody();
+
         $data[] = [];
 
-        if (isset($_POST['tab'])) {
-            unset($_POST['tab']);
+        if (isset($postParams['tab'])) {
+            unset_superglobal('tab', 'post');
             $this->saveConfig();
         }
 
@@ -1458,7 +1523,7 @@ class Panel
                 $line = trim($file->fgets());
                 $ipInfo = explode(',', $line);
 
-                if (! empty($ipInfo[4])) {
+                if (!empty($ipInfo[4])) {
                     $ipv6Command[] = $ipInfo;
                 }
             }
@@ -1506,24 +1571,28 @@ class Panel
      */
     private function saveConfig(): void
     {
+        $postParams = get_request()->getParsedBody();
+
         $configFilePath = $this->directory . '/' . $this->filename;
 
         foreach ($this->csrfField as $csrfInfo) {
-            if (! empty($csrfInfo['name'])) {
-                unset($_POST[$csrfInfo['name']]);
+            if (!empty($csrfInfo['name'])) {
+                unset_superglobal($csrfInfo['name'], 'post');
             }
         }
 
-        if (empty($_POST) || ! is_array($_POST) || 'managed' !== $this->mode) {
+        if (empty($postParams) || !is_array($postParams) || 'managed' !== $this->mode) {
             return;
         }
 
-        foreach ($_POST as $postKey => $postData) {
+        foreach ($postParams as $postKey => $postData) {
             if (is_string($postData)) {
                 if ($postData === 'on') {
                     $this->setConfig(str_replace('__', '.', $postKey), true);
+
                 } elseif ($postData === 'off') {
                     $this->setConfig(str_replace('__', '.', $postKey), false);
+
                 } else {
                     if ($postKey === 'ip_variable_source') {
                         $this->setConfig('ip_variable_source.REMOTE_ADDR', false);
@@ -1536,7 +1605,7 @@ class Panel
                         $this->setConfig('dialog_ui.shadow_opacity', (string) $postData);
 
                     } elseif ($postKey === 'admin__pass') {
-                        if (strlen($_POST['admin__pass']) < 58) {
+                        if (strlen($postParams['admin__pass']) < 58) {
                             $this->setConfig('admin.pass', password_hash($postData, PASSWORD_BCRYPT));
                         }
                     } else if ($postKey === 'messengers__sendgrid__config__recipients') {
@@ -1612,8 +1681,8 @@ class Panel
                 $sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
                 $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
                 
-                if (! file_exists($sqliteFilePath)) {
-                    if (! is_dir($sqliteDir)) {
+                if (!file_exists($sqliteFilePath)) {
+                    if (!is_dir($sqliteDir)) {
                         $originalUmask = umask(0);
                         @mkdir($sqliteDir, 0777, true);
                         umask($originalUmask);
@@ -1638,7 +1707,7 @@ class Panel
                     );
                 }
 
-                if (! is_writable($sqliteFilePath)) {
+                if (!is_writable($sqliteFilePath)) {
                     $isDataDriverFailed = true;
                     $this->responseMessage('error',
                         __(
@@ -1689,13 +1758,13 @@ class Panel
 
                 $this->setConfig('drivers.file.directory_path', $fileDir);
 
-                if (! is_dir($fileDir)) {
+                if (!is_dir($fileDir)) {
                     $originalUmask = umask(0);
                     @mkdir($fileDir, 0777, true);
                     umask($originalUmask);
                 }
 
-                if (! is_writable($fileDir)) {
+                if (!is_writable($fileDir)) {
                     $isDataDriverFailed = true;
                     $this->responseMessage('error',
                         __(
@@ -1719,13 +1788,13 @@ class Panel
 
             $this->setConfig('loggers.action.config.directory_path', $actionLogDir);
     
-            if (! is_dir($actionLogDir)) {
+            if (!is_dir($actionLogDir)) {
                 $originalUmask = umask(0);
                 @mkdir($actionLogDir, 0777, true);
                 umask($originalUmask);
             }
     
-            if (! is_writable($actionLogDir)) {
+            if (!is_writable($actionLogDir)) {
                 $isDataDriverFailed = true;
                 $this->responseMessage('error',
                     __(
@@ -1748,7 +1817,7 @@ class Panel
 
             $this->setConfig('iptables.config.watching_folder', $iptablesWatchingFolder);
 
-            if (! is_dir($iptablesWatchingFolder)) {
+            if (!is_dir($iptablesWatchingFolder)) {
                 $originalUmask = umask(0);
                 @mkdir($iptablesWatchingFolder, 0777, true);
                 umask($originalUmask);
@@ -1763,7 +1832,7 @@ class Panel
                 }
             }
     
-            if (! is_writable($iptablesWatchingFolder)) {
+            if (!is_writable($iptablesWatchingFolder)) {
                 $isDataDriverFailed = true;
                 $this->responseMessage('error',
                     __(
@@ -1776,7 +1845,7 @@ class Panel
         }
 
         // Only update settings while data driver is correctly connected.
-        if (! $isDataDriverFailed) {
+        if (!$isDataDriverFailed) {
             file_put_contents($configFilePath, json_encode($this->configuration));
 
             $this->responseMessage('success',
@@ -1811,11 +1880,11 @@ class Panel
      */
     protected function importSettings()
     {
-        if (! empty($_FILES['json_file']['tmp_name'])) {
+        if (!empty($_FILES['json_file']['tmp_name'])) {
             $importedFileContent = file_get_contents($_FILES['json_file']['tmp_name']);
         }
 
-        if (! empty($importedFileContent)) {
+        if (!empty($importedFileContent)) {
             $jsonData = json_decode($importedFileContent, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -1835,7 +1904,7 @@ class Panel
             $checkFileVaild = true;
 
             foreach (array_keys($this->configuration) as $key) {
-                if (! isset($jsonData[$key])) {
+                if (!isset($jsonData[$key])) {
                     $checkFileVaild = false;
                 }
             }
@@ -1921,11 +1990,11 @@ class Panel
                 if (in_array($field, $hiddenForDemo)) {
                     echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
                 } else {
-                    echo (! empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
+                    echo (!empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
                 }
 
             } else {
-                echo (! empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
+                echo (!empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
             }
         } elseif (is_array($this->getConfig($field))) {
 
@@ -2019,13 +2088,13 @@ class Panel
      */
     private function loadView(string $page, array $data = [], $echo = false)
     {
-        if (! defined('SHIELDON_VIEW')) {
+        if (!defined('SHIELDON_VIEW')) {
             define('SHIELDON_VIEW', true);
         }
 
         $viewFilePath =  __DIR__ . '/../../templates/' . $page . '.php';
     
-        if (! empty($data)) {
+        if (!empty($data)) {
             extract($data);
         }
 
@@ -2056,7 +2125,7 @@ class Panel
      */
     private function _include(string $page, array $data = []): void
     {
-        if (! defined('SHIELDON_VIEW')) {
+        if (!defined('SHIELDON_VIEW')) {
             define('SHIELDON_VIEW', true);
         }
 
@@ -2134,8 +2203,8 @@ class Panel
         $path = parse_url($httpProtocal . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
         $url = $httpProtocal . $_SERVER['HTTP_HOST'] . $path;
-        $soPage = (! empty($page)) ? '?so_page=' . $page : '';
-        $soTab = (! empty($tab)) ? '&tab=' . $tab : '';
+        $soPage = (!empty($page)) ? '?so_page=' . $page : '';
+        $soTab = (!empty($tab)) ? '&tab=' . $tab : '';
 
         return $url . $soPage . $soTab;
     }
@@ -2151,7 +2220,7 @@ class Panel
             $admin = $this->demoUser;
         }
 
-        if (! isset($_SESSION['SHIELDON_USER_LOGIN'])) {
+        if (!isset($_SESSION['SHIELDON_USER_LOGIN'])) {
             $this->login();
         }
     }
@@ -2197,7 +2266,7 @@ class Panel
             case 'telegram':
                 $apiKey = $_GET['apiKey'] ?? '';
                 $channel = $_GET['channel'] ?? '';
-                if (! empty($apiKey) && ! empty($channel)) {
+                if (!empty($apiKey) && !empty($channel)) {
                     $messenger = new MessengerModule\Telegram($apiKey, $channel);
                     if ($messenger->send($testMsgBody)) {
                         $response['status'] = 'success';
@@ -2207,7 +2276,7 @@ class Panel
 
             case 'line-notify':
                 $accessToken = $_GET['accessToken'] ?? '';
-                if (! empty($accessToken)) {
+                if (!empty($accessToken)) {
                     $messenger = new MessengerModule\LineNotify($accessToken);
                     if ($messenger->send($testMsgBody)) {
                         $response['status'] = 'success';
@@ -2218,7 +2287,7 @@ class Panel
             case 'slack':
                 $botToken = $_GET['botToken'] ?? '';
                 $channel = $_GET['channel'] ?? '';
-                if (! empty($botToken) && ! empty($channel)) {
+                if (!empty($botToken) && !empty($channel)) {
                     $messenger = new MessengerModule\Slack($botToken, $channel);
                     if ($messenger->send($testMsgBody)) {
                         $response['status'] = 'success';
@@ -2228,7 +2297,7 @@ class Panel
 
             case 'slack-webhook':
                 $webhookUrl = $_GET['webhookUrl'] ?? '';
-                if (! empty($webhookUrl)) {
+                if (!empty($webhookUrl)) {
                     $messenger = new MessengerModule\SlackWebhook($webhookUrl);
                     if ($messenger->send($testMsgBody)) {
                         $response['status'] = 'success';
@@ -2243,10 +2312,10 @@ class Panel
                 $channel = $_GET['channel'] ?? '';
 
                 if (
-                       ! empty($serverUrl) 
-                    && ! empty($userId)
-                    && ! empty($accessToken)
-                    && ! empty($channel)
+                       !empty($serverUrl) 
+                    && !empty($userId)
+                    && !empty($accessToken)
+                    && !empty($channel)
                 ) {
                     $messenger = new MessengerModule\RocketChat($accessToken, $userId, $serverUrl, $channel);
                     if ($messenger->send($testMsgBody)) {
@@ -2266,8 +2335,8 @@ class Panel
                 $recipients = $_GET['recipients'] ?? '';
 
                 if (
-                    (! filter_var($host, FILTER_VALIDATE_IP) && ! filter_var($host, FILTER_VALIDATE_DOMAIN))
-                    || ! is_numeric($port)
+                    (!filter_var($host, FILTER_VALIDATE_IP) && !filter_var($host, FILTER_VALIDATE_DOMAIN))
+                    || !is_numeric($port)
                     || empty($user)
                     || empty($pass) 
                 ) {
@@ -2280,7 +2349,7 @@ class Panel
                     $host = $type . '://' . $host;
                 }
 
-                if (! empty($sender) && $recipients) {
+                if (!empty($sender) && $recipients) {
                     $recipients = str_replace("\r", '|', $recipients);
                     $recipients = str_replace("\n", '|', $recipients);
                     $recipients = explode('|', $recipients);
@@ -2309,7 +2378,7 @@ class Panel
                 $sender = $_GET['sender'] ?? '';
                 $recipients = $_GET['recipients'] ?? '';
 
-                if (! empty($sender) && ! empty($recipients)) {
+                if (!empty($sender) && !empty($recipients)) {
                     $recipients = str_replace("\r", '|', $recipients);
                     $recipients = str_replace("\n", '|', $recipients);
                     $recipients = explode('|', $recipients);
@@ -2340,7 +2409,7 @@ class Panel
                 $sender = $_GET['sender'] ?? '';
                 $recipients = $_GET['recipients'] ?? '';
 
-                if (! empty($sender) && ! empty($recipients) && ! empty($apiKey)) {
+                if (!empty($sender) && !empty($recipients) && !empty($apiKey)) {
                     $recipients = str_replace("\r", '|', $recipients);
                     $recipients = str_replace("\n", '|', $recipients);
                     $recipients = explode('|', $recipients);
@@ -2371,7 +2440,7 @@ class Panel
                 $sender = $_GET['sender'] ?? '';
                 $recipients = $_GET['recipients'] ?? '';
 
-                if (! empty($sender) && ! empty($recipients) && ! empty($apiKey) && ! empty($domain)) {
+                if (!empty($sender) && !empty($recipients) && !empty($apiKey) && !empty($domain)) {
                     $recipients = str_replace("\r", '|', $recipients);
                     $recipients = str_replace("\n", '|', $recipients);
                     $recipients = explode('|', $recipients);
@@ -2405,10 +2474,10 @@ class Panel
         $postKey = 'messengers__' . $moduleName . '__confirm_test';
 
         if ('success' === $response['status']) {
-            $_POST[$postKey] = 'on';
+            $postParams[$postKey] = 'on';
             $this->saveConfig();
         } elseif ('error' === $response['status']) {
-            $_POST[$postKey] = 'off';
+            $postParams[$postKey] = 'off';
             $this->saveConfig();
         }
 
