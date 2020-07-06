@@ -10,7 +10,7 @@
 
 namespace Shieldon\Mock;
 
-use Shieldon\Messenger\MessengerInterface;
+use Shieldon\Messenger\Messenger\MessengerInterface;
 
 /**
  * For unit-testing purpose.
