@@ -28,7 +28,7 @@ use Shieldon\Log\ActionLogger;
 use Shieldon\Security\Xss;
 use Shieldon\Security\httpAuthentication;
 use Shieldon\FirewallTrait;
-use Messenger as MessengerModule;
+use Shieldon\Messenger as MessengerModule;
 
 use PDO;
 use PDOException;

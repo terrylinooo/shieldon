@@ -22,7 +22,7 @@ use Shieldon\Log\ActionLogParser;
 use Shieldon\Log\ActionLogParsedCache;
 use Shieldon\Shieldon;
 use Shieldon\FirewallTrait;
-use Messenger as MessengerModule;
+use Shieldon\Messenger as MessengerModule;
 
 use function Shieldon\Helper\__;
 
