@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Component;
 
+use Shieldon\Firewall\Component\ComponentProvider;
 use Shieldon\Firewall\IpTrait;
 
 use function gethostbyname;

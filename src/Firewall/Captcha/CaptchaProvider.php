@@ -10,8 +10,6 @@
 
 namespace Shieldon\Firewall\Captcha;
 
-use Shieldon\Firewall\Utils\Container;
-
 /**
  * ComponentPrivider
  */

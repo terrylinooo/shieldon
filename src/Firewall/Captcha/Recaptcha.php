@@ -12,7 +12,10 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Captcha;
 
+use Shieldon\Firewall\Captcha\CaptchaProvider;
+
 use function Shieldon\Firewall\get_request;
+use function Shieldon\Firewall\unset_superglobal;
 use function curl_error;
 use function curl_exec;
 use function curl_init;
@@ -55,14 +58,14 @@ class Recaptcha extends CaptchaProvider
      */
     public function response(): bool
     {
-        $post = get_request()->getParsedBody();
+        $postParams = get_request()->getParsedBody();
 
-        if (empty($post['g-recaptcha-response'])) {
+        if (empty($$postParams['g-recaptcha-response'])) {
             return false;
         }
 
         $flag = false;
-        $reCaptchaToken = str_replace(["'", '"'], '', $post['g-recaptcha-response']);
+        $reCaptchaToken = str_replace(["'", '"'], '', $postParams['g-recaptcha-response']);
 
         $postData = [
             'secret' => $this->secret,
@@ -96,7 +99,7 @@ class Recaptcha extends CaptchaProvider
         curl_close($ch);
 
         // Prevent detecting POST method on RESTful frameworks.
-        unset($_POST['g-recaptcha-response']);
+        unset_superglobal('g-recaptcha-response', 'post');
 
         return $flag;
     }

@@ -586,7 +586,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testOutput($driver = 'sqlite')
+    public function testRespond($driver = 'sqlite')
     {
         $_SERVER['REQUEST_URI'] = '/';
         reload_request();
@@ -608,8 +608,10 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $result = $kernel->run();
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
         $result = $kernel->run();
+
         if ($result === $kernel::RESPONSE_LIMIT_SESSION) {
-            $output = $kernel->output(0, false);
+            $response = $kernel->respond();
+            $output = $response->getBody()->getContents();
 
             if (strpos($output, 'Please line up') !== false) {
                 $this->assertTrue(true);
@@ -624,7 +626,8 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $result = $kernel->run();
 
         if ($result === $kernel::RESPONSE_DENY) {
-            $output = $kernel->output(0, false);
+            $response = $kernel->respond();
+            $output = $response->getBody()->getContents();
 
             if (strpos($output, 'Access denied') !== false) {
                 $this->assertTrue(true);
@@ -656,7 +659,8 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($kernel::RESPONSE_ALLOW, $result[1]);
         $this->assertSame($kernel::RESPONSE_ALLOW, $result[2]);
         if ($result[3] === $kernel::RESPONSE_TEMPORARILY_DENY) {
-            $output = $kernel->output(0, false);
+            $response = $kernel->respond();
+            $output = $response->getBody()->getContents();
 
             if (stripos($output, 'Captcha') !== false) {
                 $this->assertTrue(true);

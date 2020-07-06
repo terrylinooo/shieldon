@@ -11,7 +11,11 @@
 declare(strict_types=1);
 
 namespace Shieldon\Firewall\Captcha;
+
+use Shieldon\Firewall\Captcha\CaptchaProvider;
+
 use function Shieldon\Firewall\get_request;
+use function Shieldon\Firewall\unset_superglobal;
 
 class Foundation extends CaptchaProvider
 {
@@ -36,20 +40,20 @@ class Foundation extends CaptchaProvider
      */
     public function response(): bool
     {
-        $post = get_request()->getParsedBody();
+        $postParams = get_request()->getParsedBody();
 
-        if (empty($post['shieldon_captcha'])) {
+        if (empty($postParams['shieldon_captcha'])) {
             return false;
         }
 
         $flag = false;
 
-        if ($post['shieldon_captcha'] === 'ok') {
+        if ($postParams['shieldon_captcha'] === 'ok') {
             $flag = true;
         }
 
         // Prevent detecting POST method on RESTful frameworks.
-        unset($_POST['shieldon_captcha']);
+        unset_superglobal('shieldon_captcha', 'post');
 
         return $flag;
     }

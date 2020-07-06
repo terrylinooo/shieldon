@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Captcha;
 
+use Shieldon\Firewall\Captcha\CaptchaProvider;
+
 class Csrf extends CaptchaProvider
 {
     /**

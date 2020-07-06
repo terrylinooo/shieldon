@@ -14,6 +14,7 @@ namespace Shieldon\Firewall;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Captcha\ImageCaptcha;
 use Shieldon\Firewall\Captcha\Recaptcha;
@@ -29,9 +30,10 @@ use Shieldon\Firewall\Driver\RedisDriver;
 use Shieldon\Firewall\Driver\SqliteDriver;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Security\Xss;
-use Shieldon\Firewall\Security\httpAuthentication;
 use Shieldon\Firewall\FirewallTrait;
 use Shieldon\Messenger as MessengerModule;
+use Shieldon\Middleware as Middleware;
+use Shieldon\Psr15\RequestHandler;
 use function Shieldon\Firewall\get_request;
 
 use PDO;
@@ -60,14 +62,11 @@ class Firewall
     use FirewallTrait;
 
     /**
-     * A RESTful routing system defines four methods: POST, GET, PUT, DELETE 
-     * If current framework is a RESTful routing system, 
-     * the page will be refeshed after submitting Capatcha form.
-     * No refresh? An Error will be occurred while current URL does't support POST method request.
+     * Collection of PSR-7 or PSR-15 middlewares.
      *
-     * @var bool
+     * @var array
      */
-    protected $restful = false;
+    protected $middleware = [];
 
     /**
      * Constructor.
@@ -112,6 +111,18 @@ class Firewall
         }
 
         $this->setup();
+    }
+
+    /**
+     * Add middlewares and use them before executing Shieldon kernal.
+     *
+     * @param array $middleware Array of PSR-7 or PSR-15 middlewares.
+     *
+     * @return void
+     */
+    public function add($middleware)
+    {
+        $this->middleware[] = $middleware;
     }
 
     /**
@@ -161,44 +172,45 @@ class Firewall
     /**
      * Just, run!
      *
-     * @return void
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function run(): void
+    public function run(): ResponseInterface
     {
         if ($this->status) {
+
+            // PSR-15 request handler.
+            $requestHandler = new RequestHandler();
+
+            foreach ($this->middleware as $middleware) {
+                if ($middleware instanceof MiddlewareInterface) {
+                    $requestHandler->add($middleware);
+                }
+            }
+
+            $response = $requestHandler->handle(get_request());
+
+            // Something is detected by Middlewares, return.
+            if ($response->getStatusCode() !== 200) {
+                return $response;
+            }
 
             $result = $this->kernel->run();
 
             if ($result !== $this->kernel::RESPONSE_ALLOW) {
 
-                // @codeCoverageIgnoreStart
                 if ($this->kernel->captchaResponse()) {
                     $this->kernel->unban();
 
-                    // The reason here please check out the explanation of $restful property.
-                    if ($this->restful) {
+                    $response = new Response();
+                    $response = $response->withHeader('Location', $this->kernel->getCurrentUrl());
+                    $response = $response->withStatus(303);
 
-                        // Modify the request method from POST to GET.
-                        $_SERVER['REQUEST_METHOD'] = 'GET';
-                        header('Location: ' . $this->kernel->getCurrentUrl(), true, 303);
-                        die($_SERVER['REQUEST_METHOD']);
-                        exit;
-                    }
+                    return $response;
                 }
-                $this->kernel->output(200);
-                // @codeCoverageIgnoreEnd
             }
         }
-    }
 
-    /**
-     * Check out the explanation of $restful property.
-     *
-     * @return void
-     */
-    public function restful(): void
-    {
-        $this->restful = true;
+        return $this->kernel->respond();
     }
 
     /**
@@ -955,15 +967,7 @@ class Firewall
     {
         $authenticateList = $this->getOption('www_authenticate');
 
-        if (! empty($authenticateList)) {
-
-            $authHandler = new httpAuthentication();
-
-            $this->kernel->setClosure('www_authenticate', function() use ($authHandler, $authenticateList) {
-                $authHandler->set($authenticateList);
-                $authHandler->check();
-            });
-        }
+        $this->add(new Middleware\httpAuthentication($authenticateList));
     }
 
     /**

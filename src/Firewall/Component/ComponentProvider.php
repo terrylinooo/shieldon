@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Component;
 
+use Shieldon\Firewall\Component\ComponentInterface;
+
 use function array_keys;
 use function array_push;
 use function in_array;

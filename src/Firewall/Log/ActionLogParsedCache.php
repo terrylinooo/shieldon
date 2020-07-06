@@ -11,6 +11,7 @@
 declare(strict_types=1);
 
 namespace Shieldon\Firewall\Log;
+
 use function date;
 use function file_get_contents;
 use function file_put_contents;

@@ -11,6 +11,7 @@
 declare(strict_types=1);
 
 namespace Shieldon\Firewall\Log;
+
 use DateInterval;
 use DatePeriod;
 use DateTime;

@@ -61,10 +61,15 @@ function __(): string
     $replacement = ($num > 3) ? func_get_arg(3) : [];
     $lang        = 'en';
 
-    if (isset($_SESSION['SHIELDON_PANEL_LANG'])) {
-        $lang = $_SESSION['SHIELDON_PANEL_LANG'];
-    } elseif (isset($_SESSION['SHIELDON_UI_LANG'])) {
-        $lang = $_SESSION['SHIELDON_UI_LANG'];
+    // Fetch session variables.
+    $session = get_session();
+    $panelLang = $session->get('SHIELDON_PANEL_LANG');
+    $uiLang = $session->get('SHIELDON_UI_LANG');
+
+    if (!empty($panelLang)) {
+        $lang = $panelLang;
+    } elseif (!empty($uiLang)) {
+        $lang = $uiLang;
     }
 
     if (empty($i18n[$filename]) && empty($fileChecked[$filename])) {
@@ -349,47 +354,42 @@ function set_response(ResponseInterface $response): void
 /**
  * Unset a variable of superglobal.
  *
- * @param mixed $varName The name (key) in the array of the superglobal.
+ * @param mixed $name The name (key) in the array of the superglobal.
  *
  * @return void
  */
-function unset_superglobal($varName, string $type): void
+function unset_superglobal($name, string $type): void
 {
     switch ($type) {
         case 'cookie':
             $cookieParams = get_request()->getCookieParams();
-            unset($cookieParams[$varName]);
-
-            // Prevent direct access to this variable in $_COOKIE superglobal.
-            unset($_COOKIE[$varName]);
+            unset($cookieParams[$name]);
             set_request(get_request()->withCookieParams($cookieParams));
             set_response(get_response()->withHeader(
                 'Set-Cookie',
-                "$varName=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+                "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
             ));
+            // Prevent direct access to superglobal.
+            unset($_COOKIE[$name]);
             break;
 
         case 'post':
             $postParams = get_request()->getParsedBody();
-            unset($postParams[$varName]);
-
-            // Prevent direct access to this variable in $_POST superglobal.
-            unset($_POST[$varName]);
+            unset($postParams[$name]);
             set_request(get_request()->withParsedBody($postParams));
+            unset($_POST[$name]);
             break;
 
         case 'get':
             $getParams = get_request()->getQueryParams();
-            unset($getParams[$varName]);
-
-            // Prevent direct access to this variable in $_GET superglobal.
-            unset($_GET[$varName]);
+            unset($getParams[$name]);
             set_request(get_request()->withQueryParams($getParams));
+            unset($_GET[$name]);
             break;
 
         case 'session':
-            get_session()->remove($varName);
-            unset($_SESSION[$varName]);
+            get_session()->remove($name);
+            unset($_SESSION[$name]);
             break;
 
         default:

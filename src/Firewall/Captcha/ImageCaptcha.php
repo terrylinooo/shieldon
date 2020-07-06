@@ -12,8 +12,11 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Captcha;
 
+use Shieldon\Firewall\Captcha\CaptchaProvider;
+
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\unset_superglobal;
 use function base64_encode;
 use function cos;
 use function function_exists;
@@ -111,21 +114,21 @@ class ImageCaptcha implements CaptchaInterface
      */
     public function response(): bool
     {
-        $post = get_request()->getParsedBody();
+        $postParams = get_request()->getParsedBody();
         $sessionCaptchaHash = get_session()->get('shieldon_image_captcha_hash');
         
-        if (empty($post['shieldon_image_captcha']) || empty($sessionCaptchaHash)) {
+        if (empty($postParams['shieldon_image_captcha']) || empty($sessionCaptchaHash)) {
             return false;
         }
 
         $flag = false;
 
-        if (password_verify($post['shieldon_image_captcha'], $sessionCaptchaHash)) {
+        if (password_verify($postParams['shieldon_image_captcha'], $sessionCaptchaHash)) {
             $flag = true;
         }
 
         // Prevent detecting POST method on RESTful frameworks.
-        unset($_POST['shieldon_image_captcha']);
+        unset_superglobal('shieldon_image_captcha', 'post');
 
         return $flag;
     }

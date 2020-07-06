@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Driver;
 
+use Shieldon\Firewall\Driver\DriverProvider;
 use Redis;
 
 use function is_array;

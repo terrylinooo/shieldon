@@ -12,11 +12,13 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Component;
 
+use Shieldon\Firewall\Component\ComponentProvider;
+use Shieldon\Firewall\Component\AllowedTrait;
 use Shieldon\Firewall\IpTrait;
+
 use function Shieldon\Firewall\get_request;
 
 use function array_column;
-use function array_merge;
 use function array_unique;
 use function gethostbyname;
 use function implode;

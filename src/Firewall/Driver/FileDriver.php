@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Driver;
 
+use Shieldon\Firewall\Driver\DriverProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;

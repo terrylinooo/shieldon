@@ -11,6 +11,7 @@
 declare(strict_types=1);
 
 namespace Shieldon\Firewall\Log;
+
 use Shieldon\Firewall\Log\ActionLogger as Logger;
 
 use function date;

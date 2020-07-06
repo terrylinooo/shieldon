@@ -12,13 +12,14 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Component;
 
+use Shieldon\Firewall\Component\ComponentProvider;
+use Shieldon\Firewall\Component\AllowedTrait;
 use Shieldon\Firewall\IpTrait;
 
 use function base_convert;
 use function count;
 use function explode;
 use function filter_var;
-use function in_array;
 use function ip2long;
 use function pow;
 use function str_pad;

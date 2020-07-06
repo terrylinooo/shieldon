@@ -48,12 +48,15 @@ use function Shieldon\Firewall\get_memory_usage;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
+use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session;
 use function Shieldon\Firewall\unset_superglobal;
 
 use LogicException;
 use RuntimeException;
 use Closure;
+use InvalidArgumentException;
+
 use function file_exists;
 use function file_put_contents;
 use function filter_var;
@@ -64,7 +67,6 @@ use function microtime;
 use function ob_end_clean;
 use function ob_get_contents;
 use function ob_start;
-use function php_sapi_name;
 use function str_replace;
 use function strpos;
 use function strrpos;
@@ -318,6 +320,13 @@ class Kernel
      * @var bool
      */
     protected $strictMode;
+
+    /**
+     * The directory in where the frontend template files are placed.
+     *
+     * @var string
+     */
+    protected $templateDirectory = '';
 
     /**
      * Shieldon constructor.
@@ -574,34 +583,44 @@ class Kernel
                 if ($this->getComponent('TrustedBot')->isAllowed()) {
 
                     if ($this->getComponent('TrustedBot')->isGoogle()) {
-
                         // Add current IP into allowed list, because it is from real Google domain.
-                        $this->action(self::ACTION_ALLOW, self::REASON_IS_GOOGLE);
+                        $this->action(
+                            self::ACTION_ALLOW,
+                            self::REASON_IS_GOOGLE
+                        );
 
                     } elseif ($this->getComponent('TrustedBot')->isBing()) {
-
                         // Add current IP into allowed list, because it is from real Bing domain.
-                        $this->action(self::ACTION_ALLOW, self::REASON_IS_BING);
+                        $this->action(
+                            self::ACTION_ALLOW,
+                            self::REASON_IS_BING
+                        );
 
                     } elseif ($this->getComponent('TrustedBot')->isYahoo()) {
-
                         // Add current IP into allowed list, because it is from real Yahoo domain.
-                        $this->action(self::ACTION_ALLOW, self::REASON_IS_YAHOO);
+                        $this->action(
+                            self::ACTION_ALLOW,
+                            self::REASON_IS_YAHOO
+                        );
 
                     } else {
-
                         // Add current IP into allowed list, because you trust it.
                         // You have already defined it in the settings.
-                        $this->action(self::ACTION_ALLOW, self::REASON_IS_SEARCH_ENGINE);
+                        $this->action(
+                            self::ACTION_ALLOW,
+                            self::REASON_IS_SEARCH_ENGINE
+                        );
                     }
-
                     // Allowed robots not join to our traffic handler.
                     return $this->result = self::RESPONSE_ALLOW;
                 }
 
                 // After `isAllowed()` executed, we can check if the currect access is fake by `isFakeRobot()`.
                 if ($this->getComponent('TrustedBot')->isFakeRobot()) {
-                    $this->action(self::ACTION_DENY, self::REASON_COMPONENT_TRUSTED_ROBOT);
+                    $this->action(
+                        self::ACTION_DENY,
+                        self::REASON_COMPONENT_TRUSTED_ROBOT
+                    );
 
                     return $this->result = self::RESPONSE_DENY;
                 }
@@ -652,7 +671,10 @@ class Kernel
                 if ($component->isDenied()) {
     
                     // @since 0.1.8
-                    $this->action(self::ACTION_DENY, $component->getDenyStatusCode());
+                    $this->action(
+                        self::ACTION_DENY,
+                        $component->getDenyStatusCode()
+                    );
     
                     return $this->result = self::RESPONSE_DENY;
                 }
@@ -701,7 +723,7 @@ class Kernel
         $ipDetail = $this->driver->get($this->ip, 'filter_log');
 
         $ipDetail = $this->driver->parseData($ipDetail, 'filter_log');
-        $logData  = $ipDetail;
+        $logData = $ipDetail;
 
         // Counting user pageviews.
         foreach (array_keys($resetPageviews) as $timeUnit) {
@@ -740,7 +762,10 @@ class Kernel
 
                     // Ban this IP if they reached the limit.
                     if ($logData['flag_empty_referer'] > $this->properties['limit_unusual_behavior']['referer']) {
-                        $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_EMPTY_REFERER);
+                        $this->action(
+                            self::ACTION_TEMPORARILY_DENY,
+                            self::REASON_EMPTY_REFERER
+                        );
                         return self::RESPONSE_TEMPORARILY_DENY;
                     }
                 }
@@ -769,7 +794,11 @@ class Kernel
 
                     // Ban this IP if they reached the limit.
                     if ($logData['flag_multi_session'] > $this->properties['limit_unusual_behavior']['session']) {
-                        $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_TOO_MANY_SESSIONS);
+                        $this->action(
+                            self::ACTION_TEMPORARILY_DENY,
+                            self::REASON_TOO_MANY_SESSIONS
+                        );
+
                         return self::RESPONSE_TEMPORARILY_DENY;
                     }
                 }
@@ -812,7 +841,10 @@ class Kernel
                 if ($logData['flag_js_cookie'] > $this->properties['limit_unusual_behavior']['cookie']) {
 
                     // Ban this IP if they reached the limit.
-                    $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_EMPTY_JS_COOKIE);
+                    $this->action(
+                        self::ACTION_TEMPORARILY_DENY,
+                        self::REASON_EMPTY_JS_COOKIE
+                    );
 
                     return self::RESPONSE_TEMPORARILY_DENY;
                 }
@@ -837,12 +869,14 @@ class Kernel
             if ($this->filterStatus['frequency']) {
 
                 foreach (array_keys($this->properties['time_unit_quota']) as $timeUnit) {
+
                     switch ($timeUnit) {
                         case 's': $timeSecond = 1;     break;
                         case 'm': $timeSecond = 60;    break;
                         case 'h': $timeSecond = 3600;  break;
                         case 'd': $timeSecond = 86400; break;
                     }
+
                     if (($now - $ipDetail["first_time_{$timeUnit}"]) >= ($timeSecond + 1)) {
 
                         // For example:
@@ -856,10 +890,33 @@ class Kernel
                         // He or she will get banned.
                         if ($logData["pageviews_{$timeUnit}"] > $this->properties['time_unit_quota'][$timeUnit]) {
 
-                            if ($timeUnit === 's') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_SECOND);
-                            if ($timeUnit === 'm') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_MINUTE);
-                            if ($timeUnit === 'h') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_HOUR);
-                            if ($timeUnit === 'd') $this->action(self::ACTION_TEMPORARILY_DENY, self::REASON_REACHED_LIMIT_DAY);
+                            if ($timeUnit === 's') {
+                                $this->action(
+                                    self::ACTION_TEMPORARILY_DENY,
+                                    self::REASON_REACHED_LIMIT_SECOND
+                                );
+                            }
+
+                            if ($timeUnit === 'm') {
+                                $this->action(
+                                    self::ACTION_TEMPORARILY_DENY,
+                                    self::REASON_REACHED_LIMIT_MINUTE
+                                );
+                            }
+
+                            if ($timeUnit === 'h') {
+                                $this->action(
+                                    self::ACTION_TEMPORARILY_DENY,
+                                    self::REASON_REACHED_LIMIT_HOUR
+                                );
+                            }
+
+                            if ($timeUnit === 'd') {
+                                $this->action(
+                                    self::ACTION_TEMPORARILY_DENY,
+                                    self::REASON_REACHED_LIMIT_DAY
+                                );
+                            }
                             
                             return self::RESPONSE_TEMPORARILY_DENY;
                         }
@@ -1226,7 +1283,10 @@ class Kernel
             $ip = $this->ip;
         }
  
-        $this->action(self::ACTION_DENY, self::REASON_MANUAL_BAN, $ip);
+        $this->action(
+            self::ACTION_DENY,
+            self::REASON_MANUAL_BAN, $ip
+        );
     }
 
     /**
@@ -1242,7 +1302,10 @@ class Kernel
             $ip = $this->ip;
         }
 
-        $this->action(self::ACTION_UNBAN, self::REASON_MANUAL_BAN, $ip);
+        $this->action(
+            self::ACTION_UNBAN,
+            self::REASON_MANUAL_BAN, $ip
+        );
         $this->log(self::ACTION_UNBAN);
 
         $this->result = self::RESPONSE_ALLOW;
@@ -1321,134 +1384,133 @@ class Kernel
     }
 
     /**
-     * Output result page.
+     * Set the frontend template directory.
      *
-     * @param int  $httpStatus The HTTP status code.
-     * @param bool $echo       Echo the string directly or not.
+     * @param string $directory
      *
-     * @echo string
+     * @return void
      */
-    public function output(int $httpStatus = 0, bool $echo = true): string
+    public function setTemplateDirectory(string $directory)
     {
-        $output = '';
+        if (! is_dar($directory)) {
+            throw new InvalidArgumentException('The template directory does not exist.');
+        }
+        $this->templateDirectory = $directory;
+    }
+
+    /**
+     * Get a template PHP file.
+     *
+     * @param string $type The template type.
+     *
+     * @return string
+     */
+    protected function getTemplate(string $type): string
+    {
+        $directory = self::KERNEL_DIR . '/../../templates/frontend';
+
+        if (!empty($this->templateDirectory)) {
+            $directory = $this->templateDirectory;
+        }
+
+        $path = $directory . '/' . $type . '.php';
+
+        if (!file_exists($path)) {
+            throw new RuntimeException(
+                sprintf(
+                    'The templeate file is missing. (%s)',
+                    $path
+                )
+            );
+        }
+
+        return $path;
+    }
+
+    /**
+     * Respond the result.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function respond(): ResponseInterface
+    {
+        $response = get_response();
+        $type = '';
 
         if (self::RESPONSE_TEMPORARILY_DENY === $this->result) {
             $type = 'captcha';
+
         } elseif (self::RESPONSE_LIMIT_SESSION === $this->result) {
             $type = 'session_limitation';
+
         } elseif (self::RESPONSE_DENY === $this->result) {
             $type = 'rejection';
-        } else {
-
-            // @codeCoverageIgnoreStart
-
-            return '';
-
-            // @codeCoverageIgnoreEnd
         }
 
-        header('X-Protected-By: shieldon.io');
+        // Nothing happened. Return.
+        if (empty($type)) {
+            return $response;
+        }
 
-        /**
-         * @var string The language of output UI. It is used on views.
-         */
+        $viewPath = $this->getTemplate($type);
+
+        // The language of output UI. It is used on views.
         $langCode = get_session()->get('SHIELDON_UI_LANG') ?? 'en';
-
-        /**
-         * @var bool Show online session count. It is used on views.
-         */
+        // Show online session count. It is used on views.
         $showOnlineInformation = true;
-
-        /**
-         * @var bool Show user information such as IP, user-agent, device name.
-         */
+        // Show user information such as IP, user-agent, device name.
         $showUserInformation = true;
 
-        // Use default template if there is no custom HTML template.
-        if (empty($this->html[$type])) {
-
-            $viewPath = self::KERNEL_DIR . '/../../templates/frontend/' . $type . '.php';
-
-            if (empty($this->properties['display_online_info'])) {
-                $showOnlineInformation = false;
-            }
-
-            if (empty($this->properties['display_user_info'])) {
-                $showUserInformation = false;
-            }
-
-            if ($showUserInformation) {
-                $dialoguserinfo['ip'] = $this->ip;
-                $dialoguserinfo['rdns'] = $this->rdns;
-                $dialoguserinfo['user_agent'] = get_request()->getHeaderLine('user-agent');
-            }
-
-            if (file_exists($viewPath)) {
-
-                if (!defined('SHIELDON_VIEW')) {
-                    define('SHIELDON_VIEW', true);
-                }
-
-                $ui = [
-                    'background_image' => $this->dialogUI['background_image'] ?? '',
-                    'bg_color'         => $this->dialogUI['bg_color']         ?? '#ffffff',
-                    'header_bg_color'  => $this->dialogUI['header_bg_color']  ?? '#212531',
-                    'header_color'     => $this->dialogUI['header_color']     ?? '#ffffff',
-                    'shadow_opacity'   => $this->dialogUI['shadow_opacity']   ?? '0.2',
-                ];
-
-                $css = require self::KERNEL_DIR . '/../../templates/frontend/css/default.php';
-
-                ob_start();
-                require $viewPath;
-                $output = ob_get_contents();
-                ob_end_clean();
-
-                unset($css, $lang, $ui);
-            }
-        } else {
-    
-            // @codeCoverageIgnoreStart
-
-            $output = $this->html[$type];
-
-            if ('captcha' === $type) {
-
-                // Build captcha form.
-                ob_start();
-
-                foreach ($this->captcha as $captcha) {
-                    echo $captcha->form();
-                }
-
-                $captchaFormElements = ob_get_contents();
-                ob_end_clean();
-
-                // Inject captcha HTML form elements into custom template.
-                $output = str_replace('{{captcha}}', $captchaFormElements, $output);
-            }
-
-            // @codeCoverageIgnoreEnd
+        if (empty($this->properties['display_online_info'])) {
+            $showOnlineInformation = false;
         }
+
+        if (empty($this->properties['display_user_info'])) {
+            $showUserInformation = false;
+        }
+
+        if ($showUserInformation) {
+            $dialoguserinfo['ip'] = $this->ip;
+            $dialoguserinfo['rdns'] = $this->rdns;
+            $dialoguserinfo['user_agent'] = get_request()->getHeaderLine('user-agent');
+        }
+
+        $ui = [
+            'background_image' => $this->dialogUI['background_image'] ?? '',
+            'bg_color'         => $this->dialogUI['bg_color']         ?? '#ffffff',
+            'header_bg_color'  => $this->dialogUI['header_bg_color']  ?? '#212531',
+            'header_color'     => $this->dialogUI['header_color']     ?? '#ffffff',
+            'shadow_opacity'   => $this->dialogUI['shadow_opacity']   ?? '0.2',
+        ];
+
+        if (!defined('SHIELDON_VIEW')) {
+            define('SHIELDON_VIEW', true);
+        }
+
+        $css = require $this->getTemplate('css/default');
+
+        ob_start();
+        require $viewPath;
+        $output = ob_get_contents();
+        ob_end_clean();
 
         // Remove unused variable notices generated from PHP intelephense.
-        unset($langCode, $showOnlineInformation, $showLineupInformation, $showUserInformation);
+        unset(
+            $css,
+            $ui,
+            $langCode,
+            $showOnlineInformation,
+            $showLineupInformation,
+            $showUserInformation
+        );
 
-        if ($echo) {
+        $stream = $response->getBody();
+        $stream->write($output);
+        $stream->rewind();
 
-            // @codeCoverageIgnoreStart
-
-            if (0 !== $httpStatus) {
-                http_response_code($httpStatus);
-            }
-
-            echo $output;
-            exit;
-
-            // @codeCoverageIgnoreEnd
-        } else {
-            return $output;
-        }
+        return $response->
+            withAddedHeader('X-Protected-By', 'shieldon.io')->
+            withBody($stream);
     }
 
     /**
