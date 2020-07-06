@@ -102,7 +102,7 @@ class FirewallPanel
     protected $messages = [];
 
     /**
-     * self: Shieldon | managed: Firewall
+     * self: Shieldon | managed: Firewall | demo: Demo
      *
      * @var string
      */
@@ -132,7 +132,7 @@ class FirewallPanel
      */
     protected $demoUser = [
         'user' => 'demo',
-        'pass' => '$2y$10$MTi1ROPnHEukp5RwGNdxuOSAyhGdpc4sfQpwNCv9yHoVvgl9tz8Xy',
+        'pass' => 'demo',
     ];
 
     /**
@@ -445,6 +445,13 @@ class FirewallPanel
                 // User has already changed password, encrypted.
                 $admin['user'] === $_POST['s_user'] && 
                 password_verify($_POST['s_pass'], $admin['pass'])
+            ) {
+                $login = true;
+
+            } elseif (
+                $this->mode === 'demo' && 
+                $this->demoUser['user'] === $_POST['s_user'] &&
+                $this->demoUser['pass'] === $_POST['s_pass']
             ) {
                 $login = true;
     
@@ -1794,6 +1801,10 @@ class FirewallPanel
      */
     protected function exportSettings()
     {
+        if ($this->mode !== 'managed') {
+            die('Not allowed to view this page.');
+        }
+
         header('Content-type: text/plain');
         header('Content-Disposition: attachment; filename=shieldon-' . date('YmdHis') . '.json');
         header('Expires: 0');
@@ -1809,6 +1820,10 @@ class FirewallPanel
      */
     protected function importSettings()
     {
+        if ($this->mode !== 'managed') {
+            die('Not allowed to view this page.');
+        }
+
         if (! empty($_FILES['json_file']['tmp_name'])) {
             $importedFileContent = file_get_contents($_FILES['json_file']['tmp_name']);
         }
@@ -2145,10 +2160,6 @@ class FirewallPanel
      */
     private function httpAuth(): void
     {
-        if ('demo' === $this->mode || 'self' === $this->mode) {
-            $admin = $this->demoUser;
-        }
-
         if (! isset($_SESSION['SHIELDON_USER_LOGIN'])) {
             $this->login();
         }

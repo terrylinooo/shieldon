@@ -9,7 +9,7 @@
  */
 namespace Shieldon\Helper;
 
-define('SHIELDON_VERSION', '1.0.0');
+define('SHIELDON_VERSION', '1.0.4');
 
 /**
  * @since 3.1.0
