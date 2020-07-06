@@ -1003,7 +1003,7 @@ class ShieldonTest extends \PHPUnit\Framework\TestCase
     {
         $shieldon = new \Shieldon\Shieldon();
 
-        $telegram = new \Messenger\Telegram('test', 'test');
+        $telegram = new \Shieldon\Messenger\Telegram('test', 'test');
 
         $shieldon->setMessenger($telegram);
     }
