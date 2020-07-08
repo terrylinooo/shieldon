@@ -354,45 +354,82 @@ function set_response(ResponseInterface $response): void
 /**
  * Unset a variable of superglobal.
  *
- * @param mixed $name The name (key) in the array of the superglobal.
- *
+ * @param string|null $name The name (key) in the array of the superglobal.
+ *                          If $name is null that means clear all.
  * @return void
  */
 function unset_superglobal($name, string $type): void
 {
-    switch ($type) {
-        case 'cookie':
-            $cookieParams = get_request()->getCookieParams();
-            unset($cookieParams[$name]);
-            set_request(get_request()->withCookieParams($cookieParams));
-            set_response(get_response()->withHeader(
-                'Set-Cookie',
-                "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
-            ));
-            // Prevent direct access to superglobal.
-            unset($_COOKIE[$name]);
-            break;
+    if (is_string($name)) {
 
-        case 'post':
-            $postParams = get_request()->getParsedBody();
-            unset($postParams[$name]);
-            set_request(get_request()->withParsedBody($postParams));
-            unset($_POST[$name]);
-            break;
+        switch ($type) {
+            case 'cookie':
+                $cookieParams = get_request()->getCookieParams();
+                unset($cookieParams[$name]);
+                set_request(get_request()->withCookieParams($cookieParams));
+                set_response(get_response()->withHeader(
+                    'Set-Cookie',
+                    "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+                ));
+                // Prevent direct access to superglobal.
+                unset($_COOKIE[$name]);
+                break;
+    
+            case 'post':
+                $postParams = get_request()->getParsedBody();
+                unset($postParams[$name]);
+                set_request(get_request()->withParsedBody($postParams));
+                unset($_POST[$name]);
+                break;
+    
+            case 'get':
+                $getParams = get_request()->getQueryParams();
+                unset($getParams[$name]);
+                set_request(get_request()->withQueryParams($getParams));
+                unset($_GET[$name]);
+                break;
+    
+            case 'session':
+                get_session()->remove($name);
+                unset($_SESSION[$name]);
+                break;
+    
+            default:
+                break;
+        }
 
-        case 'get':
-            $getParams = get_request()->getQueryParams();
-            unset($getParams[$name]);
-            set_request(get_request()->withQueryParams($getParams));
-            unset($_GET[$name]);
-            break;
+    } elseif (is_null($name)) {
 
-        case 'session':
-            get_session()->remove($name);
-            unset($_SESSION[$name]);
-            break;
+        switch ($type) {
+            case 'cookie':
+                $cookieParams = get_request()->getCookieParams();
+                set_request(get_request()->withCookieParams([]));
+                foreach (array_keys($cookieParams) as $name) {
+                    set_response(get_response()->withHeader(
+                        'Set-Cookie',
+                        "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+                    ));
+                }
+                $_COOKIE = [];
+                break;
+    
+            case 'post':
+                set_request(get_request()->withParsedBody([]));
+                $_POST = [];
+                break;
+    
+            case 'get':
+                set_request(get_request()->withQueryParams([]));
+                $_GET = [];
+                break;
+ 
+            case 'session':
+                get_session()->clear();
+                $_SESSION = [];
+                break;
 
-        default:
-            break;
+            default:
+                break;
+        }
     }
 }

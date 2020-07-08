@@ -24,13 +24,13 @@ use function stripos;
 class HttpResolver
 {
     /**
-     * Constructor.
+     * Invoker.
      *
      * @param ResponseInterface $response The PSR-7 response.
      *
      * @return void
      */
-    public function __construct(ResponseInterface $response)
+    public function __invoke(ResponseInterface $response)
     {
         if (!headers_sent()) {
 

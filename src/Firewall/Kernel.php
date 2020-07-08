@@ -1439,12 +1439,15 @@ class Kernel
 
         if (self::RESPONSE_TEMPORARILY_DENY === $this->result) {
             $type = 'captcha';
+            $statusCode = 403; // Forbidden.
 
         } elseif (self::RESPONSE_LIMIT_SESSION === $this->result) {
             $type = 'session_limitation';
+            $statusCode = 429; // Too Many Requests.
 
         } elseif (self::RESPONSE_DENY === $this->result) {
             $type = 'rejection';
+            $statusCode = 400; // Bad request.
         }
 
         // Nothing happened. Return.
@@ -1509,8 +1512,9 @@ class Kernel
         $stream->rewind();
 
         return $response->
-            withAddedHeader('X-Protected-By', 'shieldon.io')->
-            withBody($stream);
+            withHeader('X-Protected-By', 'shieldon.io')->
+            withBody($stream)->
+            withStatus($statusCode);
     }
 
     /**

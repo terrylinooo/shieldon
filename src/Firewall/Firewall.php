@@ -16,25 +16,18 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Kernel;
-use Shieldon\Firewall\Captcha\ImageCaptcha;
-use Shieldon\Firewall\Captcha\Recaptcha;
-use Shieldon\Firewall\Component\Header;
-use Shieldon\Firewall\Component\Ip;
-use Shieldon\Firewall\Component\Rdns;
-use Shieldon\Firewall\Component\TrustedBot;
-use Shieldon\Firewall\Component\UserAgent;
+use Shieldon\Firewall\Captcha as Captcha;
+use Shieldon\Firewall\Component as Component;
+use Shieldon\Firewall\Driver as Driver;
+use Shieldon\Firewall\Middleware as Middleware;
+use Shieldon\Firewall\Security as Security;
+use Shieldon\Messenger as Messenger;
 use Shieldon\Firewall\Utils\Container;
-use Shieldon\Firewall\Driver\FileDriver;
-use Shieldon\Firewall\Driver\MysqlDriver;
-use Shieldon\Firewall\Driver\RedisDriver;
-use Shieldon\Firewall\Driver\SqliteDriver;
 use Shieldon\Firewall\Log\ActionLogger;
-use Shieldon\Firewall\Security\Xss;
 use Shieldon\Firewall\FirewallTrait;
-use Shieldon\Messenger as MessengerModule;
-use Shieldon\Middleware as Middleware;
 use Shieldon\Psr15\RequestHandler;
 use function Shieldon\Firewall\get_request;
+use function Shieldon\Firewall\get_response;
 
 use PDO;
 use PDOException;
@@ -71,9 +64,10 @@ class Firewall
     /**
      * Constructor.
      */
-    public function __construct(?ServerRequestInterface $request  = null, ?ResponseInterface $response = null)
+    public function __construct(?ServerRequestInterface $request = null, ?ResponseInterface $response = null)
     {
         Container::set('firewall', $this);
+
         $this->kernel = new Kernel($request, $response);
     }
 
@@ -122,7 +116,9 @@ class Firewall
      */
     public function add($middleware)
     {
-        $this->middleware[] = $middleware;
+        if ($middleware instanceof MiddlewareInterface) {
+            $this->middleware[] = $middleware;
+        }
     }
 
     /**
@@ -176,15 +172,14 @@ class Firewall
      */
     public function run(): ResponseInterface
     {
+        // If settings are ready, let's start monitoring requests.
         if ($this->status) {
 
             // PSR-15 request handler.
             $requestHandler = new RequestHandler();
 
             foreach ($this->middleware as $middleware) {
-                if ($middleware instanceof MiddlewareInterface) {
-                    $requestHandler->add($middleware);
-                }
+                $requestHandler->add($middleware);
             }
 
             $response = $requestHandler->handle(get_request());
@@ -201,7 +196,7 @@ class Firewall
                 if ($this->kernel->captchaResponse()) {
                     $this->kernel->unban();
 
-                    $response = new Response();
+                    $response = get_response();
                     $response = $response->withHeader('Location', $this->kernel->getCurrentUrl());
                     $response = $response->withStatus(303);
 
@@ -267,7 +262,7 @@ class Firewall
                     }
 
                     // Use Redis data driver.
-                    $this->kernel->add(new RedisDriver($redis));
+                    $this->kernel->add(new Driver\RedisDriver($redis));
 
                 // @codeCoverageIgnoreStart
                 } catch(RedisException $e) {
@@ -288,7 +283,7 @@ class Firewall
                 }
 
                 // Use File data driver.
-                $this->kernel->add(new FileDriver($fileSetting['directory_path']));
+                $this->kernel->add(new Driver\FileDriver($fileSetting['directory_path']));
 
                 break;
 
@@ -310,7 +305,7 @@ class Firewall
                     $pdoInstance = new PDO('sqlite:' . $sqliteLocation);
 
                     // Use Sqlite data driver.
-                    $this->kernel->add(new SqliteDriver($pdoInstance));
+                    $this->kernel->add(new Driver\SqliteDriver($pdoInstance));
     
                 // @codeCoverageIgnoreStart
                 } catch(PDOException $e) {
@@ -340,7 +335,7 @@ class Firewall
                     );
 
                     // Use MySQL data driver.
-                    $this->kernel->add(new MysqlDriver($pdoInstance));
+                    $this->kernel->add(new Driver\MysqlDriver($pdoInstance));
 
                 // @codeCoverageIgnoreStart
                 } catch(PDOException $e) {
@@ -480,13 +475,13 @@ class Firewall
         $trustedBotSetting = $this->getOption('trusted_bot', 'components');
 
         if ($ipSetting['enable']) {
-            $componentIp = new Ip();
+            $componentIp = new Component\Ip();
             $this->kernel->add($componentIp);
             $this->ipManager();
         }
 
         if ($trustedBotSetting['enable']) {
-            $componentTrustedBot = new TrustedBot();
+            $componentTrustedBot = new Component\TrustedBot();
 
             if ($trustedBotSetting['strict_mode']) {
                 $componentTrustedBot->setStrict(true);
@@ -498,7 +493,7 @@ class Firewall
         }
 
         if ($headerSetting['enable']) {
-            $componentHeader = new Header();
+            $componentHeader = new Component\Header();
 
             // Deny all vistors without common header information.
             if ($headerSetting['strict_mode']) {
@@ -509,7 +504,7 @@ class Firewall
         }
 
         if ($userAgentSetting['enable']) {
-            $componentUserAgent = new UserAgent();
+            $componentUserAgent = new Component\UserAgent();
 
             // Deny all vistors without user-agent information.
             if ($userAgentSetting['strict_mode']) {
@@ -520,7 +515,7 @@ class Firewall
         }
 
         if ($rdnsSetting['enable']) {
-            $componentRdns = new Rdns();
+            $componentRdns = new Component\Rdns();
 
             // Visitors with empty RDNS record will be blocked.
             // IP resolved hostname (RDNS) and IP address must conform with each other.
@@ -551,7 +546,7 @@ class Firewall
                 'lang'    => $recaptchaSetting['config']['lang'],
             ];
 
-            $this->kernel->add(new Recaptcha($googleRecaptcha));
+            $this->kernel->add(new Captcha\Recaptcha($googleRecaptcha));
         }
 
         if ($imageSetting['enable']) {
@@ -575,7 +570,7 @@ class Firewall
 
             $imageCaptchaConfig['word_length'] = $length;
 
-            $this->kernel->add(new ImageCaptcha($imageCaptchaConfig));
+            $this->kernel->add(new Captcha\ImageCaptcha($imageCaptchaConfig));
         }
     }
 
@@ -603,7 +598,7 @@ class Firewall
                 $apiKey = $telegramSetting['config']['api_key'] ?? '';
                 $channel = $telegramSetting['config']['channel'] ?? '';
                 $this->kernel->add(
-                    new MessengerModule\Telegram($apiKey, $channel)
+                    new Messenger\Telegram($apiKey, $channel)
                 );
             }
         }
@@ -612,7 +607,7 @@ class Firewall
             if (!empty($linenotodySetting['confirm_test'])) {
                 $accessToken = $linenotodySetting['config']['access_token'] ?? '';
                 $this->kernel->add(
-                    new MessengerModule\LineNotify($accessToken)
+                    new Messenger\LineNotify($accessToken)
                 );
             }
         }
@@ -623,7 +618,7 @@ class Firewall
                 $sender = $sendgridSetting['config']['sender'] ?? '';
                 $recipients = $sendgridSetting['config']['recipients'] ?? [];
 
-                $sendgrid = new MessengerModule\Sendgrid($apiKey);
+                $sendgrid = new Messenger\Sendgrid($apiKey);
                 $sendgrid->setSubject($messageTitle);
                 $sendgrid->addSender($sender);
 
@@ -640,7 +635,7 @@ class Firewall
                 $sender = $phpMailSetting['config']['sender'] ?? '';
                 $recipients = $phpMailSetting['config']['recipients'] ?? [];
 
-                $phpNativeMail = new MessengerModule\Mail();
+                $phpNativeMail = new Messenger\Mail();
                 $phpNativeMail->setSubject($messageTitle);
                 $phpNativeMail->addSender($sender);
 
@@ -661,7 +656,7 @@ class Firewall
                 $pass = $smtpSetting['config']['pass'] ?? '';
                 $port = (int) $smtpSetting['config']['port'] ?? '';
 
-                $smtpMail = new MessengerModule\Smtp($user, $pass, $host, $port);
+                $smtpMail = new Messenger\Smtp($user, $pass, $host, $port);
                 $smtpMail->setSubject($messageTitle);
                 $smtpMail->addSender($sender);
 
@@ -680,7 +675,7 @@ class Firewall
                 $sender = $mailgunSetting['config']['sender'] ?? '';
                 $recipients = $mailgunSetting['config']['recipients'] ?? [];
 
-                $mailgun = new MessengerModule\Mailgun($apiKey, $domain);
+                $mailgun = new Messenger\Mailgun($apiKey, $domain);
                 $mailgun->setSubject($messageTitle);
                 $mailgun->addSender($sender);
 
@@ -700,7 +695,7 @@ class Firewall
                 $channel = $rocketchatSetting['config']['channel'] ?? [];
 
                 $this->kernel->add(
-                    new MessengerModule\RocketChat(
+                    new Messenger\RocketChat(
                         $accessToken, $userId, $serverUrl, $channel
                     )
                 );
@@ -713,7 +708,7 @@ class Firewall
                 $channel = $slackSetting['config']['channel'] ?? '';
 
                 $this->kernel->add(
-                    new MessengerModule\Slack($botToken, $channel)
+                    new Messenger\Slack($botToken, $channel)
                 );
             }
         }
@@ -723,7 +718,7 @@ class Firewall
                 $webhookUrl = $slackWebhookSetting['config']['webhook_url'] ?? '';
 
                 $this->kernel->add(
-                    new MessengerModule\SlackWebhook($webhookUrl)
+                    new Messenger\SlackWebhook($webhookUrl)
                 );
             }
         }
@@ -887,7 +882,7 @@ class Firewall
     {
         $xssProtectionOptions = $this->getOption('xss_protection');
 
-        $xssFilter = new Xss();
+        $xssFilter = new Security\Xss();
 
         if ($xssProtectionOptions['post']) {
             $this->kernel->setClosure('xss_post', function() use ($xssFilter) {

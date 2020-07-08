@@ -9,6 +9,7 @@
  */
 
 use function Shieldon\Firewall\_e;
+use Shieldon\Firewall\Panel\BaseController;
 
 $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
 
