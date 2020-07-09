@@ -221,13 +221,6 @@ class Kernel
      * @var MessengerInterface[]
      */
     protected $messengers = [];
-    
-    /**
-     * Html output.
-     *
-     * @var array
-     */
-    protected $html = [];
 
     /**
      * If the IP is in the rule table, the rule status will change.
@@ -254,7 +247,7 @@ class Kernel
         // 0 = no limit.
         'count' => 0,
 
-        // How many seconds will a session be availe to visit?
+        // How many minutes will a session be availe to visit?
         // 0 = no limit.
         'period' => 0, 
     ];
@@ -1356,21 +1349,6 @@ class Kernel
             'count' => $count,
             'period' => $period
         ];
-    }
-
-    /**
-     * Set result page's HTML.
-     *
-     * @param string $content The HTML text.
-     * @param string $type    The page type: stop, limit, deny.
-     *
-     * @return void
-     */
-    public function setView(string $content, string $type): void
-    {
-        if ('session_limitation' === $type || 'captcha' === $type || 'rejection' === $type) {
-            $this->html[$type] = $content;
-        }
     }
 
     /**

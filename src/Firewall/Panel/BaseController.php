@@ -21,6 +21,7 @@ use Shieldon\Firewall\Firewall;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\__;
 
 use PDO;
 use Redis;

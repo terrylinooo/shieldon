@@ -71,21 +71,19 @@ class Circle extends BaseController
         }
 
         $reasons = [
-            $this->kernel::REASON_MANUAL_BAN           => __('panel', 'reason_manual_ban', 'Added manually by administrator'),
-            $this->kernel::REASON_IS_SEARCH_ENGINE     => __('panel', 'reason_is_search_engine', 'Search engine bot'),
-            $this->kernel::REASON_IS_GOOGLE            => __('panel', 'reason_is_google', 'Google bot'),
-            $this->kernel::REASON_IS_BING              => __('panel', 'reason_is_bing', 'Bing bot'),
-            $this->kernel::REASON_IS_YAHOO             => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
-            $this->kernel::REASON_TOO_MANY_SESSIONS    => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
-            $this->kernel::REASON_TOO_MANY_ACCESSES    => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
-            $this->kernel::REASON_EMPTY_JS_COOKIE      => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'),
-            $this->kernel::REASON_EMPTY_REFERER        => __('panel', 'reason_empty_referer', 'Empty referrer'),
-            $this->kernel::REASON_REACHED_LIMIT_DAY    => __('panel', 'reason_reached_limit_day', 'Daily limit reached'),
-            $this->kernel::REASON_REACHED_LIMIT_HOUR   => __('panel', 'reason_reached_limit_hour', 'Hourly limit reached'),
-            $this->kernel::REASON_REACHED_LIMIT_MINUTE => __('panel', 'reason_reached_limit_minute', 'Minutely limit reached'),
-            $this->kernel::REASON_REACHED_LIMIT_SECOND => __('panel', 'reason_reached_limit_second', 'Secondly limit reached'),
-
-            // @since 0.1.8
+            $this->kernel::REASON_MANUAL_BAN              => __('panel', 'reason_manual_ban', 'Added manually by administrator'),
+            $this->kernel::REASON_IS_SEARCH_ENGINE        => __('panel', 'reason_is_search_engine', 'Search engine bot'),
+            $this->kernel::REASON_IS_GOOGLE               => __('panel', 'reason_is_google', 'Google bot'),
+            $this->kernel::REASON_IS_BING                 => __('panel', 'reason_is_bing', 'Bing bot'),
+            $this->kernel::REASON_IS_YAHOO                => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
+            $this->kernel::REASON_TOO_MANY_SESSIONS       => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
+            $this->kernel::REASON_TOO_MANY_ACCESSES       => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
+            $this->kernel::REASON_EMPTY_JS_COOKIE         => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'),
+            $this->kernel::REASON_EMPTY_REFERER           => __('panel', 'reason_empty_referer', 'Empty referrer'),
+            $this->kernel::REASON_REACHED_LIMIT_DAY       => __('panel', 'reason_reached_limit_day', 'Daily limit reached'),
+            $this->kernel::REASON_REACHED_LIMIT_HOUR      => __('panel', 'reason_reached_limit_hour', 'Hourly limit reached'),
+            $this->kernel::REASON_REACHED_LIMIT_MINUTE    => __('panel', 'reason_reached_limit_minute', 'Minutely limit reached'),
+            $this->kernel::REASON_REACHED_LIMIT_SECOND    => __('panel', 'reason_reached_limit_second', 'Secondly limit reached'),
             $this->kernel::REASON_INVALID_IP              => __('panel', 'reason_invalid_ip', 'Invalid IP address.'),
             $this->kernel::REASON_DENY_IP                 => __('panel', 'reason_deny_ip', 'Denied by IP component.'),
             $this->kernel::REASON_ALLOW_IP                => __('panel', 'reason_allow_ip', 'Allowed by IP component.'),
@@ -142,13 +140,23 @@ class Circle extends BaseController
         $data['expires'] = 0;
 
         $reflection = new ReflectionObject($this->kernel);
-        $t = $reflection->getProperty('isLimitSession');
+        $t = $reflection->getProperty('sessionLimit');
         $t->setAccessible(true);
-        $isLimitSession = $t->getValue($this->kernel);
+        $sessionLimit = $t->getValue($this->kernel);
 
-        $data['is_session_limit'] = (empty($isLimitSession) ? false : true);
-        $data['session_limit_count'] = ($isLimitSession[0] ?? 0);
-        $data['session_limit_period'] = round(($isLimitSession[1] ?? 0) / 60, 0);
+        $isLimitSession = false;
+        $limitCount = 0;
+        $limitPeriod = 0;
+
+        if (!empty($sessionLimit['count'])) {
+            $isLimitSession = true;
+            $limitCount = $sessionLimit['count'];
+            $limitPeriod = $sessionLimit['period'];
+        }
+
+        $data['is_session_limit'] = $isLimitSession;
+        $data['session_limit_count'] = $limitCount;
+        $data['session_limit_period'] = $limitPeriod;
         $data['online_count'] = count($data['session_list']);
         $data['expires'] = (int) $data['session_limit_period'] * 60;
 

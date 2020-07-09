@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 defined('SHIELDON_VIEW') || die('Illegal access');
 
+use function Shieldon\Firewall\_e;
+
 $timezone = '';
 
 ?>

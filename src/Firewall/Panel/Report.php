@@ -47,31 +47,11 @@ class Report extends BaseController
         ];
 
         $reflection = new ReflectionObject($this->kernel);
-        $t = $reflection->getProperty('enableCookieCheck');
+        $t = $reflection->getProperty('filterStatus');
         $t->setAccessible(true);
-        $enableCookieCheck = $t->getValue($this->kernel);
+        $filterStatus = $t->getValue($this->kernel);
 
-        $reflection = new ReflectionObject($this->kernel);
-        $t = $reflection->getProperty('enableSessionCheck');
-        $t->setAccessible(true);
-        $enableSessionCheck = $t->getValue($this->kernel);
-
-        $reflection = new ReflectionObject($this->kernel);
-        $t = $reflection->getProperty('enableFrequencyCheck');
-        $t->setAccessible(true);
-        $enableFrequencyCheck = $t->getValue($this->kernel);
-
-        $reflection = new ReflectionObject($this->kernel);
-        $t = $reflection->getProperty('enableRefererCheck');
-        $t->setAccessible(true);
-        $enableRefererCheck = $t->getValue($this->kernel);
-
-        $data['filters'] = [
-            'cookie'    => $enableCookieCheck,
-            'session'   => $enableSessionCheck,
-            'frequency' => $enableFrequencyCheck,
-            'referer'   => $enableRefererCheck,
-        ];
+        $data['filters'] = $filterStatus;
 
         $ruleList = $this->kernel->driver->getAll('rule');
 
