@@ -41,7 +41,7 @@ class Ajax extends BaseController
     public function changeLocale(): ResponseInterface
     {
         $langCode = get_request()->getQueryParams()['langCode'] ?? 'en';
-        get_session()->set('SHIELDON_PANEL_LANG', $langCode);
+        get_session()->set('shieldon_panel_lang', $langCode);
 
         $data['status'] = 'success';
         $data['lang_code'] = $langCode;
@@ -315,8 +315,8 @@ class Ajax extends BaseController
         $stream->write($output);
         $stream->rewind();
 
-        $response = $response->withdHeader('Content-Type', 'application/json');
-        $response = $response->withdAddedHeader('Content-Type', 'charset=utf-8');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response = $response->withAddedHeader('Content-Type', 'charset=utf-8');
         $response = $response->withBody($stream);
 
         return $response;

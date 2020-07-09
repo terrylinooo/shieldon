@@ -446,13 +446,13 @@ use function Shieldon\Firewall\_e;
     $(function() {
 
         var testMessengerModule = function(data) {
-            var url = '<?= $ajaxUrl ?>';
+            var url = '<?php echo $this->url('ajax/tryMessenger'); ?>';
 
             $.ajax({
                 url: url,
-                type: 'GET',
+                type: 'get',
                 data: data,
-                dataType: 'JSON',
+                dataType: 'json',
                 cache: false,
                 success: function (data) { 
                     var obj = $('#test-result-' + data.result.moduleName);

@@ -63,8 +63,8 @@ function __(): string
 
     // Fetch session variables.
     $session = get_session();
-    $panelLang = $session->get('SHIELDON_PANEL_LANG');
-    $uiLang = $session->get('SHIELDON_UI_LANG');
+    $panelLang = $session->get('shieldon_panel_lang');
+    $uiLang = $session->get('shieldon_ui_lang');
 
     if (!empty($panelLang)) {
         $lang = $panelLang;

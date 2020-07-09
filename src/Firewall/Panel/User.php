@@ -83,7 +83,7 @@ class User extends BaseController
         if ($login) {
 
             // This session variable is to mark current session as a logged user.
-            get_session()->set('SHIELDON_USER_LOGIN', true);
+            get_session()->set('shieldon_user_login', true);
 
             // Redirect to overview page if logged in successfully.
             return get_response()->withHeader('Location', $this->url('home/overview'));
@@ -116,16 +116,16 @@ class User extends BaseController
      */
     public function logout(): ResponseInterface
     {
-        $sessionLoginStatus = get_session()->get('SHIELDON_USER_LOGIN');
-        $sessionPanelLang = get_session()->get('SHIELDON_PANEL_LANG');
+        $sessionLoginStatus = get_session()->get('shieldon_user_login');
+        $sessionPanelLang = get_session()->get('shieldon_panel_lang');
         $response = get_response();
 
         if (isset($sessionLoginStatus)) {
-            unset_superglobal('SHIELDON_USER_LOGIN', 'session');
+            unset_superglobal('shieldon_user_login', 'session');
         }
 
         if (isset($sessionPanelLang)) {
-            unset_superglobal('SHIELDON_PANEL_LANG', 'session');
+            unset_superglobal('shieldon_panel_lang', 'session');
         }
 
         return $response->withdHeader('Location', $this->url('user/login'));

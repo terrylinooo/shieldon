@@ -825,7 +825,7 @@ class Firewall
      *
      * @return void
      */
-    private function setCronJob(): void 
+    protected function setCronJob(): void 
     {
         $cronjobSetting = $this->getOption('reset_circle', 'cronjob');
 
@@ -1010,7 +1010,7 @@ class Firewall
         $ui = $this->getOption('dialog_ui');
 
         if (!empty($ui)) {
-            get_session()->set('SHIELDON_UI_LANG', $ui['lang']);
+            get_session()->set('shieldon_ui_lang', $ui['lang']);
             $this->kernel->setDialogUI($this->getOption('dialog_ui'));
         }
     }
@@ -1026,7 +1026,7 @@ class Firewall
      *
      * @return mixed
      */
-    private function getOption(string $option, string $section = '')
+    protected function getOption(string $option, string $section = '')
     {
         if (!empty($this->configuration[$section][$option])) {
             return $this->configuration[$section][$option];
@@ -1044,7 +1044,7 @@ class Firewall
      *
      * @return void
      */
-    private function updateConfig()
+    protected function updateConfig()
     {
         $configFilePath = $this->directory . '/' . $this->filename;
 

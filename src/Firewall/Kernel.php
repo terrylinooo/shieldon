@@ -1458,7 +1458,7 @@ class Kernel
         $viewPath = $this->getTemplate($type);
 
         // The language of output UI. It is used on views.
-        $langCode = get_session()->get('SHIELDON_UI_LANG') ?? 'en';
+        $langCode = get_session()->get('shieldon_ui_lang') ?? 'en';
         // Show online session count. It is used on views.
         $showOnlineInformation = true;
         // Show user information such as IP, user-agent, device name.

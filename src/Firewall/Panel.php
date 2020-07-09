@@ -27,6 +27,7 @@ use function set_time_limit;
 use function str_replace;
 use function trim;
 use function ucfirst;
+
 /**
  * Increase PHP execution time. Becasue of taking long time to parse logs in a high-traffic site.
  */
@@ -68,28 +69,29 @@ class Panel
     public function __construct() 
     {
         $this->registerRoutes = [
-            'home/index',
-            'home/overview',
-            'user/login',
-            'user/logout',
-            'circle/rule',
-            'circle/filter',
-            'circle/session',
-            'setting/basic',
-            'setting/export',
-            'setting/import',
-            'setting/exclusion',
-            'setting/ipManager',
-            'security/authentication',
-            'security/xssProtection',
-            'iptables/ip4',
-            'iptables/ip6',
-            'iptables/ip4status',
-            'iptables/ip6status',
-            'report/operation',
-            'report/actionLog',
             'ajax/changeLocale',
             'ajax/tryMessenger',
+            'circle/filter',
+            'circle/rule',
+            'circle/session',
+            'home/index',
+            'home/overview',
+            'iptables/ip4',
+            'iptables/ip4status',
+            'iptables/ip6',
+            'iptables/ip6status',
+            'report/actionLog',
+            'report/operation',
+            'security/authentication',
+            'security/xssProtection',
+            'setting/basic',
+            'setting/exclusion',
+            'setting/export',
+            'setting/import',
+            'setting/ipManager',
+            'setting/messenger',
+            'user/login',
+            'user/logout',
         ];
 
         $this->resolver = new HttpResolver();
@@ -118,7 +120,7 @@ class Panel
 
         if (in_array("$controller/$method", $this->registerRoutes)) {
 
-            define('FIREWALL_PANEL_BASE', $base);
+            define('SHIELDON_PANEL_BASE', $base);
 
             $this->checkAuth();
 
@@ -127,6 +129,7 @@ class Panel
             $controllerClass = new $controller();
 
             if ('demo' === $this->mode) {
+
                 // For security reasons, the POST method is not allowed 
                 // in the Demo mode.
                 set_request(get_request()->withParsedBody([])->withMethod('GET'));
@@ -151,7 +154,7 @@ class Panel
      */
     protected function checkAuth(): void
     {
-        $check = get_session()->get('SHIELDON_USER_LOGIN');
+        $check = get_session()->get('shieldon_user_login');
 
         if (empty($check)) {
             $this->resolver((new User)->login());

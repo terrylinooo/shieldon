@@ -104,7 +104,7 @@ class BaseController
         $this->configuration = $firewall->getConfiguration();
         $this->directory     = $firewall->getDirectory();
         $this->filename      = $firewall->getFilename();
-        $this->base          = FIREWALL_PANEL_BASE;
+        $this->base          = SHIELDON_PANEL_BASE;
 
         if (!empty($this->kernel->logger)) {
 
@@ -127,7 +127,7 @@ class BaseController
 
         $this->locate = 'en';
 
-        $sessionLang = get_session()->get('SHIELDON_PANEL_LANG');
+        $sessionLang = get_session()->get('shieldon_panel_lang');
 
         if (!empty($sessionLang)) {
             $this->locate = $sessionLang;
@@ -288,7 +288,7 @@ class BaseController
      *
      * @return void
      */
-    private function saveConfig(): void
+    protected function saveConfig(): void
     {
         $postParams = get_request()->getParsedBody();
 
