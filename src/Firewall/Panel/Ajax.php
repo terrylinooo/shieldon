@@ -17,6 +17,7 @@ use Shieldon\Firewall\Panel\BaseController;
 use Shieldon\Messenger as Messenger;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
+use function Shieldon\Firewall\get_session;
 use function Shieldon\Firewall\__;
 
 /**

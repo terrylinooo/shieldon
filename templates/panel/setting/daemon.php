@@ -1,4 +1,4 @@
-<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?');
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -7,6 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
+
+defined('SHIELDON_VIEW') || die('Illegal access');
 
 use function Shieldon\Firewall\_e;
 

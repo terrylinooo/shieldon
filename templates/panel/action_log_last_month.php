@@ -1,4 +1,4 @@
-<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?');
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -8,6 +8,12 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
+defined('SHIELDON_VIEW') || die('Illegal access');
+
+use function number_format;
+use function date_default_timezone_get;
 use function Shieldon\Firewall\_e;
 use function Shieldon\Firewall\mask_string;
 
@@ -43,11 +49,11 @@ use function Shieldon\Firewall\mask_string;
     <?php endif; ?>
     <div class="so-tabs">
         <ul>
-            <li><a href="<?php echo $page_url; ?>?tab=today"><?php _e('panel', 'log_label_today', 'Today'); ?></a></li>
-            <li><a href="<?php echo $page_url; ?>?tab=yesterday"><?php _e('panel', 'log_label_yesterday', 'Yesterday'); ?></a></li>
-            <li><a href="<?php echo $page_url; ?>?tab=past_seven_days"><?php _e('panel', 'log_label_last_7_days', 'Last 7 days'); ?></a></li>
-            <li><a href="<?php echo $page_url; ?>?tab=this_month"><?php _e('panel', 'log_label_this_month', 'This month'); ?></a></li>
-            <li class="is-active"><a href="<?php echo $page_url; ?>?tab=last_month"><?php _e('panel', 'log_label_last_month', 'Last month'); ?></a></li>
+            <li><a href="<?php echo $this->url('report/actionLog'); ?>?tab=today"><?php _e('panel', 'log_label_today', 'Today'); ?></a></li>
+            <li><a href="<?php echo $this->url('report/actionLog'); ?>?tab=yesterday"><?php _e('panel', 'log_label_yesterday', 'Yesterday'); ?></a></li>
+            <li><a href="<?php echo $this->url('report/actionLog'); ?>?tab=past_seven_days"><?php _e('panel', 'log_label_last_7_days', 'Last 7 days'); ?></a></li>
+            <li><a href="<?php echo $this->url('report/actionLog'); ?>?tab=this_month"><?php _e('panel', 'log_label_this_month', 'This month'); ?></a></li>
+            <li class="is-active"><a href="<?php echo $this->url('report/actionLog'); ?>?tab=last_month"><?php _e('panel', 'log_label_last_month', 'Last month'); ?></a></li>
         </ul>
     </div>
 

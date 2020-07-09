@@ -16,6 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
 use ReflectionObject;
 use function Shieldon\Firewall\get_request;
+use function Shieldon\Firewall\__;
 
 /**
  * The data circle controller.

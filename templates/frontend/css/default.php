@@ -1,4 +1,4 @@
-<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?');
+<?php
 
 if (empty($ui['background_image'])) {
     $ui['background_image'] = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';

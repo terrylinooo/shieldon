@@ -1,4 +1,4 @@
-<?php defined('SHIELDON_VIEW') || exit('Life is short, why are you wasting time?');
+<?php
 /*
  * This file is part of the Shieldon package.
  *
@@ -7,6 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
+
+defined('SHIELDON_VIEW') || die('Illegal access');
+
 use function Shieldon\Firewall\_e;
 
 /**
@@ -94,7 +99,7 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                                         <span><?php _e('panel', 'menu_overview', 'Overview'); ?></span>
                                     </a>
                                     <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=operation_status">
+                                    <a href="<?php echo $this->url('report/operation'); ?>">
                                         <i class="fas fa-fan"></i>
                                         <span><?php _e('panel', 'menu_operation_status', 'Operation'); ?></span>
                                     </a>
@@ -109,19 +114,19 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                             </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_log_table">
+                                    <a href="<?php echo $this->url('circle/filter'); ?>">
                                         <i class="fas fa-chart-area"></i>
                                         <span><?php _e('panel', 'menu_ip_filter_logs', 'Filter Logs'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_rule_table">
+                                    <a href="<?php echo $this->url('circle/rule'); ?>">
                                         <i class="fas fa-fire-alt"></i>
                                         <span><?php _e('panel', 'menu_ip_rules', 'IP Rules'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=session_table">
+                                    <a href="<?php echo $this->url('circle/session'); ?>">
                                         <i class="fas fa-user-clock"></i>
                                         <span><?php _e('panel', 'menu_sessions', 'Sessions'); ?>
                                     </a>
@@ -137,13 +142,13 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                             </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=iptables">
+                                    <a href="<?php echo $this->url('iptables/ip4'); ?>">
                                         <i class="fas fa-dice-d20"></i>
                                         <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=iptables_status">
+                                    <a href="<?php echo $this->url('iptables/ip4status'); ?>">
                                         <i class="far fa-question-circle"></i>
                                         <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
                                     </a>
@@ -157,13 +162,13 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                             </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip6tables">
+                                    <a href="<?php echo $this->url('iptables/ip6'); ?>">
                                      <i class="fas fa-dice-d20"></i>
                                         <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip6tables_status">
+                                    <a href="<?php echo $this->url('iptables/ip6status'); ?>">
                                         <i class="far fa-question-circle"></i>
                                         <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
                                     </a>
@@ -179,31 +184,31 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                             </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=today">
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=today">
                                         <i class="far fa-calendar-check"></i>
                                         <span><?php _e('panel', 'menu_today', 'Today'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=yesterday">
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=yesterday">
                                         <i class="fas fa-calendar-day"></i>
                                         <span><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=past_seven_days">
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=past_seven_days">
                                         <i class="fas fa-calendar-week"></i>
                                         <span><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=this_month">
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=this_month">
                                         <i class="far fa-calendar-alt"></i>
                                         <span><?php _e('panel', 'menu_this_month', 'This month'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=action_log&tab=last_month">
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=last_month">
                                         <i class="fas fa-calendar-alt"></i>
                                         <span><?php _e('panel', 'menu_last_month', 'Last month'); ?></span>
                                     </a>
@@ -218,37 +223,37 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                             </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=settings">
+                                    <a href="<?php echo $this->url('setting/basic'); ?>">
                                         <i class="fas fa-cogs"></i>
                                         <span><?php _e('panel', 'menu_settings', 'Settings'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=ip_manager">
+                                    <a href="<?php echo $this->url('setting/ipManager'); ?>">
                                         <i class="fas fa-globe"></i>
                                         <span><?php _e('panel', 'menu_ip_manager', 'IP Manager'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=xss_protection">
+                                    <a href="<?php echo $this->url('security/xssProtection'); ?>">
                                         <i class="fas fa-umbrella"></i>
                                         <span><?php _e('panel', 'menu_xss_protection', 'XSS Protection'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=authentication">
+                                    <a href="<?php echo $this->url('security/authentication'); ?>">
                                         <i class="fas fa-user-lock"></i>
                                         <span><?php _e('panel', 'menu_authentication', 'Authentication'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=exclusion">
+                                    <a href="<?php echo $this->url('setting/exclusion'); ?>">
                                         <i class="fas fa-eye-slash"></i>
                                         <span><?php _e('panel', 'menu_exclusion', 'Exclusion'); ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=messenger">
+                                    <a href="<?php echo $this->url('setting/messenger'); ?>">
                                         <i class="fab fa-facebook-messenger"></i>
                                         <span><?php _e('panel', 'menu_messenger', 'Messenger'); ?></span>
                                     </a>
@@ -334,13 +339,13 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                 var selectLanguage = function (obj, event) {
                     event.preventDefault();
                     var langCode = $(obj).attr('data-lang');
-                    var url = window.location.href + '&so_page=ajax_change_locale';
+                    var url = '<?php echo $this->url('ajax/changeLocale'); ?>';
   
                     $.ajax({
                         url: url,
-                        type: 'GET',
+                        type: 'get',
                         data: {'langCode': langCode},
-                        dataType: 'JSON',
+                        dataType: 'json',
                         cache: false,
                         success: function (data) { 
                             if (data.status === 'success') {
@@ -372,6 +377,5 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
         <div id="loader" data-status="waiting">
             <div class="cssload-box-loading"></div>
         </div>
-
     </body>
 </html>
