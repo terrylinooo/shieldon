@@ -17,6 +17,7 @@ use Shieldon\Firewall\Panel\BaseController;
 use Shieldon\Firewall\Captcha as Captcha;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
+use function Shieldon\Firewall\get_session;
 use function Shieldon\Firewall\ unset_superglobal;
 
 /**
@@ -79,11 +80,12 @@ class User extends BaseController
         }
 
         if ($login) {
-            // Mark as logged user.
+
+            // This session variable is to mark current session as a logged user.
             get_session()->set('SHIELDON_USER_LOGIN', true);
 
             // Redirect to overview page if logged in successfully.
-            return get_response()->withHeader('Location', $this->url('overview'));
+            return get_response()->withHeader('Location', $this->url('home/overview'));
         }
 
         // Start to prompt a login form is not logged.
@@ -101,7 +103,9 @@ class User extends BaseController
         $data['css'] = require $this->kernel::KERNEL_DIR . '/../../templates/frontend/css/default.php';
         unset($ui);
 
-        return $this->loadView('frontend/login', $data);
+        return $this->respond(
+            $this->loadView('frontend/login', $data)
+        );
     }
 
     /**
@@ -111,18 +115,19 @@ class User extends BaseController
      */
     public function logout(): ResponseInterface
     {
-        $sessionParams = get_session();
+        $sessionLoginStatus = get_session()->get('SHIELDON_USER_LOGIN');
+        $sessionPanelLang = get_session()->get('SHIELDON_PANEL_LANG');
         $response = get_response();
 
-        if (isset($sessionParams['SHIELDON_USER_LOGIN'])) {
+        if (isset($sessionLoginStatus)) {
             unset_superglobal('SHIELDON_USER_LOGIN', 'session');
         }
 
-        if (isset($sessionParams['SHIELDON_PANEL_LANG'])) {
+        if (isset($sessionPanelLang)) {
             unset_superglobal('SHIELDON_PANEL_LANG', 'session');
         }
 
-        return $response->withdHeader('Location', $this->url('login'));
+        return $response->withdHeader('Location', $this->url('user/login'));
     }
 
     /**

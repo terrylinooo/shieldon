@@ -442,7 +442,7 @@ use function Shieldon\Firewall\_e;
     $(function() {
 
         var testMessengerModule = function(data) {
-            var url = window.location.href + '&so_page=ajax_test_messenger_modules';
+            var url = '<?= $ajaxUrl ?>';
 
             $.ajax({
                 url: url,

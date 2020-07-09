@@ -13,11 +13,20 @@ declare(strict_types=1);
 namespace Shieldon\Firewall;
 
 use Psr\Http\Message\ResponseInterface;
-use Shieldon\Psr7\Response;
+use Shieldon\Firewall\HttpResolver;
+use Shieldon\Firewall\Panel\DemoTrait;
+use Shieldon\Firewall\Panel\User;
 use function Shieldon\Firewall\get_request;
+use function Shieldon\Firewall\get_response;
+
+use function call_user_func;
 use function explode;
-
-
+use function in_array;
+use function ini_set;
+use function set_time_limit;
+use function str_replace;
+use function trim;
+use function ucfirst;
 /**
  * Increase PHP execution time. Becasue of taking long time to parse logs in a high-traffic site.
  */
@@ -34,6 +43,8 @@ ini_set('memory_limit', '128M');
  */
 class Panel
 {
+    use DemoTrait;
+
     /**
      * Route map.
      *
@@ -42,25 +53,55 @@ class Panel
     protected $registerRoutes;
 
     /**
+     * The HTTP resolver.
+     * 
+     * We need to resolve the HTTP result by ourselves to prevent conficts
+     * with other frameworks.
+     *
+     * @var \Shieldon\Firewall\HttpResolver
+     */
+    protected $resolver = null;
+
+    /**
      * Firewall panel constructor.                         
      */
     public function __construct() 
     {
         $this->registerRoutes = [
-            '',
+            'home/index',
+            'home/overview',
             'user/login',
             'user/logout',
+            'circle/rule',
+            'circle/filter',
+            'circle/session',
+            'setting/basic',
+            'setting/export',
+            'setting/import',
+            'setting/exclusion',
+            'setting/ipManager',
+            'security/authentication',
+            'security/xssProtection',
+            'iptables/ip4',
+            'iptables/ip6',
+            'iptables/ip4status',
+            'iptables/ip6status',
+            'report/operation',
+            'report/actionLog',
+            'ajax/changeLocale',
+            'ajax/tryMessenger',
         ];
+
+        $this->resolver = new HttpResolver();
     }
 
     /**
      * Display pages.
-     *
-     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function entry($basePath): ResponseInterface
+    public function entry($basePath): void
     {
         $request = get_request();
+        $response = get_response();
 
         $path = trim($request->getUri()->getPath(), '/');
         $base = trim($basePath, '/');
@@ -76,11 +117,64 @@ class Panel
         $method = $urlParts[1] ?? 'index';
 
         if (in_array("$controller/$method", $this->registerRoutes)) {
+
+            define('FIREWALL_PANEL_BASE', $base);
+
+            $this->checkAuth();
+
             $controller = __CLASS__ . '\\' . ucfirst($controller);
 
-            return call_user_func([(new $controller), $method]);
-        }
+            $controllerClass = new $controller();
 
-        return (new Response)->withStatus(404);
+            if ('demo' === $this->mode) {
+                // For security reasons, the POST method is not allowed 
+                // in the Demo mode.
+                set_request(get_request()->withParsedBody([])->withMethod('GET'));
+                unset_superglobal(null, 'post');
+
+                $controllerClass->demo(
+                    $this->demoUser['user'],
+                    $this->demoUser['pass']
+                );
+            }
+
+            $this->resolver(call_user_func([$controllerClass, $method]));
+        }
+       
+        $this->resolver($response->withStatus(404));
+    }
+
+    /**
+     * Prompt an authorization login.
+     *
+     * @return void
+     */
+    protected function checkAuth(): void
+    {
+        $check = get_session()->get('SHIELDON_USER_LOGIN');
+
+        if (empty($check)) {
+            $this->resolver((new User)->login());
+        }
+    }
+
+    /**
+     * @param string $method
+     * @param array  $args
+     *
+     * @return mixed
+     */
+    public function __call($method, $args)
+    {
+        if (property_exists($this, $method)) {
+            $callable = $this->{$method};
+
+            if (
+                isset($args[0]) && 
+                $args[0] instanceof ResponseInterface
+            ) {
+                return $callable($args[0]);
+            }
+        }
     }
 }

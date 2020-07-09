@@ -78,7 +78,6 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
             </div>
         </nav>
 
-
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2 col-sm-1 col-xs-1 so-sidebar-menu">
@@ -90,7 +89,7 @@ if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'project.lo') 
                             </a>
                             <ul class="nav child-menu">
                                 <li>
-                                    <a href="<?php echo $page_url; ?>?so_page=overview">
+                                    <a href="<?php echo $this->url('home/overview'); ?>">
                                         <i class="fas fa-tachometer-alt"></i>
                                         <span><?php _e('panel', 'menu_overview', 'Overview'); ?></span>
                                     </a>
