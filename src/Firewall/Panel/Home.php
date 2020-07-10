@@ -14,10 +14,22 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
-use ReflectionObject;
+use Shieldon\Firewall\Driver as Driver;
+use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\unset_superglobal;
-use function Shieldon\Firewall\__;
+
+use ReflectionObject;
+use function count;
+use function date;
+use function get_class;
+use function ksort;
+use function round;
+use function sleep;
+use function strrpos;
+use function strtolower;
+use function strtotime;
+use function substr;
 
 /**
  * Home
@@ -181,10 +193,10 @@ class Home extends BaseController
         $data['configuration'] = $properties;
 
         $data['driver'] = [
-            'mysql'  => ($this->kernel->driver instanceof MysqlDriver),
-            'redis'  => ($this->kernel->driver instanceof RedisDriver),
-            'file'   => ($this->kernel->driver instanceof FileDriver),
-            'sqlite' => ($this->kernel->driver instanceof SqliteDriver),
+            'mysql'  => ($this->kernel->driver instanceof Driver\MysqlDriver),
+            'redis'  => ($this->kernel->driver instanceof Driver\RedisDriver),
+            'file'   => ($this->kernel->driver instanceof Driver\FileDriver),
+            'sqlite' => ($this->kernel->driver instanceof Driver\SqliteDriver),
         ];
 
         $reflection = new ReflectionObject($this->kernel);

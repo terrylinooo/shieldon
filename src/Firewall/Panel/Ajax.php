@@ -15,10 +15,16 @@ namespace Shieldon\Firewall\Panel;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
 use Shieldon\Messenger as Messenger;
+use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session;
-use function Shieldon\Firewall\__;
+
+use function explode;
+use function filter_var;
+use function is_numeric;
+use function json_encode;
+use function str_replace;
 
 /**
  * User

@@ -383,7 +383,7 @@ return [
     'setting_label_watching_folder' => 'Watching Folder',
     'setting_label_cronjob' => 'Cron Job',
     'setting_note_cronjob' => 'Please use this code into the crontab file on your server.',
-    'setting_note_iptables' => '<strong>firewall.sh</strong> will watch the changes in this folder to employ command to iptables.',
+    'setting_note_iptables' => '<strong>iptable_bridge.sh</strong> will watch the changes in this folder to employ command to iptables.',
     'setting_label_deny_attempt_buffer' => 'Buffer',
     'setting_desc_deny_attempt_buffer' => 'How many fails in a row will trigger this event.',
     'setting_label_record_attempt_detection_period' => 'Detection Period',

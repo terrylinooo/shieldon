@@ -12,6 +12,6 @@ tmp
 clover.xml
 .phpunit.result.cache
 bin
-!bin/firewall.sh
+!bin/iptable_bridge.sh
 !bin/test.txt
 

@@ -380,7 +380,7 @@ return [
     'setting_label_watching_folder' => '监视资料夹',
     'setting_label_cronjob' => '系统排程',
     'setting_note_cronjob' => '请使用这段程式码到您的伺服器中的 crontab 档案。',
-    'setting_note_iptables' => '<strong>firewall.sh</strong> 将会监视在此资料夹中的变化来套用指令到 iptables 里。',
+    'setting_note_iptables' => '<strong>iptable_bridge.sh</strong> 将会监视在此资料夹中的变化来套用指令到 iptables 里。',
     'setting_label_deny_attempt_buffer' => '缓冲',
     'setting_desc_deny_attempt_buffer' => '连续多少次错误会触发此事件。',
     'setting_label_record_attempt_detection_period' => '检测期间',

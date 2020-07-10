@@ -17,6 +17,11 @@ use Shieldon\Firewall\Panel\BaseController;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\unset_superglobal;
 
+use function array_push;
+use function array_values;
+use function ctype_alnum;
+use function str_replace;
+
 /**
  * Security
  */

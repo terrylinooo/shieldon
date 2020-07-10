@@ -15,11 +15,13 @@ namespace Shieldon\Firewall\Panel;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
 use Shieldon\Firewall\Captcha as Captcha;
+use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session;
 use function Shieldon\Firewall\unset_superglobal;
-use function Shieldon\Firewall\__;
+
+use function password_verify;
 
 /**
  * User

@@ -382,7 +382,7 @@ return [
     'setting_label_watching_folder' => '監視資料夾',
     'setting_label_cronjob' => '系統排程',
     'setting_note_cronjob' => '請使用這段程式碼到您的伺服器中的 crontab 檔案。',
-    'setting_note_iptables' => '<strong>firewall.sh</strong> 將會監視在此資料夾中的變化來套用指令到 iptables 裡。',
+    'setting_note_iptables' => '<strong>iptable_bridge.sh</strong> 將會監視在此資料夾中的變化來套用指令到 iptables 裡。',
     'setting_label_deny_attempt_buffer' => '緩衝',
     'setting_desc_deny_attempt_buffer' => '連續多少次錯誤會觸發此事件。',
     'setting_label_record_attempt_detection_period' => '偵測期間',
