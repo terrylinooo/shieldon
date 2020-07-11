@@ -1165,4 +1165,57 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($kernel::RESPONSE_DENY, $result);
     }
+
+    public function testSetAndGetTemplate()
+    {
+        $kernel = new \Shieldon\Firewall\Kernel();
+        $kernel->setTemplateDirectory(BOOTSTRAP_DIR . '/../templates/frontend');
+
+        $reflection = new \ReflectionObject($kernel);
+        $methodGetTemplate = $reflection->getMethod('getTemplate');
+        $methodGetTemplate->setAccessible(true);
+        $tpl = $methodGetTemplate->invokeArgs($kernel, ['captcha']);
+
+        $this->assertSame($tpl, BOOTSTRAP_DIR . '/../templates/frontend/captcha.php');
+
+        $this->expectException(\RuntimeException::class);
+        $tpl = $methodGetTemplate->invokeArgs($kernel, ['captcha2']);
+    }
+
+    public function testThrowEexceptionSpecificTemplateFileNotExist()
+    {
+        $this->expectException(\RuntimeException::class);
+
+        $kernel = new \Shieldon\Firewall\Kernel();
+        $kernel->setTemplateDirectory(BOOTSTRAP_DIR . '/../templates/frontend');
+
+        $reflection = new \ReflectionObject($kernel);
+        $methodGetTemplate = $reflection->getMethod('getTemplate');
+        $methodGetTemplate->setAccessible(true);
+  
+        $tpl = $methodGetTemplate->invokeArgs($kernel, ['captcha2']);
+    }
+
+    public function testThrowEexceptionWhenNoDriver()
+    {
+        $this->expectException(\RuntimeException::class);
+        $kernel = new \Shieldon\Firewall\Kernel();
+        $kernel->run();
+    }
+
+    public function testThrowEexceptionWhenTemplateDirectoryNotExist()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $kernel = new \Shieldon\Firewall\Kernel();
+        $kernel->setTemplateDirectory('/not-exists');
+        $kernel->run();
+    }
+
+    public function testThrowEexceptionWhenTemplateFileNotExist()
+    {
+        $this->expectException(\RuntimeException::class);
+        $kernel = new \Shieldon\Firewall\Kernel();
+        $kernel->setTemplateDirectory('/');
+        $kernel->run();
+    }
 }

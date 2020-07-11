@@ -61,6 +61,7 @@ use function file_put_contents;
 use function filter_var;
 use function get_class;
 use function gethostbyaddr;
+use function is_dir;
 use function is_writable;
 use function microtime;
 use function ob_end_clean;
@@ -321,6 +322,13 @@ class Kernel
     protected $templateDirectory = '';
 
     /**
+     * The message that will be sent to the third-party API.
+     *
+     * @var string
+     */
+    protected $msgBody = '';
+
+    /**
      * Shieldon constructor.
      * 
      * @param ServerRequestInterface|null $request  A PSR-7 server request.
@@ -435,7 +443,7 @@ class Kernel
                     $logData['attempts'] = 0;
                 }
 
-                $isTriggerMessenger = false;
+                $isMessengerTriggered = false;
                 $isUpdatRuleTable = false;
 
                 $handleType = 0;
@@ -451,7 +459,7 @@ class Kernel
                         if ($attempts >= $buffer) {
 
                             if ($this->properties['deny_attempt_notify']['data_circle']) {
-                                $isTriggerMessenger = true;
+                                $isMessengerTriggered = true;
                             }
 
                             $logData['type'] = self::ACTION_DENY;
@@ -477,7 +485,7 @@ class Kernel
                         if ($attempts >= $bufferIptable) {
 
                             if ($this->properties['deny_attempt_notify']['system_firewall']) {
-                                $isTriggerMessenger = true;
+                                $isMessengerTriggered = true;
                             }
 
                             $folder = rtrim($this->properties['iptables_watching_folder'], '/');
@@ -515,7 +523,7 @@ class Kernel
                 /**
                  * Notify this event to messengers.
                  */
-                if ($isTriggerMessenger) {
+                if ($isMessengerTriggered) {
 
                     // The data strings that will be appended to message body.
                     $prepareMessageData = [
@@ -536,18 +544,7 @@ class Kernel
                         $message .= $key . ': ' . $value . "\n";
                     }
 
-                    try {
-
-                        foreach ($this->messengers as $messenger) {
-                            $messenger->send($message);
-                        }
-
-                    // @codeCoverageIgnoreStart
-                    } catch (RuntimeException $e) {
-                        // echo $e->getMessage();
-                        // Do not throw error, becasue the third-party services might be unavailable.
-                    }
-                    // @codeCoverageIgnoreEnd
+                    $this->msgBody = $message;
                 }
 
                 // For an incoming request already in the rule list, return the rule type immediately.
@@ -1369,7 +1366,7 @@ class Kernel
      */
     public function setTemplateDirectory(string $directory)
     {
-        if (!is_dar($directory)) {
+        if (!is_dir($directory)) {
             throw new InvalidArgumentException('The template directory does not exist.');
         }
         $this->templateDirectory = $directory;
@@ -1429,7 +1426,9 @@ class Kernel
 
         // Nothing happened. Return.
         if (empty($type)) {
+            // @codeCoverageIgnoreStart
             return $response;
+            // @codeCoverageIgnoreEnd
         }
 
         $viewPath = $this->getTemplate($type);
@@ -1547,6 +1546,24 @@ class Kernel
 
             $this->log(self::LOG_PAGEVIEW);
         }
+
+ 
+        if (!empty($this->msgBody)) {
+ 
+            // @codeCoverageIgnoreStart
+
+            try {
+                foreach ($this->messengers as $messenger) {
+                    $messenger->setTimeout(2);
+                    $messenger->send($this->msgBody);
+                }
+            } catch (RuntimeException $e) {
+                // Do not throw error, becasue the third-party services might be unavailable.
+            }
+
+            // @codeCoverageIgnoreEnd
+        }
+
 
         return $result;
     }

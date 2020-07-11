@@ -21,7 +21,7 @@ class IpTraitTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame('192.168.1.1', $mock->getIp());
 
-        $mock->setIp('192.168.22.22');
+        $mock->setIp('192.168.22.22', true);
 
         $this->assertNotSame('192.168.1.1', $mock->getIp());
     }
