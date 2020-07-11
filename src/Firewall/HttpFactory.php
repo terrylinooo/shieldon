@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall;
 
-use Shieldon\Psr17\ServerRequestFactory;
-use Shieldon\Psr17\ResponseFactory;
-use Shieldon\Psr7\ServerRequest;
-use Shieldon\Psr7\Response;
-use Shieldon\Firewall\Utils\Session;
 use Shieldon\Firewall\Utils\Collection;
+use Shieldon\Firewall\Utils\Session;
+use Shieldon\Psr17\ResponseFactory;
+use Shieldon\Psr17\ServerRequestFactory;
+use Shieldon\Psr7\Response;
+use Shieldon\Psr7\ServerRequest;
 
 /*
  * An object-oriented layer for the HTTP specification.

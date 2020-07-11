@@ -15,8 +15,26 @@ namespace Shieldon\Firewall;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\HttpFactory;
-use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\Utils\Collection;
+use Shieldon\Firewall\Utils\Container;
+use function explode;
+use function file_exists;
+use function func_get_arg;
+use function func_num_args;
+use function implode;
+use function is_array;
+use function is_null;
+use function preg_split;
+use function round;
+use function shell_exec;
+use function str_repeat;
+use function str_replace;
+use function stripos;
+use function strtoupper;
+use function substr;
+use function sys_getloadavg;
+use function trim;
+use const PHP_OS;
 
 /**
  * This value will be only displayed on Firewall Panel.

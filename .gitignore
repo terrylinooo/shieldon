@@ -11,7 +11,8 @@ tests/report
 tmp
 clover.xml
 .phpunit.result.cache
-bin
+
 !bin/iptable_bridge.sh
 !bin/test.txt
+
 

@@ -46,6 +46,9 @@ use function mkdir;
 use function rtrim;
 use function strpos;
 use function umask;
+use function time;
+use function strtotime;
+use function date;
 
 /**
  * Managed Firewall.

@@ -23,6 +23,7 @@ use function call_user_func;
 use function explode;
 use function in_array;
 use function ini_set;
+use function property_exists;
 use function set_time_limit;
 use function str_replace;
 use function trim;
