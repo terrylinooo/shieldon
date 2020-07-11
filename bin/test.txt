@@ -1,0 +1,3 @@
+add,4,33.33.33.33,28,23,tcp,deny
+add,6,2001:db8::a:74e6:b5f3:fe92:830e,124,23,all,allow
+add,6,2001:db8::a:74e6:b5f3:fe92:830e,126,25,tcp,allow
