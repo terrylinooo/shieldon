@@ -16,7 +16,7 @@ declare(strict_types=1);
  * @author Terry L. <contact@terryl.in>
  * @since 1.0.0
  */
-class MockMessenger implements \Messenger\Messenger\MessengerInterface
+class MockMessenger
 {
     /**
      * Constructor.

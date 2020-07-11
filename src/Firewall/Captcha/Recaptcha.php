@@ -63,7 +63,7 @@ class Recaptcha extends CaptchaProvider
     {
         $postParams = get_request()->getParsedBody();
 
-        if (empty($$postParams['g-recaptcha-response'])) {
+        if (empty($postParams['g-recaptcha-response'])) {
             return false;
         }
 

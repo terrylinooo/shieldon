@@ -155,6 +155,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     public function testDetectByFilterCookie($driver = 'sqlite')
     {
         $kernel = get_testing_shieldon_instance($driver);
+        $kernel->driver->rebuild();
 
         $kernel->setFilter('session', false);
         $kernel->setFilter('cookie', true);
@@ -164,7 +165,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
 
         for ($i =  0; $i < 5; $i++) {
-            $kernel->setIp('140.112.174.1');
+            $kernel->setIp('140.112.174.8');
             $results[$i] = $kernel->run();
         }
 
@@ -176,13 +177,15 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         $kernel->setProperty('cookie_name', 'unittest');
         $_COOKIE['unittest'] = 1;
+        reload_request();
 
         for ($i =  0; $i < 10; $i++) {
-            $kernel->setIp('140.112.175.1');
+            $kernel->setIp('140.112.175.10');
             $results[$i] = $kernel->run();
 
             if ($i >= 5) {
                 $_COOKIE['unittest'] = 2;
+                reload_request();
             }
         }
 
@@ -569,21 +572,6 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         $kernel->unban('33.33.33.33');
         $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
-    }
-
-    public function testSetView()
-    {
-        $kernel = new \Shieldon\Firewall\Kernel();
-        $kernel->setView('<html><body>hello</body></html>', 'rejection');
-        $reflection = new \ReflectionObject($kernel);
-        $t = $reflection->getProperty('html');
-        $t->setAccessible(true);
-        $view = $t->getValue($kernel);
-        if ($view['rejection'] === '<html><body>hello</body></html>') {
-            $this->assertTrue(true);
-        } else {
-            $this->assertTrue(false);
-        }
     }
 
     public function testRespond($driver = 'sqlite')
@@ -1029,7 +1017,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     {
         $kernel = new \Shieldon\Firewall\Kernel();
 
-        $telegram = new \Messenger\Telegram('test', 'test');
+        $telegram = new \Shieldon\Messenger\Telegram('test', 'test');
 
         $kernel->add($telegram);
     }

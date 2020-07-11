@@ -123,6 +123,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     public function testIpSourceOption()
     {
         $_SERVER['HTTP_CF_CONNECTING_IP'] = '19.89.6.4';
+        reload_request();
 
         $this->testFromJsonConfig();
         $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
@@ -141,14 +142,13 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->setConfig('ip_variable_source.HTTP_CF_CONNECTING_IP', true);
         $firewall->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', false);
         $firewall->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', false);
-
-        
         $firewall->setup();
         $firewall->run();
 
         $this->assertEquals($firewall->getKernel()->getIp(), '19.89.6.4');
 
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '19.80.4.12';
+        reload_request();
 
         $this->testFromJsonConfig();
         $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
@@ -167,6 +167,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
 
         // HTTP_X_FORWARDED_HOST
         $_SERVER['HTTP_X_FORWARDED_HOST'] = '5.20.13.14';
+        reload_request();
 
         $this->testFromJsonConfig();
         $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
@@ -262,27 +263,6 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->setConfig('cronjob.reset_circle.config.last_update', '');
         $firewall->setup();
         $firewall->run();
-    }
-
-    public function testRestfulOption()
-    {
-        $this->testFromJsonConfig();
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
-
-        // Test method restful();
-        $firewall->restful();
-
-        $reflection = new \ReflectionObject($firewall);
-        $methodSetSessionId = $reflection->getMethod('restful');
-        $methodSetSessionId->setAccessible(true);
-
-        $reflection = new \ReflectionObject($firewall);
-        $p1 = $reflection->getProperty('restful');
-        $p1->setAccessible(true);
-        
-        $restful = $p1->getValue($firewall);
-       
-        $this->assertTrue($restful);
     }
 
     public function testFromPhpPConfig()
