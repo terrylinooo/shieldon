@@ -18,7 +18,7 @@
     </filter>
     <php>
         <ini name="date.timezone" value="UTC"/>
-        <const name="PHPUNIT_TEST" value="TRUE"/>
+        <const name="PHP_UNIT_TEST" value="TRUE"/>
     </php>
     <logging>
         <log type="coverage-clover" target="clover.xml"/>

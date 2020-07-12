@@ -94,7 +94,7 @@ class Firewall
             } else {
                 $jsonString = file_get_contents(__DIR__ . '/../../config.json');
 
-                if (defined('PHPUNIT_TEST')) {
+                if (defined('PHP_UNIT_TEST')) {
                     $jsonString = file_get_contents(__DIR__ . '/../../tests/config.json');
                 }
             }

@@ -14,26 +14,23 @@ namespace Shieldon\Firewall;
 
 class PanelTest extends \PHPUnit\Framework\TestCase
 {
-    public function testFirewall()
+    public function testPanelLoginPage()
     {
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
-        $_SERVER['PHP_AUTH_USER'] = 'shieldon_user';
-        $_SERVER['PHP_AUTH_PW'] = 'shieldon_pass';
+        ob_start();
 
-        $controlPanel = new Panel($firewall);
-    }
+        $controlPanel = new \Shieldon\Firewall\Panel();
+        $controlPanel->entry('firewall/panel');
 
-    public function testShieldon()
-    {
-        $kernel = new \Shieldon\Firewall\Kernel();
-        $logger = new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
-        $kernel->add($logger);
+        $output = ob_get_contents();
+        ob_end_clean();
 
-        $_SERVER['PHP_AUTH_USER'] = 'shieldon_user';
-        $_SERVER['PHP_AUTH_PW'] = 'shieldon_pass';
-
-        $controlPanel = new Panel($kernel);
+        if (stripos($output, 'Login to Firewall Panel')) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
     }
 }

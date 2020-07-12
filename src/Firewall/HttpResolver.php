@@ -27,10 +27,12 @@ class HttpResolver
      * Invoker.
      *
      * @param ResponseInterface $response The PSR-7 response.
+     * @param bool              $finally  Terminate current PHP proccess if 
+     *                                    this value is true.
      *
      * @return void
      */
-    public function __invoke(ResponseInterface $response)
+    public function __invoke(ResponseInterface $response, $finally = true): void
     {
         if (!headers_sent()) {
 
@@ -57,6 +59,9 @@ class HttpResolver
         }
 
         echo $response->getBody()->getContents();
-        exit;
+
+        if ($finally && !defined('PHP_UNIT_TEST')) {
+            exit;
+        }
     }
 }

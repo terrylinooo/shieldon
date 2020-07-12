@@ -1132,6 +1132,8 @@ class Kernel
      */
     public function add($instance)
     {
+        static $i = 2;
+
         $class = get_class($instance);
         $class = substr($class, strrpos($class, '\\') + 1);
 
@@ -1145,24 +1147,23 @@ class Kernel
             $this->registrar[1] = ['logger' => $class];
         }
 
-        $i = 2;
-
         if ($instance instanceof CaptchaInterface) {
             $this->captcha[$class] = $instance;
             $this->registrar[$i] = ['captcha' => $class];
+            $i++;
         }
 
         if ($instance instanceof ComponentProvider) {
             $this->component[$class] = $instance;
             $this->registrar[$i] = ['component' => $class];
+            $i++;
         }
 
         if ($instance instanceof MessengerInterface) {
             $this->messengers[] = $instance;
             $this->registrar[$i] = ['messenger' => $class];
+            $i++;
         }
-
-        $i++;
     }
 
     /**
