@@ -210,7 +210,7 @@ class Home extends BaseController
         ];
 
         $reflection = new ReflectionObject($this->kernel);
-        $t = $reflection->getProperty('messengers');
+        $t = $reflection->getProperty('messenger');
         $t->setAccessible(true);
         $messengers = $t->getValue($this->kernel);
 
