@@ -1218,4 +1218,58 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel->setTemplateDirectory('/');
         $kernel->run();
     }
+
+    public function testAddAndRemoveClasses()
+    {
+        $kernel = new \Shieldon\Firewall\Kernel();
+        $kernel->add(new \Shieldon\Messenger\Telegram('test', 'test'));
+        $kernel->add(new \Shieldon\Messenger\Sendgrid('test'));
+        $kernel->add(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+
+        $reflection = new \ReflectionObject($kernel);
+        $t = $reflection->getProperty('messenger');
+        $d = $reflection->getProperty('driver');
+        $t->setAccessible(true);
+        $d->setAccessible(true);
+        $messengers = $t->getValue($kernel);
+        $driver = $d->getValue($kernel);
+
+        $this->assertTrue(($messengers[0] instanceof \Shieldon\Messenger\Telegram));
+        $this->assertTrue(($messengers[1] instanceof \Shieldon\Messenger\Sendgrid));
+        $this->assertTrue(($driver instanceof \Shieldon\Firewall\Driver\FileDriver));
+
+        $kernel->remove('messenger');
+        $kernel->remove('driver');
+
+        $messengers = $t->getValue($kernel);
+        $driver = $d->getValue($kernel);
+
+        $this->assertEquals(count($messengers), 0);
+        $this->assertEquals($driver, null);
+    }
+
+    public function testAddAndRemoveSpecificClass()
+    {
+        $kernel = new \Shieldon\Firewall\Kernel();
+        $kernel->add(new \Shieldon\Messenger\Telegram('test', 'test'));
+        $kernel->add(new \Shieldon\Messenger\Sendgrid('test'));
+        $kernel->add(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+
+        $reflection = new \ReflectionObject($kernel);
+        $t = $reflection->getProperty('messenger');
+        $d = $reflection->getProperty('driver');
+        $t->setAccessible(true);
+        $d->setAccessible(true);
+        $messengers = $t->getValue($kernel);
+        $driver = $d->getValue($kernel);
+
+        $kernel->remove('messenger', 'Telegram');
+        $kernel->remove('driver', 'FileDriver');
+
+        $messengers = $t->getValue($kernel);
+        $driver = $d->getValue($kernel);
+
+        $this->assertEquals(count($messengers), 1);
+        $this->assertEquals($driver, null);
+    }
 }

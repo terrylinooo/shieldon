@@ -42,7 +42,7 @@ use Shieldon\Firewall\Helpers;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Utils\Container;
-use Shieldon\Messenger\MessengerInterface;
+use Shieldon\Messenger\Messenger\MessengerInterface;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_cpu_usage;
 use function Shieldon\Firewall\get_default_properties;
@@ -85,6 +85,9 @@ class Kernel
     const REASON_IS_GOOGLE = 101;
     const REASON_IS_BING = 102;
     const REASON_IS_YAHOO = 103;
+    const REASON_IS_SOCIAL_NETWORK = 110;
+    const REASON_IS_FACEBOOK = 111;
+    const REASON_IS_TWITTER = 112;
 
     // Reason codes (deny)
     const REASON_TOO_MANY_SESSIONS = 1;
@@ -1134,8 +1137,7 @@ class Kernel
     {
         static $i = 2;
 
-        $class = get_class($instance);
-        $class = substr($class, strrpos($class, '\\') + 1);
+        $class = $this->getClassName($instance);
 
         if ($instance instanceof DriverProvider) {
             $this->driver = $instance;
@@ -1196,7 +1198,7 @@ class Kernel
                 if ($category === $v['category'] && $className === $v['class']) {
                     if (is_array($this->{$category})) {
                         foreach ($this->{$category} as $k2 => $instance) {
-                            if (get_class($instance) === $className) {
+                            if ($this->getClassName($instance) === $className) {
                                 unset($this->{$category}[$k2]);
                             }
                         }
@@ -1465,6 +1467,19 @@ class Kernel
         }
 
         return $path;
+    }
+
+    /**
+     * Get a class name without namespace string.
+     *
+     * @param object $instance Class
+     * 
+     * @return void
+     */
+    protected function getClassName($instance): string
+    {
+        $class = get_class($instance);
+        return substr($class, strrpos($class, '\\') + 1); 
     }
 
     /**
