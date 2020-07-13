@@ -21,9 +21,9 @@ use function implode;
 use function preg_match;
 
 /**
- * A PSR-15 middleware denys all malicious user-agent requests.
+ * A PSR-15 middleware that denys all malicious user-agent requests.
  */
-class httpAuthentication implements MiddlewareInterface
+class UserAgent implements MiddlewareInterface
 {
     /**
      * 400 - Bad Request.
@@ -82,12 +82,12 @@ class httpAuthentication implements MiddlewareInterface
         $userAgent = $request->getHeaderLine('user-agent');
 
         if (empty($userAgent)) {
-            return (new Response)->withStatus(HTTP_STATUS_CODE);
+            return (new Response)->withStatus(self::HTTP_STATUS_CODE);
         }
 
         if (!empty($this->deniedList)) {
             if (preg_match('/(' . implode('|', $this->deniedList). ')/i', $userAgent)) {
-                return (new Response)->withStatus(HTTP_STATUS_CODE);
+                return (new Response)->withStatus(self::HTTP_STATUS_CODE);
             }
         }
 

@@ -22,7 +22,7 @@ use function password_verify;
 use function strpos;
 
 /**
- * A PSR-15 middleware provides WWW-Authenticate protection.
+ * A PSR-15 middleware that provides WWW-Authenticate protection.
  */
 class httpAuthentication implements MiddlewareInterface
 {
@@ -99,7 +99,7 @@ class httpAuthentication implements MiddlewareInterface
                 ) {
                     $authenticate = 'Basic realm="' . $this->realm . '"';
                     return (new Response)->
-                        withStatus(HTTP_STATUS_CODE)->
+                        withStatus(self::HTTP_STATUS_CODE)->
                         withHeader('WWW-Authenticate', $authenticate);
                 }
 
@@ -109,7 +109,7 @@ class httpAuthentication implements MiddlewareInterface
                     !password_verify($serverParams['PHP_AUTH_PW'], $urlInfo['pass'])
                 ) {
                     unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
-                    return (new Response)->withStatus(HTTP_STATUS_CODE);
+                    return (new Response)->withStatus(self::HTTP_STATUS_CODE);
                 }
             }
         }

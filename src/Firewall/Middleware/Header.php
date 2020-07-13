@@ -19,7 +19,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Shieldon\Psr7\Response;
 
 /**
- * A PSR-15 middleware denys requests without specific header inforamtion.
+ * A PSR-15 middleware that denys requests without specific header inforamtion.
  */
 class Header implements MiddlewareInterface
 {
@@ -65,9 +65,9 @@ class Header implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        foreach ($this->commonHeaderFileds as $fieldName) {
+        foreach ($this->fieldList as $fieldName) {
             if (!$request->hasHeader($fieldName)) {
-                return (new Response)->withStatus(HTTP_STATUS_CODE);
+                return (new Response)->withStatus(self::HTTP_STATUS_CODE);
             }
         }
 
