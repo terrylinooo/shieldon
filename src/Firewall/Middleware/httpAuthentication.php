@@ -16,15 +16,23 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Shieldon\Psr7\Response;
 use InvalidArgumentException;
 use function password_verify;
 use function strpos;
 
- /**
-  * A PSR-15 middleware provides WWW-Authenticate protection.
-  */
+/**
+ * A PSR-15 middleware provides WWW-Authenticate protection.
+ */
 class httpAuthentication implements MiddlewareInterface
 {
+    /**
+     * 401 - Unauthorized.
+     *
+     * @var int
+     */
+    const HTTP_STATUS_CODE = 401;
+
     /**
      * The URL list that you want to protect.
      *
@@ -90,16 +98,18 @@ class httpAuthentication implements MiddlewareInterface
                     !isset($serverParams['PHP_AUTH_PW'])
                 ) {
                     $authenticate = 'Basic realm="' . $this->realm . '"';
-                    return (new Response)->withStatus(401)->withHeader('WWW-Authenticate', $authenticate);
+                    return (new Response)->
+                        withStatus(HTTP_STATUS_CODE)->
+                        withHeader('WWW-Authenticate', $authenticate);
                 }
-                
+
                 // Identify the username and password for current URL.
                 if (
                     $urlInfo['user'] !== $serverParams['PHP_AUTH_USER'] ||
                     !password_verify($serverParams['PHP_AUTH_PW'], $urlInfo['pass'])
                 ) {
                     unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
-                    return (new Response)->withStatus(401);
+                    return (new Response)->withStatus(HTTP_STATUS_CODE);
                 }
             }
         }
