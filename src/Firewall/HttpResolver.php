@@ -61,7 +61,10 @@ class HttpResolver
         echo $response->getBody()->getContents();
 
         if ($finally && !defined('PHP_UNIT_TEST')) {
+
+            // @codeCoverageIgnoreStart
             exit;
+            // @codeCoverageIgnoreEnd
         }
     }
 }

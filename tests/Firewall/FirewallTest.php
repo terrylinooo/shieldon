@@ -317,4 +317,29 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
 
         $firewall->setup();
     }
+
+    public function testCaptchaResponse()
+    {
+        $this->testFromJsonConfig();
+        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall->getKernel()->driver->rebuild();
+        $firewall->getKernel()->setIp('140.132.75.15');
+        $firewall->setup();
+
+        for ($i = 1; $i <= 6; $i++) {
+            $response = $firewall->run();
+        }
+
+        $this->assertSame($response->getStatusCode(), 403);
+
+        $_POST['shieldon_captcha'] = 'ok';
+        reload_request();
+
+        $firewall->getKernel()->remove('captcha');
+        $firewall->getKernel()->add(new \Shieldon\Firewall\Captcha\Foundation());
+
+        $response = $firewall->run();
+
+        $this->assertSame($response->getStatusCode(), 303);
+    }
 }

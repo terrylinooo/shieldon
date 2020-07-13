@@ -220,7 +220,7 @@ class Kernel
      *
      * @var MessengerInterface[]
      */
-    protected $messengers = [];
+    protected $messenger = [];
 
     /**
      * If the IP is in the rule table, the rule status will change.
@@ -521,7 +521,7 @@ class Kernel
                 }
 
                 /**
-                 * Notify this event to messengers.
+                 * Notify this event to messenger.
                  */
                 if ($isMessengerTriggered) {
 
@@ -1139,31 +1139,95 @@ class Kernel
 
         if ($instance instanceof DriverProvider) {
             $this->driver = $instance;
-            $this->registrar[0] = ['driver' => $class];
+            $this->registrar[0] = [
+                'category' => 'driver',
+                'class' => $class,
+            ];
         }
 
         if ($instance instanceof ActionLogger) {
             $this->logger = $instance;
-            $this->registrar[1] = ['logger' => $class];
+            $this->registrar[1] = [
+                'category' => 'logger',
+                'class' => $class,
+            ];
         }
 
         if ($instance instanceof CaptchaInterface) {
             $this->captcha[$class] = $instance;
-            $this->registrar[$i] = ['captcha' => $class];
+            $this->registrar[$i] = [
+                'category' => 'captcha',
+                'class' => $class,
+            ];
             $i++;
         }
 
         if ($instance instanceof ComponentProvider) {
             $this->component[$class] = $instance;
-            $this->registrar[$i] = ['component' => $class];
+            $this->registrar[$i] = [
+                'category' => 'component',
+                'class' => $class,
+            ];
             $i++;
         }
 
         if ($instance instanceof MessengerInterface) {
-            $this->messengers[] = $instance;
-            $this->registrar[$i] = ['messenger' => $class];
+            $this->messenger[] = $instance;
+            $this->registrar[$i] = [
+                'category' => 'messenger',
+                'class' => $class,
+            ];
             $i++;
         }
+    }
+
+    /**
+     * Remove registered classes from the Kernel.
+     *
+     * @param string $category  The class category.
+     * @param string $className The class name.
+     *
+     * @return void
+     */
+    public function remove(string $category, string $className = '')
+    {
+        if ($className !== '') {
+            foreach ($this->getRegistrar() as $k => $v) {
+                if ($category === $v['category'] && $className === $v['class']) {
+                    if (is_array($this->{$category})) {
+                        foreach ($this->{$category} as $k2 => $instance) {
+                            if (get_class($instance) === $className) {
+                                unset($this->{$category}[$k2]);
+                            }
+                        }
+                    } else {
+                        $this->{$category} = null;
+                    }
+                    unset($this->registrar[$k]);
+                }
+            }
+        } else {
+            foreach ($this->getRegistrar() as $k => $v) {
+                if ($category === $v['category']) {
+                    if (is_array($this->{$category})) {
+                        $this->{$category} = [];
+                    } else {
+                        $this->{$category} = null;
+                    }
+                    unset($this->registrar[$k]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Fetch the class list from registrar.
+     *
+     * @return array
+     */
+    public function getRegistrar(): array
+    {
+        return $this->registrar;
     }
 
     /**
@@ -1248,6 +1312,7 @@ class Kernel
     public function captchaResponse(): bool
     {
         foreach ($this->captcha as $captcha) {
+            
             if (!$captcha->response()) {
                 return false;
             }
@@ -1554,7 +1619,7 @@ class Kernel
             // @codeCoverageIgnoreStart
 
             try {
-                foreach ($this->messengers as $messenger) {
+                foreach ($this->messenger as $messenger) {
                     $messenger->setTimeout(2);
                     $messenger->send($this->msgBody);
                 }

@@ -178,6 +178,8 @@ class Firewall
         // If settings are ready, let's start monitoring requests.
         if ($this->status) {
 
+            $response = get_request();
+
             // PSR-15 request handler.
             $requestHandler = new RequestHandler();
 
@@ -185,7 +187,7 @@ class Firewall
                 $requestHandler->add($middleware);
             }
 
-            $response = $requestHandler->handle(get_request());
+            $response = $requestHandler->handle($response);
 
             // Something is detected by Middlewares, return.
             if ($response->getStatusCode() !== 200) {
@@ -199,7 +201,6 @@ class Firewall
                 if ($this->kernel->captchaResponse()) {
                     $this->kernel->unban();
 
-                    $response = get_response();
                     $response = $response->withHeader('Location', $this->kernel->getCurrentUrl());
                     $response = $response->withStatus(303);
 
@@ -399,7 +400,9 @@ class Firewall
         }
 
         if (empty($ip)) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('IP source is not set correctly.');
+            // @codeCoverageIgnoreEnd
         }
 
         $this->kernel->setIp($ip);

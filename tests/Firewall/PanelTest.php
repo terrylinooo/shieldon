@@ -19,18 +19,13 @@ class PanelTest extends \PHPUnit\Framework\TestCase
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
-        ob_start();
-
         $controlPanel = new \Shieldon\Firewall\Panel();
-        $controlPanel->entry('firewall/panel');
 
+        ob_start();
+        $controlPanel->entry('firewall/panel');
         $output = ob_get_contents();
         ob_end_clean();
 
-        if (stripos($output, 'Login to Firewall Panel')) {
-            $this->assertTrue(true);
-        } else {
-            $this->assertTrue(false);
-        }
+        $this->assertStringContainsString('Login to Firewall Panel', $output);
     }
 }
