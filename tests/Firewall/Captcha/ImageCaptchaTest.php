@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Captcha;
+namespace Shieldon\FirewallTest\Captcha;
 
 class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
 {

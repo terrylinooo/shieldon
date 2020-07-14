@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Panel;
+namespace Shieldon\FirewallTest\Panel;
 
 class SecurityTest extends \PHPUnit\Framework\TestCase
 {

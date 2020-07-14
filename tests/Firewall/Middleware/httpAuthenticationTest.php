@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Middleware;
+namespace Shieldon\FirewallTest\Middleware;
 
 class httpAuthenticationTest extends \PHPUnit\Framework\TestCase
 {

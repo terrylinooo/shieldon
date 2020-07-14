@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Shieldon\Firewall\Log;
+namespace Shieldon\FirewallTest\Log;
 
 class ActionLogParserTest extends \PHPUnit\Framework\TestCase
 {

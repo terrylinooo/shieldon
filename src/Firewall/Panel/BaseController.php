@@ -26,6 +26,7 @@ use PDO;
 use PDOException;
 use Redis;
 use RedisException;
+use RuntimeException;
 use function array_push;
 use function class_exists;
 use function define;
@@ -211,6 +212,9 @@ class BaseController
         $body['page_url'] = $this->url();
         $body['content'] = $this->loadView($page, $data);
         $body['title'] = $data['title'] ?? '';
+
+        $body['title'] .= ' - ' . __('panel', 'title_site_wide', 'Shieldon Firewall');
+        $body['title'] .= ' v' . SHIELDON_FIREWALL_VERSION;
 
         $page = $this->loadView('panel/template', $body);
 

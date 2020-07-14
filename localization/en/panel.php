@@ -2,6 +2,26 @@
 
 return [
 
+    // Panel page title
+    'title_home' => 'Overview',
+    'title_overview' => 'Overview',
+    'title_iptables_manager' => 'Iptables Manager',
+    'title_iptables_status' => 'Iptables Status',
+    'title_operation_status' => 'Operation Status',
+    'title_action_logs' => 'Action Logs',
+    'title_web_authentication' => 'Web Page Authentication',
+    'title_xss_protection' => 'XSS Protection',
+    'title_basic_setting' => 'Basic Setting',
+    'title_messenger' => 'Messenger',
+    'title_ip_manager' => 'IP Manager',
+    'title_exclusion_list' => 'Exclusion',
+    'title_login' => 'Login',
+    'title_title_site_wide' => 'Shieldon Firewall',
+    'title_circle_rule' => 'Rule Table',
+    'title_circle_filter' => 'Filter Table',
+    'title_circle_session' => 'Session Table',
+
+    // Reasons
     'reason_manual_ban' => 'Added manually by administrator.',
     'reason_is_search_engine' => 'Search engine bot.',
     'reason_is_google' => 'Google bot.',

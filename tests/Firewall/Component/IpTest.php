@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Component;
+namespace Shieldon\FirewallTest\Component;
 
 class IpTest extends \PHPUnit\Framework\TestCase
 {

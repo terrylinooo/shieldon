@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Driver;
+namespace Shieldon\FirewallTest\Driver;
 
 class MysqlDriverTest extends \PHPUnit\Framework\TestCase
 {

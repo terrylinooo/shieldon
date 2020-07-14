@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Utils;
+namespace Shieldon\FirewallTest\Utils;
 
 class ContainerTest extends \PHPUnit\Framework\TestCase
 {

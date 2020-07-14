@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Security;
+namespace Shieldon\FirewallTest\Security;
 
 class XssTest extends \PHPUnit\Framework\TestCase
 {

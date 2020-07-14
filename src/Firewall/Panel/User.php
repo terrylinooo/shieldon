@@ -106,6 +106,8 @@ class User extends BaseController
         $data['css'] = require $this->kernel::KERNEL_DIR . '/../../templates/frontend/css/default.php';
         unset($ui);
 
+        $data['title'] = __('panel', 'title_login', 'Login');
+
         return $this->respond(
             $this->loadView('frontend/login', $data)
         );

@@ -56,6 +56,8 @@ class Setting extends BaseController
             $this->saveConfig();
         }
 
+        $data['title'] = __('panel', 'title_basic_setting', 'Basic Setting');
+
         return $this->renderPage('panel/setting', $data);
     }
 
@@ -76,6 +78,8 @@ class Setting extends BaseController
             unset_superglobal('tab', 'post');
             $this->saveConfig();
         }
+
+        $data['title'] = __('panel', 'title_messenger', 'Messenger');
 
         return $this->renderPage('panel/messenger', $data);
     }
@@ -148,6 +152,8 @@ class Setting extends BaseController
 
         $data['ip_list'] = $this->getConfig('ip_manager');
 
+        $data['title'] = __('panel', 'title_ip_manager', 'IP Manager');
+
         return $this->renderPage('panel/ip_manager', $data);
     }
 
@@ -189,6 +195,8 @@ class Setting extends BaseController
         }
 
         $data['exclusion_list'] = $this->getConfig('excluded_urls');
+
+        $data['title'] = __('panel', 'title_exclusion_list', 'Exclusion');
 
         return $this->renderPage('panel/exclusion', $data);
     }

@@ -169,6 +169,8 @@ class Report extends BaseController
         $data['reason_mapping'] = $reasons;
         $data['type_mapping'] = $types;
 
+        $data['title'] = __('panel', 'title_operation_status', 'Operation Status');
+
         return $this->renderPage('panel/operation_status', $data);
     }
 
@@ -244,6 +246,8 @@ class Report extends BaseController
         $data['last_cached_time'] = $lastCachedTime;
 
         $data['page_url'] = $this->url('report/actionLog');
+
+        $data['title'] = __('panel', 'title_action_logs', 'Action Logs');
 
         return $this->renderPage('panel/action_log_' . $type, $data);
     }

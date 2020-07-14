@@ -219,6 +219,8 @@ class Iptables extends BaseController
         $data['ipCommand'] = $ipCommand;
         $data['type'] = $type;
 
+        $data['title'] = __('panel', 'title_iptables_manager', 'Iptables Manager') . ' (' . $type . ')';
+
         return $this->renderPage('panel/iptables_manager', $data);
     }
 
@@ -256,6 +258,8 @@ class Iptables extends BaseController
 
         $data['ipStatus'] = $ipStatus;
         $data['type'] = $type;
+
+        $data['title'] = __('panel', 'title_iptables_status', 'Iptables Status') . ' (' . $type . ')';
 
         return $this->renderPage('panel/iptables_status', $data);
     }

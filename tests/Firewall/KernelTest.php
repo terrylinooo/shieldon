@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall;
+namespace Shieldon\Firewall\Tests;
 
 class KernelTest extends \PHPUnit\Framework\TestCase
 {

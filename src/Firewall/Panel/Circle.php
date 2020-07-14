@@ -108,6 +108,9 @@ class Circle extends BaseController
         $data['reason_mapping'] = $reasons;
         $data['type_mapping'] = $types;
 
+        $data['title'] = __('panel', 'menu_data_circle', 'Data Circle') . ' - ';
+        $data['title'] .= __('panel', 'title_circle_rule', 'Rule Table');
+
         return $this->renderPage('panel/table_rules', $data);
     }
 
@@ -121,6 +124,9 @@ class Circle extends BaseController
     public function filter(): ResponseInterface
     {
         $data['ip_log_list'] = $this->kernel->driver->getAll('filter_log');
+
+        $data['title'] = __('panel', 'menu_data_circle', 'Data Circle') . ' - ';
+        $data['title'] .= __('panel', 'title_circle_filter', 'Filter Table');
 
         return $this->renderPage('panel/table_filter_logs', $data);
     }
@@ -162,6 +168,9 @@ class Circle extends BaseController
         $data['session_limit_period'] = $limitPeriod;
         $data['online_count'] = count($data['session_list']);
         $data['expires'] = (int) $data['session_limit_period'] * 60;
+
+        $data['title'] = __('panel', 'menu_data_circle', 'Data Circle') . ' - ';
+        $data['title'] .= __('panel', 'title_circle_session', 'Session Table');
 
         return $this->renderPage('panel/table_sessions', $data);
     }

@@ -83,6 +83,8 @@ class Security extends BaseController
 
         $data['authentication_list'] = $this->getConfig('www_authenticate');
 
+        $data['title'] = __('panel', 'title_web_authentication', 'Web Page Authentication');
+
         return $this->renderPage('panel/authentication', $data);
     }
 
@@ -145,6 +147,8 @@ class Security extends BaseController
         }
 
         $data['xss_protected_list'] = $this->getConfig('xss_protected_list');
+
+        $data['title'] = __('panel', 'title_xss_protection', 'XSS Protection');
 
         return $this->renderPage('panel/xss_protection', $data);
     }

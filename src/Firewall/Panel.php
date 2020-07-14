@@ -100,6 +100,8 @@ class Panel
 
     /**
      * Display pages.
+     * 
+     * @param string $basePath The base URL of the firewall panel.
      */
     public function entry($basePath): void
     {

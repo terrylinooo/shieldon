@@ -423,7 +423,7 @@ class Kernel
                 // Current visitor has been blocked. If he still attempts accessing the site, 
                 // then we can drop him into the permanent block list.
                 $attempts = $ipRule['attempts'];
-                $now      = time();
+                $now = time();
 
                 $logData['log_ip']     = $ipRule['log_ip'];
                 $logData['ip_resolve'] = $ipRule['ip_resolve'];

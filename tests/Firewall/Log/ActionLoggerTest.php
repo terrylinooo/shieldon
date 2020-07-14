@@ -10,7 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Log;
+namespace Shieldon\FirewallTest\Log;
+
 class ActionLoggerTest extends \PHPUnit\Framework\TestCase
 {
     public function test__construct()

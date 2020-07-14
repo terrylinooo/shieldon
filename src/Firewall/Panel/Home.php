@@ -237,6 +237,8 @@ class Home extends BaseController
 
         $data['messengers'] = $operatingMessengers;
 
+        $data['title'] = __('panel', 'title_overview', 'Overview');
+
         return $this->renderPage('panel/overview', $data);
     }
 }

@@ -22,6 +22,7 @@ use function Shieldon\Firewall\get_session;
 
 use function explode;
 use function filter_var;
+use function gethostname;
 use function is_numeric;
 use function json_encode;
 use function str_replace;
@@ -67,16 +68,18 @@ class Ajax extends BaseController
     {
         $getParams = get_request()->getQueryParams();
         $serverParams = get_request()->getServerParams();
-
+        $serverName = $serverParams['SERVER_NAME'] ?? gethostname();
         $moduleName = $getParams['module'] ?? '';
 
         $data = [];
         $data['status'] = 'error';
         $data['result']['moduleName'] = $moduleName;
 
-        $testMsgTitle = __('panel', 'test_msg_title', 'Testing Message from Host: ') . $serverParams['SERVER_ADDR'];
+        $testMsgTitle = __('panel', 'test_msg_title', 'Testing Message from Host: ') . $serverName;
         $testMsgBody = __('panel', 'test_msg_body', 'Messenger module "{0}" has been tested and confirmed successfully.', [$moduleName]);
     
+        // @codeCoverageIgnoreStart
+
         switch($moduleName) {
 
             case 'telegram':
@@ -288,7 +291,6 @@ class Ajax extends BaseController
         }
 
         $moduleName = str_replace('-', '_', $moduleName);
-
         $postKey = 'messengers__' . $moduleName . '__confirm_test';
 
         if ('success' === $data['status']) {
@@ -298,6 +300,8 @@ class Ajax extends BaseController
             $postParams[$postKey] = 'off';
             $this->saveConfig();
         }
+
+        // @codeCoverageIgnoreStart
 
         $data['result']['postKey'] = $postKey;
 
