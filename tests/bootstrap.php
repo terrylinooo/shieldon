@@ -170,7 +170,7 @@ new Helpers();
 
 function reload_request() 
 {
-    if (isset($_POST)) {
+    if (!empty($_POST)) {
         $_SERVER['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';
         $_SERVER['REQUEST_METHOD'] = 'POST';
     }
