@@ -54,6 +54,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
     public function testGetHeaders()
     {
         unset($_SERVER);
+        unset($_POST);
 
         $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
         $_SERVER['HTTP_TEST_VAR2'] = 'This is a testt string.';
