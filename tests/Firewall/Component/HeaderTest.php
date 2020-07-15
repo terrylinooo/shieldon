@@ -16,7 +16,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
     {
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         $headerComponent->setStrict(false);
 
         $reflection = new \ReflectionObject($headerComponent);
@@ -32,7 +32,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
         reload_request();
 
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         
         $headerComponent->setDeniedItem('test', 'test-var');
 
@@ -45,7 +45,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $result = $headerComponent->isDenied();
         $this->assertFalse($result);
 
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         $headerComponent->setStrict(true);
         $result = $headerComponent->isDenied();
         $this->assertTrue($result);
@@ -59,7 +59,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_TEST_VAR2'] = 'This is a testt string.';
         reload_request();
 
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         $results = $headerComponent->getHeaders();
 
         $this->assertSame($results, [
@@ -71,7 +71,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         unset($_SERVER['HTTP_TEST_VAR2']);
         reload_request();
 
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         $results = $headerComponent->getHeaders();
         $this->assertSame($results, []);
     }
@@ -80,7 +80,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
     {
         $list = ['gzip', 'robot'];
 
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         $headerComponent->setDeniedItems($list);
 
         $deniedList = $headerComponent->getDeniedItems();
@@ -93,7 +93,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
     {
         $string = 'gizp';
 
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         $headerComponent->setDeniedItem($string);
 
         $deniedList = $headerComponent->getDeniedItems();
@@ -107,7 +107,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDeniedList()
     {
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         $deniedList = $headerComponent->getDeniedItems();
 
         $this->assertSame($deniedList, []);
@@ -117,7 +117,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
     {
         $string = 'gzip';
 
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         $headerComponent->setDeniedItem($string);
 
         $deniedList = $headerComponent->getDeniedItems();
@@ -132,7 +132,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDenyStatusCode()
     {
-        $headerComponent = new Header();
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
         $statusCode = $headerComponent->getDenyStatusCode();
 
         $this->assertSame(83, $statusCode);

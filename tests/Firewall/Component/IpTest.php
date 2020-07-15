@@ -16,7 +16,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $ipComponent->setStrict(false);
 
         $reflection = new \ReflectionObject($ipComponent);
@@ -30,7 +30,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
     public function testCheck()
     {
         // Test 1. Check incorrect IP address.
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->check('128.232.234.256');
         $this->assertIsArray($t);
         $this->assertEquals(3 , count($t));
@@ -38,7 +38,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         unset($ipComponent, $t);
 
         // Test 2. Check denied list.
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $ipComponent->setDeniedItem('127.0.55.44');
         $t = $ipComponent->check('127.0.55.44');
 
@@ -48,7 +48,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         unset($ipComponent, $t);
 
         // Test 3. Check  allowed list.
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $ipComponent->setAllowedItem('39.9.197.241');
         $t = $ipComponent->check('39.9.197.241');
 
@@ -58,7 +58,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         unset($ipComponent, $t);
 
         // Test 4. Check IP is if in denied IP range.
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $ipComponent->setDeniedItem('127.0.55.0/16');
         $t = $ipComponent->check('127.0.33.1');
         $this->assertIsArray($t);
@@ -67,7 +67,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         unset($ipComponent, $t);
 
         // Test 5. Check IP is if in allowed IP range.
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $ipComponent->setDeniedItem('127.0.55.0/16');
         $ipComponent->setAllowedItem('127.0.55.0/16');
         $t = $ipComponent->check('127.0.33.1');
@@ -77,7 +77,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         unset($ipComponent, $t);
 
         // Test 6. Test denyAll
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $ipComponent->denyAll();
         $t = $ipComponent->check('127.0.33.1');
         $this->assertIsArray($t);
@@ -89,7 +89,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
     public function testInRange()
     {
         // Test 1. Check IP is if in D class subnet.
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('127.0.0.44', '127.0.0.0/24');
         $this->assertEquals(true , $t);
         $t = $ipComponent->inRange('127.0.250.44', '127.0.250.250/24');
@@ -102,7 +102,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true , $t);
 
         // Test 2. Check IP is if in C class subnet.
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('127.0.33.33', '127.0.0.0/16');
         $this->assertEquals(true , $t);
         $t = $ipComponent->inRange('127.0.33.33', '127.0.250.0/16');
@@ -111,7 +111,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(false , $t);
 
         // Test 3. Check IP is if in B class subnet.
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('127.33.250.33', '127.0.0.0/8');
         $this->assertEquals(true , $t);
         $t = $ipComponent->inRange('127.33.33.33', '127.0.0.0/8');
@@ -120,7 +120,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(false , $t);
 
         // Test 4. Check IPv6
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('2001:db8:ffff:ffff:ffff:ffff:ffff:ffff', '2001:db8::/32');
         $this->assertEquals(true , $t);
 
@@ -128,14 +128,14 @@ class IpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(false , $t);
 
         // Test 5. Check Invalid IP
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('127.0.333.33', '127.0.250.0/16');
         $this->assertEquals(false , $t);
     }
 
     public function testDecimalIpv6()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->decimalIpv6('FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
         $t = $ipComponent->_decimalIpv6('FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
         $this->assertSame('338288524927261046600406220626806860202', $t);
@@ -149,7 +149,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
     public function testSetAllowedList()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
         $ipComponent->setAllowedItems($s);
         $t = $ipComponent->getAllowedItems();
@@ -160,7 +160,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
     public function testSetAllowedIp()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $s = '127.33.33.33';
         $t = $ipComponent->setAllowedItem($s);
         if ($s === $t) {
@@ -170,14 +170,14 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
     public function testGetAllowedList()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->getAllowedItems();
         $this->assertIsArray($t);
     }
 
     public function testSetDeniedList()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
         $ipComponent->setDeniedItems($s);
         $t = $ipComponent->getDeniedItems();
@@ -188,7 +188,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
     public function testSetDeniedItem()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $s = '127.33.33.33';
         $t = $ipComponent->setDeniedItem($s);
         if ($s === $t) {
@@ -198,14 +198,14 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDeniedList()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->getDeniedItems();
         $this->assertIsArray($t);
     }
 
     public function testRemoveItem()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $s = ['127.33.33.33', '127.33.33.34', '127.33.33.35'];
         $ipComponent->setAllowedItems($s);
         $ipComponent->removeAllowedItem('127.33.33.33');
@@ -223,7 +223,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
     public function testDenyAll()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $ipComponent->denyAll();
 
         $reflection = new \ReflectionObject($ipComponent);
@@ -236,7 +236,7 @@ class IpTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDenyStatusCode()
     {
-        $ipComponent = new Ip();
+        $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $statusCode = $ipComponent->getDenyStatusCode();
 
         $this->assertSame(81, $statusCode);

@@ -30,7 +30,7 @@ class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
             ]
         ];
 
-        $captchaInstance = new ImageCaptcha($config);
+        $captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha($config);
 
         $reflection = new \ReflectionObject($captchaInstance);
         $p = $reflection->getProperty('properties');
@@ -49,7 +49,7 @@ class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
             ]
         ];
 
-        $captchaInstance = new ImageCaptcha($config);
+        $captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha($config);
 
         $reflection = new \ReflectionObject($captchaInstance);
         $p = $reflection->getProperty('properties');
@@ -67,7 +67,7 @@ class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
         $_POST['shieldon_image_captcha'] = '';
         reload_request();
 
-        $captchaInstance = new ImageCaptcha();
+        $captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha();
         $result = $captchaInstance->response();
 
         $this->assertFalse($result);
@@ -85,7 +85,7 @@ class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
             'colors' => ''
         ];
 
-        $captchaInstance = new ImageCaptcha($config);
+        $captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha($config);
 
         $result = $captchaInstance->form();
         $this->assertStringContainsString('base64', $result);

@@ -18,7 +18,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
     {
         try {
             $pdoInstance = new \PDO('sqlite::memory:');
-            $db = new SqliteDriver($pdoInstance);
+            $db = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
         } catch(\PDOException $e) {
             $this->assertTrue(false);
         }
@@ -33,7 +33,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
     {
         $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $db = new SqliteDriver($pdoInstance);
+        $db = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
 
         try {
             $class = new \ReflectionObject($db);
@@ -50,7 +50,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
     {
         $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-        $db = new SqliteDriver($pdoInstance);
+        $db = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
 
         try {
             $class = new \ReflectionObject($db);

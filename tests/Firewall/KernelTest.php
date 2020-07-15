@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Tests;
 
+use function Shieldon\Firewall\get_session;
+
 class KernelTest extends \PHPUnit\Framework\TestCase
 {
     public function test__construct()

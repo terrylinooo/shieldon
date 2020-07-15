@@ -14,5 +14,13 @@ namespace Shieldon\FirewallTest\Panel;
 
 class HomeTest extends \PHPUnit\Framework\TestCase
 {
+    use RouteTestTrait;
 
+    public function testOverview()
+    {
+        $this->assertPageOutputContainsString(
+            'firewall/panel/home/overview',
+            'Overview'
+        );
+    }
 }

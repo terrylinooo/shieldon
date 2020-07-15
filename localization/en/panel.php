@@ -82,7 +82,7 @@ return [
     'error_invalid_json_file' => 'Invalid JSON file.',
     'error_invalid_config_file' => 'Invalid Shieldon configuration file.',
     'success_settings_saved' => 'Settings saved',
-    'success_json_imported' => 'JSON imported successfully.',
+    'success_json_imported' => 'JSON file imported successfully.',
 
     // Others.
     'field_not_visible' => 'Cannot view this field in demo mode.',

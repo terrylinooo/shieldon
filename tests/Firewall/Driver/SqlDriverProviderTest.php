@@ -18,7 +18,7 @@ class SqlDriverProviderTest extends \PHPUnit\Framework\TestCase
     {
         try {
             $pdoInstance = new \PDO('sqlite::memory:');
-            $db = new SqliteDriver($pdoInstance, true);
+            $db = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance, true);
         } catch(\PDOException $e) {
             $this->assertTrue(false);
         }

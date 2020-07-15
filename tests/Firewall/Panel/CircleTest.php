@@ -14,5 +14,52 @@ namespace Shieldon\FirewallTest\Panel;
 
 class CircleTest extends \PHPUnit\Framework\TestCase
 {
+    use RouteTestTrait;
 
+    public function testFilterTable()
+    {
+        $this->assertPageOutputContainsString(
+            'firewall/panel/circle/filter',
+            'Data Circle - Filter Table'
+        );
+    }
+
+    public function testRuleTableFormSubmit()
+    {
+        $_POST['ip'] = '127.0.0.127';
+        $_POST['action'] = 'permanently_ban';
+        reload_request();
+
+        $this->assertPageOutputContainsString(
+            'firewall/panel/circle/rule',
+            'Data Circle - Rule Table'
+        );
+
+        $this->setIp('127.0.0.127');
+        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $response = $firewall->run();
+        $this->assertSame($response->getStatusCode(), 400);
+
+        $_POST['ip'] = '127.0.0.127';
+        $_POST['action'] = 'remove';
+        reload_request();
+
+        $this->assertPageOutputContainsString(
+            'firewall/panel/circle/rule',
+            'Data Circle - Rule Table'
+        );
+
+        $this->setIp('127.0.0.127');
+        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $response = $firewall->run();
+        $this->assertSame($response->getStatusCode(), 200);
+    }
+
+    public function testSessionTable()
+    {
+        $this->assertPageOutputContainsString(
+            'firewall/panel/circle/session',
+            'Data Circle - Session Table'
+        );
+    }
 }

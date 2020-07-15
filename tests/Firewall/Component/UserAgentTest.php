@@ -16,7 +16,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
     {
-        $userAgentComponent = new UserAgent();
+        $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
         $userAgentComponent->setStrict(false);
 
         $reflection = new \ReflectionObject($userAgentComponent);
@@ -31,7 +31,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
     {
         $list = ['google.com', 'yahoo.com'];
 
-        $userAgentComponent = new UserAgent();
+        $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
         $userAgentComponent->setDeniedItems($list);
 
         $deniedList = $userAgentComponent->getDeniedItems();
@@ -43,7 +43,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
     {
         $string = 'baidu.com';
 
-        $userAgentComponent = new UserAgent();
+        $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
         $userAgentComponent->setDeniedItem($string);
 
         $deniedList = $userAgentComponent->getDeniedItems();
@@ -57,7 +57,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDeniedList()
     {
-        $userAgentComponent = new UserAgent();
+        $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
         $deniedList = $userAgentComponent->getDeniedItems();
 
         $this->assertSame(array_values($deniedList), [
@@ -75,7 +75,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoveItem()
     {
-        $userAgentComponent = new UserAgent();
+        $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
         $userAgentComponent->removeDeniedItem('0');
 
         $deniedList = $userAgentComponent->getDeniedItems();
@@ -92,7 +92,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)';
         reload_request();
 
-        $userAgentComponent = new UserAgent();
+        $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
 
         $result = $userAgentComponent->isDenied();
         $this->assertTrue($result);
@@ -100,7 +100,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_USER_AGENT'] = '';
         reload_request();
 
-        $userAgentComponent = new UserAgent();
+        $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
         $userAgentComponent->setStrict(true);
         $result = $userAgentComponent->isDenied();
         $this->assertTrue($result);
@@ -118,7 +118,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDenyStatusCode()
     {
-        $userAgentComponent = new UserAgent();
+        $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
         $statusCode = $userAgentComponent->getDenyStatusCode();
 
         $this->assertSame(84, $statusCode);

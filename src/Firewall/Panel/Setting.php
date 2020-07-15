@@ -14,6 +14,7 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
+use Shieldon\Psr17\StreamFactory;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
@@ -214,12 +215,12 @@ class Setting extends BaseController
         $stream->write(json_encode($this->configuration));
         $stream->rewind();
 
-        $response = $response->withdHeader('Content-Type', 'text/plain');
-        $response = $response->withdHeader('Content-Disposition', 'attachment');
-        $response = $response->withdAddedHeader('Content-Disposition', 'filename=shieldon-' . date('YmdHis') . '.json');
-        $response = $response->withdHeader('Expires', '0');
-        $response = $response->withdHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
-        $response = $response->withdHeader('Pragma', 'public');
+        $response = $response->withHeader('Content-Type', 'text/plain');
+        $response = $response->withHeader('Content-Disposition', 'attachment');
+        $response = $response->withAddedHeader('Content-Disposition', 'filename=shieldon-' . date('YmdHis') . '.json');
+        $response = $response->withHeader('Expires', '0');
+        $response = $response->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+        $response = $response->withHeader('Pragma', 'public');
         $response = $response->withBody($stream);
 
         return $response;
@@ -235,10 +236,8 @@ class Setting extends BaseController
         $request = get_request();
         $response = get_response();
 
-        $importedFileContent = $request->
-            getUploadedFiles('json_file')->
-            getStream()->
-            getContents();
+        $uploadedFileArr = $request->getUploadedFiles();
+        $importedFileContent = $uploadedFileArr['json_file']->getStream()->getContents();
 
         if (!empty($importedFileContent)) {
             $jsonData = json_decode($importedFileContent, true);

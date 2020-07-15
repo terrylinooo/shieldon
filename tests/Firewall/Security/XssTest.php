@@ -16,7 +16,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 {
     public function testClean()
     {
-        $xssInstance = new Xss();
+        $xssInstance = new \Shieldon\Firewall\Security\Xss();
 
         $_POST['username'] = 'javascript:/*--></title></style></textarea></script></xmp><svg/onload=\'+/"/+/onmouseover=1/+/[*/[]/+alert(1)//\'>';
 
@@ -39,7 +39,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
     public function testBypassList()
     {
-        $xssInstance = new Xss();
+        $xssInstance = new \Shieldon\Firewall\Security\Xss();
 
         // You can add as many bybass string as you want for testing.
         $bypassList = file(__DIR__ . '/../../XssBypass/test_list.txt');
@@ -78,7 +78,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
         echo '---------------------------------------------------------' . "\n";
         echo "\n";
 
-        $xssInstance = new Xss();
+        $xssInstance = new \Shieldon\Firewall\Security\Xss();
         $fileFiltered = $xssInstance->clean($file, true);
 
         $this->assertSame($fileFiltered['Software'], '">[removed]alert&#40;123&#41;[removed]<"');
@@ -94,7 +94,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
     public function testImage_part2()
     {
-        $xssInstance = new Xss();
+        $xssInstance = new \Shieldon\Firewall\Security\Xss();
 
         $image = __DIR__ . '/../../XssBypass/test_sample_3.jpg';
         $result = $xssInstance->checkImage($image);
@@ -114,7 +114,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
     public function testEntityDecode()
     {
-        $xssInstance = new Xss();
+        $xssInstance = new \Shieldon\Firewall\Security\Xss();
 
         $string = 'I will "walk" the <b>dog</b> now. &lpar;ok)';
 
@@ -144,7 +144,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
     public function testSanitizeFilename()
     {
-        $xssInstance = new Xss();
+        $xssInstance = new \Shieldon\Firewall\Security\Xss();
 
         $filename = $xssInstance->sanitizeFilename('something<?php exit;?>.jpg');
 

@@ -31,7 +31,7 @@ class MysqlDriverTest extends \PHPUnit\Framework\TestCase
         );
 
         try {
-            $db = new MysqlDriver($pdoInstance);
+            $db = new \Shieldon\Firewall\Driver\MysqlDriver($pdoInstance);
         } catch(\PDOException $e) {
             $this->assertTrue(false);
         }

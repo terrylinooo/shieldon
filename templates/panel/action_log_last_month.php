@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 defined('SHIELDON_VIEW') || die('Illegal access');
 
-use function number_format;
-use function date_default_timezone_get;
 use function Shieldon\Firewall\_e;
 use function Shieldon\Firewall\mask_string;
 

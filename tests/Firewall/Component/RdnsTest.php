@@ -16,7 +16,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
     {
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setStrict(false);
 
         $reflection = new \ReflectionObject($rdnsComponent);
@@ -31,7 +31,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
     {
         $list = ['.example.com', '.hello.com'];
 
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setDeniedItems($list);
 
         $deniedList = $rdnsComponent->getDeniedItems();
@@ -44,7 +44,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
     {
         $string = '.baidu.com';
 
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setDeniedItem($string);
 
         $deniedList = $rdnsComponent->getDeniedItems();
@@ -58,7 +58,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDeniedList()
     {
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $deniedList = $rdnsComponent->getDeniedItems();
 
         $this->assertSame($deniedList, [
@@ -68,7 +68,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoveItem()
     {
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setDeniedItem('.yahoo.com', 'yahoo');
 
         $deniedList = $rdnsComponent->getDeniedItems();
@@ -88,18 +88,18 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
 
     public function testIsDenied()
     {
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setRdns('.webcrawler.link');
         $result = $rdnsComponent->isDenied();
         $this->assertTrue($result);
 
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setStrict(true);
         $rdnsComponent->setRdns('');
         $result = $rdnsComponent->isDenied();
         $this->assertTrue($result);
 
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setStrict(true);
         $rdnsComponent->setRdns('crawl-66-249-66-1.googlebot.com');
         $rdnsComponent->setIp('66.249.66.1');
@@ -107,7 +107,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($result);
 
         // IP address and its RDNS is not matched.
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setStrict(true);
         $rdnsComponent->setRdns('crawl-66-249-66-1.googlebot.com');
         $rdnsComponent->setIp('66.249.66.2');
@@ -118,7 +118,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
     public function testIsDenied_2()
     {
         // IP address and its RDNS is the same. We don't allow it.
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setStrict(true);
         $rdnsComponent->setRdns('66.249.66.2');
         $rdnsComponent->setIp('66.249.66.2');
@@ -129,7 +129,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
     public function testIsDenied_3()
     {
         // RDNS is not a FQDN.
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $rdnsComponent->setStrict(true);
         $rdnsComponent->setRdns('localhost');
         $rdnsComponent->setIp('66.249.66.2');
@@ -139,7 +139,7 @@ class RdnsTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDenyStatusCode()
     {
-        $rdnsComponent = new Rdns();
+        $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $statusCode = $rdnsComponent->getDenyStatusCode();
 
         $this->assertSame(82, $statusCode);

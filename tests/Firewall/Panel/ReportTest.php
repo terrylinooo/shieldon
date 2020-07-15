@@ -14,5 +14,21 @@ namespace Shieldon\FirewallTest\Panel;
 
 class ReportTest extends \PHPUnit\Framework\TestCase
 {
+    use RouteTestTrait;
 
+    public function testActionLog()
+    {
+        $this->assertPageOutputContainsString(
+            'firewall/panel/report/actionLog',
+            'Action Logs'
+        );
+    }
+
+    public function testOperationStatus()
+    {
+        $this->assertPageOutputContainsString(
+            'firewall/panel/report/operation',
+            'Operation Status'
+        );
+    }
 }

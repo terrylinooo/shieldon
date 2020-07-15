@@ -108,6 +108,8 @@ class Panel
         $request = get_request();
         $response = get_response();
 
+        echo $request->getHeaderLine('Content-Type');
+
         $path = trim($request->getUri()->getPath(), '/');
         $base = trim($basePath, '/');
         $urlSegment = trim(str_replace($base, '', $path), '/');

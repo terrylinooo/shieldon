@@ -17,7 +17,7 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
     public function test__construct()
     {
         try {
-            $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
+            $logger = new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
             $info = $logger->getCurrentLoggerInfo();
 
@@ -27,7 +27,7 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
             $this->assertTrue(false);
         }
 
-        if ($logger instanceof ActionLogger) {
+        if ($logger instanceof \Shieldon\Firewall\Log\ActionLogger) {
             $this->assertTrue(true);
         }
 
@@ -37,7 +37,7 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
     public function testAdd() 
     {
         $kernel = new \Shieldon\Firewall\Kernel();
-        $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon/test_logs', '19890604');
+        $logger = new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon/test_logs', '19890604');
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = md5((string) time());
@@ -70,7 +70,7 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
 
     public function testCheckDirectory()
     {
-        $logger = new ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $logger = new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
         $reflection = new \ReflectionObject($logger);
         $methodCreateDirectory = $reflection->getMethod('checkDirectory');

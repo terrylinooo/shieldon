@@ -170,6 +170,11 @@ new Helpers();
 
 function reload_request() 
 {
+    if (isset($_POST)) {
+        $_SERVER['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+    }
+
     Container::set('request', HttpFactory::createRequest(), true);
     Container::set('response', HttpFactory::createResponse(), true);
     Container::set('session', HttpFactory::createSession(), true);

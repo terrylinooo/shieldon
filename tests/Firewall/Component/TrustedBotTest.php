@@ -16,7 +16,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetStrict()
     {
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setStrict(false);
 
         $reflection = new \ReflectionObject($trustedBotComponent);
@@ -44,7 +44,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testIsDenied()
     {
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $result = $trustedBotComponent->isDenied();
 
         $this->assertFalse($result);
@@ -56,11 +56,11 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
         reload_request();
 
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $result = $trustedBotComponent->isAllowed();
         $this->assertFalse($result);
 
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setIp('66.249.66.1', true);
         $result = $trustedBotComponent->isAllowed();
         $this->assertTrue($result);
@@ -78,7 +78,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testRemoveItem()
     {
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
 
         $trustedBotComponent->removeAllowedItem('google');
         $list = $trustedBotComponent->getAllowedItems();
@@ -94,7 +94,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testAddTrustedBot()
     {
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
 
         $trustedBotComponent->addTrustedBot('acer', 'acer', '.acer-euro.com');
         $list = $trustedBotComponent->getAllowedItems();
@@ -107,7 +107,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testAddList()
     {
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setAllowedItems([
             ['userAgent' => 'hk', 'rdns' => 'free'],
             ['userAgent' => 'tw', 'rdns' => 'free'],
@@ -129,7 +129,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testIsGoogle()
     {
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setIp('66.249.66.1', true);
 
         if ($trustedBotComponent->isGoogle()) {
@@ -149,7 +149,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testIsYahoo()
     {
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setIp('8.12.144.1', true);
         if ($trustedBotComponent->isYahoo()) {
             $this->assertTrue(true);
@@ -168,7 +168,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testIsBing()
     {
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setIp('40.77.169.1', true);
 
         if ($trustedBotComponent->isBing()) {
@@ -195,7 +195,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
         reload_request();
     
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setIp('111.111.111.111', false);
         $trustedBotComponent->setRdns('crawl-66-249-66-1.googlebot.com.fakedomain.com');
 
@@ -217,7 +217,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
         reload_request();
     
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setIp('111.111.111.111', false);
         $trustedBotComponent->setRdns('crawl-66-249-66-1.googlebot.com.fakedomain.com');
 
@@ -246,7 +246,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
         reload_request();
     
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setIp('127.0.0.1', false);
         $trustedBotComponent->setRdns('localhost');
 
@@ -268,7 +268,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDenyStatusCode()
     {
-        $trustedBotComponent = new TrustedBot();
+        $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $statusCode = $trustedBotComponent->getDenyStatusCode();
 
         $this->assertSame(85, $statusCode);

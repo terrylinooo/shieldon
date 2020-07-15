@@ -44,7 +44,7 @@ class Foundation extends CaptchaProvider
     public function response(): bool
     {
         $postParams = get_request()->getParsedBody();
-
+ 
         if (empty($postParams['shieldon_captcha'])) {
             return false;
         }

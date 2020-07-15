@@ -17,7 +17,7 @@ class ActionLogParsedCacheTest extends \PHPUnit\Framework\TestCase
     public function test__construct()
     {
         try {
-            $logger = new ActionLogParsedCache(BOOTSTRAP_DIR . '/../tmp/shieldon');
+            $logger = new \Shieldon\Firewall\Log\ActionLogParsedCache(BOOTSTRAP_DIR . '/../tmp/shieldon');
         } catch(\Exception $e) {
             $this->assertTrue(false);
         }
@@ -25,7 +25,7 @@ class ActionLogParsedCacheTest extends \PHPUnit\Framework\TestCase
 
     public function testSaveAndGet()
     {
-        $logger = new ActionLogParsedCache(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $logger = new \Shieldon\Firewall\Log\ActionLogParsedCache(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
         foreach(['yesterday', 'last_month', 'this_month', 'past_seven_hours', 'today'] as $period) {
             $data['foo'] = 'bar';

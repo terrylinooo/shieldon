@@ -16,7 +16,7 @@ class CsrfTest extends \PHPUnit\Framework\TestCase
 {
     public function test__construct()
     {
-        $captchaInstance = new Csrf([
+        $captchaInstance = new \Shieldon\Firewall\Captcha\Csrf([
             'name' => 'pool',
             'value' => '209b131bfec1c01c0f84d858bbf0ff47',
         ]);
@@ -36,7 +36,7 @@ class CsrfTest extends \PHPUnit\Framework\TestCase
 
     public function testResponse()
     {
-        $captchaInstance = new Csrf([
+        $captchaInstance = new \Shieldon\Firewall\Captcha\Csrf([
             'name' => 'pool',
             'value' => '209b131bfec1c01c0f84d858bbf0ff47',
         ]);
@@ -50,7 +50,7 @@ class CsrfTest extends \PHPUnit\Framework\TestCase
 
     public function testForm()
     {
-        $captchaInstance = new Csrf([
+        $captchaInstance = new \Shieldon\Firewall\Captcha\Csrf([
             'name' => 'pool',
             'value' => '209b131bfec1c01c0f84d858bbf0ff47',
         ]);

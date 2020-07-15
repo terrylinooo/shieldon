@@ -17,6 +17,7 @@ use Shieldon\Firewall\Firewall;
 use Shieldon\Firewall\FirewallTrait;
 use Shieldon\Firewall\Panel\DemoTrait;
 use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Log\ActionLogParser;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;

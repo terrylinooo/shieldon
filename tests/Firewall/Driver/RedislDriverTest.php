@@ -20,7 +20,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
         $redisInstance->connect('127.0.0.1', 6379); 
 
         try {
-            $redis = new RedisDriver($redisInstance);
+            $redis = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
         } catch(\Exception $e) {
             $this->assertTrue(false);
         }
@@ -34,7 +34,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
     {
         $redisInstance = new \Redis();
         $redisInstance->connect('127.0.0.1', 6379); 
-        $redisDriver = new RedisDriver($redisInstance);
+        $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $redisDriver->rebuild();
 
@@ -62,7 +62,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
     {
         $redisInstance = new \Redis();
         $redisInstance->connect('127.0.0.1', 6379); 
-        $redisDriver = new RedisDriver($redisInstance);
+        $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $redisDriver->rebuild();
 
@@ -83,7 +83,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
     {
         $redisInstance = new \Redis();
         $redisInstance->connect('127.0.0.1', 6379); 
-        $redisDriver = new RedisDriver($redisInstance);
+        $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $redisDriver->rebuild();
 
@@ -129,7 +129,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
     {
         $redisInstance = new \Redis();
         $redisInstance->connect('127.0.0.1', 6379); 
-        $redisDriver = new RedisDriver($redisInstance);
+        $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $redisDriver->rebuild();
 
@@ -145,7 +145,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
     {
         $redisInstance = new \Redis();
         $redisInstance->connect('127.0.0.1', 6379); 
-        $redisDriver = new RedisDriver($redisInstance);
+        $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $reflection = new \ReflectionObject($redisDriver);
         $methodGetKeyName = $reflection->getMethod('getKeyName');
@@ -159,7 +159,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
     {
         $redisInstance = new \Redis();
         $redisInstance->connect('127.0.0.1', 6379); 
-        $redisDriver = new RedisDriver($redisInstance);
+        $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $reflection = new \ReflectionObject($redisDriver);
         $methodGetNamespace = $reflection->getMethod('getNamespace');

@@ -14,5 +14,21 @@ namespace Shieldon\FirewallTest\Panel;
 
 class SecurityTest extends \PHPUnit\Framework\TestCase
 {
+    use RouteTestTrait;
 
+    public function testWebAuthentication()
+    {
+        $this->assertPageOutputContainsString(
+            'firewall/panel/security/authentication',
+            'Web Page Authentication'
+        );
+    }
+
+    public function testXssProtection()
+    {
+        $this->assertPageOutputContainsString(
+            'firewall/panel/security/xssProtection',
+            'XSS Protection'
+        );
+    }
 }

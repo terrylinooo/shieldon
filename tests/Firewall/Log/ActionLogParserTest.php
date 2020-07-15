@@ -15,12 +15,12 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
     public function test__construct()
     {
         try {
-            $logger = new ActionLogParser(BOOTSTRAP_DIR . '/../tmp/shieldon');
+            $logger = new \Shieldon\Firewall\Log\ActionLogParser(BOOTSTRAP_DIR . '/../tmp/shieldon');
         } catch(\Exception $e) {
             $this->assertTrue(false);
         }
 
-        if ($logger instanceof ActionLogParser) {
+        if ($logger instanceof \Shieldon\Firewall\Log\ActionLogParser) {
             $this->assertTrue(true);
         }
     }
@@ -58,13 +58,13 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
 
         $testLogDir = BOOTSTRAP_DIR . '/../tmp/shieldon/log';
 
-        $logger = new ActionLogger($testLogDir);
+        $logger = new \Shieldon\Firewall\Log\ActionLogger($testLogDir);
  
         // Remove logs.
         $logger->purgeLogs();
 
         // Rebuild log dictory.
-        $logger = new ActionLogger($testLogDir, date('Ymd', $this->mockTimesamp(1, $type)));
+        $logger = new \Shieldon\Firewall\Log\ActionLogger($testLogDir, date('Ymd', $this->mockTimesamp(1, $type)));
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
@@ -185,7 +185,7 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
         /**
          * Let's start parsing logs.
          */
-        $parser = new ActionLogParser($testLogDir);
+        $parser = new \Shieldon\Firewall\Log\ActionLogParser($testLogDir);
 
         $ipData = $parser->getIpData();
         $this->assertSame($ipData, []);
@@ -277,7 +277,7 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
 
     function testGetParsedIpDataEmpty()
     {
-        $parser = new ActionLogParser(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $parser = new \Shieldon\Firewall\Log\ActionLogParser(BOOTSTRAP_DIR . '/../tmp/shieldon');
         $ipData = $parser->getParsedIpData();
 
         $this->assertSame($ipData, []);
@@ -285,7 +285,7 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
 
     function testGetPeriodDataEmpty()
     {
-        $parser = new ActionLogParser(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $parser = new \Shieldon\Firewall\Log\ActionLogParser(BOOTSTRAP_DIR . '/../tmp/shieldon');
         $periodData = $parser->getPeriodData();
 
         $this->assertSame($periodData, []);
@@ -342,7 +342,7 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
     public function testGetDirectory()
     {
         $testLogDir = BOOTSTRAP_DIR . '/../tmp/shieldon/log';
-        $parser = new ActionLogParser($testLogDir);
+        $parser = new \Shieldon\Firewall\Log\ActionLogParser($testLogDir);
 
         $dir = $parser->getDirectory();
 
