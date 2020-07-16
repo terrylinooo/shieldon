@@ -240,20 +240,6 @@ class Kernel
     protected $messenger = [];
 
     /**
-     * If the IP is in the rule table, the rule status will change.
-     *
-     * @var array
-     */
-    protected $ruleStatus = [
-
-        // IP is marked as allow in the rule table.
-        'allow' => false,
-
-        // IP is marked as deny in the rule table.
-        'deny' => false,
-    ];
-
-    /**
      * Is to limit traffic?
      *
      * @var array
@@ -397,6 +383,249 @@ class Kernel
     }
 
     /**
+     * Initialize components.
+     *
+     * @return void
+     */
+    private function initComponents()
+    {
+        foreach (array_keys($this->component) as $name) {
+            $this->component[$name]->setIp($this->ip);
+            $this->component[$name]->setRdns($this->rdns);
+
+            // Apply global strict mode to all components by `strictMode()` if nesscessary.
+            if (isset($this->strictMode)) {
+                $this->component[$name]->setStrict($this->strictMode);
+            }
+        }
+    }
+
+    /**
+     * Look up the rule table.
+     *
+     * If a specific IP address doesn't exist, return false. 
+     * Otherwise, return true.
+     *
+     * @return bool
+     */
+    private function isRuleTable()
+    {
+        $ipRule = $this->driver->get($this->ip, 'rule');
+
+        if (empty($ipRule)) {
+            return false;
+        }
+
+        $ruleType = (int) $ipRule['type'];
+
+        // Apply the status code.
+        $this->result = $ruleType;
+
+        if ($ruleType === self::ACTION_ALLOW) {
+            return true;
+        }
+
+        // Current visitor has been blocked. If he still attempts accessing the site, 
+        // then we can drop him into the permanent block list.
+        $attempts = $ipRule['attempts'] ?? 0;
+        $now = time();
+        $logData = [];
+
+        $logData['log_ip']     = $ipRule['log_ip'];
+        $logData['ip_resolve'] = $ipRule['ip_resolve'];
+        $logData['time']       = $now;
+        $logData['type']       = $ipRule['type'];
+        $logData['reason']     = $ipRule['reason'];
+        $logData['attempts']   = $attempts;
+
+        // @since 0.2.0
+        $attemptPeriod = $this->properties['record_attempt_detection_period'];
+        $attemptReset  = $this->properties['reset_attempt_counter'];
+
+        $lastTimeDiff = $now - $ipRule['time'];
+
+        if ($lastTimeDiff <= $attemptPeriod) {
+            $logData['attempts'] = ++$attempts;
+        }
+
+        if ($lastTimeDiff > $attemptReset) {
+            $logData['attempts'] = 0;
+        }
+
+        $isMessengerTriggered = false;
+        $isUpdatRuleTable = false;
+
+        $handleType = 0;
+
+        if ($this->properties['deny_attempt_enable']['data_circle']) {
+
+            if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
+
+                $isUpdatRuleTable = true;
+
+                $buffer = $this->properties['deny_attempt_buffer']['data_circle'];
+
+                if ($attempts >= $buffer) {
+
+                    if ($this->properties['deny_attempt_notify']['data_circle']) {
+                        $isMessengerTriggered = true;
+                    }
+
+                    $logData['type'] = self::ACTION_DENY;
+
+                    // Reset this value for next checking process - iptables.
+                    $logData['attempts'] = 0;
+                    $handleType = 1;
+                }
+            }
+        }
+
+        if ($this->properties['deny_attempt_enable']['system_firewall']) {
+            
+            if ($ruleType === self::ACTION_DENY) {
+
+                $isUpdatRuleTable = true;
+
+                // For the requests that are already banned, but they are still attempting access, that means 
+                // that they are programmably accessing your website. Consider put them in the system-layer fireall
+                // such as IPTABLE.
+                $bufferIptable = $this->properties['deny_attempt_buffer']['system_firewall'];
+
+                if ($attempts >= $bufferIptable) {
+
+                    if ($this->properties['deny_attempt_notify']['system_firewall']) {
+                        $isMessengerTriggered = true;
+                    }
+
+                    $folder = rtrim($this->properties['iptables_watching_folder'], '/');
+
+                    if (file_exists($folder) && is_writable($folder)) {
+                        $filePath = $folder . '/iptables_queue.log';
+
+                        // command, ipv4/6, ip, subnet, port, protocol, action
+                        // add,4,127.0.0.1,null,all,all,drop  (example)
+                        // add,4,127.0.0.1,null,80,tcp,drop   (example)
+                        $command = 'add,4,' . $this->ip . ',null,all,all,deny';
+
+                        if (filter_var($this->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                            $command = 'add,6,' . $this->ip . ',null,all,allow';
+                        }
+
+                        // Add this IP address to itables_queue.log
+                        // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
+                        file_put_contents($filePath, $command . "\n", FILE_APPEND | LOCK_EX);
+
+                        $logData['attempts'] = 0;
+                        $handleType = 2;
+                    }
+                }
+            }
+        }
+
+        // We only update data when `deny_attempt_enable` is enable.
+        // Because we want to get the last visited time and attempt counter.
+        // Otherwise we don't update it everytime to avoid wasting CPU resource.
+        if ($isUpdatRuleTable) {
+            $this->driver->save($this->ip, $logData, 'rule');
+        }
+
+        /**
+         * Notify this event to messenger.
+         */
+        if ($isMessengerTriggered) {
+
+            // The data strings that will be appended to message body.
+            $prepareMessageData = [
+                __('core', 'messenger_text_ip')       => $logData['log_ip'],
+                __('core', 'messenger_text_rdns')     => $logData['ip_resolve'],
+                __('core', 'messenger_text_reason')   => __('core', 'messenger_text_reason_code_' . $logData['reason']),
+                __('core', 'messenger_text_handle')   => __('core', 'messenger_text_handle_type_' . $handleType),
+                __('core', 'messenger_text_system')   => '',
+                __('core', 'messenger_text_cpu')      => get_cpu_usage(),
+                __('core', 'messenger_text_memory')   => get_memory_usage(),
+                __('core', 'messenger_text_time')     => date('Y-m-d H:i:s', $logData['time']),
+                __('core', 'messenger_text_timezone') => date_default_timezone_get(),
+            ];
+
+            $message = __('core', 'messenger_notification_subject', 'Notification for {0}', [$this->ip]) . "\n\n";
+
+            foreach ($prepareMessageData as $key => $value) {
+                $message .= $key . ': ' . $value . "\n";
+            }
+
+            $this->msgBody = $message;
+        }
+
+        return true;
+    }
+
+    private function isTrustedBot()
+    {
+        if ($this->getComponent('TrustedBot')) {
+
+            // We want to put all the allowed robot into the rule list, so that the checking of IP's resolved hostname 
+            // is no more needed for that IP.
+            if ($this->getComponent('TrustedBot')->isAllowed()) {
+
+                if ($this->getComponent('TrustedBot')->isGoogle()) {
+                    // Add current IP into allowed list, because it is from real Google domain.
+                    $this->action(
+                        self::ACTION_ALLOW,
+                        self::REASON_IS_GOOGLE
+                    );
+
+                } elseif ($this->getComponent('TrustedBot')->isBing()) {
+                    // Add current IP into allowed list, because it is from real Bing domain.
+                    $this->action(
+                        self::ACTION_ALLOW,
+                        self::REASON_IS_BING
+                    );
+
+                } elseif ($this->getComponent('TrustedBot')->isYahoo()) {
+                    // Add current IP into allowed list, because it is from real Yahoo domain.
+                    $this->action(
+                        self::ACTION_ALLOW,
+                        self::REASON_IS_YAHOO
+                    );
+
+                } else {
+                    // Add current IP into allowed list, because you trust it.
+                    // You have already defined it in the settings.
+                    $this->action(
+                        self::ACTION_ALLOW,
+                        self::REASON_IS_SEARCH_ENGINE
+                    );
+                }
+                // Allowed robots not join to our traffic handler.
+                $this->result = self::RESPONSE_ALLOW;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check whether the IP is fake search engine or not.
+     * The method "isTrustedBot()" must be executed before this method.
+     *
+     * @return bool
+     */
+    private function isFakeRobot(): bool
+    {
+        if ($this->getComponent('TrustedBot')) {
+            if ($this->getComponent('TrustedBot')->isFakeRobot()) {
+                $this->action(
+                    self::ACTION_DENY,
+                    self::REASON_COMPONENT_TRUSTED_ROBOT
+                );
+                $this->result = self::RESPONSE_DENY;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Run, run, run!
      *
      * Check the rule tables first, if an IP address has been listed.
@@ -408,15 +637,7 @@ class Kernel
     {
         $this->driver->init($this->autoCreateDatabase);
 
-        foreach (array_keys($this->component) as $name) {
-            $this->component[$name]->setIp($this->ip);
-            $this->component[$name]->setRdns($this->rdns);
-
-            // Apply global strict mode to all components by `strictMode()` if nesscessary.
-            if (isset($this->strictMode)) {
-                $this->component[$name]->setStrict($this->strictMode);
-            }
-        }
+        $this->initComponents();
 
         /*
         |--------------------------------------------------------------------------
@@ -424,270 +645,78 @@ class Kernel
         |--------------------------------------------------------------------------
         */
 
-        $ipRule = $this->driver->get($this->ip, 'rule');
-
-        if (!empty($ipRule)) {
-
-            $ruleType = (int) $ipRule['type'];
-
-            if ($ruleType === self::ACTION_ALLOW) {
-                $this->ruleStatus['allow'] = true;
-                
-            } else {
-                
-                // Current visitor has been blocked. If he still attempts accessing the site, 
-                // then we can drop him into the permanent block list.
-                $attempts = $ipRule['attempts'] ?? 0;
-                $now = time();
-                $logData = [];
-
-                $logData['log_ip']     = $ipRule['log_ip'];
-                $logData['ip_resolve'] = $ipRule['ip_resolve'];
-                $logData['time']       = $now;
-                $logData['type']       = $ipRule['type'];
-                $logData['reason']     = $ipRule['reason'];
-                $logData['attempts']   = $attempts;
-
-                // @since 0.2.0
-                $attemptPeriod = $this->properties['record_attempt_detection_period'];
-                $attemptReset  = $this->properties['reset_attempt_counter'];
-
-                $lastTimeDiff = $now - $ipRule['time'];
-
-                if ($lastTimeDiff <= $attemptPeriod) {
-                    $logData['attempts'] = ++$attempts;
-                }
-
-                if ($lastTimeDiff > $attemptReset) {
-                    $logData['attempts'] = 0;
-                }
-
-                $isMessengerTriggered = false;
-                $isUpdatRuleTable = false;
-
-                $handleType = 0;
-
-                if ($this->properties['deny_attempt_enable']['data_circle']) {
-
-                    if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
-
-                        $isUpdatRuleTable = true;
-
-                        $buffer = $this->properties['deny_attempt_buffer']['data_circle'];
-
-                        if ($attempts >= $buffer) {
-
-                            if ($this->properties['deny_attempt_notify']['data_circle']) {
-                                $isMessengerTriggered = true;
-                            }
-
-                            $logData['type'] = self::ACTION_DENY;
-
-                            // Reset this value for next checking process - iptables.
-                            $logData['attempts'] = 0;
-                            $handleType = 1;
-                        }
-                    }
-                }
-
-                if ($this->properties['deny_attempt_enable']['system_firewall']) {
-                    
-                    if ($ruleType === self::ACTION_DENY) {
-
-                        $isUpdatRuleTable = true;
-
-                        // For the requests that are already banned, but they are still attempting access, that means 
-                        // that they are programmably accessing your website. Consider put them in the system-layer fireall
-                        // such as IPTABLE.
-                        $bufferIptable = $this->properties['deny_attempt_buffer']['system_firewall'];
-
-                        if ($attempts >= $bufferIptable) {
-
-                            if ($this->properties['deny_attempt_notify']['system_firewall']) {
-                                $isMessengerTriggered = true;
-                            }
-
-                            $folder = rtrim($this->properties['iptables_watching_folder'], '/');
-
-                            if (file_exists($folder) && is_writable($folder)) {
-                                $filePath = $folder . '/iptables_queue.log';
-
-                                // command, ipv4/6, ip, subnet, port, protocol, action
-                                // add,4,127.0.0.1,null,all,all,drop  (example)
-                                // add,4,127.0.0.1,null,80,tcp,drop   (example)
-                                $command = 'add,4,' . $this->ip . ',null,all,all,deny';
-
-                                if (filter_var($this->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                                    $command = 'add,6,' . $this->ip . ',null,all,allow';
-                                }
-
-                                // Add this IP address to itables_queue.log
-                                // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
-                                file_put_contents($filePath, $command . "\n", FILE_APPEND | LOCK_EX);
-
-                                $logData['attempts'] = 0;
-                                $handleType = 2;
-                            }
-                        }
-                    }
-                }
-
-                // We only update data when `deny_attempt_enable` is enable.
-                // Because we want to get the last visited time and attempt counter.
-                // Otherwise we don't update it everytime to avoid wasting CPU resource.
-                if ($isUpdatRuleTable) {
-                    $this->driver->save($this->ip, $logData, 'rule');
-                }
-
-                /**
-                 * Notify this event to messenger.
-                 */
-                if ($isMessengerTriggered) {
-
-                    // The data strings that will be appended to message body.
-                    $prepareMessageData = [
-                        __('core', 'messenger_text_ip')       => $logData['log_ip'],
-                        __('core', 'messenger_text_rdns')     => $logData['ip_resolve'],
-                        __('core', 'messenger_text_reason')   => __('core', 'messenger_text_reason_code_' . $logData['reason']),
-                        __('core', 'messenger_text_handle')   => __('core', 'messenger_text_handle_type_' . $handleType),
-                        __('core', 'messenger_text_system')   => '',
-                        __('core', 'messenger_text_cpu')      => get_cpu_usage(),
-                        __('core', 'messenger_text_memory')   => get_memory_usage(),
-                        __('core', 'messenger_text_time')     => date('Y-m-d H:i:s', $logData['time']),
-                        __('core', 'messenger_text_timezone') => date_default_timezone_get(),
-                    ];
-
-                    $message = __('core', 'messenger_notification_subject', 'Notification for {0}', [$this->ip]) . "\n\n";
-
-                    foreach ($prepareMessageData as $key => $value) {
-                        $message .= $key . ': ' . $value . "\n";
-                    }
-
-                    $this->msgBody = $message;
-                }
-
-                // For an incoming request already in the rule list, return the rule type immediately.
-                return $this->result = $ruleType;
-            }
+        if ($this->isRuleTable()) {
+            return $this->result;
         }
 
-        if ($this->ruleStatus['allow']) {
+        /*
+        |--------------------------------------------------------------------------
+        | Statge - Detect popular search engine.
+        |--------------------------------------------------------------------------
+        */
 
-            // The requests that are allowed in rule table will not go into sessionHandler.
-            return $this->result = self::RESPONSE_ALLOW;
+        if ($this->isTrustedBot()) {
+            return $this->result;
+        }
 
-        } else {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Statge - Detect popular search engine.
-            |--------------------------------------------------------------------------
-            */
-
-            if ($this->getComponent('TrustedBot')) {
- 
-                // We want to put all the allowed robot into the rule list, so that the checking of IP's resolved hostname 
-                // is no more needed for that IP.
-                if ($this->getComponent('TrustedBot')->isAllowed()) {
-
-                    if ($this->getComponent('TrustedBot')->isGoogle()) {
-                        // Add current IP into allowed list, because it is from real Google domain.
-                        $this->action(
-                            self::ACTION_ALLOW,
-                            self::REASON_IS_GOOGLE
-                        );
-
-                    } elseif ($this->getComponent('TrustedBot')->isBing()) {
-                        // Add current IP into allowed list, because it is from real Bing domain.
-                        $this->action(
-                            self::ACTION_ALLOW,
-                            self::REASON_IS_BING
-                        );
-
-                    } elseif ($this->getComponent('TrustedBot')->isYahoo()) {
-                        // Add current IP into allowed list, because it is from real Yahoo domain.
-                        $this->action(
-                            self::ACTION_ALLOW,
-                            self::REASON_IS_YAHOO
-                        );
-
-                    } else {
-                        // Add current IP into allowed list, because you trust it.
-                        // You have already defined it in the settings.
-                        $this->action(
-                            self::ACTION_ALLOW,
-                            self::REASON_IS_SEARCH_ENGINE
-                        );
-                    }
-                    // Allowed robots not join to our traffic handler.
-                    return $this->result = self::RESPONSE_ALLOW;
-                }
-
-                // After `isAllowed()` executed, we can check if the currect access is fake by `isFakeRobot()`.
-                if ($this->getComponent('TrustedBot')->isFakeRobot()) {
-                    $this->action(
-                        self::ACTION_DENY,
-                        self::REASON_COMPONENT_TRUSTED_ROBOT
-                    );
-
-                    return $this->result = self::RESPONSE_DENY;
-                }
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | Stage - IP component.
-            |--------------------------------------------------------------------------
-            */
-
-            if ($this->getComponent('Ip')) {
-
-                $result = $this->getComponent('Ip')->check();
-                $actionCode = self::ACTION_DENY;
-
-                if (!empty($result)) {
-
-                    switch ($result['status']) {
-
-                        case 'allow':
-                            $actionCode = self::ACTION_ALLOW;
-                            $reasonCode = $result['code'];
-                            break;
+        if ($this->isFakeRobot()) {
+            return $this->result;
+        }
         
-                        case 'deny':
-                            $actionCode = self::ACTION_DENY;
-                            $reasonCode = $result['code']; 
-                            break;
-                    }
-    
-                    $this->action($actionCode, $reasonCode);
-    
-                    // $resultCode = $actionCode
-                    return $this->result = $this->sessionHandler($actionCode);
-                }
-            }
-    
-            /*
-            |--------------------------------------------------------------------------
-            | Stage - Check all other components.
-            |--------------------------------------------------------------------------
-            */
+        /*
+        |--------------------------------------------------------------------------
+        | Stage - IP component.
+        |--------------------------------------------------------------------------
+        */
 
-            foreach ($this->component as $component) {
+        if ($this->getComponent('Ip')) {
+
+            $result = $this->getComponent('Ip')->check();
+            $actionCode = self::ACTION_DENY;
+
+            if (!empty($result)) {
+
+                switch ($result['status']) {
+
+                    case 'allow':
+                        $actionCode = self::ACTION_ALLOW;
+                        $reasonCode = $result['code'];
+                        break;
     
-                // check if is a a bad robot already defined in settings.
-                if ($component->isDenied()) {
-    
-                    // @since 0.1.8
-                    $this->action(
-                        self::ACTION_DENY,
-                        $component->getDenyStatusCode()
-                    );
-    
-                    return $this->result = self::RESPONSE_DENY;
+                    case 'deny':
+                        $actionCode = self::ACTION_DENY;
+                        $reasonCode = $result['code']; 
+                        break;
                 }
+
+                $this->action($actionCode, $reasonCode);
+
+                // $resultCode = $actionCode
+                return $this->result = $this->sessionHandler($actionCode);
             }
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Stage - Check all other components.
+        |--------------------------------------------------------------------------
+        */
+
+        foreach ($this->component as $component) {
+
+            // check if is a a bad robot already defined in settings.
+            if ($component->isDenied()) {
+
+                // @since 0.1.8
+                $this->action(
+                    self::ACTION_DENY,
+                    $component->getDenyStatusCode()
+                );
+
+                return $this->result = self::RESPONSE_DENY;
+            }
+        }
+        
 
         /*
         |--------------------------------------------------------------------------
@@ -741,13 +770,7 @@ class Kernel
             $logData['hostname'] = $this->rdns;
             $logData['last_time'] = $now;
 
-            /*
-            |--------------------------------------------------------------------------
-            | BEGIN
-            |--------------------------------------------------------------------------
-            */
-
-            // HTTP_REFERER
+            // Filter: HTTP referrer information.
             $filterReferer = $this->filterReferer($logData, $ipDetail, $isFlagged);
             $isFlagged = $filterReferer['is_flagged'];
             $logData = $filterReferer['log_data'];
@@ -756,7 +779,7 @@ class Kernel
                 return self::RESPONSE_TEMPORARILY_DENY;
             }
 
-            // SESSION
+            // Filter: Session.
             $filterSession = $this->filterSession($logData, $ipDetail, $isFlagged);
             $isFlagged = $filterSession['is_flagged'];
             $logData = $filterSession['log_data'];
@@ -765,7 +788,7 @@ class Kernel
                 return self::RESPONSE_TEMPORARILY_DENY;
             }
 
-            // JAVASCRIPT COOKIE
+            // Filter: JavaScript produced cookie.
             $filterCookie = $this->filterCookie($logData, $ipDetail, $isFlagged);
             $isFlagged = $filterCookie['is_flagged'];
             $logData = $filterCookie['log_data'];
@@ -774,7 +797,7 @@ class Kernel
                 return self::RESPONSE_TEMPORARILY_DENY;
             }
 
-            // ACCESS FREQUENCY
+            // Filter: frequency.
             $filterFrequency = $this->filterFrequency($logData, $ipDetail, $isFlagged);
             $isFlagged = $filterFrequency['is_flagged'];
             $logData = $filterFrequency['log_data'];
@@ -782,12 +805,6 @@ class Kernel
             if ($filterFrequency['is_reject']) {
                 return self::RESPONSE_TEMPORARILY_DENY;
             }
-
-            /*
-            |--------------------------------------------------------------------------
-            | END
-            |--------------------------------------------------------------------------
-            */
 
             // Is fagged as unusual beavior? Count the first time.
             if ($isFlagged) {
@@ -799,7 +816,7 @@ class Kernel
                 if ($now - $ipDetail['first_time_flag'] >= $this->properties['time_reset_limit']) {
                     $logData['flag_multi_session'] = 0;
                     $logData['flag_empty_referer'] = 0;
-                    $logData['flag_js_cookie']     = 0;
+                    $logData['flag_js_cookie'] = 0;
                 }
             }
 
@@ -809,7 +826,7 @@ class Kernel
 
             // If $ipDetail[ip] is empty.
             // It means that the user is first time visiting our webiste.
-            $this->filterDataInitializedForFirstTimeVisit($logData);
+            $this->initializeFilterLogData($logData);
         }
 
         return self::RESPONSE_ALLOW;
@@ -959,7 +976,7 @@ class Kernel
      *
      * @return void
      */
-    protected function filterDataInitializedForFirstTimeVisit($logData)
+    protected function initializeFilterLogData($logData)
     {
         $now = time();
 
