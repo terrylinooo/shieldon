@@ -112,6 +112,7 @@ class Ajax extends BaseController
         if ('success' === $data['status']) {
             $postParams[$postKey] = 'on';
             $this->saveConfig();
+
         } elseif ('error' === $data['status']) {
             $postParams[$postKey] = 'off';
             $this->saveConfig();
@@ -119,13 +120,35 @@ class Ajax extends BaseController
 
         set_request($request->withParsedBody($postParams));
 
-        // @codeCoverageIgnoreStart
+        // @codeCoverageIgnoreEnd
 
         $data['result']['postKey'] = $postKey;
 
         $output = json_encode($data);
 
         return $this->respondJson($output);
+    }
+
+    /**
+     * Respond the JSON format result.
+     * 
+     * @param string $output The string you want to output to the browser.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    private function respondJson($output): ResponseInterface
+    {
+        $response = get_response();
+
+        $stream = $response->getBody();
+        $stream->write($output);
+        $stream->rewind();
+
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response = $response->withAddedHeader('Content-Type', 'charset=utf-8');
+        $response = $response->withBody($stream);
+
+        return $response;
     }
 
     // @codeCoverageIgnoreStart
@@ -425,27 +448,5 @@ class Ajax extends BaseController
     }
 
     // @codeCoverageIgnoreEnd
-
-    /**
-     * Respond the JSON format result.
-     * 
-     * @param string $output The string you want to output to the browser.
-     *
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    private function respondJson($output): ResponseInterface
-    {
-        $response = get_response();
-
-        $stream = $response->getBody();
-        $stream->write($output);
-        $stream->rewind();
-
-        $response = $response->withHeader('Content-Type', 'application/json');
-        $response = $response->withAddedHeader('Content-Type', 'charset=utf-8');
-        $response = $response->withBody($stream);
-
-        return $response;
-    }
 }
 
