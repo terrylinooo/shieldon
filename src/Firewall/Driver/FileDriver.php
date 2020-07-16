@@ -364,17 +364,13 @@ class FileDriver extends DriverProvider
     private function getFilename(string $ip, string $type = 'filter_log'): string
     {
         $ip = str_replace(':', '-', $ip);
+        $path = [];
 
-        switch ($type) {
-            case 'filter_log':
-                return $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
-            case 'session':
-                return $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
-            case 'rule':
-                return $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
-        }
+        $path['filter_log'] = $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
+        $path['session'] = $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
+        $path['rule'] = $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
 
-        return '';
+        return $path[$type] ?? '';
     }
 
     /**
@@ -386,16 +382,13 @@ class FileDriver extends DriverProvider
      */
     private function getDirectory(string $type = 'filter_log'): string
     {
-        switch ($type) {
-            case 'filter_log':
-                return $this->directory . '/' . $this->tableFilterLogs;
-            case 'session':
-                return $this->directory . '/' . $this->tableSessions;
-            case 'rule':
-                return $this->directory . '/' . $this->tableRuleList;
-        }
+        $path = [];
 
-        return '';
+        $path['filter_log'] = $this->directory . '/' . $this->tableFilterLogs;
+        $path['session'] = $this->directory . '/' . $this->tableSessions;
+        $path['rule'] = $this->directory . '/' . $this->tableRuleList;
+
+        return $path[$type] ?? '';
     }
 }
 

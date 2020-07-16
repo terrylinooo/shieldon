@@ -46,23 +46,12 @@ class Smtp
         $user = $getParams['user'] ?? '';
         $pass = $getParams['pass'] ?? '';
         $port = $getParams['port'] ?? '';
-        $data = [];
 
         $sender = $getParams['sender'] ?? '';
         $recipients = $getParams['recipients'] ?? '';
 
-        if (
-            (
-                !filter_var($host, FILTER_VALIDATE_IP) && 
-                !filter_var($host, FILTER_VALIDATE_DOMAIN)
-            ) || 
-            !is_numeric($port) || 
-            empty($user) || 
-            empty($pass) 
-        ) {
-            $data['result']['message'] = 'Invalid fields.';
-            $output = json_encode($data);
-            return $this->respondJson($output);
+        if (!$this->checkHost($host) || !is_numeric($port) || empty($user) || empty($pass)) {
+            return false;
         }
 
         if ('ssl' === $type || 'tls' === $type) {
@@ -93,5 +82,23 @@ class Smtp
             }
         }
         return false;
+    }
+
+    /**
+     * Check the SMTP host.
+     *
+     * @param string $host The IP address or server domain name.
+     *
+     * @return bool
+     */
+    private function checkHost(string $host): bool
+    {
+        if (
+            !filter_var($host, FILTER_VALIDATE_IP) && 
+            !filter_var($host, FILTER_VALIDATE_DOMAIN)
+        ) {
+            return false;
+        }
+        return true;
     }
 }
