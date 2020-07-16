@@ -90,7 +90,7 @@ class Ajax extends BaseController
         $moduleName = str_replace('-', '_', $moduleName);
 
         $data = [];
-        $data['status'] = 'error';
+        $data['status'] = 'undefined';
         $data['result']['moduleName'] = $moduleName;
 
         $message['title'] = __('panel', 'test_msg_title', 'Testing Message from Host: ') . $serverName;
@@ -98,8 +98,10 @@ class Ajax extends BaseController
     
         // @codeCoverageIgnoreStart
 
-        $method = 'tryMessengerModule_' . $moduleName;
+        // Name the testing method.
+        $method = '_test_' . $moduleName;
 
+        // Call testing method if exists.
         if ($this->{$method}($getParams, $message)) {
             $data['status'] = 'success';
         }
@@ -136,7 +138,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    private function tryMessengerModule_telegram($getParams, $message)
+    private function _test_telegram($getParams, $message)
     {
         $apiKey = $getParams['apiKey'] ?? '';
         $channel = $getParams['channel'] ?? '';
@@ -157,7 +159,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    private function tryMessengerModule_line_notify($getParams, $message)
+    private function _test_line_notify($getParams, $message)
     {
         $accessToken = $getParams['accessToken'] ?? '';
         if (!empty($accessToken)) {
@@ -177,7 +179,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    private function tryMessengerModule_slack($getParams, $message)
+    private function _test_slack($getParams, $message)
     {
         $botToken = $getParams['botToken'] ?? '';
         $channel = $getParams['channel'] ?? '';
@@ -198,7 +200,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    private function tryMessengerModule_slack_webhook($getParams, $message)
+    private function _test_slack_webhook($getParams, $message)
     {
         $webhookUrl = $getParams['webhookUrl'] ?? '';
         if (!empty($webhookUrl)) {
@@ -218,7 +220,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    private function tryMessengerModule_rocket_chat($getParams, $message)
+    private function _test_rocket_chat($getParams, $message)
     {
         $serverUrl = $getParams['serverUrl'] ?? '';
         $userId = $getParams['userId'] ?? '';
@@ -247,7 +249,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    private function tryMessengerModule_smtp($getParams, $message)
+    private function _test_smtp($getParams, $message)
     {
         $type = $getParams['type'] ?? '';
         $host = $getParams['host'] ?? '';
@@ -310,7 +312,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    private function tryMessengerModule_native_php_mail($getParams, $message)
+    private function _test_native_php_mail($getParams, $message)
     {
         $sender = $getParams['sender'] ?? '';
         $recipients = $getParams['recipients'] ?? '';
@@ -349,7 +351,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    private function tryMessengerModule_sendgrid($getParams, $message)
+    private function _test_sendgrid($getParams, $message)
     {
         $apiKey = $getParams['apiKey'] ?? '';
         $sender = $getParams['sender'] ?? '';
@@ -389,7 +391,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    private function tryMessengerModule_mailgun($getParams, $message)
+    private function _test_mailgun($getParams, $message)
     {
         $apiKey = $getParams['apiKey'] ?? '';
         $domain = $getParams['domain'] ?? '';
