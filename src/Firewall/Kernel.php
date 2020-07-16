@@ -213,15 +213,17 @@ class Kernel
 
     /**
      * Container for captcha addons.
+     * The collection of \Shieldon\Firewall\Captcha\CaptchaInterface
      *
-     * @var Interface
+     * @var array
      */
     protected $captcha = [];
 
     /**
      * The ways Shieldon send a message to when someone has been blocked.
+     * The collection of \Shieldon\Messenger\Messenger\MessengerInterface
      *
-     * @var MessengerInterface[]
+     * @var array
      */
     protected $messenger = [];
 
@@ -372,11 +374,12 @@ class Kernel
     protected function log(int $actionCode): void
     {
         if (null !== $this->logger) {
-            $logData['ip']          = $this->getIp();
-            $logData['session_id']  = get_session()->get('id');
+            $logData = [];
+            $logData['ip'] = $this->getIp();
+            $logData['session_id'] = get_session()->get('id');
             $logData['action_code'] = $actionCode;
-            $logData['timesamp']    = time();
-
+            $logData['timesamp'] = time();
+    
             $this->logger->add($logData);
         }
     }
@@ -424,6 +427,7 @@ class Kernel
                 // then we can drop him into the permanent block list.
                 $attempts = $ipRule['attempts'] ?? 0;
                 $now = time();
+                $logData = [];
 
                 $logData['log_ip']     = $ipRule['log_ip'];
                 $logData['ip_resolve'] = $ipRule['ip_resolve'];
@@ -627,11 +631,12 @@ class Kernel
             if ($this->getComponent('Ip')) {
 
                 $result = $this->getComponent('Ip')->check();
+                $actionCode = self::ACTION_DENY;
 
                 if (!empty($result)) {
-    
+
                     switch ($result['status']) {
-    
+
                         case 'allow':
                             $actionCode = self::ACTION_ALLOW;
                             $reasonCode = $result['code'];
@@ -643,7 +648,6 @@ class Kernel
                             break;
                     }
     
-                    // @since 0.1.8
                     $this->action($actionCode, $reasonCode);
     
                     // $resultCode = $actionCode
@@ -701,8 +705,7 @@ class Kernel
     protected function filter(): int
     {
         $now = time();
-        $logData = [];
-        $isFlaggedAsUnusualBehavior = false;
+        $isFlagged = false;
 
         $resetPageviews = [
             's' => false, // second.
@@ -715,14 +718,14 @@ class Kernel
         $ipDetail = $this->driver->get($this->ip, 'filter_log');
 
         $ipDetail = $this->driver->parseData($ipDetail, 'filter_log');
-        $logData = $ipDetail;
+        $logData = [];
 
         // Counting user pageviews.
-        foreach (array_keys($resetPageviews) as $timeUnit) {
+        foreach (array_keys($resetPageviews) as $unit) {
 
             // Each time unit will increase by 1.
-            $logData["pageviews_{$timeUnit}"] = $ipDetail["pageviews_{$timeUnit}"] + 1;
-            $logData["first_time_{$timeUnit}"] = $ipDetail["first_time_{$timeUnit}"];
+            $logData["pageviews_{$unit}"] = $ipDetail["pageviews_{$unit}"] + 1;
+            $logData["first_time_{$unit}"] = $ipDetail["first_time_{$unit}"];
         }
 
         $logData['first_time_flag'] = $ipDetail['first_time_flag'];
@@ -735,200 +738,54 @@ class Kernel
 
             /*
             |--------------------------------------------------------------------------
-            | HTTP_REFERER
+            | BEGIN
             |--------------------------------------------------------------------------
             */
 
-            if ($this->filterStatus['referer']) {
+            // HTTP_REFERER
+            $filterReferer = $this->filterReferer($logData, $ipDetail, $isFlagged);
+            $isFlagged = $filterReferer['is_flagged'];
+            $logData = $filterReferer['log_data'];
 
-                if ($now - $ipDetail['last_time'] > $this->properties['interval_check_referer']) {
+            if ($filterReferer['is_reject']) {
+                return self::RESPONSE_TEMPORARILY_DENY;
+            }
 
-                    // Get values from data table. We will count it and save it back to data table.
-                    // If an user is already in your website, it is impossible no referer when he views other pages.
-                    $logData['flag_empty_referer'] = $ipDetail['flag_empty_referer'] ?? 0;
+            // SESSION
+            $filterSession = $this->filterSession($logData, $ipDetail, $isFlagged);
+            $isFlagged = $filterSession['is_flagged'];
+            $logData = $filterSession['log_data'];
 
-                    if (empty(get_request()->getHeaderLine('referer'))) {
-                        $logData['flag_empty_referer']++;
-                        $isFlaggedAsUnusualBehavior = true;
-                    }
+            if ($filterSession['is_reject']) {
+                return self::RESPONSE_TEMPORARILY_DENY;
+            }
 
-                    // Ban this IP if they reached the limit.
-                    if ($logData['flag_empty_referer'] > $this->properties['limit_unusual_behavior']['referer']) {
-                        $this->action(
-                            self::ACTION_TEMPORARILY_DENY,
-                            self::REASON_EMPTY_REFERER
-                        );
-                        return self::RESPONSE_TEMPORARILY_DENY;
-                    }
-                }
+            // JAVASCRIPT COOKIE
+            $filterCookie = $this->filterCookie($logData, $ipDetail, $isFlagged);
+            $isFlagged = $filterCookie['is_flagged'];
+            $logData = $filterCookie['log_data'];
+
+            if ($filterCookie['is_reject']) {
+                return self::RESPONSE_TEMPORARILY_DENY;
+            }
+
+            // ACCESS FREQUENCY
+            $filterFrequency = $this->filterFrequency($logData, $ipDetail, $isFlagged, $resetPageviews);
+            $isFlagged = $filterFrequency['is_flagged'];
+            $logData = $filterFrequency['log_data'];
+
+            if ($filterFrequency['is_reject']) {
+                return self::RESPONSE_TEMPORARILY_DENY;
             }
 
             /*
             |--------------------------------------------------------------------------
-            | SESSION
+            | END
             |--------------------------------------------------------------------------
             */
-
-            if ($this->filterStatus['session']) {
-
-                if ($now - $ipDetail['last_time'] > $this->properties['interval_check_session']) {
-
-                    // Get values from data table. We will count it and save it back to data table.
-                    $logData['flag_multi_session'] = $ipDetail['flag_multi_session'] ?? 0;
-                    
-                    if (get_session()->get('id') !== $ipDetail['session']) {
-
-                        // Is is possible because of direct access by the same user many times.
-                        // Or they don't have session cookie set.
-                        $logData['flag_multi_session']++;
-                        $isFlaggedAsUnusualBehavior = true;
-                    }
-
-                    // Ban this IP if they reached the limit.
-                    if ($logData['flag_multi_session'] > $this->properties['limit_unusual_behavior']['session']) {
-                        $this->action(
-                            self::ACTION_TEMPORARILY_DENY,
-                            self::REASON_TOO_MANY_SESSIONS
-                        );
-
-                        return self::RESPONSE_TEMPORARILY_DENY;
-                    }
-                }
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | JAVASCRIPT COOKIE
-            |--------------------------------------------------------------------------
-            */
-
-            // Let's checking cookie created by javascript..
-            if ($this->filterStatus['cookie']) {
-
-                // Get values from data table. We will count it and save it back to data table.
-                $logData['flag_js_cookie']   = $ipDetail['flag_js_cookie']   ?? 0;
-                $logData['pageviews_cookie'] = $ipDetail['pageviews_cookie'] ?? 0;
-
-                $c = $this->properties['cookie_name'];
-
-                $jsCookie = get_request()->getCookieParams()[$c] ?? 0;
-
-                // Checking if a cookie is created by JavaScript.
-                if (!empty($jsCookie)) {
-
-                    if ($jsCookie == '1') {
-                        $logData['pageviews_cookie']++;
-
-                    } else {
-                        // Flag it if the value is not 1.
-                        $logData['flag_js_cookie']++;
-                        $isFlaggedAsUnusualBehavior = true;
-                    }
-                } else {
-                    // If we cannot find the cookie, flag it.
-                    $logData['flag_js_cookie']++;
-                    $isFlaggedAsUnusualBehavior = true;
-                }
-
-                if ($logData['flag_js_cookie'] > $this->properties['limit_unusual_behavior']['cookie']) {
-
-                    // Ban this IP if they reached the limit.
-                    $this->action(
-                        self::ACTION_TEMPORARILY_DENY,
-                        self::REASON_EMPTY_JS_COOKIE
-                    );
-
-                    return self::RESPONSE_TEMPORARILY_DENY;
-                }
-
-                // Remove JS cookie and reset.
-                if ($logData['pageviews_cookie'] > $this->properties['limit_unusual_behavior']['cookie']) {
-
-                    // Reset to 0.
-                    $logData['pageviews_cookie'] = 0;
-                    $logData['flag_js_cookie']   = 0;
-
-                    unset_superglobal($c, 'cookie');
-                }
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | ACCESS FREQUENCY
-            |--------------------------------------------------------------------------
-            */
-
-            if ($this->filterStatus['frequency']) {
-
-                foreach (array_keys($this->properties['time_unit_quota']) as $timeUnit) {
-
-                    switch ($timeUnit) {
-                        case 's': $timeSecond = 1;     break;
-                        case 'm': $timeSecond = 60;    break;
-                        case 'h': $timeSecond = 3600;  break;
-                        case 'd': $timeSecond = 86400; break;
-                    }
-
-                    if (($now - $ipDetail["first_time_{$timeUnit}"]) >= ($timeSecond + 1)) {
-
-                        // For example:
-                        // (1) minutely: now > first_time_m about 61, (2) hourly: now > first_time_h about 3601, 
-                        // Let's prepare to rest the the pageview count.
-                        $resetPageviews[$timeUnit] = true;
-
-                    } else {
-
-                        // If an user's pageview count is more than the time period limit
-                        // He or she will get banned.
-                        if ($logData["pageviews_{$timeUnit}"] > $this->properties['time_unit_quota'][$timeUnit]) {
-
-                            if ($timeUnit === 's') {
-                                $this->action(
-                                    self::ACTION_TEMPORARILY_DENY,
-                                    self::REASON_REACHED_LIMIT_SECOND
-                                );
-                            }
-
-                            if ($timeUnit === 'm') {
-                                $this->action(
-                                    self::ACTION_TEMPORARILY_DENY,
-                                    self::REASON_REACHED_LIMIT_MINUTE
-                                );
-                            }
-
-                            if ($timeUnit === 'h') {
-                                $this->action(
-                                    self::ACTION_TEMPORARILY_DENY,
-                                    self::REASON_REACHED_LIMIT_HOUR
-                                );
-                            }
-
-                            if ($timeUnit === 'd') {
-                                $this->action(
-                                    self::ACTION_TEMPORARILY_DENY,
-                                    self::REASON_REACHED_LIMIT_DAY
-                                );
-                            }
-                            
-                            return self::RESPONSE_TEMPORARILY_DENY;
-                        }
-                    }
-                }
-
-                /* The user is passed from the pageview check. */
-
-                foreach ($resetPageviews as $timeUnit => $resetStatus) {
-
-                    // Reset the pageview check for specfic time unit.
-                    if ($resetStatus) {
-                        $logData["first_time_{$timeUnit}"] = $now;
-                        $logData["pageviews_{$timeUnit}"] = 0;
-                    }
-                }
-            }
 
             // Is fagged as unusual beavior? Count the first time.
-            if ($isFlaggedAsUnusualBehavior) {
+            if ($isFlagged) {
                 $logData['first_time_flag'] = (!empty($logData['first_time_flag'])) ? $logData['first_time_flag'] : $now;
             }
 
@@ -953,8 +810,8 @@ class Kernel
             $logData['hostname']  = $this->rdns;
             $logData['last_time'] = $now;
 
-            foreach ($resetPageviews as $key => $resetStatus) {
-                $logData["first_time_{$key}"] = $now;
+            foreach (array_keys($resetPageviews) as $unit) {
+                $logData['first_time_' . $unit] = $now;
             }
 
             $this->driver->save($this->ip, $logData, 'filter_log');
@@ -975,10 +832,9 @@ class Kernel
     protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
     {
         $ip = $this->ip;
-
         $rdns = $this->rdns;
-
         $now = time();
+        $logData = [];
     
         if ('' !== $assignIp) {
             $ip = $assignIp;
@@ -1021,7 +877,7 @@ class Kernel
     /**
      * Deal with online sessions.
      *
-     * @param bool $statusCode The response code.
+     * @param int $statusCode The response code.
      *
      * @return int The response code.
      */
@@ -1098,6 +954,261 @@ class Kernel
         }
 
         return self::RESPONSE_ALLOW;
+    }
+
+/**
+     * Filter - Referer.
+     *
+     * @param array $logData   IP data from Shieldon log table.
+     * @param array $ipData    The IP log data.
+     * @param bool  $isFlagged Is flagged as unusual behavior or not.
+     *
+     * @return array
+     */
+    protected function filterReferer(array $logData, array $ipDetail, bool $isFlagged): array
+    {
+        $isReject = false;
+
+        if ($this->filterStatus['referer']) {
+
+            if ($logData['last_time'] - $ipDetail['last_time'] > $this->properties['interval_check_referer']) {
+
+                // Get values from data table. We will count it and save it back to data table.
+                // If an user is already in your website, it is impossible no referer when he views other pages.
+                $logData['flag_empty_referer'] = $ipDetail['flag_empty_referer'] ?? 0;
+
+                if (empty(get_request()->getHeaderLine('referer'))) {
+                    $logData['flag_empty_referer']++;
+                    $isFlagged = true;
+                }
+
+                // Ban this IP if they reached the limit.
+                if ($logData['flag_empty_referer'] > $this->properties['limit_unusual_behavior']['referer']) {
+                    $this->action(
+                        self::ACTION_TEMPORARILY_DENY,
+                        self::REASON_EMPTY_REFERER
+                    );
+                    $isReject = true;
+                }
+            }
+        }
+
+        return [
+            'is_flagged' => $isFlagged,
+            'is_reject' => $isReject,
+            'log_data' => $logData,
+        ];
+    }
+
+    /**
+     * Filter - Session
+     *
+     * @param array $logData   IP data from Shieldon log table.
+     * @param array $ipData    The IP log data.
+     * @param bool  $isFlagged Is flagged as unusual behavior or not.
+     *
+     * @return array
+     */
+    protected function filterSession(array $logData, array $ipDetail, bool $isFlagged): array
+    {
+        $isReject = false;
+
+        if ($this->filterStatus['session']) {
+
+            if ($logData['last_time'] - $ipDetail['last_time'] > $this->properties['interval_check_session']) {
+
+                // Get values from data table. We will count it and save it back to data table.
+                $logData['flag_multi_session'] = $ipDetail['flag_multi_session'] ?? 0;
+                
+                if (get_session()->get('id') !== $ipDetail['session']) {
+
+                    // Is is possible because of direct access by the same user many times.
+                    // Or they don't have session cookie set.
+                    $logData['flag_multi_session']++;
+                    $isFlagged = true;
+                }
+
+                // Ban this IP if they reached the limit.
+                if ($logData['flag_multi_session'] > $this->properties['limit_unusual_behavior']['session']) {
+                    $this->action(
+                        self::ACTION_TEMPORARILY_DENY,
+                        self::REASON_TOO_MANY_SESSIONS
+                    );
+                    $isReject = true;
+                }
+            }
+        }
+
+
+        return [
+            'is_flagged' => $isFlagged,
+            'is_reject' => $isReject,
+            'log_data' => $logData,
+        ];
+    }
+
+    /**
+     * Filter - Cookie
+     *
+     * @param array $logData   IP data from Shieldon log table.
+     * @param array $ipData    The IP log data.
+     * @param bool  $isFlagged Is flagged as unusual behavior or not.
+     *
+     * @return array
+     */
+    protected function filterCookie(array $logData, array $ipDetail, bool $isFlagged): array
+    {
+        $isReject = false;
+
+        // Let's checking cookie created by javascript..
+        if ($this->filterStatus['cookie']) {
+
+            // Get values from data table. We will count it and save it back to data table.
+            $logData['flag_js_cookie'] = $ipDetail['flag_js_cookie'] ?? 0;
+            $logData['pageviews_cookie'] = $ipDetail['pageviews_cookie'] ?? 0;
+
+            $c = $this->properties['cookie_name'];
+
+            $jsCookie = get_request()->getCookieParams()[$c] ?? 0;
+
+            // Checking if a cookie is created by JavaScript.
+            if (!empty($jsCookie)) {
+
+                if ($jsCookie == '1') {
+                    $logData['pageviews_cookie']++;
+
+                } else {
+                    // Flag it if the value is not 1.
+                    $logData['flag_js_cookie']++;
+                    $isFlagged = true;
+                }
+            } else {
+                // If we cannot find the cookie, flag it.
+                $logData['flag_js_cookie']++;
+                $isFlagged = true;
+            }
+
+            if ($logData['flag_js_cookie'] > $this->properties['limit_unusual_behavior']['cookie']) {
+
+                // Ban this IP if they reached the limit.
+                $this->action(
+                    self::ACTION_TEMPORARILY_DENY,
+                    self::REASON_EMPTY_JS_COOKIE
+                );
+                $isReject = true;
+            }
+
+            // Remove JS cookie and reset.
+            if ($logData['pageviews_cookie'] > $this->properties['limit_unusual_behavior']['cookie']) {
+                $logData['pageviews_cookie'] = 0; // Reset to 0.
+                $logData['flag_js_cookie'] = 0;
+                unset_superglobal($c, 'cookie');
+            }
+        }
+
+        return [
+            'is_flagged' => $isFlagged,
+            'is_reject' => $isReject,
+            'log_data' => $logData,
+        ];
+    }
+
+    /**
+     * Filter - Frequency
+     *
+     * @param array $logData   IP data from Shieldon log table.
+     * @param array $ipData    The IP log data.
+     * @param bool  $isFlagged Is flagged as unusual behavior or not.
+     * @param array $units     The pageview unit status.
+     *
+     * @return array
+     */
+    protected function filterFrequency(array $logData, array $ipDetail, bool $isFlagged, array $units): array
+    {
+        $isReject = false;
+
+        if ($this->filterStatus['frequency']) {
+            $timeSecond = 0;
+
+            foreach (array_keys($this->properties['time_unit_quota']) as $unit) {
+                switch ($unit) {
+                    case 's': 
+                        $timeSecond = 1;
+                        break;
+
+                    case 'm':
+                        $timeSecond = 60;
+                        break;
+
+                    case 'h':
+                        $timeSecond = 3600;
+                        break;
+
+                    case 'd':
+                        $timeSecond = 86400;
+                        break;
+                }
+
+                if (($logData['last_time'] - $ipDetail['first_time_' . $unit]) >= ($timeSecond + 1)) {
+
+                    // For example:
+                    // (1) minutely: now > first_time_m about 61, (2) hourly: now > first_time_h about 3601, 
+                    // Let's prepare to rest the the pageview count.
+                    $units[$unit] = true;
+
+                } else {
+
+                    // If an user's pageview count is more than the time period limit
+                    // He or she will get banned.
+                    if ($logData['pageviews_' . $unit] > $this->properties['time_unit_quota'][$unit]) {
+
+                        if ($unit === 's') {
+                            $this->action(
+                                self::ACTION_TEMPORARILY_DENY,
+                                self::REASON_REACHED_LIMIT_SECOND
+                            );
+                        }
+
+                        if ($unit === 'm') {
+                            $this->action(
+                                self::ACTION_TEMPORARILY_DENY,
+                                self::REASON_REACHED_LIMIT_MINUTE
+                            );
+                        }
+
+                        if ($unit === 'h') {
+                            $this->action(
+                                self::ACTION_TEMPORARILY_DENY,
+                                self::REASON_REACHED_LIMIT_HOUR
+                            );
+                        }
+
+                        if ($unit === 'd') {
+                            $this->action(
+                                self::ACTION_TEMPORARILY_DENY,
+                                self::REASON_REACHED_LIMIT_DAY
+                            );
+                        }
+
+                        $isReject = true;
+                    }
+                }
+            }
+
+            foreach ($units as $unit => $resetStatus) {
+                // Reset the pageview check for specfic time unit.
+                if ($resetStatus) {
+                    $logData['first_time_' . $unit] = $logData['last_time'];
+                    $logData['pageviews_' . $unit] = 0;
+                }
+            }
+        }
+
+        return [
+            'is_flagged' => $isFlagged,
+            'is_reject' => $isReject,
+            'log_data' => $logData,
+        ];
     }
 
     // @codeCoverageIgnoreStart
@@ -1759,8 +1870,8 @@ class Kernel
      * Displayed on Firewall Panel, tell you current what type of current
      * configuration is used for.
      * 
-     * @param $type The type of configuration.
-     *              demo | managed | config
+     * @param string $type The type of configuration.
+     *                     demo | managed | config
      *
      * @return void
      */
