@@ -50,6 +50,12 @@ class Ajax extends BaseController
      */
     public function  __call($function , $args)
     {
+        $className = 'Shieldon\Firewall\Panel\Sandbox\\' . $function;
+
+        if (file_exists(__DIR__ . '/Sandbox/' . $function . '.php')) {
+            $sandbox = new $className();
+            return $sandbox($args);
+        }
         return false;
     }
 
@@ -72,7 +78,6 @@ class Ajax extends BaseController
         return $this->respondJson($output);
     }
 
-
     /**
      * Test messenger modules.
      *
@@ -81,13 +86,13 @@ class Ajax extends BaseController
     public function tryMessenger(): ResponseInterface
     {
         $request = get_request();
+        $message = [];
 
         $getParams = $request->getQueryParams();
         $serverParams = $request->getServerParams();
 
         $serverName = $serverParams['SERVER_NAME'] ?? gethostname();
         $moduleName = $getParams['module'] ?? '';
-        $moduleName = str_replace('-', '_', $moduleName);
 
         $data = [];
         $data['status'] = 'undefined';
@@ -99,7 +104,10 @@ class Ajax extends BaseController
         // @codeCoverageIgnoreStart
 
         // Name the testing method.
-        $method = '_test_' . $moduleName;
+        $method = explode('-', $moduleName);
+        $method = implode('', array_map(function($word) {
+            return ucwords($word); 
+        }, $method));
 
         // Call testing method if exists.
         if ($this->{$method}($getParams, $message)) {
@@ -150,303 +158,5 @@ class Ajax extends BaseController
 
         return $response;
     }
-
-    // @codeCoverageIgnoreStart
-
-    /**
-     * Test Telegram.
-     *
-     * @param array $getParams The GET params passed from tryMessenger method.
-     * @param array $message   The message title and body.
-     *
-     * @return bool
-     */
-    private function _test_telegram($getParams, $message)
-    {
-        $apiKey = $getParams['apiKey'] ?? '';
-        $channel = $getParams['channel'] ?? '';
-        if (!empty($apiKey) && !empty($channel)) {
-            $messenger = new Messenger\Telegram($apiKey, $channel);
-            if ($messenger->send($message['body'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Test Line Notify.
-     *
-     * @param array $getParams The GET params passed from tryMessenger method.
-     * @param array $message   The message title and body.
-     *
-     * @return bool
-     */
-    private function _test_line_notify($getParams, $message)
-    {
-        $accessToken = $getParams['accessToken'] ?? '';
-        if (!empty($accessToken)) {
-            $messenger = new Messenger\LineNotify($accessToken);
-            if ($messenger->send($message['body'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Test Slack.
-     *
-     * @param array $getParams The GET params passed from tryMessenger method.
-     * @param array $message   The message title and body.
-     *
-     * @return bool
-     */
-    private function _test_slack($getParams, $message)
-    {
-        $botToken = $getParams['botToken'] ?? '';
-        $channel = $getParams['channel'] ?? '';
-        if (!empty($botToken) && !empty($channel)) {
-            $messenger = new Messenger\Slack($botToken, $channel);
-            if ($messenger->send($message['body'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Test Slack WebHook.
-     *
-     * @param array $getParams The GET params passed from tryMessenger method.
-     * @param array $message   The message title and body.
-     *
-     * @return bool
-     */
-    private function _test_slack_webhook($getParams, $message)
-    {
-        $webhookUrl = $getParams['webhookUrl'] ?? '';
-        if (!empty($webhookUrl)) {
-            $messenger = new Messenger\SlackWebhook($webhookUrl);
-            if ($messenger->send($message['body'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Test Rocket Chat.
-     *
-     * @param array $getParams The GET params passed from tryMessenger method.
-     * @param array $message   The message title and body.
-     *
-     * @return bool
-     */
-    private function _test_rocket_chat($getParams, $message)
-    {
-        $serverUrl = $getParams['serverUrl'] ?? '';
-        $userId = $getParams['userId'] ?? '';
-        $accessToken = $getParams['accessToken'] ?? '';
-        $channel = $getParams['channel'] ?? '';
-
-        if (
-            !empty($serverUrl) &&
-            !empty($userId) &&
-            !empty($accessToken) &&
-            !empty($channel)
-        ) {
-            $messenger = new Messenger\RocketChat($accessToken, $userId, $serverUrl, $channel);
-            if ($messenger->send($message['body'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Test SMTP.
-     *
-     * @param array $getParams The GET params passed from tryMessenger method.
-     * @param array $message   The message title and body.
-     *
-     * @return bool
-     */
-    private function _test_smtp($getParams, $message)
-    {
-        $type = $getParams['type'] ?? '';
-        $host = $getParams['host'] ?? '';
-        $user = $getParams['user'] ?? '';
-        $pass = $getParams['pass'] ?? '';
-        $port = $getParams['port'] ?? '';
-
-        $sender = $getParams['sender'] ?? '';
-        $recipients = $getParams['recipients'] ?? '';
-
-        if (
-            (
-                !filter_var($host, FILTER_VALIDATE_IP) && 
-                !filter_var($host, FILTER_VALIDATE_DOMAIN)
-            ) || 
-            !is_numeric($port) || 
-            empty($user) || 
-            empty($pass) 
-        ) {
-            $data['result']['message'] = 'Invalid fields.';
-            $output = json_encode($data);
-            return $this->respondJson($output);
-        }
-
-        if ('ssl' === $type || 'tls' === $type) {
-            $host = $type . '://' . $host;
-        }
-
-        if (!empty($sender) && $recipients) {
-            $recipients = str_replace("\r", '|', $recipients);
-            $recipients = str_replace("\n", '|', $recipients);
-            $recipients = explode('|', $recipients);
-
-            $messenger = new Messenger\Smtp($user, $pass, $host, (int) $port);
-
-            foreach($recipients as $recipient) {
-                if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
-                    $messenger->addRecipient($recipient);
-                }
-            }
-
-            if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
-                $messenger->addSender($sender);
-            }
-
-            $messenger->setSubject($message['title']);
-
-            if ($messenger->send($message['body'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Test Native PHP mail.
-     *
-     * @param array $getParams The GET params passed from tryMessenger method.
-     * @param array $message   The message title and body.
-     *
-     * @return bool
-     */
-    private function _test_native_php_mail($getParams, $message)
-    {
-        $sender = $getParams['sender'] ?? '';
-        $recipients = $getParams['recipients'] ?? '';
-
-        if (!empty($sender) && !empty($recipients)) {
-            $recipients = str_replace("\r", '|', $recipients);
-            $recipients = str_replace("\n", '|', $recipients);
-            $recipients = explode('|', $recipients);
-
-            $messenger = new Messenger\Mail();
-
-            foreach($recipients as $recipient) {
-                if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
-                    $messenger->addRecipient($recipient);
-                }
-            }
-
-            if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
-                $messenger->addSender($sender);
-            }
-
-            $messenger->setSubject($message['title']);
-
-            if ($messenger->send($message['body'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Test Sendgrid.
-     *
-     * @param array $getParams The GET params passed from tryMessenger method.
-     * @param array $message   The message title and body.
-     *
-     * @return bool
-     */
-    private function _test_sendgrid($getParams, $message)
-    {
-        $apiKey = $getParams['apiKey'] ?? '';
-        $sender = $getParams['sender'] ?? '';
-        $recipients = $getParams['recipients'] ?? '';
-
-        if (!empty($sender) && !empty($recipients) && !empty($apiKey)) {
-            $recipients = str_replace("\r", '|', $recipients);
-            $recipients = str_replace("\n", '|', $recipients);
-            $recipients = explode('|', $recipients);
-
-            $messenger = new Messenger\Sendgrid($apiKey);
-
-            foreach($recipients as $recipient) {
-                if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
-                    $messenger->addRecipient($recipient);
-                }
-            }
-
-            if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
-                $messenger->addSender($sender);
-            }
-
-            $messenger->setSubject($message['title']);
-
-            if ($messenger->send($message['body'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Test Mailgun.
-     *
-     * @param array $getParams The GET params passed from tryMessenger method.
-     * @param array $message   The message title and body.
-     *
-     * @return bool
-     */
-    private function _test_mailgun($getParams, $message)
-    {
-        $apiKey = $getParams['apiKey'] ?? '';
-        $domain = $getParams['domain'] ?? '';
-        $sender = $getParams['sender'] ?? '';
-        $recipients = $getParams['recipients'] ?? '';
-
-        if (!empty($sender) && !empty($recipients) && !empty($apiKey) && !empty($domain)) {
-            $recipients = str_replace("\r", '|', $recipients);
-            $recipients = str_replace("\n", '|', $recipients);
-            $recipients = explode('|', $recipients);
-
-            $messenger = new Messenger\Mailgun($apiKey, $domain);
-
-            foreach($recipients as $recipient) {
-                if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
-                    $messenger->addRecipient($recipient);
-                }
-            }
-
-            if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
-                $messenger->addSender($sender);
-            }
-
-            $messenger->setSubject($message['title']);
-
-            if ($messenger->send($message['body'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // @codeCoverageIgnoreEnd
 }
 
