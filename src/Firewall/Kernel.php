@@ -197,6 +197,18 @@ class Kernel
     ];
 
     /**
+     * The status for Filters to reset.
+     *
+     * @var array
+     */
+    protected $filterResetStatus = [
+        's' => false, // second.
+        'm' => false, // minute.
+        'h' => false, // hour.
+        'd' => false, // day.
+    ];
+
+    /**
      * default settings
      *
      * @var array
@@ -707,33 +719,26 @@ class Kernel
         $now = time();
         $isFlagged = false;
 
-        $resetPageviews = [
-            's' => false, // second.
-            'm' => false, // minute.
-            'h' => false, // hour.
-            'd' => false, // day.
-        ];
-
         // Fetch an IP data from Shieldon log table.
         $ipDetail = $this->driver->get($this->ip, 'filter_log');
 
         $ipDetail = $this->driver->parseData($ipDetail, 'filter_log');
-        $logData = [];
+        $logData = $ipDetail;
 
         // Counting user pageviews.
-        foreach (array_keys($resetPageviews) as $unit) {
+        foreach (array_keys($this->filterResetStatus) as $unit) {
 
             // Each time unit will increase by 1.
-            $logData["pageviews_{$unit}"] = $ipDetail["pageviews_{$unit}"] + 1;
-            $logData["first_time_{$unit}"] = $ipDetail["first_time_{$unit}"];
+            $logData['pageviews_' . $unit] = $ipDetail['pageviews_' . $unit] + 1;
+            $logData['first_time_' . $unit] = $ipDetail['first_time_' . $unit];
         }
 
         $logData['first_time_flag'] = $ipDetail['first_time_flag'];
 
         if (!empty($ipDetail['ip'])) {
-            $logData['ip']        = $this->ip;
-            $logData['session']   = get_session()->get('id');
-            $logData['hostname']  = $this->rdns;
+            $logData['ip'] = $this->ip;
+            $logData['session'] = get_session()->get('id');
+            $logData['hostname'] = $this->rdns;
             $logData['last_time'] = $now;
 
             /*
@@ -770,7 +775,7 @@ class Kernel
             }
 
             // ACCESS FREQUENCY
-            $filterFrequency = $this->filterFrequency($logData, $ipDetail, $isFlagged, $resetPageviews);
+            $filterFrequency = $this->filterFrequency($logData, $ipDetail, $isFlagged);
             $isFlagged = $filterFrequency['is_flagged'];
             $logData = $filterFrequency['log_data'];
 
@@ -804,17 +809,7 @@ class Kernel
 
             // If $ipDetail[ip] is empty.
             // It means that the user is first time visiting our webiste.
-
-            $logData['ip']        = $this->ip;
-            $logData['session']   = get_session()->get('id');
-            $logData['hostname']  = $this->rdns;
-            $logData['last_time'] = $now;
-
-            foreach (array_keys($resetPageviews) as $unit) {
-                $logData['first_time_' . $unit] = $now;
-            }
-
-            $this->driver->save($this->ip, $logData, 'filter_log');
+            $this->filterDataInitializedForFirstTimeVisit($logData);
         }
 
         return self::RESPONSE_ALLOW;
@@ -956,7 +951,31 @@ class Kernel
         return self::RESPONSE_ALLOW;
     }
 
-/**
+    /**
+     * When the user is first time visiting our webiste.
+     * Initialize the log data.
+     * 
+     * @param array $logData The user's log data.
+     *
+     * @return void
+     */
+    protected function filterDataInitializedForFirstTimeVisit($logData)
+    {
+        $now = time();
+
+        $logData['ip']        = $this->ip;
+        $logData['session']   = get_session()->get('id');
+        $logData['hostname']  = $this->rdns;
+        $logData['last_time'] = $now;
+
+        foreach (array_keys($this->filterResetStatus) as $unit) {
+            $logData['first_time_' . $unit] = $now;
+        }
+
+        $this->driver->save($this->ip, $logData, 'filter_log');
+    }
+
+    /**
      * Filter - Referer.
      *
      * @param array $logData   IP data from Shieldon log table.
@@ -1119,42 +1138,28 @@ class Kernel
      * @param array $logData   IP data from Shieldon log table.
      * @param array $ipData    The IP log data.
      * @param bool  $isFlagged Is flagged as unusual behavior or not.
-     * @param array $units     The pageview unit status.
      *
      * @return array
      */
-    protected function filterFrequency(array $logData, array $ipDetail, bool $isFlagged, array $units): array
+    protected function filterFrequency(array $logData, array $ipDetail, bool $isFlagged): array
     {
         $isReject = false;
 
         if ($this->filterStatus['frequency']) {
-            $timeSecond = 0;
+            $timeSecond = [];
+            $timeSecond['s'] = 1;
+            $timeSecond['m'] = 60;
+            $timeSecond['h'] = 3600;
+            $timeSecond['d'] = 86400;
 
             foreach (array_keys($this->properties['time_unit_quota']) as $unit) {
-                switch ($unit) {
-                    case 's': 
-                        $timeSecond = 1;
-                        break;
 
-                    case 'm':
-                        $timeSecond = 60;
-                        break;
-
-                    case 'h':
-                        $timeSecond = 3600;
-                        break;
-
-                    case 'd':
-                        $timeSecond = 86400;
-                        break;
-                }
-
-                if (($logData['last_time'] - $ipDetail['first_time_' . $unit]) >= ($timeSecond + 1)) {
+                if (($logData['last_time'] - $ipDetail['first_time_' . $unit]) >= ($timeSecond[$unit] + 1)) {
 
                     // For example:
                     // (1) minutely: now > first_time_m about 61, (2) hourly: now > first_time_h about 3601, 
                     // Let's prepare to rest the the pageview count.
-                    $units[$unit] = true;
+                    $this->filterResetStatus[$unit] = true;
 
                 } else {
 
@@ -1195,9 +1200,9 @@ class Kernel
                 }
             }
 
-            foreach ($units as $unit => $resetStatus) {
+            foreach ($this->filterResetStatus as $unit => $status) {
                 // Reset the pageview check for specfic time unit.
-                if ($resetStatus) {
+                if ($status) {
                     $logData['first_time_' . $unit] = $logData['last_time'];
                     $logData['pageviews_' . $unit] = 0;
                 }
