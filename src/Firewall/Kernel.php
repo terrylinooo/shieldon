@@ -274,6 +274,20 @@ class Kernel
     ];
 
     /**
+     * The events.
+     *
+     * @var array
+     */
+    protected $event = [
+
+        // Update rule table when this value true.
+        'update_rule_table' => false,
+
+        // Send notifications when this value true.
+        'trigger_messengers' => false,
+    ];
+
+    /**
      * Result.
      *
      * @var int
@@ -430,6 +444,7 @@ class Kernel
         $attempts = $ipRule['attempts'] ?? 0;
         $now = time();
         $logData = [];
+        $handleType = 0;
 
         $logData['log_ip']     = $ipRule['log_ip'];
         $logData['ip_resolve'] = $ipRule['ip_resolve'];
@@ -452,113 +467,161 @@ class Kernel
             $logData['attempts'] = 0;
         }
 
-        $isMessengerTriggered = false;
-        $isUpdatRuleTable = false;
-
-        $handleType = 0;
-
-        if ($this->properties['deny_attempt_enable']['data_circle']) {
-
-            if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
-
-                $isUpdatRuleTable = true;
-
-                $buffer = $this->properties['deny_attempt_buffer']['data_circle'];
-
-                if ($attempts >= $buffer) {
-
-                    if ($this->properties['deny_attempt_notify']['data_circle']) {
-                        $isMessengerTriggered = true;
-                    }
-
-                    $logData['type'] = self::ACTION_DENY;
-
-                    // Reset this value for next checking process - iptables.
-                    $logData['attempts'] = 0;
-                    $handleType = 1;
-                }
-            }
+        if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
+            $ratd = $this->determineAttemptsTemporaryDeny($logData, $handleType, $attempts);
+            $logData = $ratd['log_data'];
+            $handleType = $ratd['handle_type'];
         }
 
-        if ($this->properties['deny_attempt_enable']['system_firewall']) {
-            
-            if ($ruleType === self::ACTION_DENY) {
-
-                $isUpdatRuleTable = true;
-
-                // For the requests that are already banned, but they are still attempting access, that means 
-                // that they are programmably accessing your website. Consider put them in the system-layer fireall
-                // such as IPTABLE.
-                $bufferIptable = $this->properties['deny_attempt_buffer']['system_firewall'];
-
-                if ($attempts >= $bufferIptable) {
-
-                    if ($this->properties['deny_attempt_notify']['system_firewall']) {
-                        $isMessengerTriggered = true;
-                    }
-
-                    $folder = rtrim($this->properties['iptables_watching_folder'], '/');
-
-                    if (file_exists($folder) && is_writable($folder)) {
-                        $filePath = $folder . '/iptables_queue.log';
-
-                        // command, ipv4/6, ip, subnet, port, protocol, action
-                        // add,4,127.0.0.1,null,all,all,drop  (example)
-                        // add,4,127.0.0.1,null,80,tcp,drop   (example)
-                        $command = 'add,4,' . $this->ip . ',null,all,all,deny';
-
-                        if (filter_var($this->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                            $command = 'add,6,' . $this->ip . ',null,all,allow';
-                        }
-
-                        // Add this IP address to itables_queue.log
-                        // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
-                        file_put_contents($filePath, $command . "\n", FILE_APPEND | LOCK_EX);
-
-                        $logData['attempts'] = 0;
-                        $handleType = 2;
-                    }
-                }
-            }
+        if ($ruleType === self::ACTION_DENY) {
+            $rapd = $this->determineAttemptsPermanentDeny($logData, $handleType, $attempts);
+            $logData = $rapd['log_data'];
+            $handleType = $rapd['handle_type'];
         }
 
         // We only update data when `deny_attempt_enable` is enable.
         // Because we want to get the last visited time and attempt counter.
-        // Otherwise we don't update it everytime to avoid wasting CPU resource.
-        if ($isUpdatRuleTable) {
+        // Otherwise, we don't update it everytime to avoid wasting CPU resource.
+        if ($this->event['update_rule_table']) {
             $this->driver->save($this->ip, $logData, 'rule');
         }
 
-        /**
-         * Notify this event to messenger.
-         */
-        if ($isMessengerTriggered) {
-
-            // The data strings that will be appended to message body.
-            $prepareMessageData = [
-                __('core', 'messenger_text_ip')       => $logData['log_ip'],
-                __('core', 'messenger_text_rdns')     => $logData['ip_resolve'],
-                __('core', 'messenger_text_reason')   => __('core', 'messenger_text_reason_code_' . $logData['reason']),
-                __('core', 'messenger_text_handle')   => __('core', 'messenger_text_handle_type_' . $handleType),
-                __('core', 'messenger_text_system')   => '',
-                __('core', 'messenger_text_cpu')      => get_cpu_usage(),
-                __('core', 'messenger_text_memory')   => get_memory_usage(),
-                __('core', 'messenger_text_time')     => date('Y-m-d H:i:s', $logData['time']),
-                __('core', 'messenger_text_timezone') => date_default_timezone_get(),
-            ];
-
-            $message = __('core', 'messenger_notification_subject', 'Notification for {0}', [$this->ip]) . "\n\n";
-
-            foreach ($prepareMessageData as $key => $value) {
-                $message .= $key . ': ' . $value . "\n";
-            }
-
-            $this->msgBody = $message;
+        // Notify this event to messenger.
+        if ($this->event['trigger_messengers']) {
+            $this->prepareMessengerBody($logData, $handleType);
         }
 
         return true;
     }
 
+    /**
+     * Record the attempts when the user is temporarily denied by rule table.
+     *
+     * @param array $logData
+     * @param int   $handleType
+     * @param int   $attempts
+     * 
+     * @return array
+     */
+    private function determineAttemptsTemporaryDeny(array $logData, int $handleType, int $attempts): array
+    {
+        if ($this->properties['deny_attempt_enable']['data_circle']) {
+            $this->event['update_rule_table'] = true;
+
+            $buffer = $this->properties['deny_attempt_buffer']['data_circle'];
+
+            if ($attempts >= $buffer) {
+
+                if ($this->properties['deny_attempt_notify']['data_circle']) {
+                    $this->event['trigger_messengers'] = true;
+                }
+
+                $logData['type'] = self::ACTION_DENY;
+
+                // Reset this value for next checking process - iptables.
+                $logData['attempts'] = 0;
+                $handleType = 1;
+            }
+        }
+
+        return [
+            'log_data' => $logData,
+            'handle_type' => $handleType,
+        ];
+    }
+
+    /**
+     * Record the attempts when the user is permanently denied by rule table.
+     *
+     * @param array $logData
+     * @param int   $handleType
+     * @param int   $attempts
+     * 
+     * @return array
+     */
+    private function determineAttemptsPermanentDeny(array $logData, int $handleType, int $attempts): array
+    {
+        if ($this->properties['deny_attempt_enable']['system_firewall']) {
+            $this->event['update_rule_table'] = true;
+
+            // For the requests that are already banned, but they are still attempting access, that means 
+            // that they are programmably accessing your website. Consider put them in the system-layer fireall
+            // such as IPTABLE.
+            $bufferIptable = $this->properties['deny_attempt_buffer']['system_firewall'];
+
+            if ($attempts >= $bufferIptable) {
+
+                if ($this->properties['deny_attempt_notify']['system_firewall']) {
+                    $this->event['trigger_messengers'] = true;
+                }
+
+                $folder = rtrim($this->properties['iptables_watching_folder'], '/');
+
+                if (file_exists($folder) && is_writable($folder)) {
+                    $filePath = $folder . '/iptables_queue.log';
+
+                    // command, ipv4/6, ip, subnet, port, protocol, action
+                    // add,4,127.0.0.1,null,all,all,drop  (example)
+                    // add,4,127.0.0.1,null,80,tcp,drop   (example)
+                    $command = 'add,4,' . $this->ip . ',null,all,all,deny';
+
+                    if (filter_var($this->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                        $command = 'add,6,' . $this->ip . ',null,all,allow';
+                    }
+
+                    // Add this IP address to itables_queue.log
+                    // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
+                    file_put_contents($filePath, $command . "\n", FILE_APPEND | LOCK_EX);
+
+                    $logData['attempts'] = 0;
+                    $handleType = 2;
+                }
+            }
+        }
+
+        return [
+            'log_data' => $logData,
+            'handle_type' => $handleType,
+        ];
+    }
+
+    /**
+     * Prepare the message body for messenger modules to sent.
+     *
+     * @param array $logData
+     * @param int   $handleType
+     * 
+     * @return void
+     */
+    private function prepareMessengerBody(array $logData, int $handleType): void
+    {
+        // The data strings that will be appended to message body.
+        $prepareMessageData = [
+            __('core', 'messenger_text_ip')       => $logData['log_ip'],
+            __('core', 'messenger_text_rdns')     => $logData['ip_resolve'],
+            __('core', 'messenger_text_reason')   => __('core', 'messenger_text_reason_code_' . $logData['reason']),
+            __('core', 'messenger_text_handle')   => __('core', 'messenger_text_handle_type_' . $handleType),
+            __('core', 'messenger_text_system')   => '',
+            __('core', 'messenger_text_cpu')      => get_cpu_usage(),
+            __('core', 'messenger_text_memory')   => get_memory_usage(),
+            __('core', 'messenger_text_time')     => date('Y-m-d H:i:s', $logData['time']),
+            __('core', 'messenger_text_timezone') => date_default_timezone_get(),
+        ];
+
+        $message = __('core', 'messenger_notification_subject', 'Notification for {0}', [$this->ip]) . "\n\n";
+
+        foreach ($prepareMessageData as $key => $value) {
+            $message .= $key . ': ' . $value . "\n";
+        }
+
+        $this->msgBody = $message;
+    }
+
+    /**
+     * Check if current IP is trusted or not.
+     *
+     * @return bool
+     */
     private function isTrustedBot()
     {
         if ($this->getComponent('TrustedBot')) {
