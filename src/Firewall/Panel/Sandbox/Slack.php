@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel\Sandbox;
 
-use Shieldon\Messenger as Messenger;
+use Shieldon\Messenger\Slack as SlackTest;
 
 /**
  * The sandbox for Slack.
@@ -43,8 +43,10 @@ class Slack
     {
         $botToken = $getParams['botToken'] ?? '';
         $channel = $getParams['channel'] ?? '';
+
         if (!empty($botToken) && !empty($channel)) {
-            $messenger = new Messenger\Slack($botToken, $channel);
+            $messenger = new SlackTest($botToken, $channel);
+
             if ($messenger->send($message['body'])) {
                 return true;
             }

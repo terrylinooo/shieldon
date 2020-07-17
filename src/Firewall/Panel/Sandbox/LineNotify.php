@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel\Sandbox;
 
-use Shieldon\Messenger as Messenger;
+use Shieldon\Messenger\LineNotify as LineNotifyTest;
 
 /**
  * The sandbox for Line Notify.
@@ -42,8 +42,10 @@ class LineNotify
     private function sandbox($getParams, $message)
     {
         $accessToken = $getParams['accessToken'] ?? '';
+
         if (!empty($accessToken)) {
-            $messenger = new Messenger\LineNotify($accessToken);
+            $messenger = new LineNotifyTest($accessToken);
+
             if ($messenger->send($message['body'])) {
                 return true;
             }

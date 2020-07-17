@@ -84,7 +84,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
         sleep(2);
         $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
-        $ipDetail = $kernel->driver->get('141.112.175.2', 'filter_log');
+        $ipDetail = $kernel->driver->get('141.112.175.2', 'filter');
 
         if ($ipDetail['pageviews_s'] == 0) {
             $this->assertTrue(true);
@@ -222,11 +222,11 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
         sleep(2);
         $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
-        $ipDetail = $kernel->driver->get('140.112.173.11', 'filter_log');
+        $ipDetail = $kernel->driver->get('140.112.173.11', 'filter');
         $this->assertEquals($ipDetail['flag_empty_referer'], 1);
         sleep(2);
         $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
-        $ipDetail = $kernel->driver->get('140.112.173.11', 'filter_log');
+        $ipDetail = $kernel->driver->get('140.112.173.11', 'filter');
         $this->assertEquals($ipDetail['flag_empty_referer'], 0);
     }
 
@@ -834,7 +834,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel->setIp('0:0:0:0:0:ffff:c0a8:5f01');
         $result = $kernel->run();
 
-        $ipDetail = $kernel->driver->get('0:0:0:0:0:ffff:c0a8:5f01', 'filter_log');
+        $ipDetail = $kernel->driver->get('0:0:0:0:0:ffff:c0a8:5f01', 'filter');
 
         $this->assertSame($ipDetail['ip'], '0:0:0:0:0:ffff:c0a8:5f01'); 
     }

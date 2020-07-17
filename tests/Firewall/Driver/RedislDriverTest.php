@@ -42,7 +42,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
         $methodDoFetchAll = $reflection->getMethod('doFetchAll');
         $methodDoFetchAll->setAccessible(true);
 
-        $resultA = $methodDoFetchAll->invokeArgs($redisDriver, ['filter_log']);
+        $resultA = $methodDoFetchAll->invokeArgs($redisDriver, ['filter']);
         $resultB = $methodDoFetchAll->invokeArgs($redisDriver, ['rule']);
         $resultC = $methodDoFetchAll->invokeArgs($redisDriver, ['session']);
 
@@ -52,8 +52,8 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
 
         $data = ['tragedy' => '19890604'];
     
-        $redisDriver->save('19.89.6.4', $data, 'filter_log');
-        $resultD = $methodDoFetchAll->invokeArgs($redisDriver, ['filter_log']);
+        $redisDriver->save('19.89.6.4', $data, 'filter');
+        $resultD = $methodDoFetchAll->invokeArgs($redisDriver, ['filter']);
 
         $this->assertSame($resultD['19.89.6.4']['log_data'], $data);
     }
@@ -70,7 +70,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
         $methodCheckExist = $reflection->getMethod('checkExist');
         $methodCheckExist->setAccessible(true);
 
-        $resultA = $methodCheckExist->invokeArgs($redisDriver, ['64.64.64.64', 'filter_log']);
+        $resultA = $methodCheckExist->invokeArgs($redisDriver, ['64.64.64.64', 'filter']);
         $resultB = $methodCheckExist->invokeArgs($redisDriver, ['64.64.64.64', 'rule']);
         $resultC = $methodCheckExist->invokeArgs($redisDriver, ['8a7d7ba288ca0f0ea1ecf975b026e8e1', 'session']);
 
@@ -94,7 +94,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
         $data = ['revolution' => 'freedom'];
         $expire = 3;
 
-        $resultA = $methodDoSave->invokeArgs($redisDriver, ['19.89.4.15', $data, 'filter_log', $expire]);
+        $resultA = $methodDoSave->invokeArgs($redisDriver, ['19.89.4.15', $data, 'filter', $expire]);
         $resultB = $methodDoSave->invokeArgs($redisDriver, ['19.89.6.4', $data, 'rule', $expire]);
         $resultC = $methodDoSave->invokeArgs($redisDriver, ['8a7d7ba288ca0f0ea1ecf975b026e8e1', $data, 'session', $expire]);
 
@@ -106,7 +106,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
         $methodCheckExist = $reflection->getMethod('checkExist');
         $methodCheckExist->setAccessible(true);
 
-        $resultA = $methodCheckExist->invokeArgs($redisDriver, ['19.89.4.15', 'filter_log']);
+        $resultA = $methodCheckExist->invokeArgs($redisDriver, ['19.89.4.15', 'filter']);
         $resultB = $methodCheckExist->invokeArgs($redisDriver, ['19.89.6.4', 'rule']);
         $resultC = $methodCheckExist->invokeArgs($redisDriver, ['8a7d7ba288ca0f0ea1ecf975b026e8e1', 'session']);
 
@@ -116,7 +116,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
 
         sleep(4);
 
-        $resultA = $methodCheckExist->invokeArgs($redisDriver, ['19.89.4.15', 'filter_log']);
+        $resultA = $methodCheckExist->invokeArgs($redisDriver, ['19.89.4.15', 'filter']);
         $resultB = $methodCheckExist->invokeArgs($redisDriver, ['19.89.6.4', 'rule']);
         $resultC = $methodCheckExist->invokeArgs($redisDriver, ['8a7d7ba288ca0f0ea1ecf975b026e8e1', 'session']);
 

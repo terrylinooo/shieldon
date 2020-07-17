@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel\Sandbox;
 
-use Shieldon\Messenger as Messenger;
+use Shieldon\Messenger\SlackWebhook as SlackWebhookTest;
 
 /**
  * The sandbox for Slack Webhook.
@@ -42,8 +42,10 @@ class SlackWebhook
     private function sandbox($getParams, $message)
     {
         $webhookUrl = $getParams['webhookUrl'] ?? '';
+
         if (!empty($webhookUrl)) {
-            $messenger = new Messenger\SlackWebhook($webhookUrl);
+            $messenger = new SlackWebhookTest($webhookUrl);
+
             if ($messenger->send($message['body'])) {
                 return true;
             }

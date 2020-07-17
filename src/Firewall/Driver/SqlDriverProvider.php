@@ -79,7 +79,7 @@ class SqlDriverProvider extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doFetch(string $ip, string $type = 'filter_log'): array
+    protected function doFetch(string $ip, string $type = 'filter'): array
     {
         $results = [];
 
@@ -105,7 +105,7 @@ class SqlDriverProvider extends DriverProvider
                 }
                 break;
 
-            case 'filter_log':
+            case 'filter':
                 $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs . '
                     WHERE log_ip = :log_ip
                     LIMIT 1';
@@ -152,7 +152,7 @@ class SqlDriverProvider extends DriverProvider
    /**
      * {@inheritDoc}
      */
-    protected function doFetchAll(string $type = 'filter_log'): array
+    protected function doFetchAll(string $type = 'filter'): array
     {
         $results = [];
 
@@ -170,7 +170,7 @@ class SqlDriverProvider extends DriverProvider
                 }
                 break;
 
-            case 'filter_log':
+            case 'filter':
                 $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs;
 
                 $query = $this->db->prepare($sql);
@@ -201,7 +201,7 @@ class SqlDriverProvider extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function checkExist(string $ip, string $type = 'filter_log'): bool
+    protected function checkExist(string $ip, string $type = 'filter'): bool
     {
         switch ($type) {
 
@@ -210,7 +210,7 @@ class SqlDriverProvider extends DriverProvider
                 $field = 'log_ip';
                 break;
 
-            case 'filter_log':
+            case 'filter':
                 $tableName = $this->tableFilterLogs;
                 $field = 'log_ip';
                 break;
@@ -241,7 +241,7 @@ class SqlDriverProvider extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doSave(string $ip, array $data, string $type = 'filter_log', $expire = 0): bool
+    protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
         switch ($type) {
 
@@ -252,7 +252,7 @@ class SqlDriverProvider extends DriverProvider
                 $logData['log_ip'] = $ip;
                 break;
 
-            case 'filter_log':
+            case 'filter':
                 $tableName = $this->tableFilterLogs;
                 $logWhere['log_ip'] = $ip;
                 $logData['log_ip'] = $ip;
@@ -277,11 +277,11 @@ class SqlDriverProvider extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doDelete(string $ip, string $type = 'filter_log'): bool
+    protected function doDelete(string $ip, string $type = 'filter'): bool
     {
         switch ($type) {
             case 'rule'      : return $this->remove($this->tableRuleList,   ['log_ip' => $ip]);
-            case 'filter_log': return $this->remove($this->tableFilterLogs, ['log_ip' => $ip]);
+            case 'filter': return $this->remove($this->tableFilterLogs, ['log_ip' => $ip]);
             case 'session'   : return $this->remove($this->tableSessions,   ['id'     => $ip]);
         }
 

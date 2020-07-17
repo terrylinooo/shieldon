@@ -123,7 +123,7 @@ class Circle extends BaseController
      */
     public function filter(): ResponseInterface
     {
-        $data['ip_log_list'] = $this->kernel->driver->getAll('filter_log');
+        $data['ip_log_list'] = $this->kernel->driver->getAll('filter');
 
         $data['title'] = __('panel', 'menu_data_circle', 'Data Circle') . ' - ';
         $data['title'] .= __('panel', 'title_circle_filter', 'Filter Table');

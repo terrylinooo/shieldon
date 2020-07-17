@@ -442,6 +442,7 @@ class Kernel
         // Current visitor has been blocked. If he still attempts accessing the site, 
         // then we can drop him into the permanent block list.
         $attempts = $ipRule['attempts'] ?? 0;
+        $attempts = (int) $attempts;
         $now = time();
         $logData = [];
         $handleType = 0;
@@ -812,9 +813,9 @@ class Kernel
         $isFlagged = false;
 
         // Fetch an IP data from Shieldon log table.
-        $ipDetail = $this->driver->get($this->ip, 'filter_log');
+        $ipDetail = $this->driver->get($this->ip, 'filter');
 
-        $ipDetail = $this->driver->parseData($ipDetail, 'filter_log');
+        $ipDetail = $this->driver->parseData($ipDetail, 'filter');
         $logData = $ipDetail;
 
         // Counting user pageviews.
@@ -883,7 +884,7 @@ class Kernel
                 }
             }
 
-            $this->driver->save($this->ip, $logData, 'filter_log');
+            $this->driver->save($this->ip, $logData, 'filter');
 
         } else {
 
@@ -937,7 +938,7 @@ class Kernel
 
         // Remove logs for this IP address because It already has it's own rule on system.
         // No need to count it anymore.
-        $this->driver->delete($ip, 'filter_log');
+        $this->driver->delete($ip, 'filter');
 
         if (null !== $this->logger) {
             $log['ip']          = $ip;
@@ -1052,7 +1053,7 @@ class Kernel
             $logData['first_time_' . $unit] = $now;
         }
 
-        $this->driver->save($this->ip, $logData, 'filter_log');
+        $this->driver->save($this->ip, $logData, 'filter');
     }
 
     /**

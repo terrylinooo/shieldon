@@ -20,11 +20,13 @@ use RuntimeException;
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
+use function in_array;
 use function is_dir;
 use function json_decode;
 use function ksort;
 use function mkdir;
 use function rmdir;
+use function str_replace;
 use function touch;
 use function umask;
 use function unlink;
@@ -94,80 +96,37 @@ class FileDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doFetchAll(string $type = 'filter_log'): array
+    protected function doFetchAll(string $type = 'filter'): array
     {
         $results = [];
 
-        switch ($type) {
-
-            case 'rule':
-                // no break
-            case 'filter_log':
-                // no break
-            case 'session':
-
-                $dir = $this->getDirectory($type);
-
-                if (is_dir($dir)) {
-                    $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
-                    $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-    
-                    foreach($files as $file) {
-                        if ($file->isFile()) {
-    
-                            $content = json_decode(file_get_contents($file->getPath() . '/' . $file->getFilename()), true);
-    
-                            if ($type === 'session') {
-                                $sort = $content['microtimesamp'] . '.' . $file->getFilename(); 
-                            } else {
-                                $sort = $file->getMTime() . '.' . $file->getFilename();
-                            }
-                            $results[$sort] = $content;
-                        }
-                    }
-                    unset($it, $files);
-    
-                    // Sort by ascending timesamp (microtimesamp).
-                    ksort($results);
-                }
-                break;
-            // endswitch
-        }
-
-        return $results;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function doFetch(string $ip, string $type = 'filter_log'): array
-    {
-        $results = [];
-
-        if (!file_exists($this->getFilename($ip, $type))) {
+        if (!in_array($type, $this->tableTypes)) {
             return $results;
         }
 
-        switch ($type) {
+        $dir = $this->getDirectory($type);
 
-            case 'rule':
-            case 'session':
-                $fileContent = file_get_contents($this->getFilename($ip, $type));
-                $resultData = json_decode($fileContent, true);
+        if (is_dir($dir)) {
+            $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
+            $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
 
-                if (is_array($resultData)) {
-                    $results = $resultData;
+            foreach($files as $file) {
+                if ($file->isFile()) {
+
+                    $content = json_decode(file_get_contents($file->getPath() . '/' . $file->getFilename()), true);
+
+                    if ($type === 'session') {
+                        $sort = $content['microtimesamp'] . '.' . $file->getFilename(); 
+                    } else {
+                        $sort = $file->getMTime() . '.' . $file->getFilename();
+                    }
+                    $results[$sort] = $content;
                 }
-                break;
+            }
+            unset($it, $files);
 
-            case 'filter_log':
-                $fileContent = file_get_contents($this->getFilename($ip, $type));
-                $resultData = json_decode($fileContent, true);
-
-                if (!empty($resultData['log_data'])) {
-                    $results = $resultData['log_data']; 
-                }
-                break;
+            // Sort by ascending timesamp (microtimesamp).
+            ksort($results);
         }
 
         return $results;
@@ -176,7 +135,37 @@ class FileDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function checkExist(string $ip, string $type = 'filter_log'): bool
+    protected function doFetch(string $ip, string $type = 'filter'): array
+    {
+        $results = [];
+
+        if (
+            !file_exists($this->getFilename($ip, $type)) || 
+            !in_array($type, $this->tableTypes)
+        ) {
+            return $results;
+        }
+
+        $fileContent = file_get_contents($this->getFilename($ip, $type));
+        $resultData = json_decode($fileContent, true);
+
+        // rule | session
+        if (is_array($resultData)) {
+            $results = $resultData;
+        }
+
+        // filter 
+        if (!empty($resultData['log_data'])) {
+            return $resultData['log_data']; 
+        }
+
+        return $results;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function checkExist(string $ip, string $type = 'filter'): bool
     {
         if (file_exists($this->getFilename($ip, $type))) {
             return true;
@@ -188,7 +177,7 @@ class FileDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doSave(string $ip, array $data, string $type = 'filter_log', $expire = 0): bool
+    protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
         switch ($type) {
 
@@ -197,7 +186,7 @@ class FileDriver extends DriverProvider
                 $logData['log_ip'] = $ip;
                 break;
 
-            case 'filter_log':
+            case 'filter':
                 $logData['log_ip'] = $ip;
                 $logData['log_data'] = $data;
                 break;
@@ -218,12 +207,12 @@ class FileDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doDelete(string $ip, string $type = 'filter_log'): bool
+    protected function doDelete(string $ip, string $type = 'filter'): bool
     {
         switch ($type) {
             case 'rule':
                 // no break
-            case 'filter_log':
+            case 'filter':
                 // no break
             case 'session':
                 return $this->remove($this->getFilename($ip, $type));
@@ -239,7 +228,7 @@ class FileDriver extends DriverProvider
     {
         // Those are Shieldon logs directories.
         $removeDirs = [
-            $this->getDirectory('filter_log'),
+            $this->getDirectory('filter'),
             $this->getDirectory('rule'),
             $this->getDirectory('session'),
         ];
@@ -273,12 +262,12 @@ class FileDriver extends DriverProvider
             unlink($checkingFile);
         }
 
+        $conA = !is_dir($this->getDirectory('filter'));
+        $conB = !is_dir($this->getDirectory('rule'));
+        $conC = !is_dir($this->getDirectory('session'));
+
         // Check if are Shieldon directories removed or not.
-        $result = (
-            !is_dir($this->getDirectory('filter_log')) && 
-            !is_dir($this->getDirectory('rule'))       && 
-            !is_dir($this->getDirectory('session'))
-        );
+        $result = ($conA && $conB && $conC);
 
         $this->createDirectory();
 
@@ -292,36 +281,34 @@ class FileDriver extends DriverProvider
      */
     protected function createDirectory(): bool
     {
-        $resultA = $resultB = $resultC = false;
+        $conA = $resultB = $resultC = false;
 
         $checkingFile = $this->directory . '/' . $this->channel . '_' . $this->checkPoint;
 
         if (!file_exists($checkingFile)) {
             $originalUmask = umask(0);
 
-            if (!is_dir($this->getDirectory('filter_log'))) {
-                $resultA = @mkdir($this->getDirectory('filter_log'), 0777, true);
+            if (!is_dir($this->getDirectory('filter'))) {
+                $conA = @mkdir($this->getDirectory('filter'), 0777, true);
             }
     
             if (!is_dir($this->getDirectory('rule'))) {
-                $resultB = @mkdir($this->getDirectory('rule'), 0777, true);
+                $conB = @mkdir($this->getDirectory('rule'), 0777, true);
             }
     
             if (!is_dir($this->getDirectory('session'))) {
-                $resultC = @mkdir($this->getDirectory('session'), 0777, true);
+                $conC = @mkdir($this->getDirectory('session'), 0777, true);
             }
 
-            if ($resultA && $resultB && $resultC) {
-                file_put_contents($checkingFile, ' ');
+            if (!($conA && $conB && $conC)) {
+                return false;
             }
+
+            file_put_contents($checkingFile, ' ');
             umask($originalUmask);
         }
 
-        return (
-            ($resultA == $resultB) &&
-            ($resultB == $resultC) &&
-            ($resultC == $resultA)
-        );
+        return true;
     }
 
     /**
@@ -342,6 +329,8 @@ class FileDriver extends DriverProvider
 
     /**
      * Remove a Shieldon log file.
+     * 
+     * @param $logFilePath The absolute path of the log file.
      *
      * @return bool
      */
@@ -361,12 +350,12 @@ class FileDriver extends DriverProvider
      *
      * @return string
      */
-    private function getFilename(string $ip, string $type = 'filter_log'): string
+    private function getFilename(string $ip, string $type = 'filter'): string
     {
         $ip = str_replace(':', '-', $ip);
         $path = [];
 
-        $path['filter_log'] = $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
+        $path['filter'] = $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
         $path['session'] = $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
         $path['rule'] = $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
 
@@ -380,11 +369,11 @@ class FileDriver extends DriverProvider
      *
      * @return string
      */
-    private function getDirectory(string $type = 'filter_log'): string
+    private function getDirectory(string $type = 'filter'): string
     {
         $path = [];
 
-        $path['filter_log'] = $this->directory . '/' . $this->tableFilterLogs;
+        $path['filter'] = $this->directory . '/' . $this->tableFilterLogs;
         $path['session'] = $this->directory . '/' . $this->tableSessions;
         $path['rule'] = $this->directory . '/' . $this->tableRuleList;
 

@@ -55,6 +55,17 @@ class DriverProvider extends AbstractDriver
     protected $isInitialized = false;
 
     /**
+     * The table types.
+     *
+     * @var array
+     */
+    protected $tableTypes = [
+        'rule',
+        'filter',
+        'session',
+    ];
+
+    /**
      * Set data channel.
      *
      * @param string $channel
@@ -85,12 +96,12 @@ class DriverProvider extends AbstractDriver
     /**
      * Return parsed full data structure.
      *
-     * @param array $data
-     * @param string $tyle
+     * @param array  $data The data needed to be parsed.
+     * @param string $type The type of data table. accepts: filter | session | rule
      *
      * @return array
      */
-    public function parseData(array $data, string $type = 'filter_log'): array
+    public function parseData(array $data, string $type = 'filter'): array
     {
         $parsedData = [];
 
@@ -104,7 +115,7 @@ class DriverProvider extends AbstractDriver
                 break;
 
             // Log table data structure.
-            case 'filter_log':
+            case 'filter':
                 // no break
             default:
 
@@ -160,10 +171,11 @@ class DriverProvider extends AbstractDriver
      * Implement fetch.
      *
      * @param string $ip The data id of the entry to fetch.
+     * @param string $type The type of data table. accepts: filter | session | rule
      *
      * @return array The data or an empty array.
      */
-    protected function doFetch(string $ip, string $type = 'filter_log'): array
+    protected function doFetch(string $ip, string $type = 'filter'): array
     {
         return [];
     }
@@ -171,11 +183,11 @@ class DriverProvider extends AbstractDriver
     /**
      * Implement fetch all.
      *
-     * @param string $type The data type.
+     * @param string $type The type of data table. accepts: filter | session | rule
      *
      * @return array The data or an empty array.
      */
-    protected function doFetchAll(string $type = 'filter_log'): array
+    protected function doFetchAll(string $type = 'filter'): array
     {
         return [];
     }
@@ -184,10 +196,11 @@ class DriverProvider extends AbstractDriver
      * Implement has.
      *
      * @param string $ip The data id of the entry to check for.
+     * @param string $type The type of data table. accepts: filter | session | rule
      *
      * @return bool
      */
-    protected function checkExist(string $ip, string $type = 'filter_log'): bool
+    protected function checkExist(string $ip, string $type = 'filter'): bool
     {
         return false;
     }
@@ -195,13 +208,13 @@ class DriverProvider extends AbstractDriver
     /**
      * Implement save.
      *
-     * @param string $ip     The data id.
+     * @param string $ip     The IP address as the data id.
      * @param array  $data   The data.
      * @param int    $expire The data will be deleted after expiring.
      *
      * @return bool
      */
-    protected function doSave(string $ip, array $data, string $type = 'filter_log', $expire = 0): bool 
+    protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool 
     {
         return false;
     }
@@ -209,11 +222,12 @@ class DriverProvider extends AbstractDriver
     /**
      * Implement delete.
      *
-     * @param string $ip
+     * @param string $ip   The IP address.
+     * @param string $type The type of data table. accepts: filter | session | rule
      *
      * @return bool
      */
-    protected function doDelete(string $ip, string $type = 'filter_log'): bool
+    protected function doDelete(string $ip, string $type = 'filter'): bool
     {
         return false;
     }

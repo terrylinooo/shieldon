@@ -133,7 +133,7 @@ class SqlDriverProviderTest extends \PHPUnit\Framework\TestCase
         $methodDoFetchAll = $reflection->getMethod('doFetchAll');
         $methodDoFetchAll->setAccessible(true);
         $methodDoFetchAll->invokeArgs($mockSqlDriver, ['rule']);
-        $methodDoFetchAll->invokeArgs($mockSqlDriver, ['filter_log']);
+        $methodDoFetchAll->invokeArgs($mockSqlDriver, ['filter']);
     }
 
     public function testDoDelete()

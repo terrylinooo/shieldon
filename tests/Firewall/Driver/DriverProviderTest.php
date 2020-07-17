@@ -30,7 +30,7 @@ class DriverProviderTest extends \PHPUnit\Framework\TestCase
     public function testParseData()
     {
         $driverProvider = new \Shieldon\Firewall\Driver\DriverProvider();
-        $result = $driverProvider->parseData([], 'filter_log');
+        $result = $driverProvider->parseData([], 'filter');
 
         $fields = [
             'ip'                 => '', 

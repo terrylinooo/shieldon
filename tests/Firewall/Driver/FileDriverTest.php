@@ -36,7 +36,7 @@ class FileDriverTest extends \PHPUnit\Framework\TestCase
         $methodDoFetchAll = $reflection->getMethod('doFetchAll');
         $methodDoFetchAll->setAccessible(true);
 
-        $resultA = $methodDoFetchAll->invokeArgs($fileDriver, ['filter_log']);
+        $resultA = $methodDoFetchAll->invokeArgs($fileDriver, ['filter']);
         $resultB = $methodDoFetchAll->invokeArgs($fileDriver, ['rule']);
         $resultC = $methodDoFetchAll->invokeArgs($fileDriver, ['session']);
 
@@ -46,8 +46,8 @@ class FileDriverTest extends \PHPUnit\Framework\TestCase
 
         $data = ['tragedy' => '19890604'];
     
-        $fileDriver->save('19.89.6.4', $data, 'filter_log');
-        $resultD = $methodDoFetchAll->invokeArgs($fileDriver, ['filter_log']);
+        $fileDriver->save('19.89.6.4', $data, 'filter');
+        $resultD = $methodDoFetchAll->invokeArgs($fileDriver, ['filter']);
 
         foreach ($resultD as $result) {
             $this->assertSame($result['log_data'], $data);
@@ -63,7 +63,7 @@ class FileDriverTest extends \PHPUnit\Framework\TestCase
         $methodCheckExist = $reflection->getMethod('checkExist');
         $methodCheckExist->setAccessible(true);
 
-        $resultA = $methodCheckExist->invokeArgs($fileDriver, ['64.64.64.64', 'filter_log']);
+        $resultA = $methodCheckExist->invokeArgs($fileDriver, ['64.64.64.64', 'filter']);
         $resultB = $methodCheckExist->invokeArgs($fileDriver, ['64.64.64.64', 'rule']);
         $resultC = $methodCheckExist->invokeArgs($fileDriver, ['8a7d7ba288ca0f0ea1ecf975b026e8e1', 'session']);
 
@@ -83,7 +83,7 @@ class FileDriverTest extends \PHPUnit\Framework\TestCase
 
         $data = ['revolution' => 'freedom'];
 
-        $resultA = $methodDoSave->invokeArgs($fileDriver, ['19.89.4.15', $data, 'filter_log']);
+        $resultA = $methodDoSave->invokeArgs($fileDriver, ['19.89.4.15', $data, 'filter']);
         $resultB = $methodDoSave->invokeArgs($fileDriver, ['19.89.6.4', $data, 'rule']);
         $resultC = $methodDoSave->invokeArgs($fileDriver, ['8a7d7ba288ca0f0ea1ecf975b026e8e1', $data, 'session']);
 
@@ -95,7 +95,7 @@ class FileDriverTest extends \PHPUnit\Framework\TestCase
         $methodCheckExist = $reflection->getMethod('checkExist');
         $methodCheckExist->setAccessible(true);
 
-        $resultA = $methodCheckExist->invokeArgs($fileDriver, ['19.89.4.15', 'filter_log']);
+        $resultA = $methodCheckExist->invokeArgs($fileDriver, ['19.89.4.15', 'filter']);
         $resultB = $methodCheckExist->invokeArgs($fileDriver, ['19.89.6.4', 'rule']);
         $resultC = $methodCheckExist->invokeArgs($fileDriver, ['8a7d7ba288ca0f0ea1ecf975b026e8e1', 'session']);
 

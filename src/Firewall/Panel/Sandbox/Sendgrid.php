@@ -12,7 +12,11 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel\Sandbox;
 
-use Shieldon\Messenger as Messenger;
+use Shieldon\Messenger\Sendgrid as SendgridTest;
+use function explode;
+use function filter_var;
+use function str_replace;
+
 
 /**
  * The sandbox for Sendgrid.
@@ -50,7 +54,7 @@ class Sendgrid
             $recipients = str_replace("\n", '|', $recipients);
             $recipients = explode('|', $recipients);
 
-            $messenger = new Messenger\Sendgrid($apiKey);
+            $messenger = new SendgridTest($apiKey);
 
             foreach($recipients as $recipient) {
                 if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {

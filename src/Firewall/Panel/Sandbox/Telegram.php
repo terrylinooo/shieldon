@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel\Sandbox;
 
-use Shieldon\Messenger as Messenger;
+use Shieldon\Messenger\Telegram as TelegramTest;
 
 /**
  * The sandbox for Telegram.
@@ -43,8 +43,10 @@ class Telegram
     {
         $apiKey = $getParams['apiKey'] ?? '';
         $channel = $getParams['channel'] ?? '';
+
         if (!empty($apiKey) && !empty($channel)) {
-            $messenger = new Messenger\Telegram($apiKey, $channel);
+            $messenger = new TelegramTest($apiKey, $channel);
+
             if ($messenger->send($message['body'])) {
                 return true;
             }

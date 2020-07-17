@@ -12,7 +12,11 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel\Sandbox;
 
-use Shieldon\Messenger as Messenger;
+use Shieldon\Messenger\Smtp as SmtpTest;
+use function explode;
+use function filter_var;
+use function str_replace;
+
 
 /**
  * The sandbox for SMTP.
@@ -63,7 +67,7 @@ class Smtp
             $recipients = str_replace("\n", '|', $recipients);
             $recipients = explode('|', $recipients);
 
-            $messenger = new Messenger\Smtp($user, $pass, $host, (int) $port);
+            $messenger = new SmtpTest($user, $pass, $host, (int) $port);
 
             foreach($recipients as $recipient) {
                 if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {

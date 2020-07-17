@@ -83,7 +83,7 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doFetchAll(string $type = 'filter_log'): array
+    protected function doFetchAll(string $type = 'filter'): array
     {
         $results = [];
 
@@ -91,7 +91,7 @@ class RedisDriver extends DriverProvider
 
             case 'rule':
                 // no break
-            case 'filter_log':
+            case 'filter':
                 // no break
             case 'session':
 
@@ -120,7 +120,7 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doFetch(string $ip, string $type = 'filter_log'): array
+    protected function doFetch(string $ip, string $type = 'filter'): array
     {
         $results = [];
 
@@ -140,7 +140,7 @@ class RedisDriver extends DriverProvider
                     $results = $resultData;
                 }
 
-            case 'filter_log':
+            case 'filter':
                 $content = $this->redis->get($this->getKeyName($ip, $type));
                 $resultData = json_decode($content, true);
 
@@ -155,7 +155,7 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function checkExist(string $ip, string $type = 'filter_log'): bool
+    protected function checkExist(string $ip, string $type = 'filter'): bool
     {
         $isExist = $this->redis->exists($this->getKeyName($ip, $type));
 
@@ -173,7 +173,7 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doSave(string $ip, array $data, string $type = 'filter_log', $expire = 0): bool
+    protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
         switch ($type) {
 
@@ -182,7 +182,7 @@ class RedisDriver extends DriverProvider
                 $logData['log_ip'] = $ip;
                 break;
 
-            case 'filter_log':
+            case 'filter':
                 $logData['log_ip'] = $ip;
                 $logData['log_data'] = $data;
                 break;
@@ -206,12 +206,12 @@ class RedisDriver extends DriverProvider
     /**
      * {@inheritDoc}
      */
-    protected function doDelete(string $ip, string $type = 'filter_log'): bool
+    protected function doDelete(string $ip, string $type = 'filter'): bool
     {
         switch ($type) {
             case 'rule':
                 // no break
-            case 'filter_log':
+            case 'filter':
                 // no break
             case 'session':
                 return $this->redis->del($this->getKeyName($ip, $type)) >= 0;
@@ -224,7 +224,7 @@ class RedisDriver extends DriverProvider
      */
     protected function doRebuild(): bool
     {
-        foreach (['rule', 'filter_log', 'session'] as $type) {
+        foreach (['rule', 'filter', 'session'] as $type) {
             $keys = $this->redis->keys($this->getNamespace($type) . ':*');
 
             if (!empty($keys)) {
@@ -244,10 +244,10 @@ class RedisDriver extends DriverProvider
      *
      * @return string
      */
-    private function getKeyName(string $ip, string $type = 'filter_log'): string
+    private function getKeyName(string $ip, string $type = 'filter'): string
     {
         switch ($type) {
-            case 'filter_log': 
+            case 'filter': 
                 return $this->tableFilterLogs . ':' . $ip;
             case 'session':
                 return $this->tableSessions . ':' . $ip;
@@ -264,10 +264,10 @@ class RedisDriver extends DriverProvider
      *
      * @return string
      */
-    private function getNamespace(string $type = 'filter_log'): string
+    private function getNamespace(string $type = 'filter'): string
     {
         switch ($type) {
-            case 'filter_log':
+            case 'filter':
                 return $this->tableFilterLogs;
             case 'session':
                 return $this->tableSessions;

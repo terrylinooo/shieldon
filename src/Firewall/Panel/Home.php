@@ -154,7 +154,7 @@ class Home extends BaseController
 
         // Data circle.
         $data['rule_list'] = $this->kernel->driver->getAll('rule');
-        $data['ip_log_list'] = $this->kernel->driver->getAll('filter_log');
+        $data['ip_log_list'] = $this->kernel->driver->getAll('filter');
         $data['session_list'] = $this->kernel->driver->getAll('session');
 
         /*

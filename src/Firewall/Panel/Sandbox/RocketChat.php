@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel\Sandbox;
 
-use Shieldon\Messenger as Messenger;
+use Shieldon\Messenger\RocketChat as RocketChatTest;
 
 /**
  * The sandbox for RocketChat.
@@ -52,7 +52,14 @@ class RocketChat
             !empty($accessToken) &&
             !empty($channel)
         ) {
-            $messenger = new Messenger\RocketChat($accessToken, $userId, $serverUrl, $channel);
+
+            $messenger = new RocketChatTest(
+                $accessToken,
+                $userId,
+                $serverUrl,
+                $channel
+            );
+
             if ($messenger->send($message['body'])) {
                 return true;
             }
