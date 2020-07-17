@@ -581,12 +581,55 @@ class Firewall
     }
 
     /**
+     * Covert string with dashes into camel-case string.
+     *
+     * @param string $string A string with dashes.
+     *
+     * @return string
+     */
+    private function getCamelCase(string $string = '')
+    {
+        $str = explode('-', $string);
+        $str = implode('', array_map(function($word) {
+            return ucwords($word); 
+        }, $str));
+
+        return $str;
+    }
+
+    /**
      * Set the messenger modules.
      *
      * @return void
      */
     protected function setMessengers(): void
     {
+        $messengerList = [
+            'telegram',
+            'line_notify',
+            'sendgrid',
+            'native_php_mail',
+            'smtp',
+            'mailgun',
+            'rocket_chat',
+            'slack',
+            'slack_webhook',
+        ];
+
+        foreach ($messengerList as $messenger) {
+            $setting = $this->getOption($messenger, 'messengers');
+
+            if (!empty($setting['enable']) && !empty($setting['confirm_test'])) {
+                $factory = '\Shieldon\Firewall\Messenger\\' . $this->getCamelCase($messenger);
+
+                // Initialize messenger instances from the factories.
+                if ($factory::check($setting)) {
+                    $this->kernel->add($factory::getInstance($setting));
+                }
+            }
+            unset($setting);
+        }
+
         $telegramSetting     = $this->getOption('telegram', 'messengers');
         $linenotodySetting   = $this->getOption('line_notify', 'messengers');
         $sendgridSetting     = $this->getOption('sendgrid', 'messengers');

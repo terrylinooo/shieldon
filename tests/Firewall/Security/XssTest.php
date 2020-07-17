@@ -47,11 +47,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
         $originStrArr = [];
         $filiteredStrArr = [];
 
-        echo "\n";
-        echo '---------------------------------------------------------' . "\n";
-        echo '+                XSS Bypass string test                 +' . "\n";
-        echo '---------------------------------------------------------' . "\n";
-        echo "\n";
+        print_cli_msg('XSS Bypass string test', 'notice', true);
 
         foreach ($bypassList as $num => $string) {
             $originStrArr[$num] = $string;
@@ -72,11 +68,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($file['Software'], '"><script>alert(123)</script><"');
 
-        echo "\n";
-        echo '---------------------------------------------------------' . "\n";
-        echo '+                XSS Bypass image test                  +' . "\n";
-        echo '---------------------------------------------------------' . "\n";
-        echo "\n";
+        print_cli_msg('XSS Bypass image test', 'notice', true);
 
         $xssInstance = new \Shieldon\Firewall\Security\Xss();
         $fileFiltered = $xssInstance->clean($file, true);
@@ -150,6 +142,4 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($filename, 'somethingphp exit.jpg');
     }
-
-   
 }
