@@ -137,7 +137,7 @@ abstract class ComponentProvider implements ComponentInterface
      *
      * @param string $key
      *
-     * @return bool
+     * @return array
      */
     function getDeniedItemsWithPrefix(string $key): array
     {

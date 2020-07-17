@@ -76,7 +76,7 @@ trait AllowedTrait
      */
     public function removeAllowedItem(string $key): void
     {
-        unset($this->AllowedList[$key]);
+        unset($this->allowedList[$key]);
     }
 
     /**
@@ -106,7 +106,7 @@ trait AllowedTrait
      *
      * @param string $key
      *
-     * @return bool
+     * @return array
      */
     function getAllowedItemsWithPrefix(string $key): array
     {

@@ -14,6 +14,7 @@ namespace Shieldon\Firewall\Panel\get;
 
 use Shieldon\Messenger\Messenger\MessengerInterface;
 use Shieldon\Messenger\Sendgrid;
+use function Shieldon\Firewall\__;
 
 /**
  * The get for Sendgrid.

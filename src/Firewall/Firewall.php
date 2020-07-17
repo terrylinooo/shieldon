@@ -604,17 +604,22 @@ class Firewall
         foreach ($messengerList as $messenger) {
             $setting = $this->getOption($messenger, 'messengers');
 
-            // Initialize messenger instances from the factory/
-            if (MessengerFactory::check($messenger, $setting)) {
-                $this->kernel->add(
-                    MessengerFactory::getInstance(
-                        // The ID of the messenger module in the configuration.
-                        $messenger, 
-                        // The settings of the messenger module in the configuration.
-                        $setting    
-                    )
-                );
+            if (is_array($setting)) {
+
+                // Initialize messenger instances from the factory/
+                if (MessengerFactory::check($messenger, $setting)) {
+    
+                    $this->kernel->add(
+                        MessengerFactory::getInstance(
+                            // The ID of the messenger module in the configuration.
+                            $messenger, 
+                            // The settings of the messenger module in the configuration.
+                            $setting    
+                        )
+                    );
+                }
             }
+
             unset($setting);
         }
     }
@@ -626,16 +631,16 @@ class Firewall
      */
     protected function setMessageEvents(): void
     {
-        $eventSetting = $this->getOption('failed_attempts_in_a_row', 'events');
+        $setting = $this->getOption('failed_attempts_in_a_row', 'events');
 
         $notifyDataCircle = false;
         $notifySystemFirewall = false;
 
-        if ($eventSetting['data_circle']['messenger']) {
+        if ($setting['data_circle']['messenger']) {
             $notifyDataCircle = true;
         }
 
-        if ($eventSetting['system_firewall']['messenger']) {
+        if ($setting['system_firewall']['messenger']) {
             $notifyDataCircle = true;
         }
 
@@ -652,16 +657,16 @@ class Firewall
      */
     protected function setDenyAttempts(): void
     {
-        $eventSetting = $this->getOption('failed_attempts_in_a_row', 'events');
+        $setting = $this->getOption('failed_attempts_in_a_row', 'events');
 
         $enableDataCircle = false;
         $enableSystemFirewall = false;
 
-        if ($eventSetting['data_circle']['enable']) {
+        if ($setting['data_circle']['enable']) {
             $enableDataCircle = true;
         }
 
-        if ($eventSetting['system_firewall']['enable']) {
+        if ($setting['system_firewall']['enable']) {
             $enableSystemFirewall = true;
         }
 
@@ -671,8 +676,8 @@ class Firewall
         ]);
 
         $this->kernel->setProperty('deny_attempt_buffer', [
-            'data_circle' => $eventSetting['data_circle']['buffer'] ?? 10,
-            'system_firewall' => $eventSetting['data_circle']['buffer'] ?? 10,
+            'data_circle' => $setting['data_circle']['buffer'] ?? 10,
+            'system_firewall' => $setting['data_circle']['buffer'] ?? 10,
         ]);
 
         // Check the time of the last failed attempt. @since 0.2.0

@@ -53,6 +53,8 @@ class MessengerFactory
         if (!file_exists(__DIR__ . '/' . self::getCamelCase($messenger) . '.php')) {
             return false;
         }
+
+        return true;
     }
 
     /**

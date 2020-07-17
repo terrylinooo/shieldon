@@ -28,7 +28,7 @@ class Header extends ComponentProvider
     /**
      *  Very common requests from normal users.
      * 
-     * @var string
+     * @var array
      */
     protected $commonHeaderFileds = [
         'Accept',

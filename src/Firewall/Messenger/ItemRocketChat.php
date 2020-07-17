@@ -32,7 +32,7 @@ class ItemRocketChat
         $serverUrl   = $setting['config']['server_url']   ?? '';
         $userId      = $setting['config']['user_id']      ?? '';
         $accessToken = $setting['config']['access_token'] ?? '';
-        $channel     = $setting['config']['channel']      ?? [];
+        $channel     = $setting['config']['channel']      ?? '';
 
         return new RocketChat($accessToken, $userId, $serverUrl, $channel);
     }
