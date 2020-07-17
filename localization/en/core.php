@@ -37,4 +37,6 @@ return [
     'messenger_text_handle' => 'Handle',
     'messenger_text_handle_type_1' => 'This IP has been permanently banned in current data cycle till resetting data circle.',
     'messenger_text_handle_type_2' => 'This IP has been placed in iptables’ DROP list till rebooting server.',
+
+    'messenger_text_mail_subject' => 'Notification from Shieldon firwall.',
 ];

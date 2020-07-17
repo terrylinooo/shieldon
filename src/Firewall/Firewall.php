@@ -22,6 +22,7 @@ use Shieldon\Firewall\Driver as Driver;
 use Shieldon\Firewall\Middleware as Middleware;
 use Shieldon\Firewall\Security as Security;
 use Shieldon\Messenger as Messenger;
+use Shieldon\Firewall\Messenger\MessengerFactory;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\FirewallTrait;
@@ -581,29 +582,13 @@ class Firewall
     }
 
     /**
-     * Covert string with dashes into camel-case string.
-     *
-     * @param string $string A string with dashes.
-     *
-     * @return string
-     */
-    private function getCamelCase(string $string = '')
-    {
-        $str = explode('-', $string);
-        $str = implode('', array_map(function($word) {
-            return ucwords($word); 
-        }, $str));
-
-        return $str;
-    }
-
-    /**
      * Set the messenger modules.
      *
      * @return void
      */
     protected function setMessengers(): void
     {
+        // // The ID list of the messenger modules.
         $messengerList = [
             'telegram',
             'line_notify',
@@ -619,157 +604,18 @@ class Firewall
         foreach ($messengerList as $messenger) {
             $setting = $this->getOption($messenger, 'messengers');
 
-            if (!empty($setting['enable']) && !empty($setting['confirm_test'])) {
-                $factory = '\Shieldon\Firewall\Messenger\\' . $this->getCamelCase($messenger);
-
-                // Initialize messenger instances from the factories.
-                if ($factory::check($setting)) {
-                    $this->kernel->add($factory::getInstance($setting));
-                }
-            }
-            unset($setting);
-        }
-
-        $telegramSetting     = $this->getOption('telegram', 'messengers');
-        $linenotodySetting   = $this->getOption('line_notify', 'messengers');
-        $sendgridSetting     = $this->getOption('sendgrid', 'messengers');
-        $phpMailSetting      = $this->getOption('native_php_mail', 'messengers');
-        $smtpSetting         = $this->getOption('smtp', 'messengers');
-        $mailgunSetting      = $this->getOption('mailgun', 'messengers');
-        $rocketchatSetting   = $this->getOption('rocket_chat', 'messengers');
-        $slackSetting        = $this->getOption('slack', 'messengers');
-        $slackWebhookSetting = $this->getOption('slack_webhook', 'messengers');
-
-        $messageTitle = 'Firewall Notification';
-
-        if (!empty($telegramSetting['enable'])) {
-            if (!empty($telegramSetting['confirm_test'])) {
-                $apiKey = $telegramSetting['config']['api_key'] ?? '';
-                $channel = $telegramSetting['config']['channel'] ?? '';
+            // Initialize messenger instances from the factory/
+            if (MessengerFactory::check($messenger, $setting)) {
                 $this->kernel->add(
-                    new Messenger\Telegram($apiKey, $channel)
-                );
-            }
-        }
-
-        if (!empty($linenotodySetting['enable'])) {
-            if (!empty($linenotodySetting['confirm_test'])) {
-                $accessToken = $linenotodySetting['config']['access_token'] ?? '';
-                $this->kernel->add(
-                    new Messenger\LineNotify($accessToken)
-                );
-            }
-        }
-
-        if (!empty($sendgridSetting['enable'])) {
-            if (!empty($sendgridSetting['confirm_test'])) {
-                $apiKey = $sendgridSetting['config']['api_key'] ?? '';
-                $sender = $sendgridSetting['config']['sender'] ?? '';
-                $recipients = $sendgridSetting['config']['recipients'] ?? [];
-
-                $sendgrid = new Messenger\Sendgrid($apiKey);
-                $sendgrid->setSubject($messageTitle);
-                $sendgrid->addSender($sender);
-
-                foreach ($recipients as $recipient) {
-                    $sendgrid->addRecipient($recipient);
-                }
-
-                $this->kernel->add($sendgrid);
-            }
-        }
-
-        if (!empty($phpMailSetting['enable'])) {
-            if (!empty($phpMailSetting['confirm_test'])) {
-                $sender = $phpMailSetting['config']['sender'] ?? '';
-                $recipients = $phpMailSetting['config']['recipients'] ?? [];
-
-                $phpNativeMail = new Messenger\Mail();
-                $phpNativeMail->setSubject($messageTitle);
-                $phpNativeMail->addSender($sender);
-
-                foreach ($recipients as $recipient) {
-                    $phpNativeMail->addRecipient($recipient);
-                }
-
-                $this->kernel->add($phpNativeMail);
-            }
-        }
-
-        if (!empty($smtpSetting['enable'])) {
-            if (!empty($smtpSetting['confirm_test'])) {
-                $sender = $smtpSetting['config']['sender'] ?? '';
-                $recipients = $smtpSetting['config']['recipients'] ?? [];
-                $host = $smtpSetting['config']['host'] ?? '';
-                $user = $smtpSetting['config']['user'] ?? '';
-                $pass = $smtpSetting['config']['pass'] ?? '';
-                $port = (int) $smtpSetting['config']['port'] ?? '';
-
-                $smtpMail = new Messenger\Smtp($user, $pass, $host, $port);
-                $smtpMail->setSubject($messageTitle);
-                $smtpMail->addSender($sender);
-
-                foreach ($recipients as $recipient) {
-                    $smtpMail->addRecipient($recipient);
-                }
-
-                $this->kernel->add($smtpMail);
-            }
-        }
-
-        if (!empty($mailgunSetting['enable'])) {
-            if (!empty($mailgunSetting['confirm_test'])) {
-                $apiKey = $mailgunSetting['config']['api_key'] ?? '';
-                $domain = $mailgunSetting['config']['domain_name'] ?? '';
-                $sender = $mailgunSetting['config']['sender'] ?? '';
-                $recipients = $mailgunSetting['config']['recipients'] ?? [];
-
-                $mailgun = new Messenger\Mailgun($apiKey, $domain);
-                $mailgun->setSubject($messageTitle);
-                $mailgun->addSender($sender);
-
-                foreach ($recipients as $recipient) {
-                    $mailgun->addRecipient($recipient);
-                }
-
-                $this->kernel->add($mailgun);
-            }
-        }
-
-        if (!empty($rocketchatSetting['enable'])) {
-            if (!empty($rocketchatSetting['confirm_test'])) {
-                $serverUrl = $rocketchatSetting['config']['server_url'] ?? '';
-                $userId = $rocketchatSetting['config']['user_id'] ?? '';
-                $accessToken = $rocketchatSetting['config']['access_token'] ?? '';
-                $channel = $rocketchatSetting['config']['channel'] ?? [];
-
-                $this->kernel->add(
-                    new Messenger\RocketChat(
-                        $accessToken, $userId, $serverUrl, $channel
+                    MessengerFactory::getInstance(
+                        // The ID of the messenger module in the configuration.
+                        $messenger, 
+                        // The settings of the messenger module in the configuration.
+                        $setting    
                     )
                 );
             }
-        }
-
-        if (!empty($slackSetting['enable'])) {
-            if (!empty($slackSetting['confirm_test'])) {
-                $botToken = $slackSetting['config']['bot_token'] ?? '';
-                $channel = $slackSetting['config']['channel'] ?? '';
-
-                $this->kernel->add(
-                    new Messenger\Slack($botToken, $channel)
-                );
-            }
-        }
-
-        if (!empty($slackWebhookSetting['enable'])) {
-            if (!empty($slackWebhookSetting['confirm_test'])) {
-                $webhookUrl = $slackWebhookSetting['config']['webhook_url'] ?? '';
-
-                $this->kernel->add(
-                    new Messenger\SlackWebhook($webhookUrl)
-                );
-            }
+            unset($setting);
         }
     }
 
