@@ -17,7 +17,6 @@ use function explode;
 use function filter_var;
 use function str_replace;
 
-
 /**
  * The sandbox for Sendgrid.
  */

@@ -281,7 +281,7 @@ class FileDriver extends DriverProvider
      */
     protected function createDirectory(): bool
     {
-        $conA = $resultB = $resultC = false;
+        $conA = $conB = $conC = false;
 
         $checkingFile = $this->directory . '/' . $this->channel . '_' . $this->checkPoint;
 
@@ -330,7 +330,7 @@ class FileDriver extends DriverProvider
     /**
      * Remove a Shieldon log file.
      * 
-     * @param $logFilePath The absolute path of the log file.
+     * @param string $logFilePath The absolute path of the log file.
      *
      * @return bool
      */
