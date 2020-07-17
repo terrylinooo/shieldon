@@ -34,6 +34,7 @@ use PDO;
 use PDOException;
 use Redis;
 use RedisException;
+use RuntimeException;
 
 use function array_column;
 use function defined;
@@ -63,7 +64,7 @@ class Firewall
      *
      * @var array
      */
-    protected $middleware = [];
+    protected $middlewares = [];
 
     /**
      * Constructor.
@@ -114,14 +115,14 @@ class Firewall
     /**
      * Add middlewares and use them before executing Shieldon kernal.
      *
-     * @param array $middleware Array of PSR-7 or PSR-15 middlewares.
+     * @param string $middleware A PSR-15 middlewares.
      *
      * @return void
      */
     public function add($middleware)
     {
         if ($middleware instanceof MiddlewareInterface) {
-            $this->middleware[] = $middleware;
+            $this->middlewares[] = $middleware;
         }
     }
 
@@ -184,7 +185,7 @@ class Firewall
             // PSR-15 request handler.
             $requestHandler = new RequestHandler();
 
-            foreach ($this->middleware as $middleware) {
+            foreach ($this->middlewares as $middleware) {
                 $requestHandler->add($middleware);
             }
 
@@ -862,7 +863,9 @@ class Firewall
     {
         $authenticateList = $this->getOption('www_authenticate');
 
-        $this->add(new Middleware\httpAuthentication($authenticateList));
+        if (is_array($authenticateList)) {
+            $this->add(new Middleware\httpAuthentication($authenticateList));
+        }
     }
 
     /**
