@@ -55,7 +55,7 @@ class Sendgrid
 
             $messenger = new SendgridTest($apiKey);
 
-            foreach($recipients as $recipient) {
+            foreach ($recipients as $recipient) {
                 if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
                     $messenger->addRecipient($recipient);
                 }

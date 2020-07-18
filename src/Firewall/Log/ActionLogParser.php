@@ -233,7 +233,7 @@ final class ActionLogParser
         // Fetch data from log files.
         $logs = $this->logger->get($startDate, $endDate);
 
-        foreach($logs as $log) {
+        foreach ($logs as $log) {
 
             $logTimesamp = (int) $log['timesamp'];
             $logIp = $log['ip'];

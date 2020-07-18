@@ -88,7 +88,7 @@ $timezone = '';
             </thead>
             <tbody>
                 <?php if (! empty($authentication_list)) : ?>
-                <?php foreach($authentication_list as $i => $authInfo) : ?>
+                <?php foreach ($authentication_list as $i => $authInfo) : ?>
                 <tr>
                     <td><?php echo $authInfo['url']; ?></td>
                     <td><?php echo $authInfo['user']; ?></td>

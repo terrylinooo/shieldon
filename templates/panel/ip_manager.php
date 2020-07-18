@@ -97,7 +97,7 @@ $timezone = '';
             </thead>
             <tbody>
                 <?php if (! empty($ip_list)) : ?>
-                <?php foreach($ip_list as $i => $ipInfo) : ?>
+                <?php foreach ($ip_list as $i => $ipInfo) : ?>
                 <tr>
                     <td><?php echo $i + 1; ?></td>
                     <td><?php echo $ipInfo['url']; ?></td>

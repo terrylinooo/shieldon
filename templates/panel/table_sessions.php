@@ -84,7 +84,7 @@ $timezone = '';
             <tbody>
 
                 <?php $i = 1; ?>
-                <?php foreach($session_list as $key => $sessionInfo) : ?>
+                <?php foreach ($session_list as $key => $sessionInfo) : ?>
                     <?php
 
                         $remainsTime = $expires - (time() - $sessionInfo['time']);

@@ -89,7 +89,7 @@ use function Shieldon\Firewall\mask_string;
             </thead>
             <tbody>
                 <?php if (! empty($ip_details)) : ?>
-                <?php foreach($ip_details as $ip => $ipInfo) : ?>
+                <?php foreach ($ip_details as $ip => $ipInfo) : ?>
                 <tr>
                     <td>
                         <?php if ($this->mode === 'demo') : ?>

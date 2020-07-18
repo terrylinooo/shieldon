@@ -16,11 +16,11 @@ use function is_array;
 use function is_bool;
 
 /**
- * SQL trait
+ * SQL Driver Trait
  */
-trait SqlTrait
+trait SqlDriverTrait
 {
-/**
+    /**
      * Fetch data from filter table.
      *
      * @param string $ip An IP address.

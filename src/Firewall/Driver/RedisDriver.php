@@ -97,7 +97,7 @@ class RedisDriver extends DriverProvider
 
                 $keys = $this->redis->keys($this->getNamespace($type) . ':*');
 
-                foreach($keys as $key) {
+                foreach ($keys as $key) {
                     $content = $this->redis->get($key);
                     $content = json_decode($content, true);
 
@@ -228,7 +228,7 @@ class RedisDriver extends DriverProvider
             $keys = $this->redis->keys($this->getNamespace($type) . ':*');
 
             if (!empty($keys)) {
-                foreach($keys as $key) {
+                foreach ($keys as $key) {
                     $this->redis->del($key);
                 }
             }

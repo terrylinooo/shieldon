@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Driver;
 
 use Shieldon\Firewall\Driver\DriverProvider;
-use Shieldon\Firewall\Driver\SqlTrait;
+use Shieldon\Firewall\Driver\SqlDriverTrait;
 use Exception;
 use PDO;
 
@@ -25,7 +25,7 @@ use function is_null;
  */
 class SqlDriverProvider extends DriverProvider
 {
-    use SqlTrait;
+    use SqlDriverTrait;
 
     /**
      * Data engine will be used on.
@@ -96,6 +96,7 @@ class SqlDriverProvider extends DriverProvider
 
         $method = $tables[$type];
 
+        // Fetch from SqlDriverTrait.
         return $this->{$method}($ip);
     }
 
@@ -116,6 +117,7 @@ class SqlDriverProvider extends DriverProvider
         
         $method = $tables[$type];
 
+        // Fetch from SqlDriverTrait.
         return $this->{$method}();
     }
 
@@ -124,23 +126,27 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function checkExist(string $ip, string $type = 'filter'): bool
     {
-        switch ($type) {
+        $tables = [
+            'rule' => [
+                'table' => $this->tableRuleList,
+                'field' => 'log_ip',
+            ],
+            'filter' => [
+                'table' => $this->tableFilterLogs,
+                'field' => 'log_ip',
+            ],
+            'session' => [
+                'table' => $this->tableSessions,
+                'field' => 'id',
+            ],
+        ];
 
-            case 'rule':
-                $tableName = $this->tableRuleList;
-                $field = 'log_ip';
-                break;
-
-            case 'filter':
-                $tableName = $this->tableFilterLogs;
-                $field = 'log_ip';
-                break;
-
-            case 'session':
-                $tableName = $this->tableSessions;
-                $field = 'id';
-                break;
+        if (empty($tables[$type])) {
+            return false;
         }
+
+        $tableName = $tables[$type]['table'];
+        $field = $tables[$type]['field'];
 
         $sql = 'SELECT ' . $field . ' FROM ' . $tableName . '
             WHERE ' . $field . ' = :' . $field . '
@@ -200,18 +206,33 @@ class SqlDriverProvider extends DriverProvider
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
 
-        switch ($type) {
-            case 'rule': 
-                return $this->remove($this->tableRuleList, ['log_ip' => $ip]);
+        $tables = [
+            'rule' => [
+                'table' => $this->tableRuleList,
+                'field' => 'log_ip',
+                'value' => $ip,
+            ],
+            'filter' => [
+                'table' => $this->tableFilterLogs,
+                'field' => 'log_ip',
+                'value' => $ip,
+            ],
+            'session' => [
+                'table' => $this->tableSessions,
+                'field' => 'id',
+                'value' => $ip,
+            ],
+        ];
 
-            case 'filter':
-                return $this->remove($this->tableFilterLogs, ['log_ip' => $ip]);
-
-            case 'session':
-                return $this->remove($this->tableSessions, ['id' => $ip]);
+        if (empty($tables[$type])) {
+            return false;
         }
 
-        return false;
+        $tableName = $tables[$type]['table'];
+        $field = $tables[$type]['field'];
+        $value = $tables[$type]['value'];
+
+        return $this->remove($tableName, [$field => $value]);
     }
 
     /**
@@ -234,14 +255,14 @@ class SqlDriverProvider extends DriverProvider
     protected function update(string $table, array $data, array $where)
     {
         $placeholder = [];
-        foreach($data as $k => $v) {
+        foreach ($data as $k => $v) {
             $placeholder[] = "$k = :$k";
         }
 
         $dataPlaceholder = implode(', ', $placeholder);
 
         $placeholder = [];
-        foreach($where as $k => $v) {
+        foreach ($where as $k => $v) {
             $placeholder[] = "$k = :$k";
         }
 
@@ -253,7 +274,7 @@ class SqlDriverProvider extends DriverProvider
 
             $bind = array_merge($data, $where);
     
-            foreach($bind as $k => $v) {
+            foreach ($bind as $k => $v) {
 
                 // @codeCoverageIgnoreStart
 
@@ -282,10 +303,9 @@ class SqlDriverProvider extends DriverProvider
         // @codeCoverageIgnoreStart
         
         } catch(Exception $e) {
-            throw $e->getMessage();
+            return false;
         }
 
-        return false;
         // @codeCoverageIgnoreEnd 
     }
 
@@ -301,7 +321,7 @@ class SqlDriverProvider extends DriverProvider
     {
         $placeholderField = [];
         $placeholderValue = [];
-        foreach($data as $k => $v) {
+        foreach ($data as $k => $v) {
             $placeholderField[] = "`$k`";
             $placeholderValue[] = ":$k";
         }
@@ -313,7 +333,7 @@ class SqlDriverProvider extends DriverProvider
             $sql = 'INSERT INTO ' . $table . ' (' . $dataPlaceholderField . ') VALUES (' . $dataPlaceholderValue . ')';
             $query = $this->db->prepare($sql);
 
-            foreach($data as $k => $v) {
+            foreach ($data as $k => $v) {
 
                 // @codeCoverageIgnoreStart
 
@@ -360,7 +380,7 @@ class SqlDriverProvider extends DriverProvider
     {
 
         $placeholder = [];
-        foreach($where as $k => $v) {
+        foreach ($where as $k => $v) {
             $placeholder[] = "`$k` = :$k";
         }
 
@@ -371,7 +391,7 @@ class SqlDriverProvider extends DriverProvider
             $sql = 'DELETE FROM ' . $table . ' WHERE ' . $dataPlaceholder;
             $query = $this->db->prepare($sql);
 
-            foreach($where as $k => $v) {
+            foreach ($where as $k => $v) {
 
                 // @codeCoverageIgnoreStart
 
@@ -478,7 +498,7 @@ class SqlDriverProvider extends DriverProvider
 
             $this->installSql();
 
- 
+            return true;
 
         // @codeCoverageIgnoreStart
 
@@ -487,8 +507,6 @@ class SqlDriverProvider extends DriverProvider
         }
 
         // @codeCoverageIgnoreEnd
-
-        return true;
     }
 
     /**

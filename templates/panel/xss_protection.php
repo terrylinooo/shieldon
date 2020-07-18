@@ -147,7 +147,7 @@ $timezone = '';
             </thead>
             <tbody>
                 <?php if (! empty($xss_protected_list)) : ?>
-                <?php foreach($xss_protected_list as $i => $info) : ?>
+                <?php foreach ($xss_protected_list as $i => $info) : ?>
                 <tr>
                     <td><?php echo $info['type']; ?></td>
                     <td><?php echo $info['variable']; ?></td>

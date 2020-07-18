@@ -81,7 +81,7 @@ $timezone = '';
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($rule_list as $ipInfo) : ?>
+                <?php foreach ($rule_list as $ipInfo) : ?>
                 <tr>
                     <td>
                         <?php if ($this->mode === 'demo') : ?>

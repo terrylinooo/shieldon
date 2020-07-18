@@ -1094,7 +1094,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel->setProperty('reset_attempt_counter', 5);
 
         // Test for IPv4 and IPv6.
-        foreach(['127.0.1.1', '2607:f0d0:1002:51::4'] as $ip) {
+        foreach (['127.0.1.1', '2607:f0d0:1002:51::4'] as $ip) {
 
             $kernel->setIp($ip);
 
@@ -1124,7 +1124,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         }
 
         // Test for IPv4 and IPv6. 
-        foreach(['127.0.1.2', '2607:f0d0:1002:52::4'] as $ip) {
+        foreach (['127.0.1.2', '2607:f0d0:1002:52::4'] as $ip) {
 
             $kernel->setIp($ip);
 

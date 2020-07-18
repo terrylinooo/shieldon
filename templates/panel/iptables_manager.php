@@ -149,7 +149,7 @@ use function Shieldon\Firewall\mask_string;
             </thead>
             <tbody>
                 <?php if (! empty($ipCommand)) : ?>
-                <?php foreach($ipCommand as $i => $ipInfo) : ?>
+                <?php foreach ($ipCommand as $i => $ipInfo) : ?>
                 <?php $subnet = (! empty($ipInfo[3]) && $ipInfo[3] !== 'null') ? '/' . $ipInfo[3] : '' ?>
                 <tr>
                     <td>

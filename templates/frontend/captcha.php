@@ -52,7 +52,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-secruity_96x96.png';
 					</div>
 					<?php if (! empty($dialoguserinfo)) : ?>
 						<div class="status-user-info">
-							<?php foreach($dialoguserinfo as $key => $userinfo) : ?>
+							<?php foreach ($dialoguserinfo as $key => $userinfo) : ?>
 								<div class="row">
 									<strong><?php echo $key; ?></strong> <span><?php echo $userinfo; ?></span>
 								</div>

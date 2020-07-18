@@ -247,7 +247,7 @@ final class ActionLogger
             $it = new RecursiveDirectoryIterator($this->directory, RecursiveDirectoryIterator::SKIP_DOTS);
             $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
 
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 if ($file->isDir()) {
                     // @codeCoverageIgnoreStart
                     rmdir($file->getRealPath());
@@ -277,7 +277,7 @@ final class ActionLogger
             $it = new RecursiveDirectoryIterator($this->directory, RecursiveDirectoryIterator::SKIP_DOTS);
             $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
 
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 if ($file->isFile()) {
                     $key = $file->getBasename('.log');
                     $size = $file->getSize();

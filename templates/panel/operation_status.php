@@ -183,7 +183,7 @@ $timezone = '';
     </div>
 </div>
 
-<?php foreach(['ip', 'trustedbot', 'header', 'rdns', 'useragent', 'frequency', 'referer', 'session', 'cookie'] as $i) : ?>
+<?php foreach (['ip', 'trustedbot', 'header', 'rdns', 'useragent', 'frequency', 'referer', 'session', 'cookie'] as $i) : ?>
     <div id="table-<?php echo $i; ?>" class="so-dashboard" style="display: none;">
         <div class="so-datatables">
             <div class="so-datatable-heading">
@@ -203,7 +203,7 @@ $timezone = '';
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($rule_list[$i] as $ipInfo) : ?>
+                    <?php foreach ($rule_list[$i] as $ipInfo) : ?>
                     <tr>
                         <td>
                             <?php if ($this->mode === 'demo') : ?>

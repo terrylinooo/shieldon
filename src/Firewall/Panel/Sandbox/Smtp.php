@@ -69,7 +69,7 @@ class Smtp
 
             $messenger = new SmtpTest($user, $pass, $host, (int) $port);
 
-            foreach($recipients as $recipient) {
+            foreach ($recipients as $recipient) {
                 if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
                     $messenger->addRecipient($recipient);
                 }

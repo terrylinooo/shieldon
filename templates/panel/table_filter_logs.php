@@ -57,7 +57,7 @@ $timezone = '';
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($ip_log_list as $ipInfo) : ?>
+                <?php foreach ($ip_log_list as $ipInfo) : ?>
                     <?php $logData = is_array($ipInfo['log_data']) ? $ipInfo['log_data'] : json_decode($ipInfo['log_data'], true ); ?>
                     <?php
 

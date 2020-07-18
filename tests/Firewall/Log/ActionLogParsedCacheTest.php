@@ -27,7 +27,7 @@ class ActionLogParsedCacheTest extends \PHPUnit\Framework\TestCase
     {
         $logger = new \Shieldon\Firewall\Log\ActionLogParsedCache(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
-        foreach(['yesterday', 'last_month', 'this_month', 'past_seven_hours', 'today'] as $period) {
+        foreach (['yesterday', 'last_month', 'this_month', 'past_seven_hours', 'today'] as $period) {
             $data['foo'] = 'bar';
             $logger->save($period, $data);
             $s = $logger->get($period);

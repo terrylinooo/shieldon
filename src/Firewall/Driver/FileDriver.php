@@ -110,7 +110,7 @@ class FileDriver extends DriverProvider
             $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
             $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
 
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 if ($file->isFile()) {
 
                     $content = json_decode(file_get_contents($file->getPath() . '/' . $file->getFilename()), true);
@@ -239,7 +239,7 @@ class FileDriver extends DriverProvider
                 $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
                 $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
     
-                foreach($files as $file) {
+                foreach ($files as $file) {
                     if ($file->isDir()) {
                         // @codeCoverageIgnoreStart
                         rmdir($file->getRealPath());
