@@ -39,7 +39,7 @@ class Security extends BaseController
     /**
      * WWW-Authenticate.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function authentication(): ResponseInterface
     {
@@ -92,7 +92,7 @@ class Security extends BaseController
     /**
      * XSS Protection.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function xssProtection(): ResponseInterface
     {

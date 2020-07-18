@@ -66,7 +66,7 @@ class Iptables extends BaseController
     /**
      * The IPv4 table.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function ip4status(): ResponseInterface
     {
@@ -76,11 +76,100 @@ class Iptables extends BaseController
     /**
      * The IPv6 table.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function ip6status(): ResponseInterface
     {
         return $this->iptablesStatus('IPv6');
+    }
+
+    /**
+     * System layer firwall - iptables
+     * 
+     * @param string $type The type of IP address.
+     *
+     * @return void
+     */
+    protected function iptables(string $type = 'IPv4'): ResponseInterface
+    {
+        $reflection = new ReflectionObject($this->kernel);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+        $properties = $t->getValue($this->kernel);
+
+        $dir = $properties['iptables_watching_folder'];
+
+        $commandLogFile = $dir . '/' . strtolower($type) . '_command.log';
+        $iptablesQueueFile = $dir . '/iptables_queue.log';
+
+        if ('POST' === get_request()->getMethod()) {
+            $this->iptablesFormPost($type, $commandLogFile, $iptablesQueueFile);
+        }
+
+        $data = [];
+        $ipCommand = '';
+
+        if (file_exists($commandLogFile)) {
+            $file = new SplFileObject($commandLogFile);
+
+            $ipCommand = [];
+
+            while (!$file->eof()) {
+                $line = trim($file->fgets());
+                $ipInfo = explode(',', $line);
+
+                if (!empty($ipInfo[4])) {
+                    $ipCommand[] = $ipInfo;
+                }
+            }
+        }
+
+        $data['ipCommand'] = $ipCommand;
+        $data['type'] = $type;
+
+        $data['title'] = __('panel', 'title_iptables_manager', 'Iptables Manager') . ' (' . $type . ')';
+
+        return $this->renderPage('panel/iptables_manager', $data);
+    }
+
+    /**
+     * System layer firwall - iptables Status
+     * iptables -L
+     * 
+     * @param string $type The type of IP address.
+     *
+     * @return ResponseInterface
+     */
+    protected function iptablesStatus(string $type = 'IPv4'): ResponseInterface
+    {
+        $data = [];
+
+        $reflection = new ReflectionObject($this->kernel);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+        $properties = $t->getValue($this->kernel);
+
+        $dir = $properties['iptables_watching_folder'];
+
+        // The iptables log files.
+        $ipStatusFile = $dir . '/ipv4_status.log';
+
+        if ('IPv6' === $type) {
+            $ipStatusFile = $dir . '/ipv6_status.log';
+        }
+        
+        $ipStatus = '';
+
+        if (file_exists($ipStatusFile)) {
+            $ipStatus = file_get_contents($ipStatusFile);
+        }
+
+        $data['ipStatus'] = $ipStatus;
+        $data['type'] = $type;
+
+        $data['title'] = __('panel', 'title_iptables_status', 'Iptables Status') . ' (' . $type . ')';
+
+        return $this->renderPage('panel/iptables_status', $data);
     }
 
     /**
@@ -97,39 +186,7 @@ class Iptables extends BaseController
     {
         $postParams = get_request()->getParsedBody();
 
-        $con1 = (
-            isset($postParams['ip']) &&
-            filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)
-        );
-
-        $con2 = (
-            isset($postParams['port']) &&
-            (
-                is_numeric($postParams['port']) ||
-                $postParams['port'] === 'all' ||
-                $postParams['port'] === 'custom'
-            )
-        );
-
-        $con3 = (
-            isset($postParams['subnet']) && 
-            (
-                is_numeric($postParams['subnet']) || 
-                $postParams['subnet'] === 'null'
-            )
-        );
-
-        $con4 = (
-            isset($postParams['protocol']) && 
-            in_array($postParams['protocol'], ['tcp', 'udp', 'all'])
-        );
-
-        $con5 = (
-            isset($postParams['action']) && 
-            in_array($postParams['action'], ['allow', 'deny'])
-        );
-
-        if ($con1 && $con2 && $con3 && $con4 && $con5) {
+        if ($this->iptablesFormPostVerification($postParams)) {
             $ip       = $postParams['ip'];
             $port     = $postParams['port'];
             $subnet   = $postParams['subnet'];
@@ -200,98 +257,51 @@ class Iptables extends BaseController
     }
 
     /**
-     * System layer firwall - iptables
-     * 
-     * @param string $type The type of IP address.
+     * Verify the form.
      *
-     * @return void
-     */
-    protected function iptables(string $type = 'IPv4'): ResponseInterface
-    {
-        $reflection = new ReflectionObject($this->kernel);
-        $t = $reflection->getProperty('properties');
-        $t->setAccessible(true);
-        $properties = $t->getValue($this->kernel);
-
-        $dir = $properties['iptables_watching_folder'];
-
-        // The iptables log files.
-        $commandLogFile = $dir . '/ipv4_command.log';
-
-        if ('IPv6' === $type) {
-            $commandLogFile = $dir . '/ipv6_command.log';
-        }
-
-        $iptablesQueueFile = $dir . '/iptables_queue.log';
-
-        if ('POST' === get_request()->getMethod()) {
-            $this->iptablesFormPost($type, $commandLogFile, $iptablesQueueFile);
-        }
-
-        $data[] = [];
-        $ipCommand = '';
-
-        if (file_exists($commandLogFile)) {
-            $file = new SplFileObject($commandLogFile);
-
-            $ipCommand = [];
-
-            while (!$file->eof()) {
-                $line = trim($file->fgets());
-                $ipInfo = explode(',', $line);
-
-                if (!empty($ipInfo[4])) {
-                    $ipCommand[] = $ipInfo;
-                }
-            }
-        }
-
-        $data['ipCommand'] = $ipCommand;
-        $data['type'] = $type;
-
-        $data['title'] = __('panel', 'title_iptables_manager', 'Iptables Manager') . ' (' . $type . ')';
-
-        return $this->renderPage('panel/iptables_manager', $data);
-    }
-
-    /**
-     * System layer firwall - iptables Status
-     * iptables -L
-     * 
-     * @param string $type The type of IP address.
+     * @param array $postParams
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return bool
      */
-    protected function iptablesStatus(string $type = 'IPv4'): ResponseInterface
+    private function iptablesFormPostVerification(array $postParams): bool
     {
-        $data[] = [];
+        $con1 = (
+            isset($postParams['ip']) &&
+            filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)
+        );
 
-        $reflection = new ReflectionObject($this->kernel);
-        $t = $reflection->getProperty('properties');
-        $t->setAccessible(true);
-        $properties = $t->getValue($this->kernel);
+        $con2 = (
+            isset($postParams['port']) &&
+            (
+                is_numeric($postParams['port']) ||
+                $postParams['port'] === 'all' ||
+                $postParams['port'] === 'custom'
+            )
+        );
 
-        $dir = $properties['iptables_watching_folder'];
+        $con3 = (
+            isset($postParams['subnet']) && 
+            (
+                is_numeric($postParams['subnet']) || 
+                $postParams['subnet'] === 'null'
+            )
+        );
 
-        // The iptables log files.
-        $ipStatusFile = $dir . '/ipv4_status.log';
+        $con4 = (
+            isset($postParams['protocol']) && 
+            in_array($postParams['protocol'], ['tcp', 'udp', 'all'])
+        );
 
-        if ('IPv6' === $type) {
-            $ipStatusFile = $dir . '/ipv6_status.log';
+        $con5 = (
+            isset($postParams['action']) && 
+            in_array($postParams['action'], ['allow', 'deny'])
+        );
+
+        if ($con1 && $con2 && $con3 && $con4 && $con5) {
+            return true;
         }
-        
-        $ipStatus = '';
 
-        if (file_exists($ipStatusFile)) {
-            $ipStatus = file_get_contents($ipStatusFile);
-        }
-
-        $data['ipStatus'] = $ipStatus;
-        $data['type'] = $type;
-
-        $data['title'] = __('panel', 'title_iptables_status', 'Iptables Status') . ' (' . $type . ')';
-
-        return $this->renderPage('panel/iptables_status', $data);
+        return false;
     }
 }
 

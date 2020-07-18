@@ -198,7 +198,7 @@ class BaseController
      * @param string $page The page type. (filename)
      * @param array  $data The variables passed to that page.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     protected function renderPage(string $page, array $data): ResponseInterface
     {
@@ -227,7 +227,7 @@ class BaseController
      *
      * @param string $body The content body.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     protected function respond(string $body): ResponseInterface
     {

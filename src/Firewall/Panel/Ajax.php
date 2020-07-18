@@ -62,7 +62,7 @@ class Ajax extends BaseController
     /**
      * Change the user's language of the UI.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function changeLocale(): ResponseInterface
     {
@@ -82,7 +82,7 @@ class Ajax extends BaseController
     /**
      * Test messenger modules.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function tryMessenger(): ResponseInterface
     {
@@ -143,7 +143,7 @@ class Ajax extends BaseController
      * 
      * @param string $output The string you want to output to the browser.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     private function respondJson($output): ResponseInterface
     {

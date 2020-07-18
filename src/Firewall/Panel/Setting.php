@@ -44,7 +44,7 @@ class Setting extends BaseController
     /**
      * Set up basic settings.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function basic(): ResponseInterface
     {
@@ -65,7 +65,7 @@ class Setting extends BaseController
     /**
      * Set up basic settings.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function messenger(): ResponseInterface
     {
@@ -88,7 +88,7 @@ class Setting extends BaseController
     /**
      * IP manager.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function ipManager(): ResponseInterface
     {
@@ -161,7 +161,7 @@ class Setting extends BaseController
     /**
      * Exclude the URLs that they don't need protection.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function exclusion(): ResponseInterface
     {
@@ -205,7 +205,7 @@ class Setting extends BaseController
     /**
      * Export settings.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function export(): ResponseInterface
     {
@@ -229,7 +229,7 @@ class Setting extends BaseController
     /**
      * Import settings.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function import(): ResponseInterface
     {

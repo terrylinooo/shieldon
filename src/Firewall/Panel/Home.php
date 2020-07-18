@@ -47,7 +47,7 @@ class Home extends BaseController
     /**
      * Default entry
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function index(): ResponseInterface
     {
@@ -57,7 +57,7 @@ class Home extends BaseController
     /**
      * Overview
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function overview(): ResponseInterface
     {

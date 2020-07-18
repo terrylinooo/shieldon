@@ -1682,7 +1682,7 @@ class Kernel
     /**
      * Respond the result.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function respond(): ResponseInterface
     {

@@ -171,7 +171,7 @@ class Firewall
     /**
      * Just, run!
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function run(): ResponseInterface
     {

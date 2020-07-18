@@ -39,7 +39,7 @@ class User extends BaseController
     /**
      * Login
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function login(): ResponseInterface
     {
@@ -116,7 +116,7 @@ class User extends BaseController
     /**
      * Logout
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function logout(): ResponseInterface
     {

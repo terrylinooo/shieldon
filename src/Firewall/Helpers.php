@@ -314,7 +314,7 @@ function get_request(): ServerRequestInterface
 /**
  * PSR-7 HTTP response.
  *
- * @return \Psr\Http\Message\ResponseInterface
+ * @return ResponseInterface
  */
 function get_response(): ResponseInterface
 {

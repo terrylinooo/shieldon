@@ -37,7 +37,7 @@ class Report extends BaseController
     /**
      * Operation status.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function operation(): ResponseInterface
     {
@@ -88,7 +88,7 @@ class Report extends BaseController
     /**
      * Action logs
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function actionLog(): ResponseInterface
     {

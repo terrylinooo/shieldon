@@ -39,7 +39,7 @@ class Circle extends BaseController
      *
      * @param string
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function rule(): ResponseInterface
     {
@@ -119,7 +119,7 @@ class Circle extends BaseController
      *
      * @param string
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function filter(): ResponseInterface
     {
@@ -136,7 +136,7 @@ class Circle extends BaseController
      *
      * @param string
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      */
     public function session(): ResponseInterface
     {
