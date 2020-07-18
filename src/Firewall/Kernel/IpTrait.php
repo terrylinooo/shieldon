@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall;
+namespace Shieldon\Firewall\Kernel;
 
 use function substr;
 use function gethostbyaddr;

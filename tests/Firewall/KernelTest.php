@@ -48,6 +48,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     public function testDetectByFilterFrequency($driver = 'sqlite')
     {
         $kernel = get_testing_shieldon_instance($driver);
+        $kernel->driver->rebuild();
 
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
         $kernel->add(new \Shieldon\Firewall\Component\Ip());
@@ -96,6 +97,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     public function testDetectByFilterSession($driver = 'sqlite')
     {
         $kernel = get_testing_shieldon_instance($driver);
+        $kernel->driver->rebuild();
         $kernel->setIp('141.112.175.2');
 
         $kernel->setFilters([
@@ -130,6 +132,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     public function testDetectByFilterReferer($driver = 'sqlite')
     {
         $kernel = get_testing_shieldon_instance($driver);
+        $kernel->driver->rebuild();
 
         $kernel->setFilters([
             'session'   => false,
