@@ -13,17 +13,20 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Driver;
 
 use Shieldon\Firewall\Driver\DriverProvider;
+use Shieldon\Firewall\Driver\SqlTrait;
 use Exception;
 use PDO;
 
-use function is_array;
 use function is_bool;
+use function is_null;
 
 /**
  * SQL Driver provider.
  */
 class SqlDriverProvider extends DriverProvider
 {
+    use SqlTrait;
+
     /**
      * Data engine will be used on.
      *
@@ -196,10 +199,16 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
+
         switch ($type) {
-            case 'rule'      : return $this->remove($this->tableRuleList,   ['log_ip' => $ip]);
-            case 'filter': return $this->remove($this->tableFilterLogs, ['log_ip' => $ip]);
-            case 'session'   : return $this->remove($this->tableSessions,   ['id'     => $ip]);
+            case 'rule': 
+                return $this->remove($this->tableRuleList, ['log_ip' => $ip]);
+
+            case 'filter':
+                return $this->remove($this->tableFilterLogs, ['log_ip' => $ip]);
+
+            case 'session':
+                return $this->remove($this->tableSessions, ['id' => $ip]);
         }
 
         return false;
@@ -222,7 +231,7 @@ class SqlDriverProvider extends DriverProvider
      *
      * @return bool
      */
-    private function update(string $table, array $data, array $where)
+    protected function update(string $table, array $data, array $where)
     {
         $placeholder = [];
         foreach($data as $k => $v) {
@@ -288,7 +297,7 @@ class SqlDriverProvider extends DriverProvider
      *
      * @return bool
      */
-    private function insert(string $table, array $data)
+    protected function insert(string $table, array $data)
     {
         $placeholderField = [];
         $placeholderValue = [];
@@ -347,7 +356,7 @@ class SqlDriverProvider extends DriverProvider
      *
      * @return bool
      */
-    private function remove(string $table, array $where): bool
+    protected function remove(string $table, array $where): bool
     {
 
         $placeholder = [];
@@ -469,7 +478,7 @@ class SqlDriverProvider extends DriverProvider
 
             $this->installSql();
 
-            return true;
+ 
 
         // @codeCoverageIgnoreStart
 
@@ -478,6 +487,8 @@ class SqlDriverProvider extends DriverProvider
         }
 
         // @codeCoverageIgnoreEnd
+
+        return true;
     }
 
     /**
@@ -496,166 +507,5 @@ class SqlDriverProvider extends DriverProvider
         }
 
         return false;
-    }
-
-    /**
-     * Fetch data from filter table.
-     *
-     * @param string $ip An IP address.
-     *
-     * @return array
-     */
-    private function doFetchFromFilterTable(string $ip): array
-    {
-        $results = [];
-
-        $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs . '
-            WHERE log_ip = :log_ip
-            LIMIT 1';
-
-        $query = $this->db->prepare($sql);
-        $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
-        $query->execute();
-        $resultData = $query->fetch($this->db::FETCH_ASSOC);
-
-        // No data found.
-        if (is_bool($resultData) && !$resultData) {
-            $resultData = [];
-        }
-
-        if (!empty($resultData['log_data'])) {
-            $results = json_decode($resultData['log_data'], true); 
-        }
-
-        return $results;
-    }
-
-    /**
-     * Fetch data from rule table.
-     *
-     * @param string $ip An IP address.
-     *
-     * @return array
-     */
-    private function doFetchFromRuleTable(string $ip): array
-    {
-        $results = [];
-
-        $sql = 'SELECT * FROM ' . $this->tableRuleList . '
-            WHERE log_ip = :log_ip
-            LIMIT 1';
-
-        $query = $this->db->prepare($sql);
-        $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
-        $query->execute();
-        $resultData = $query->fetch($this->db::FETCH_ASSOC);
-
-        // No data found.
-        if (is_bool($resultData) && !$resultData) {
-            $resultData = [];
-        }
-
-        if (is_array($resultData)) {
-            $results = $resultData;
-        }
-
-        return $results;
-    }
-
-    /**
-     * Fetch data from session table.
-     *
-     * @param string $ip An IP address.
-     *
-     * @return array
-     */
-    private function doFetchFromSessionTable(string $ip): array
-    {
-        $results = [];
-
-        $sql = 'SELECT * FROM ' . $this->tableSessions . '
-            WHERE id = :id
-            LIMIT 1';
-
-        $query = $this->db->prepare($sql);
-        $query->bindValue(':id', $ip, $this->db::PARAM_STR);
-        $query->execute();
-        $resultData = $query->fetch($this->db::FETCH_ASSOC);
-
-        // No data found.
-        if (is_bool($resultData) && !$resultData) {
-            $resultData = [];
-        }
-
-        if (is_array($resultData)) {
-            $results = $resultData;
-        }
-
-        return $results;
-    }
-
-    /**
-     * Fetch all data from filter table.
-     *
-     * @return array
-     */
-    private function doFetchAllFromFilterTable(): array
-    {
-        $results = [];
-
-        $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs;
-
-        $query = $this->db->prepare($sql);
-        $query->execute();
-        $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
-
-        if (is_array($resultData)) {
-            $results = $resultData;
-        }
-
-        return $results;
-    }
-
-    /**
-     * Fetch all data from filter table.
-     *
-     * @return array
-     */
-    private function doFetchAllFromRuleTable(): array
-    {
-        $results = [];
-
-        $sql = 'SELECT * FROM ' . $this->tableRuleList;
-
-        $query = $this->db->prepare($sql);
-        $query->execute();
-        $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
-
-        if (is_array($resultData)) {
-            $results = $resultData;
-        }
-
-        return $results;
-    }
-
-    /**
-     * Fetch all data from session table.
-     * @return array
-     */
-    private function doFetchAllFromSessionTable(): array
-    {
-        $results = [];
-
-        $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY microtimesamp ASC';
-
-        $query = $this->db->prepare($sql);
-        $query->execute();
-        $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
-
-        if (is_array($resultData)) {
-            $results = $resultData;
-        }
-
-        return $results;
     }
 }
