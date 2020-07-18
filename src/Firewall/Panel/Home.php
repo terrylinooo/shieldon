@@ -167,7 +167,7 @@ class Home extends BaseController
         }
     }
 
-/**
+    /**
      * Template variables of the section of Action Logger.
      *
      * @param array $data The template varibles.

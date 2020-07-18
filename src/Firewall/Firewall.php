@@ -113,17 +113,15 @@ class Firewall
     }
 
     /**
-     * Add middlewares and use them before executing Shieldon kernal.
+     * Add middlewares and use them before going into Shieldon kernal.
      *
      * @param MiddlewareInterface $middleware A PSR-15 middlewares.
      *
      * @return void
      */
-    public function add($middleware)
+    public function add(MiddlewareInterface $middleware)
     {
-        if ($middleware instanceof MiddlewareInterface) {
-            $this->middlewares[] = $middleware;
-        }
+        $this->middlewares[] = $middleware;
     }
 
     /**
