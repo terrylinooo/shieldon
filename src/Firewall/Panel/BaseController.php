@@ -560,7 +560,7 @@ class BaseController
 
             if (!is_dir($actionLogDir)) {
                 $originalUmask = umask(0);
-                @mkdir($actionLogDir, 0777, true);
+                mkdir($actionLogDir, 0777, true);
                 umask($originalUmask);
             }
 
@@ -581,6 +581,8 @@ class BaseController
 
     /**
      * Check the settings of Iptables.
+     * 
+     * @param bool $result The result passed from previous check.
      *
      * @return bool
      */
@@ -605,7 +607,7 @@ class BaseController
 
             if (!is_dir($iptablesWatchingFolder)) {
                 $originalUmask = umask(0);
-                @mkdir($iptablesWatchingFolder, 0777, true);
+                mkdir($iptablesWatchingFolder, 0777, true);
                 umask($originalUmask);
 
                 // Create default log files.
@@ -636,9 +638,11 @@ class BaseController
     /**
      * Check the settings of Data drivers.
      *
+     * @param bool $result The result passed from previous check.
+     *
      * @return bool
      */
-    protected function saveConfigCheckDataDriver(bool $result): bool
+    private function saveConfigCheckDataDriver(bool $result): bool
     {
         if (!$result) {
             return false;
@@ -646,143 +650,199 @@ class BaseController
 
         switch ($this->configuration['driver_type']) {
             case 'mysql':
-                if (class_exists('PDO')) {
-                    $db = [
-                        'host'    => $this->getConfig('drivers.mysql.host'),
-                        'dbname'  => $this->getConfig('drivers.mysql.dbname'),
-                        'user'    => $this->getConfig('drivers.mysql.user'),
-                        'pass'    => $this->getConfig('drivers.mysql.pass'),
-                        'charset' => $this->getConfig('drivers.mysql.charset'),
-                    ];
-
-                    try {
-                        $pdo = new PDO(
-                            'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
-                            (string) $db['user'],
-                            (string) $db['pass']
-                        );
-                    } catch(PDOException $e) {
-                        $result = false;
-                        $this->pushMessage('error', 
-                            __(
-                                'panel',
-                                'error_mysql_connection',
-                                'Cannot access to your MySQL database, please check your settings.'
-                            )
-                        );
-                    }
-                } else {
-                    $result = false;
-                    $this->pushMessage('error',
-                        __(
-                            'panel',
-                            'error_mysql_driver_not_supported',
-                            'Your system doesn’t support MySQL driver.'
-                        )
-                    );
-                }
+                $result = $this->saveCofigChecDataDriverkMySql($result);
                 break;
 
             case 'sqlite':
-                $sqliteDir = rtrim($this->getConfig('drivers.sqlite.directory_path'), '\\/ ');
-
-                if (empty($sqliteDir)) {
-                    $sqliteDir = $this->directory . '/data_driver_sqlite';
-                }
-
-                $sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
-                $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
-                
-                if (!file_exists($sqliteFilePath)) {
-                    if (!is_dir($sqliteDir)) {
-                        $originalUmask = umask(0);
-                        @mkdir($sqliteDir, 0777, true);
-                        umask($originalUmask);
-                    }
-                }
-
-                if (class_exists('PDO')) {
-                    try {
-                        $pdo = new PDO('sqlite:' . $sqliteFilePath);
-                    } catch(PDOException $e) {
-                        $result = false;
-                        $this->pushMessage('error', $e->getMessage());
-                    }
-                } else {
-                    $result = false;
-                    $this->pushMessage('error',
-                        __(
-                            'panel',
-                            'error_sqlite_driver_not_supported',
-                            'Your system doesn’t support SQLite driver.'
-                        )
-                    );
-                }
-
-                if (!is_writable($sqliteFilePath)) {
-                    $result = false;
-                    $this->pushMessage('error',
-                        __(
-                            'panel',
-                            'error_sqlite_directory_not_writable',
-                            'SQLite data driver requires the storage directory writable.'
-                        )
-                    );
-                }
+                $result = $this->saveCofigCheckDataDriverSqlLite($result);
                 break;
 
             case 'redis':
-                if (class_exists('Redis')) {
-                    try {
-                        $redis = new Redis();
-                        $redis->connect(
-                            (string) $this->getConfig('drivers.redis.host'), 
-                            (int)    $this->getConfig('drivers.redis.port')
-                        );
-                    } catch(RedisException $e) {
-                        $result = false;
-                        $this->pushMessage('error', $e->getMessage());
-                    }
-                } else {
-                    $result = false;
-                    $this->pushMessage('error',
-                        __(
-                            'panel',
-                            'error_redis_driver_not_supported',
-                            'Your system doesn’t support Redis driver.'
-                        )
-                    );
-                }
+                $result = $this->saveCofigCheckDataDriverRedis($result);
                 break;
 
             case 'file':
             default:
-                $fileDir = rtrim($this->getConfig('drivers.file.directory_path'), '\\/ ');
-
-                if (empty($fileDir)) {
-                    $fileDir = $this->directory . '/data_driver_file';
-                    $this->setConfig('drivers.file.directory_path', $fileDir);
-                }
-
-                $this->setConfig('drivers.file.directory_path', $fileDir);
-
-                if (!is_dir($fileDir)) {
-                    $originalUmask = umask(0);
-                    @mkdir($fileDir, 0777, true);
-                    umask($originalUmask);
-                }
-
-                if (!is_writable($fileDir)) {
-                    $result = false;
-                    $this->pushMessage('error',
-                        __(
-                            'panel',
-                            'error_file_directory_not_writable',
-                            'File data driver requires the storage directory writable.'
-                        )
-                    );
-                }
+                $result = $this->saveCofigCheckDataDriverFile($result);
             // endswitch
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check the settings of Data drivers.
+     *
+     * @param bool $result The result passed from previous check.
+     *
+     * @return bool
+     */
+    private function saveCofigCheckDataDriverMySql(bool $result): bool
+    {
+        if (class_exists('PDO')) {
+            $db = [
+                'host'    => $this->getConfig('drivers.mysql.host'),
+                'dbname'  => $this->getConfig('drivers.mysql.dbname'),
+                'user'    => $this->getConfig('drivers.mysql.user'),
+                'pass'    => $this->getConfig('drivers.mysql.pass'),
+                'charset' => $this->getConfig('drivers.mysql.charset'),
+            ];
+
+            try {
+                $pdo = new PDO(
+                    'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
+                    (string) $db['user'],
+                    (string) $db['pass']
+                );
+            } catch(PDOException $e) {
+                $result = false;
+                $this->pushMessage('error', 
+                    __(
+                        'panel',
+                        'error_mysql_connection',
+                        'Cannot access to your MySQL database, please check your settings.'
+                    )
+                );
+            }
+        } else {
+            $result = false;
+            $this->pushMessage('error',
+                __(
+                    'panel',
+                    'error_mysql_driver_not_supported',
+                    'Your system doesn’t support MySQL driver.'
+                )
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check the settings of Data drivers.
+     *
+     * @param bool $result The result passed from previous check.
+     *
+     * @return bool
+     */
+    private function saveCofigCheckDataDriverSqlLite(bool $result): bool
+    {
+        $sqliteDir = rtrim($this->getConfig('drivers.sqlite.directory_path'), '\\/ ');
+
+        if (empty($sqliteDir)) {
+            $sqliteDir = $this->directory . '/data_driver_sqlite';
+        }
+
+        $sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
+        $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
+        
+        if (!file_exists($sqliteFilePath)) {
+            if (!is_dir($sqliteDir)) {
+                $originalUmask = umask(0);
+                mkdir($sqliteDir, 0777, true);
+                umask($originalUmask);
+            }
+        }
+
+        if (class_exists('PDO')) {
+            try {
+                $pdo = new PDO('sqlite:' . $sqliteFilePath);
+            } catch(PDOException $e) {
+                $result = false;
+                $this->pushMessage('error', $e->getMessage());
+            }
+        } else {
+            $result = false;
+            $this->pushMessage('error',
+                __(
+                    'panel',
+                    'error_sqlite_driver_not_supported',
+                    'Your system doesn’t support SQLite driver.'
+                )
+            );
+        }
+
+        if (!is_writable($sqliteFilePath)) {
+            $result = false;
+            $this->pushMessage('error',
+                __(
+                    'panel',
+                    'error_sqlite_directory_not_writable',
+                    'SQLite data driver requires the storage directory writable.'
+                )
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Check the settings of Data drivers.
+     *
+     * @param bool $result The result passed from previous check.
+     *
+     * @return bool
+     */
+    private function saveCofigCheckDataDriverRedis(bool $result): bool
+    {
+        if (class_exists('Redis')) {
+            try {
+                $redis = new Redis();
+                $redis->connect(
+                    (string) $this->getConfig('drivers.redis.host'), 
+                    (int)    $this->getConfig('drivers.redis.port')
+                );
+            } catch(RedisException $e) {
+                $result = false;
+                $this->pushMessage('error', $e->getMessage());
+            }
+        } else {
+            $result = false;
+            $this->pushMessage('error',
+                __(
+                    'panel',
+                    'error_redis_driver_not_supported',
+                    'Your system doesn’t support Redis driver.'
+                )
+            );
+        }
+
+        return $redis;
+    }
+
+    /**
+     * Check the settings of Data drivers.
+     *
+     * @param bool $result The result passed from previous check.
+     *
+     * @return bool
+     */
+    private function saveCofigCheckDataDriverFile(bool $result): bool
+    {
+        $fileDir = rtrim($this->getConfig('drivers.file.directory_path'), '\\/ ');
+
+        if (empty($fileDir)) {
+            $fileDir = $this->directory . '/data_driver_file';
+            $this->setConfig('drivers.file.directory_path', $fileDir);
+        }
+
+        $this->setConfig('drivers.file.directory_path', $fileDir);
+
+        if (!is_dir($fileDir)) {
+            $originalUmask = umask(0);
+            mkdir($fileDir, 0777, true);
+            umask($originalUmask);
+        }
+
+        if (!is_writable($fileDir)) {
+            $result = false;
+            $this->pushMessage('error',
+                __(
+                    'panel',
+                    'error_file_directory_not_writable',
+                    'File data driver requires the storage directory writable.'
+                )
+            );
         }
 
         return $result;
