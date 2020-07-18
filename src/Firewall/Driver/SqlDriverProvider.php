@@ -81,24 +81,19 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function doFetch(string $ip, string $type = 'filter'): array
     {
-        $results = [];
+        $tables = [
+            'rule' => 'doFetchFromRuleTable',
+            'filter' => 'doFetchFromFilterTable',
+            'session' => 'doFetchFromSessionTable',
+        ];
 
-        switch ($type) {
-
-            case 'rule':
-                $results = $this->doFetchFromRuleTable($ip);
-                break;
-
-            case 'filter':
-                $results = $this->doFetchFromFilterTable($ip);
-                break;
-
-            case 'session':
-                $results = $this->doFetchFromSessionTable($ip);
-                break;
+        if (empty($tables[$type])) {
+            return [];
         }
 
-        return $results;
+        $method = $tables[$type];
+
+        return $this->{$method}($ip);
     }
 
    /**
@@ -106,24 +101,19 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function doFetchAll(string $type = 'filter'): array
     {
-        $results = [];
+        $tables = [
+            'rule' => 'doFetchAllFromRuleTable',
+            'filter' => 'doFetchAllFromFilterTable',
+            'session' => 'doFetchAllFromSessionTable',
+        ];
 
-        switch ($type) {
-
-            case 'rule':
-                $results = $this->doFetchAllFromRuleTable();
-                break;
-
-            case 'filter':
-                $results = $this->doFetchAllFromFilterTable();
-                break;
-
-            case 'session':
-                $results = $this->doFetchAllFromSessionTable();
-                break;
+        if (empty($tables[$type])) {
+            return [];
         }
+        
+        $method = $tables[$type];
 
-        return $results;
+        return $this->{$method}();
     }
 
     /**
@@ -189,7 +179,6 @@ class SqlDriverProvider extends DriverProvider
 
             case 'session':
                 $tableName = $this->tableSessions;
-                
                 $logWhere['id'] = $data['id'];
                 $logData = $data;
                 break;
@@ -197,9 +186,9 @@ class SqlDriverProvider extends DriverProvider
 
         if ($this->checkExist($ip, $type)) {
             return $this->update($tableName, $logData, $logWhere);
-        } else {
-            return (bool) $this->insert($tableName, $logData);
         }
+
+        return (bool) $this->insert($tableName, $logData);
     }
 
     /**
@@ -285,9 +274,9 @@ class SqlDriverProvider extends DriverProvider
         
         } catch(Exception $e) {
             throw $e->getMessage();
-            return false;
         }
 
+        return false;
         // @codeCoverageIgnoreEnd 
     }
 
