@@ -330,7 +330,6 @@ if (
                 </div>
             </div>
         </div>
-
         <?php if (! empty($this->messages)) : ?>
         <div id="message-modal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-lightbox" role="document">
