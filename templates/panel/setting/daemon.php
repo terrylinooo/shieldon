@@ -303,16 +303,16 @@ use function Shieldon\Firewall\_e;
             <td class="r2">
                 <div>
                     <?php if ($this->mode === 'demo') : ?>
-                        <code id="code1" style="display: none">* * * * * root bash your_project_folder/vendor/shieldon/bin/iptable_bridge.sh --watch=your_watching_folder >> /var/log/shieldon.log 2>&1</code>
+                        <code id="code1" style="display: none">* * * * * root bash your_project_folder/vendor/shieldon/bin/iptables_bridge.sh --watch=your_watching_folder >> /var/log/shieldon.log 2>&1</code>
                     <?php else: ?>
-                        <code id="code1" style="display: none">* * * * * root bash <?php echo realpath(__DIR__ . '/../../../bin/iptable_bridge.sh') ?> --watch=<span id="iptables-watch-folder"></span> >> /var/log/shieldon.log 2>&1</code>
+                        <code id="code1" style="display: none">* * * * * root bash <?php echo realpath(__DIR__ . '/../../../bin/iptables_bridge.sh') ?> --watch=<span id="iptables-watch-folder"></span> >> /var/log/shieldon.log 2>&1</code>
                     <?php endif; ?>
                     
                     <textarea id="code2" class="form-control" rows="4" style="font-size: 12px; font-family: monospace;"></textarea>
                 </div><br />
                 <p>
                     <?php _e('panel', 'setting_note_cronjob', 'Please use this code into the crontab file on your server.'); ?><br />
-                    <?php _e('panel', 'setting_note_iptables', '<strong>iptable_bridge.sh</strong> will watch the changes in this folder to employ command to iptables.'); ?>
+                    <?php _e('panel', 'setting_note_iptables', '<strong>iptables_bridge.sh</strong> will watch the changes in this folder to employ command to iptables.'); ?>
                 </p>
             </td>
         </tr>

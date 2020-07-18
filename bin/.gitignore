@@ -1,6 +1,6 @@
 
 *
-!iptable_bridge.sh
+!iptables_bridge.sh
 !test.txt
 !.gitignore
 

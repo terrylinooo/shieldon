@@ -84,31 +84,18 @@ class Iptables extends BaseController
     }
 
     /**
-     * System layer firwall - iptables
-     * 
-     * @param string $type The type of IP address.
+     * Detect and handle form post action.
+     *
+     * @param string $type              IPv4 or IPv6
+     * @param string $commandLogFile    The log file contains executed commands.
+     * @param string $iptablesQueueFile The file contains the commands that wil 
+     *                                  be executed by Iptables
      *
      * @return void
      */
-    protected function iptables(string $type = 'IPv4'): ResponseInterface
+    private function iptablesFormPost(string $type, string $commandLogFile, string $iptablesQueueFile)
     {
         $postParams = get_request()->getParsedBody();
-
-        $reflection = new ReflectionObject($this->kernel);
-        $t = $reflection->getProperty('properties');
-        $t->setAccessible(true);
-        $properties = $t->getValue($this->kernel);
-
-        $iptablesWatchingFolder = $properties['iptables_watching_folder'];
-
-        // The iptables log files.
-        $ipCommandFile = $iptablesWatchingFolder . '/ipv4_command.log';
-
-        if ('IPv6' === $type) {
-            $ipCommandFile = $iptablesWatchingFolder . '/ipv6_command.log';
-        }
-
-        $iptablesQueueFile = $iptablesWatchingFolder . '/iptables_queue.log';
 
         $con1 = (
             isset($postParams['ip']) &&
@@ -166,44 +153,86 @@ class Iptables extends BaseController
                 $ipv = '6';
             }
 
-            $applyCommand = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
-
-            if ($isRemoval) {
+            /**
+             * The process of add or remove command string from two files:
+             * 
+             * (1) The command file -
+             *     This file is used on display the commands on the page 
+             *     Iptables Manager.
+             * (2) The queue file -
+             *     This file is a bridge between Shieldon Firewall and Iptalbes.
+             *     ipbales_bridge.sh will monitor this file, once commands come, 
+             *     transforming the commands into Iptables syntax commands and 
+             *     then execute the Iptables commands.
+             */
+            if (!$isRemoval) {
                 $originCommandString = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
 
                 // Delete line from the log file.
-                $fileArr = file($ipCommandFile);
-                unset($fileArr[array_search(trim($originCommandString), $fileArr)]);
+                $fileArr = file($commandLogFile);
 
-                $t = [];
-                $i = 0;
-                foreach ($fileArr as $f) {
-                    $t[$i] = trim($f);
-                    $i++;
+                if (is_array($fileArr)) {
+                    $keyFound = array_search(trim($originCommandString), $fileArr);
+                    unset($fileArr[$keyFound]);
+
+                    $t = [];
+                    $i = 0;
+                    foreach ($fileArr as $f) {
+                        $t[$i] = trim($f);
+                        $i++;
+                    }
+                    file_put_contents($commandLogFile, implode(PHP_EOL, $t));
                 }
-                file_put_contents($ipCommandFile, implode(PHP_EOL, $t));
 
                 $applyCommand = "delete,$ipv,$ip,$subnet,$port,$protocol,$action";
-            }
 
-            // Add a command to the watching file.
-            file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
-
-            if (!$isRemoval) {
+                file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
 
                 // Becase we need system cronjob done, and then the web page will show the actual results.
                 sleep(10);
             } else {
+                $applyCommand = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
+
+                file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
                 sleep(1);
             }
         }
+    }
+
+    /**
+     * System layer firwall - iptables
+     * 
+     * @param string $type The type of IP address.
+     *
+     * @return void
+     */
+    protected function iptables(string $type = 'IPv4'): ResponseInterface
+    {
+        $reflection = new ReflectionObject($this->kernel);
+        $t = $reflection->getProperty('properties');
+        $t->setAccessible(true);
+        $properties = $t->getValue($this->kernel);
+
+        $dir = $properties['iptables_watching_folder'];
+
+        // The iptables log files.
+        $commandLogFile = $dir . '/ipv4_command.log';
+
+        if ('IPv6' === $type) {
+            $commandLogFile = $dir . '/ipv6_command.log';
+        }
+
+        $iptablesQueueFile = $dir . '/iptables_queue.log';
+
+        if ('POST' === get_request()->getMethod()) {
+            $this->iptablesFormPost($type, $commandLogFile, $iptablesQueueFile);
+        }
 
         $data[] = [];
-
         $ipCommand = '';
 
-        if (file_exists($ipCommandFile)) {
-            $file = new SplFileObject($ipCommandFile);
+        if (file_exists($commandLogFile)) {
+            $file = new SplFileObject($commandLogFile);
 
             $ipCommand = [];
 
@@ -242,13 +271,13 @@ class Iptables extends BaseController
         $t->setAccessible(true);
         $properties = $t->getValue($this->kernel);
 
-        $iptablesWatchingFolder = $properties['iptables_watching_folder'];
+        $dir = $properties['iptables_watching_folder'];
 
         // The iptables log files.
-        $ipStatusFile = $iptablesWatchingFolder . '/ipv4_status.log';
+        $ipStatusFile = $dir . '/ipv4_status.log';
 
         if ('IPv6' === $type) {
-            $ipStatusFile = $iptablesWatchingFolder . '/ipv6_status.log';
+            $ipStatusFile = $dir . '/ipv6_status.log';
         }
         
         $ipStatus = '';

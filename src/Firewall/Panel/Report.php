@@ -94,7 +94,7 @@ class Report extends BaseController
     {
         $getParams = get_request()->getQueryParams();
 
-        $tab = $getParams['tab'] ?? 'today';
+        $type = $getParams['tab'] ?? 'today';
 
         $validTabs = [
             'yesterday',
@@ -104,7 +104,7 @@ class Report extends BaseController
             'today',
         ];
 
-        if (!in_array($tab, $validTabs)) {
+        if (!in_array($type, $validTabs)) {
             $type = 'today';
         }
 

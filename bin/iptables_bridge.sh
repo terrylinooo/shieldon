@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-#>                           +-------------------+
-#>                           | iptable_bridge.sh |   
-#>                           +-------------------+
+#>                           +--------------------+
+#>                           | iptables_bridge.sh |   
+#>                           +--------------------+
 #-
 #- SYNOPSIS
 #-
-#-    iptable_bridge.sh [-h] [-i] [-w [log_directory]]
+#-    iptables_bridge.sh [-h] [-i] [-w [log_directory]]
 #-
 #- OPTIONS
 #-
@@ -17,8 +17,8 @@
 #-
 #- EXAMPLES
 #-
-#-    $ ./iptable_bridge.sh -w /tmp/shieldon_iptable
-#-    $ ./iptable_bridge.sh --watch=/tmp/shieldon_iptable
+#-    $ ./iptables_bridge.sh -w /tmp/shieldon_iptable
+#-    $ ./iptables_bridge.sh --watch=/tmp/shieldon_iptable
 #+
 #+ IMPLEMENTATION:
 #+

@@ -49,7 +49,7 @@ class BashScriptTest extends \PHPUnit\Framework\TestCase
 
         $this->prepareFiles();
         
-        $bashScriptPath = BOOTSTRAP_DIR . '/../bin/iptable_bridge.sh';
+        $bashScriptPath = BOOTSTRAP_DIR . '/../bin/iptables_bridge.sh';
 
         // Add a command.
         $queueFilePath = $this->iptablesWatchingFolder . '/iptables_queue.log';
