@@ -796,6 +796,7 @@ class BaseController
                 $this->pushMessage('error', $e->getMessage());
                 $result = false;
             }
+
         } else {     
             $this->pushMessage('error',
                 __(
@@ -806,7 +807,7 @@ class BaseController
             );
             $result = false;
         }
-        return $redis;
+        return $result;
     }
 
     /**

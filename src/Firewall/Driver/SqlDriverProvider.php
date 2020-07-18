@@ -111,39 +111,15 @@ class SqlDriverProvider extends DriverProvider
         switch ($type) {
 
             case 'rule':
-                $sql = 'SELECT * FROM ' . $this->tableRuleList;
-
-                $query = $this->db->prepare($sql);
-                $query->execute();
-                $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
-
-                if (is_array($resultData)) {
-                    $results = $resultData;
-                }
+                $results = $this->doFetchAllFromRuleTable();
                 break;
 
             case 'filter':
-                $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs;
-
-                $query = $this->db->prepare($sql);
-                $query->execute();
-                $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
-
-                if (is_array($resultData)) {
-                    $results = $resultData;
-                }
+                $results = $this->doFetchAllFromFilterTable();
                 break;
 
             case 'session':
-                $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY microtimesamp ASC';
-
-                $query = $this->db->prepare($sql);
-                $query->execute();
-                $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
-
-                if (is_array($resultData)) {
-                    $results = $resultData;
-                }
+                $results = $this->doFetchAllFromSessionTable();
                 break;
         }
 
@@ -621,6 +597,71 @@ class SqlDriverProvider extends DriverProvider
         if (is_bool($resultData) && !$resultData) {
             $resultData = [];
         }
+
+        if (is_array($resultData)) {
+            $results = $resultData;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Fetch all data from filter table.
+     *
+     * @return array
+     */
+    private function doFetchAllFromFilterTable(): array
+    {
+        $results = [];
+
+        $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs;
+
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
+
+        if (is_array($resultData)) {
+            $results = $resultData;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Fetch all data from filter table.
+     *
+     * @return array
+     */
+    private function doFetchAllFromRuleTable(): array
+    {
+        $results = [];
+
+        $sql = 'SELECT * FROM ' . $this->tableRuleList;
+
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
+
+        if (is_array($resultData)) {
+            $results = $resultData;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Fetch all data from session table.
+     * @return array
+     */
+    private function doFetchAllFromSessionTable(): array
+    {
+        $results = [];
+
+        $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY microtimesamp ASC';
+
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
 
         if (is_array($resultData)) {
             $results = $resultData;
