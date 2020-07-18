@@ -61,6 +61,70 @@ class Home extends BaseController
      */
     public function overview(): ResponseInterface
     {
+        // Collection of the template variables.
+        $data = [];
+
+        // Handle the form post action.
+        $this->overviewFormPost();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Logger
+        |--------------------------------------------------------------------------
+        |
+        | All logs were recorded by ActionLogger.
+        | Get the summary information from those logs.
+        |
+        */
+
+        $data = $this->overviewTemplateVarsOfActionLogger($data);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Data circle
+        |--------------------------------------------------------------------------
+        |
+        | A data circle includes the primary data tables of Shieldon.
+        | They are ip_log_table, ip_rule_table and session_table.
+        |
+        */
+
+        $data = $this->overviewTemplateVarsOfDataCircle($data);
+ 
+        /*
+        |--------------------------------------------------------------------------
+        | Shieldon status
+        |--------------------------------------------------------------------------
+        |
+        | 1. Components.
+        | 2. Filters.
+        | 3. Configuration.
+        | 4. Data drivers.
+        | 5. Captcha modules.
+        | 6. Messenger modules.
+        |
+        */
+
+        $data = $this->overviewTemplateVarsOfComponents($data);
+        $data = $this->overviewTemplateVarsOfFilters($data);
+        $data = $this->overviewTemplateVarsOfConfiguration($data);
+        $data = $this->overviewTemplateVarsOfDataDrivers($data);
+        $data = $this->overviewTemplateVarsOfCaptchas($data);
+        $data = $this->overviewTemplateVarsOfMessengers($data);
+
+        // Page title is also needed.
+        $data['title'] = __('panel', 'title_overview', 'Overview');
+
+        return $this->renderPage('panel/overview', $data);
+    }
+
+    /**
+     * Detect and handle form post action.
+     *
+     * @return void
+     */
+    private function overviewFormPost()
+    {
         $postParams = get_request()->getParsedBody();
 
         if (isset($postParams['action_type'])) {
@@ -101,17 +165,17 @@ class Home extends BaseController
                 default:
             }
         }
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Logger
-        |--------------------------------------------------------------------------
-        |
-        | All logs were recorded by ActionLogger.
-        | Get the summary information from those logs.
-        |
-        */
-
+/**
+     * Template variables of the section of Action Logger.
+     *
+     * @param array $data The template varibles.
+     *
+     * @return array
+     */
+    private function overviewTemplateVarsOfActionLogger(array $data = []): array
+    {
         $data['action_logger'] = false;
 
         if (!empty($this->kernel->logger)) {
@@ -142,34 +206,35 @@ class Home extends BaseController
             $data['logger_total_size'] = round($i / (1024 * 1024), 5) . ' MB';
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Data circle
-        |--------------------------------------------------------------------------
-        |
-        | A data circle includes the primary data tables of Shieldon.
-        | They are ip_log_table, ip_rule_table and session_table.
-        |
-        */
+        return $data;
+    }
 
-        // Data circle.
+    /**
+     * Template variables of the section of Data Circle.
+     *
+     * @param array $data The template varibles.
+     *
+     * @return array
+     */
+    private function overviewTemplateVarsOfDataCircle(array $data = []): array
+    {
         $data['rule_list'] = $this->kernel->driver->getAll('rule');
         $data['ip_log_list'] = $this->kernel->driver->getAll('filter');
         $data['session_list'] = $this->kernel->driver->getAll('session');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Shieldon status
-        |--------------------------------------------------------------------------
-        |
-        | 1. Components.
-        | 2. Filters.
-        | 3. Configuration.
-        | 4. Captcha modules.
-        | 5. Messenger modules.
-        |
-        */
+        return $data;
+    }
 
+    /**
+     * Template variables of the section of Shieldon Status.
+     * Displayed on the Components area.
+     *
+     * @param array $data The template varibles.
+     *
+     * @return array
+     */
+    private function overviewTemplateVarsOfComponents(array $data = []): array
+    {
         $data['components'] = [
             'Ip'         => (!empty($this->kernel->component['Ip']))         ? true : false,
             'TrustedBot' => (!empty($this->kernel->component['TrustedBot'])) ? true : false,
@@ -178,6 +243,19 @@ class Home extends BaseController
             'UserAgent'  => (!empty($this->kernel->component['UserAgent']))  ? true : false,
         ];
 
+        return $data;
+    }
+
+    /**
+     * Template variables of the section of Shieldon Status.
+     * Displayed on the Filters area.
+     *
+     * @param array $data The template varibles.
+     *
+     * @return array
+     */
+    private function overviewTemplateVarsOfFilters(array $data = []): array
+    {
         $reflection = new ReflectionObject($this->kernel);
         $t = $reflection->getProperty('filterStatus');
         $t->setAccessible(true);
@@ -185,6 +263,19 @@ class Home extends BaseController
 
         $data['filters'] = $filterStatus;
 
+        return $data;
+    }
+
+    /**
+     * Template variables of the section of Shieldon Status.
+     * Displayed on the Configuration area.
+     *
+     * @param array $data The template varibles.
+     *
+     * @return array
+     */
+    private function overviewTemplateVarsOfConfiguration(array $data = []): array
+    {
         $reflection = new ReflectionObject($this->kernel);
         $t = $reflection->getProperty('properties');
         $t->setAccessible(true);
@@ -192,6 +283,19 @@ class Home extends BaseController
         
         $data['configuration'] = $properties;
 
+        return $data;
+    }
+
+    /**
+     * Template variables of the section of Shieldon Status.
+     * Displayed on the Data Drivers area.
+     *
+     * @param array $data The template varibles.
+     *
+     * @return array
+     */
+    private function overviewTemplateVarsOfDataDrivers(array $data = []): array
+    {
         $data['driver'] = [
             'mysql'  => ($this->kernel->driver instanceof Driver\MysqlDriver),
             'redis'  => ($this->kernel->driver instanceof Driver\RedisDriver),
@@ -199,6 +303,19 @@ class Home extends BaseController
             'sqlite' => ($this->kernel->driver instanceof Driver\SqliteDriver),
         ];
 
+        return $data;
+    }
+
+    /**
+     * Template variables of the section of Shieldon Status.
+     * Displayed on the Captchas area.
+     *
+     * @param array $data The template varibles.
+     *
+     * @return array
+     */
+    private function overviewTemplateVarsOfCaptchas(array $data = []): array
+    {
         $reflection = new ReflectionObject($this->kernel);
         $t = $reflection->getProperty('captcha');
         $t->setAccessible(true);
@@ -209,6 +326,19 @@ class Home extends BaseController
             'imagecaptcha' => (isset($captcha['ImageCaptcha']) ? true : false),
         ];
 
+        return $data;
+    }
+
+    /**
+     * Template variables of the section of Shieldon Status.
+     * Displayed on the Messengers area.
+     *
+     * @param array $data The template varibles.
+     *
+     * @return array
+     */
+    private function overviewTemplateVarsOfMessengers(array $data = []): array
+    {
         $reflection = new ReflectionObject($this->kernel);
         $t = $reflection->getProperty('messenger');
         $t->setAccessible(true);
@@ -237,9 +367,7 @@ class Home extends BaseController
 
         $data['messengers'] = $operatingMessengers;
 
-        $data['title'] = __('panel', 'title_overview', 'Overview');
-
-        return $this->renderPage('panel/overview', $data);
+        return $data;
     }
 }
 

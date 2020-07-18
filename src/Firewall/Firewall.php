@@ -115,7 +115,7 @@ class Firewall
     /**
      * Add middlewares and use them before executing Shieldon kernal.
      *
-     * @param string $middleware A PSR-15 middlewares.
+     * @param MiddlewareInterface $middleware A PSR-15 middlewares.
      *
      * @return void
      */
