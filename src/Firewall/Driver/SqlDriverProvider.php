@@ -86,63 +86,15 @@ class SqlDriverProvider extends DriverProvider
         switch ($type) {
 
             case 'rule':
-                $sql = 'SELECT * FROM ' . $this->tableRuleList . '
-                    WHERE log_ip = :log_ip
-                    LIMIT 1';
-
-                $query = $this->db->prepare($sql);
-                $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
-                $query->execute();
-                $resultData = $query->fetch($this->db::FETCH_ASSOC);
-
-                // No data found.
-                if (is_bool($resultData) && !$resultData) {
-                    $resultData = [];
-                }
-
-                if (is_array($resultData)) {
-                    $results = $resultData;
-                }
+                $results = $this->doFetchFromRuleTable($ip);
                 break;
 
             case 'filter':
-                $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs . '
-                    WHERE log_ip = :log_ip
-                    LIMIT 1';
-
-                $query = $this->db->prepare($sql);
-                $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
-                $query->execute();
-                $resultData = $query->fetch($this->db::FETCH_ASSOC);
-
-                // No data found.
-                if (is_bool($resultData) && !$resultData) {
-                    $resultData = [];
-                }
-
-                if (!empty($resultData['log_data'])) {
-                    $results = json_decode($resultData['log_data'], true); 
-                }
+                $results = $this->doFetchFromFilterTable($ip);
                 break;
 
             case 'session':
-                $sql = 'SELECT * FROM ' . $this->tableSessions . '
-                    WHERE id = :id
-                    LIMIT 1';
-
-                $query = $this->db->prepare($sql);
-                $query->bindValue(':id', $ip, $this->db::PARAM_STR);
-                $query->execute();
-                $resultData = $query->fetch($this->db::FETCH_ASSOC);
-
-                // No data found.
-                if (is_bool($resultData) && !$resultData) {
-                    $resultData = [];
-                }
-
-                if (is_array($resultData)) {
-                    $results = $resultData;
-                }
+                $results = $this->doFetchFromSessionTable($ip);
                 break;
         }
 
@@ -579,5 +531,101 @@ class SqlDriverProvider extends DriverProvider
         }
 
         return false;
+    }
+
+    /**
+     * Fetch data from filter table.
+     *
+     * @param string $ip An IP address.
+     *
+     * @return array
+     */
+    private function doFetchFromFilterTable(string $ip): array
+    {
+        $results = [];
+
+        $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs . '
+            WHERE log_ip = :log_ip
+            LIMIT 1';
+
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
+        $query->execute();
+        $resultData = $query->fetch($this->db::FETCH_ASSOC);
+
+        // No data found.
+        if (is_bool($resultData) && !$resultData) {
+            $resultData = [];
+        }
+
+        if (!empty($resultData['log_data'])) {
+            $results = json_decode($resultData['log_data'], true); 
+        }
+
+        return $results;
+    }
+
+    /**
+     * Fetch data from rule table.
+     *
+     * @param string $ip An IP address.
+     *
+     * @return array
+     */
+    private function doFetchFromRuleTable(string $ip): array
+    {
+        $results = [];
+
+        $sql = 'SELECT * FROM ' . $this->tableRuleList . '
+            WHERE log_ip = :log_ip
+            LIMIT 1';
+
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
+        $query->execute();
+        $resultData = $query->fetch($this->db::FETCH_ASSOC);
+
+        // No data found.
+        if (is_bool($resultData) && !$resultData) {
+            $resultData = [];
+        }
+
+        if (is_array($resultData)) {
+            $results = $resultData;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Fetch data from session table.
+     *
+     * @param string $ip An IP address.
+     *
+     * @return array
+     */
+    private function doFetchFromSessionTable(string $ip): array
+    {
+        $results = [];
+
+        $sql = 'SELECT * FROM ' . $this->tableSessions . '
+            WHERE id = :id
+            LIMIT 1';
+
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':id', $ip, $this->db::PARAM_STR);
+        $query->execute();
+        $resultData = $query->fetch($this->db::FETCH_ASSOC);
+
+        // No data found.
+        if (is_bool($resultData) && !$resultData) {
+            $resultData = [];
+        }
+
+        if (is_array($resultData)) {
+            $results = $resultData;
+        }
+
+        return $results;
     }
 }

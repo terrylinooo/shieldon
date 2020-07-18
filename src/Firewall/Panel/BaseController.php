@@ -650,7 +650,7 @@ class BaseController
 
         switch ($this->configuration['driver_type']) {
             case 'mysql':
-                $result = $this->saveCofigChecDataDriverkMySql($result);
+                $result = $this->saveCofigCheckDataDriverMySql($result);
                 break;
 
             case 'sqlite':
@@ -689,7 +689,7 @@ class BaseController
             ];
 
             try {
-                $pdo = new PDO(
+                new PDO(
                     'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
                     (string) $db['user'],
                     (string) $db['pass']
@@ -746,13 +746,12 @@ class BaseController
 
         if (class_exists('PDO')) {
             try {
-                $pdo = new PDO('sqlite:' . $sqliteFilePath);
-            } catch(PDOException $e) {
-                $result = false;
+                new PDO('sqlite:' . $sqliteFilePath);
+            } catch(PDOException $e) { 
                 $this->pushMessage('error', $e->getMessage());
+                $result = false;
             }
         } else {
-            $result = false;
             $this->pushMessage('error',
                 __(
                     'panel',
@@ -760,10 +759,10 @@ class BaseController
                     'Your system doesn’t support SQLite driver.'
                 )
             );
+            $result = false;
         }
 
         if (!is_writable($sqliteFilePath)) {
-            $result = false;
             $this->pushMessage('error',
                 __(
                     'panel',
@@ -771,8 +770,8 @@ class BaseController
                     'SQLite data driver requires the storage directory writable.'
                 )
             );
+            $result = false;
         }
-
         return $result;
     }
 
@@ -792,12 +791,12 @@ class BaseController
                     (string) $this->getConfig('drivers.redis.host'), 
                     (int)    $this->getConfig('drivers.redis.port')
                 );
+                unset($redis);
             } catch(RedisException $e) {
-                $result = false;
                 $this->pushMessage('error', $e->getMessage());
+                $result = false;
             }
-        } else {
-            $result = false;
+        } else {     
             $this->pushMessage('error',
                 __(
                     'panel',
@@ -805,8 +804,8 @@ class BaseController
                     'Your system doesn’t support Redis driver.'
                 )
             );
+            $result = false;
         }
-
         return $redis;
     }
 
