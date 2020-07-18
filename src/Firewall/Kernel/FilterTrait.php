@@ -71,6 +71,124 @@ trait FilterTrait
     ];
 
     /**
+     * Detect and analyze an user's behavior.
+     *
+     * @return int The response code.
+     */
+    protected function filter(): int
+    {
+        $now = time();
+        $isFlagged = false;
+
+        // Fetch an IP data from Shieldon log table.
+        $ipDetail = $this->driver->get($this->ip, 'filter');
+
+        $ipDetail = $this->driver->parseData($ipDetail, 'filter');
+        $logData = $ipDetail;
+
+        // Counting user pageviews.
+        foreach (array_keys($this->filterResetStatus) as $unit) {
+
+            // Each time unit will increase by 1.
+            $logData['pageviews_' . $unit] = $ipDetail['pageviews_' . $unit] + 1;
+            $logData['first_time_' . $unit] = $ipDetail['first_time_' . $unit];
+        }
+
+        $logData['first_time_flag'] = $ipDetail['first_time_flag'];
+
+        if (!empty($ipDetail['ip'])) {
+            $logData['ip'] = $this->ip;
+            $logData['session'] = get_session()->get('id');
+            $logData['hostname'] = $this->rdns;
+            $logData['last_time'] = $now;
+
+            // Filter: HTTP referrer information.
+            $filterReferer = $this->filterReferer($logData, $ipDetail, $isFlagged);
+            $isFlagged = $filterReferer['is_flagged'];
+            $logData = $filterReferer['log_data'];
+
+            if ($filterReferer['is_reject']) {
+                return self::RESPONSE_TEMPORARILY_DENY;
+            }
+
+            // Filter: Session.
+            $filterSession = $this->filterSession($logData, $ipDetail, $isFlagged);
+            $isFlagged = $filterSession['is_flagged'];
+            $logData = $filterSession['log_data'];
+
+            if ($filterSession['is_reject']) {
+                return self::RESPONSE_TEMPORARILY_DENY;
+            }
+
+            // Filter: JavaScript produced cookie.
+            $filterCookie = $this->filterCookie($logData, $ipDetail, $isFlagged);
+            $isFlagged = $filterCookie['is_flagged'];
+            $logData = $filterCookie['log_data'];
+
+            if ($filterCookie['is_reject']) {
+                return self::RESPONSE_TEMPORARILY_DENY;
+            }
+
+            // Filter: frequency.
+            $filterFrequency = $this->filterFrequency($logData, $ipDetail, $isFlagged);
+            $isFlagged = $filterFrequency['is_flagged'];
+            $logData = $filterFrequency['log_data'];
+
+            if ($filterFrequency['is_reject']) {
+                return self::RESPONSE_TEMPORARILY_DENY;
+            }
+
+            // Is fagged as unusual beavior? Count the first time.
+            if ($isFlagged) {
+                $logData['first_time_flag'] = (!empty($logData['first_time_flag'])) ? $logData['first_time_flag'] : $now;
+            }
+
+            // Reset the flagged factor check.
+            if (!empty($ipDetail['first_time_flag'])) {
+                if ($now - $ipDetail['first_time_flag'] >= $this->properties['time_reset_limit']) {
+                    $logData['flag_multi_session'] = 0;
+                    $logData['flag_empty_referer'] = 0;
+                    $logData['flag_js_cookie'] = 0;
+                }
+            }
+
+            $this->driver->save($this->ip, $logData, 'filter');
+
+        } else {
+
+            // If $ipDetail[ip] is empty.
+            // It means that the user is first time visiting our webiste.
+            $this->InitializeFirstTimeFilter($logData);
+        }
+
+        return self::RESPONSE_ALLOW;
+    }
+
+    /**
+     * When the user is first time visiting our webiste.
+     * Initialize the log data.
+     * 
+     * @param array $logData The user's log data.
+     *
+     * @return void
+     */
+    protected function InitializeFirstTimeFilter($logData)
+    {
+        $now = time();
+
+        $logData['ip']        = $this->ip;
+        $logData['session']   = get_session()->get('id');
+        $logData['hostname']  = $this->rdns;
+        $logData['last_time'] = $now;
+
+        foreach (array_keys($this->filterResetStatus) as $unit) {
+            $logData['first_time_' . $unit] = $now;
+        }
+
+        $this->driver->save($this->ip, $logData, 'filter');
+    }
+
+    /**
      * Filter - Referer.
      *
      * @param array $logData   IP data from Shieldon log table.
