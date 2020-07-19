@@ -24,9 +24,12 @@ trait XssProtectionTrait
     /**
      * Fetch value from configuration.
      *
-     * @return array|bool|string
+     * @param string $option
+     * @param string $section
+     *
+     * @return mixed
      */
-    abstract function getOption();
+    abstract function getOption(string $option, string $section = '');
 
     /**
      * Set XSS protection.
