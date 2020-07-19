@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Firewall;
+namespace Shieldon\Firewall\Traits\Firewall;
 
 use Shieldon\Firewall\Security\Xss;
 
@@ -21,6 +21,13 @@ use function array_keys;
  */
 trait XssProtectionTrait
 {
+    /**
+     * Fetch value from configuration.
+     *
+     * @return array|bool|string
+     */
+    abstract function getOption();
+
     /**
      * Set XSS protection.
      *

@@ -14,7 +14,7 @@ namespace Shieldon\Firewall\Component;
 
 use Shieldon\Firewall\Component\ComponentProvider;
 use Shieldon\Firewall\Component\AllowedTrait;
-use Shieldon\Firewall\Kernel\IpTrait;
+use Shieldon\Firewall\Traits\IpTrait;
 
 use function base_convert;
 use function count;
