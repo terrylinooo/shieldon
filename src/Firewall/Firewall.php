@@ -376,28 +376,15 @@ class Firewall
         $ipSourceType = $this->getOption('ip_variable_source');
         $serverParams = get_request()->getServerParams();
 
-        if ($ipSourceType['REMOTE_ADDR']) {
-            $ip = $serverParams['REMOTE_ADDR'];
-
-        // Cloudflare
-        } elseif ($ipSourceType['HTTP_CF_CONNECTING_IP']) {
-            $ip = $serverParams['HTTP_CF_CONNECTING_IP'];
-
-        // Google Cloud CDN, Google Load-balancer, AWS.
-        } elseif ($ipSourceType['HTTP_X_FORWARDED_FOR']) {
-            $ip = $serverParams['HTTP_X_FORWARDED_FOR'];
-
-        // KeyCDN, or other CDN providers not listed here.
-        } elseif ($ipSourceType['HTTP_X_FORWARDED_HOST']) {
-            $ip = $serverParams['HTTP_X_FORWARDED_HOST'];
-
-        // Fallback.
-        } else {
-
-            // @codeCoverageIgnoreStart
-            $ip = $serverParams['REMOTE_ADDR'];
-            // @codeCoverageIgnoreEnd
-        }
+        /**
+         * REMOTE_ADDR: general
+         * HTTP_CF_CONNECTING_IP: Cloudflare
+         * HTTP_X_FORWARDED_FOR: Google Cloud CDN, Google Load-balancer, AWS.
+         * HTTP_X_FORWARDED_HOST: KeyCDN, or other CDN providers not listed here.
+         * 
+         */
+        $key = array_search(true, $ipSourceType);
+        $ip = $serverParams[$key];
 
         if (empty($ip)) {
             // @codeCoverageIgnoreStart
