@@ -20,12 +20,13 @@ use Shieldon\Firewall\Captcha as Captcha;
 use Shieldon\Firewall\Component as Component;
 use Shieldon\Firewall\Driver as Driver;
 use Shieldon\Firewall\Middleware as Middleware;
-use Shieldon\Firewall\Security as Security;
+
 use Shieldon\Messenger as Messenger;
 use Shieldon\Firewall\Messenger\MessengerFactory;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\Log\ActionLogger;
-use Shieldon\Firewall\FirewallTrait;
+use Shieldon\Firewall\Firewall\FirewallTrait;
+use Shieldon\Firewall\Firewall\XssProtectionTrait;
 use Shieldon\Psr15\RequestHandler;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
@@ -58,6 +59,7 @@ use function date;
 class Firewall
 {
     use FirewallTrait;
+    use XssProtectionTrait;
 
     /**
      * Collection of PSR-7 or PSR-15 middlewares.
@@ -754,85 +756,7 @@ class Firewall
         }
     }
 
-    /**
-     * Set XSS protection.
-     *
-     * @return void
-     */
-    protected function setXssProtection(): void
-    {
-        $xssProtectionOptions = $this->getOption('xss_protection');
 
-        $xssFilter = new Security\Xss();
-
-        if ($xssProtectionOptions['post']) {
-            $this->kernel->setClosure('xss_post', function() use ($xssFilter) {
-                if (!empty($_POST)) {
-                    foreach (array_keys($_POST) as $k) {
-                        $_POST[$k] = $xssFilter->clean($_POST[$k]);
-                    }
-                }
-            });
-        }
-
-        if ($xssProtectionOptions['get']) {
-            $this->kernel->setClosure('xss_get', function() use ($xssFilter) {
-                if (!empty($_GET)) {
-                    foreach (array_keys($_GET) as $k) {
-                        $_GET[$k] = $xssFilter->clean($_GET[$k]);
-                    }
-                }
-            });
-        }
-
-        if ($xssProtectionOptions['cookie']) {
-            $this->kernel->setClosure('xss_cookie', function() use ($xssFilter) {
-                if (!empty($_COOKIE)) {
-                    foreach (array_keys($_COOKIE) as $k) {
-                        $_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
-                    }
-                }
-            });
-        }
-
-        $xssProtectedList = $this->getOption('xss_protected_list');
-
-        if (!empty($xssProtectedList)) {
-        
-            $this->kernel->setClosure('xss_protection', function() use ($xssFilter, $xssProtectedList) {
-
-                foreach ($xssProtectedList as $v) {
-                    $k = $v['variable'] ?? 'undefined';
-    
-                    switch ($v['type']) {
-
-                        case 'get':
-
-                            if (!empty($_GET[$k])) {
-                                $_GET[$k] = $xssFilter->clean($_GET[$k]);
-                            }
-                            break;
-    
-                        case 'post':
-    
-                            if (!empty($_POST[$k])) {
-                                $_POST[$k] = $xssFilter->clean($_POST[$k]);
-                            }
-                            break;
-    
-                        case 'cookie':
-
-                            if (!empty($_COOKIE[$k])) {
-                                $_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
-                            }
-                            break;
-    
-                        default:
-                    }
-                }
-            });
-        }
-    }
 
     /**
      * WWW-Athentication.
