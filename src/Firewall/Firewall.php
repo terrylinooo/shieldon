@@ -402,9 +402,9 @@ class Firewall
      */
     protected function setFilters(): void
     {
-        $sessionSetting = $this->getOption('session', 'filters');
-        $cookieSetting = $this->getOption('cookie', 'filters');
-        $refererSetting = $this->getOption('referer', 'filters');
+        $sessionSetting   = $this->getOption('session', 'filters');
+        $cookieSetting    = $this->getOption('cookie', 'filters');
+        $refererSetting   = $this->getOption('referer', 'filters');
         $frequencySetting = $this->getOption('frequency', 'filters');
 
         $filterConfig = [
@@ -422,36 +422,31 @@ class Firewall
             'referer' => $refererSetting['config']['quota'] ?? 5,
         ]);
 
-        if ($frequencySetting['enable']) {
+        // if ($frequencySetting['enable']) {
+        $frequencyQuota = [
+            's' => $frequencySetting['config']['quota_s'] ?? 2,
+            'm' => $frequencySetting['config']['quota_m'] ?? 10,
+            'h' => $frequencySetting['config']['quota_h'] ?? 30,
+            'd' => $frequencySetting['config']['quota_d'] ?? 60,
+        ];
 
-            $frequencyQuota = [
-                's' => $frequencySetting['config']['quota_s'] ?? 2,
-                'm' => $frequencySetting['config']['quota_m'] ?? 10,
-                'h' => $frequencySetting['config']['quota_h'] ?? 30,
-                'd' => $frequencySetting['config']['quota_d'] ?? 60,
-            ];
+        $this->kernel->setProperty('time_unit_quota', $frequencyQuota);
 
-            $this->kernel->setProperty('time_unit_quota', $frequencyQuota);
-        }
+        // if ($cookieSetting['enable']) {
+        $cookieName = $cookieSetting['config']['cookie_name'] ?? 'ssjd';
+        $cookieDomain = $cookieSetting['config']['cookie_domain'] ?? '';
+        $cookieValue = $cookieSetting['config']['cookie_value'] ?? '1';
 
-        if ($cookieSetting['enable']) {
+        $this->kernel->setProperty('cookie_name', $cookieName);
+        $this->kernel->setProperty('cookie_domain', $cookieDomain);
+        $this->kernel->setProperty('cookie_value', $cookieValue);
 
-            $cookieName = $cookieSetting['config']['cookie_name'] ?? 'ssjd';
-            $cookieDomain = $cookieSetting['config']['cookie_domain'] ?? '';
-            $cookieValue = $cookieSetting['config']['cookie_value'] ?? '1';
-    
-            $this->kernel->setProperty('cookie_name', $cookieName);
-            $this->kernel->setProperty('cookie_domain', $cookieDomain);
-            $this->kernel->setProperty('cookie_value', $cookieValue);
-        }
+        // if ($refererSetting['enable']) {
+        $this->kernel->setProperty('interval_check_referer', $refererSetting['config']['time_buffer']);
 
-        if ($refererSetting['enable']) {
-            $this->kernel->setProperty('interval_check_referer', $refererSetting['config']['time_buffer']);
-        }
-
-        if ($sessionSetting['enable']) {
-            $this->kernel->setProperty('interval_check_session', $sessionSetting['config']['time_buffer']);
-        }
+        // if ($sessionSetting['enable']) {
+        $this->kernel->setProperty('interval_check_session', $sessionSetting['config']['time_buffer']);
+        
     }
 
     /**
