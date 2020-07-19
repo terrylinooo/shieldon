@@ -28,76 +28,123 @@ trait XssProtectionTrait
      */
     protected function setXssProtection(): void
     {
-        $xssProtectionOptions = $this->getOption('xss_protection');
+        $enable = $this->getOption('xss_protection');
+        $protectedList = $this->getOption('xss_protected_list');
+        $key = array_search(true, $enable);
 
-        $xssFilter = new Xss();
+        if (empty($key) && empty($protectedList)) {
+            return;
+        }
 
-        if ($xssProtectionOptions['post']) {
-            $this->kernel->setClosure('xss_post', function() use ($xssFilter) {
+        $xss = new Xss();
+
+        $this->cleanPost($enable, $xss);
+        $this->cleanGet($enable, $xss);
+        $this->cleanCookie($enable, $xss);
+        $this->cleanProtectedList($protectedList, $xss);
+    }
+
+    /**
+     * Clean the $_POST superglobal.
+     *
+     * @param array $enable
+     * @param Xss   $xss
+     *
+     * @return void
+     */
+    private function cleanPost(array $enable, Xss $xss): void
+    {
+        if ($enable['post']) {
+            $this->kernel->setClosure('xss_post', function() use ($xss) {
                 if (!empty($_POST)) {
                     foreach (array_keys($_POST) as $k) {
-                        $_POST[$k] = $xssFilter->clean($_POST[$k]);
+                        $_POST[$k] = $xss->clean($_POST[$k]);
                     }
                 }
             });
         }
+    }
 
-        if ($xssProtectionOptions['get']) {
-            $this->kernel->setClosure('xss_get', function() use ($xssFilter) {
+    /**
+     * Clean the $_GET superglobal.
+     *
+     * @param array $enable
+     * @param Xss   $xss
+     *
+     * @return void
+     */
+    private function cleanGet(array $enable, Xss $xss): void
+    {
+        if ($enable['get']) {
+            $this->kernel->setClosure('xss_get', function() use ($xss) {
                 if (!empty($_GET)) {
                     foreach (array_keys($_GET) as $k) {
-                        $_GET[$k] = $xssFilter->clean($_GET[$k]);
+                        $_GET[$k] = $xss->clean($_GET[$k]);
                     }
                 }
             });
         }
+    }
 
-        if ($xssProtectionOptions['cookie']) {
-            $this->kernel->setClosure('xss_cookie', function() use ($xssFilter) {
+    /**
+     * Clean the $_COOKIE superglobal.
+     *
+     * @param array $enable
+     * @param Xss   $xss
+     *
+     * @return void
+     */
+    private function cleanCookie(array $enable, Xss $xss): void
+    {
+        if ($enable['cookie']) {
+            $this->kernel->setClosure('xss_cookie', function() use ($xss) {
                 if (!empty($_COOKIE)) {
                     foreach (array_keys($_COOKIE) as $k) {
-                        $_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
+                        $_COOKIE[$k] = $xss->clean($_COOKIE[$k]);
                     }
                 }
             });
         }
+    }
 
-        $xssProtectedList = $this->getOption('xss_protected_list');
-
-        if (!empty($xssProtectedList)) {
+    /**
+     * Clean the specific protected varibles.
+     *
+     * @param array $protectedLis
+     * @param Xss   $xss
+     *
+     * @return void
+     */
+    private function cleanProtectedList(array $protectedList, Xss $xss): void
+    {
+        if (!empty($protectedList)) {
+            $this->kernel->setClosure('xss_protection', 
+                function() use ($xss, $protectedList) {
+                    foreach ($protectedList as $v) {
+                        $k = $v['variable'] ?? 'undefined';
         
-            $this->kernel->setClosure('xss_protection', function() use ($xssFilter, $xssProtectedList) {
-
-                foreach ($xssProtectedList as $v) {
-                    $k = $v['variable'] ?? 'undefined';
-    
-                    switch ($v['type']) {
-
-                        case 'get':
-
-                            if (!empty($_GET[$k])) {
-                                $_GET[$k] = $xssFilter->clean($_GET[$k]);
-                            }
-                            break;
-    
-                        case 'post':
-    
-                            if (!empty($_POST[$k])) {
-                                $_POST[$k] = $xssFilter->clean($_POST[$k]);
-                            }
-                            break;
-    
-                        case 'cookie':
-
-                            if (!empty($_COOKIE[$k])) {
-                                $_COOKIE[$k] = $xssFilter->clean($_COOKIE[$k]);
-                            }
-                            break;
-    
-                        default:
+                        switch ($v['type']) {
+                            case 'get':
+                                if (!empty($_GET[$k])) {
+                                    $_GET[$k] = $xss->clean($_GET[$k]);
+                                }
+                                break;
+        
+                            case 'post':
+                                if (!empty($_POST[$k])) {
+                                    $_POST[$k] = $xss->clean($_POST[$k]);
+                                }
+                                break;
+        
+                            case 'cookie':
+                                if (!empty($_COOKIE[$k])) {
+                                    $_COOKIE[$k] = $xss->clean($_COOKIE[$k]);
+                                }
+                                break;
+                        }
                     }
                 }
-            });
+            );
         }
     }
 }

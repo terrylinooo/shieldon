@@ -458,6 +458,7 @@ class Firewall
      */
     protected function setComponents(): void
     {
+        
         $ipSetting = $this->getOption('ip', 'components');
         $rdnsSetting = $this->getOption('rdns', 'components');
         $headerSetting = $this->getOption('header', 'components');
