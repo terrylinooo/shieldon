@@ -14,7 +14,7 @@ namespace Shieldon\Firewall;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\HttpResolver;
-use Shieldon\Firewall\Panel\DemoTrait;
+use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\User;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
@@ -45,7 +45,7 @@ ini_set('memory_limit', '128M');
  */
 class Panel
 {
-    use DemoTrait;
+    use DemoModeTrait;
 
     /**
      * Route map.

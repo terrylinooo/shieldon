@@ -15,7 +15,7 @@ namespace Shieldon\Firewall\Panel;
 /*
  * Tradit for demonstration.
  */
-trait DemoTrait
+trait DemoModeTrait
 {
     /**
      * self: Shieldon | managed: Firewall | demo: Demo

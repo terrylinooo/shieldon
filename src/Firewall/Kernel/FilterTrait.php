@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Kernel;
 
+use Shieldon\Firewall\Kernel;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session;
 use function Shieldon\Firewall\unset_superglobal;
@@ -108,7 +109,7 @@ trait FilterTrait
             $logData = $filterReferer['log_data'];
 
             if ($filterReferer['is_reject']) {
-                return self::RESPONSE_TEMPORARILY_DENY;
+                return kernel::RESPONSE_TEMPORARILY_DENY;
             }
 
             // Filter: Session.
@@ -117,7 +118,7 @@ trait FilterTrait
             $logData = $filterSession['log_data'];
 
             if ($filterSession['is_reject']) {
-                return self::RESPONSE_TEMPORARILY_DENY;
+                return kernel::RESPONSE_TEMPORARILY_DENY;
             }
 
             // Filter: JavaScript produced cookie.
@@ -126,7 +127,7 @@ trait FilterTrait
             $logData = $filterCookie['log_data'];
 
             if ($filterCookie['is_reject']) {
-                return self::RESPONSE_TEMPORARILY_DENY;
+                return kernel::RESPONSE_TEMPORARILY_DENY;
             }
 
             // Filter: frequency.
@@ -135,7 +136,7 @@ trait FilterTrait
             $logData = $filterFrequency['log_data'];
 
             if ($filterFrequency['is_reject']) {
-                return self::RESPONSE_TEMPORARILY_DENY;
+                return kernel::RESPONSE_TEMPORARILY_DENY;
             }
 
             // Is fagged as unusual beavior? Count the first time.
@@ -161,7 +162,7 @@ trait FilterTrait
             $this->InitializeFirstTimeFilter($logData);
         }
 
-        return self::RESPONSE_ALLOW;
+        return kernel::RESPONSE_ALLOW;
     }
 
     /**
@@ -217,8 +218,8 @@ trait FilterTrait
                 // Ban this IP if they reached the limit.
                 if ($logData['flag_empty_referer'] > $this->properties['limit_unusual_behavior']['referer']) {
                     $this->action(
-                        self::ACTION_TEMPORARILY_DENY,
-                        self::REASON_EMPTY_REFERER
+                        kernel::ACTION_TEMPORARILY_DENY,
+                        kernel::REASON_EMPTY_REFERER
                     );
                     $isReject = true;
                 }
@@ -263,8 +264,8 @@ trait FilterTrait
                 // Ban this IP if they reached the limit.
                 if ($logData['flag_multi_session'] > $this->properties['limit_unusual_behavior']['session']) {
                     $this->action(
-                        self::ACTION_TEMPORARILY_DENY,
-                        self::REASON_TOO_MANY_SESSIONS
+                        kernel::ACTION_TEMPORARILY_DENY,
+                        kernel::REASON_TOO_MANY_SESSIONS
                     );
                     $isReject = true;
                 }
@@ -324,8 +325,8 @@ trait FilterTrait
 
                 // Ban this IP if they reached the limit.
                 $this->action(
-                    self::ACTION_TEMPORARILY_DENY,
-                    self::REASON_EMPTY_JS_COOKIE
+                    kernel::ACTION_TEMPORARILY_DENY,
+                    kernel::REASON_EMPTY_JS_COOKIE
                 );
                 $isReject = true;
             }
@@ -382,29 +383,29 @@ trait FilterTrait
 
                         if ($unit === 's') {
                             $this->action(
-                                self::ACTION_TEMPORARILY_DENY,
-                                self::REASON_REACHED_LIMIT_SECOND
+                                kernel::ACTION_TEMPORARILY_DENY,
+                                kernel::REASON_REACHED_LIMIT_SECOND
                             );
                         }
 
                         if ($unit === 'm') {
                             $this->action(
-                                self::ACTION_TEMPORARILY_DENY,
-                                self::REASON_REACHED_LIMIT_MINUTE
+                                kernel::ACTION_TEMPORARILY_DENY,
+                                kernel::REASON_REACHED_LIMIT_MINUTE
                             );
                         }
 
                         if ($unit === 'h') {
                             $this->action(
-                                self::ACTION_TEMPORARILY_DENY,
-                                self::REASON_REACHED_LIMIT_HOUR
+                                kernel::ACTION_TEMPORARILY_DENY,
+                                kernel::REASON_REACHED_LIMIT_HOUR
                             );
                         }
 
                         if ($unit === 'd') {
                             $this->action(
-                                self::ACTION_TEMPORARILY_DENY,
-                                self::REASON_REACHED_LIMIT_DAY
+                                kernel::ACTION_TEMPORARILY_DENY,
+                                kernel::REASON_REACHED_LIMIT_DAY
                             );
                         }
 

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Kernel;
 
+use Shieldon\Firewall\Kernel;
 use function file_exists;
 use function file_put_contents;
 use function filter_var;
@@ -44,7 +45,7 @@ trait RuleTrait
         // Apply the status code.
         $this->result = $ruleType;
 
-        if ($ruleType === self::ACTION_ALLOW) {
+        if ($ruleType === kernel::ACTION_ALLOW) {
             return true;
         }
 
@@ -77,13 +78,13 @@ trait RuleTrait
             $logData['attempts'] = 0;
         }
 
-        if ($ruleType === self::ACTION_TEMPORARILY_DENY) {
+        if ($ruleType === kernel::ACTION_TEMPORARILY_DENY) {
             $ratd = $this->determineAttemptsTemporaryDeny($logData, $handleType, $attempts);
             $logData = $ratd['log_data'];
             $handleType = $ratd['handle_type'];
         }
 
-        if ($ruleType === self::ACTION_DENY) {
+        if ($ruleType === kernel::ACTION_DENY) {
             $rapd = $this->determineAttemptsPermanentDeny($logData, $handleType, $attempts);
             $logData = $rapd['log_data'];
             $handleType = $rapd['handle_type'];
@@ -126,7 +127,7 @@ trait RuleTrait
                     $this->event['trigger_messengers'] = true;
                 }
 
-                $logData['type'] = self::ACTION_DENY;
+                $logData['type'] = kernel::ACTION_DENY;
 
                 // Reset this value for next checking process - iptables.
                 $logData['attempts'] = 0;
