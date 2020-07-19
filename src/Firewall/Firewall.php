@@ -898,49 +898,5 @@ class Firewall
         }
     }
 
-    /**
-     * Get options from the configuration file.
-     * 
-     * This method is same as `$this->getConfig()` but returning value from array directly, 
-     * saving a `explode()` process.
-     *
-     * @param string $option
-     * @param string $section
-     *
-     * @return mixed
-     */
-    protected function getOption(string $option, string $section = '')
-    {
-        if (!empty($this->configuration[$section][$option])) {
-            return $this->configuration[$section][$option];
-        }
-
-        if (!empty($this->configuration[$option]) && $section === '') {
-            return $this->configuration[$option];
-        }
-
-        return false;
-    }
-
-    /**
-     * Update configuration file.
-     *
-     * @return void
-     */
-    protected function updateConfig()
-    {
-        $configFilePath = $this->directory . '/' . $this->filename;
-
-        if (!file_exists($configFilePath)) {
-            if (!is_dir($this->directory)) {
-                // @codeCoverageIgnoreStart
-                $originalUmask = umask(0);
-                @mkdir($this->directory, 0777, true);
-                umask($originalUmask);
-                // @codeCoverageIgnoreEnd
-            }
-        }
-
-        file_put_contents($configFilePath, json_encode($this->configuration));
-    }
+  
 }
