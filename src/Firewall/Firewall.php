@@ -17,7 +17,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Captcha as Captcha;
-use Shieldon\Firewall\Component as Component;
 use Shieldon\Firewall\Driver as Driver;
 use Shieldon\Firewall\Middleware as Middleware;
 
@@ -458,63 +457,31 @@ class Firewall
      */
     protected function setComponents(): void
     {
-        
-        $ipSetting = $this->getOption('ip', 'components');
-        $rdnsSetting = $this->getOption('rdns', 'components');
-        $headerSetting = $this->getOption('header', 'components');
-        $userAgentSetting = $this->getOption('user_agent', 'components');
-        $trustedBotSetting = $this->getOption('trusted_bot', 'components');
+        $componentConfig = [
+            'Ip' => $this->getOption('ip', 'components'),
+            'Rdns' => $this->getOption('rdns', 'components'),
+            'Header' => $this->getOption('header', 'components'),
+            'UserAgent' => $this->getOption('user_agent', 'components'),
+            'TrustedBot' => $this->getOption('trusted_bot', 'components'),
+        ];
 
-        if ($ipSetting['enable']) {
-            $componentIp = new Component\Ip();
-            $this->kernel->add($componentIp);
-            $this->ipManager();
-        }
+        foreach ($componentConfig as $className => $config) {
+            $class = 'Shieldon\Firewall\Component\\' . $className;
 
-        if ($trustedBotSetting['enable']) {
-            $componentTrustedBot = new Component\TrustedBot();
+            if ($config['enable']) {
+                $componentInstance = new $class();
 
-            if ($trustedBotSetting['strict_mode']) {
-                $componentTrustedBot->setStrict(true);
+                if ($className === 'Ip') {
+                    $this->kernel->add($componentInstance);
+
+                    // Need Ip component to be loaded before calling this method.
+                    $this->applyComponentIpManager();
+                    
+                } elseif ($config['strict_mode']) {
+                    $componentInstance->setStrict(true);
+                    $this->kernel->add($componentInstance);
+                }
             }
-
-            // This component will only allow popular search engline.
-            // Other bots will go into the checking process.
-            $this->kernel->add($componentTrustedBot);
-        }
-
-        if ($headerSetting['enable']) {
-            $componentHeader = new Component\Header();
-
-            // Deny all vistors without common header information.
-            if ($headerSetting['strict_mode']) {
-                $componentHeader->setStrict(true);
-            }
-
-            $this->kernel->add($componentHeader);
-        }
-
-        if ($userAgentSetting['enable']) {
-            $componentUserAgent = new Component\UserAgent();
-
-            // Deny all vistors without user-agent information.
-            if ($userAgentSetting['strict_mode']) {
-                $componentUserAgent->setStrict(true);
-            }
-
-            $this->kernel->add($componentUserAgent);
-        }
-
-        if ($rdnsSetting['enable']) {
-            $componentRdns = new Component\Rdns();
-
-            // Visitors with empty RDNS record will be blocked.
-            // IP resolved hostname (RDNS) and IP address must conform with each other.
-            if ($rdnsSetting['strict_mode']) {
-                $componentRdns->setStrict(true);
-            }
-
-            $this->kernel->add($componentRdns);
         }
     }
 
@@ -774,9 +741,9 @@ class Firewall
     }
 
     /**
-     * IP manager.
+     * Apply the denied list and the allowed list to Ip Component.
      */
-    protected function ipManager()
+    protected function applyComponentIpManager()
     {
         $ipList = $this->getOption('ip_manager');
 
