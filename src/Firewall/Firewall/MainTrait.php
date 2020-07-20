@@ -126,10 +126,10 @@ trait MainTrait
     protected function setComponents(): void
     {
         $componentConfig = [
-            'Ip' => $this->getOption('ip', 'components'),
-            'Rdns' => $this->getOption('rdns', 'components'),
-            'Header' => $this->getOption('header', 'components'),
-            'UserAgent' => $this->getOption('user_agent', 'components'),
+            'Ip'         => $this->getOption('ip', 'components'),
+            'Rdns'       => $this->getOption('rdns', 'components'),
+            'Header'     => $this->getOption('header', 'components'),
+            'UserAgent'  => $this->getOption('user_agent', 'components'),
             'TrustedBot' => $this->getOption('trusted_bot', 'components'),
         ];
 
@@ -188,6 +188,22 @@ trait MainTrait
             }
 
             unset($setting);
+        }
+    }
+
+    /**
+     * Set up the action logger.
+     *
+     * @return void
+     */
+    protected function setLogger(): void
+    {
+        $loggerSetting = $this->getOption('action', 'loggers');
+
+        if ($loggerSetting['enable']) {
+            if (!empty($loggerSetting['config']['directory_path'])) {
+                $this->kernel->add(new ActionLogger($loggerSetting['config']['directory_path']));
+            }
         }
     }
 }

@@ -52,6 +52,7 @@ use function date;
 class Firewall
 {
     use FirewallTrait;
+    use MainTrait;
     use XssProtectionTrait;
     use MessengerTrait;
 
@@ -137,8 +138,6 @@ class Firewall
 
         $this->setLogger();
 
-        $this->setCoreModules();
-
         $this->setSessionLimit();
 
         $this->setCronJob();
@@ -215,22 +214,6 @@ class Firewall
 
         if ($channelId) {
             $this->kernel->setChannel($channelId);
-        }
-    }
-
-    /**
-     * Set up the action logger.
-     *
-     * @return void
-     */
-    protected function setLogger(): void
-    {
-        $loggerSetting = $this->getOption('action', 'loggers');
-
-        if ($loggerSetting['enable']) {
-            if (!empty($loggerSetting['config']['directory_path'])) {
-                $this->kernel->add(new ActionLogger($loggerSetting['config']['directory_path']));
-            }
         }
     }
 
