@@ -29,7 +29,7 @@ class MessengerFactory
      */
     public static function getInstance(string $messenger, array $setting): MessengerInterface
     {
-        $className = 'Item' . self::getCamelCase($messenger);
+        $className = '\Shieldon\Firewall\Messenger\Item' . self::getCamelCase($messenger);
 
         return $className::get($setting);
     }

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Traits\Kernel;
+namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Kernel;
 use function file_exists;

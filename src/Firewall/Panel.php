@@ -14,7 +14,7 @@ namespace Shieldon\Firewall;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\HttpResolver;
-use Shieldon\Firewall\Traits\Panel\DemoModeTrait;
+use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\User;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;

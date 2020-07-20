@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Panel\Messenger;
+namespace Shieldon\Firewall\Messenger;
 
 use Shieldon\Messenger\Messenger\MessengerInterface;
 use Shieldon\Messenger\Telegram;

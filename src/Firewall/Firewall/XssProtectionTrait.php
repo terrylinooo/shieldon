@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Traits\Firewall;
+namespace Shieldon\Firewall\Firewall;
 
 use Shieldon\Firewall\Security\Xss;
 

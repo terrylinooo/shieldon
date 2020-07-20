@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Traits\Panel;
+namespace Shieldon\Firewall\Panel;
 
 /*
  * Tradit for demonstration.

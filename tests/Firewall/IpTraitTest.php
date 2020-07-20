@@ -16,7 +16,7 @@ class IpTraitTest extends \PHPUnit\Framework\TestCase
 {
     public function testSetIp()
     {
-        $mock = $this->getMockForTrait('Shieldon\Firewall\Traits\IpTrait');
+        $mock = $this->getMockForTrait('Shieldon\Firewall\IpTrait');
         $mock->setIp('192.168.1.1');
 
         $this->assertSame('192.168.1.1', $mock->getIp());
@@ -28,7 +28,7 @@ class IpTraitTest extends \PHPUnit\Framework\TestCase
 
     public function testGetIp()
     {
-        $mock = $this->getMockForTrait('Shieldon\Firewall\Traits\IpTrait');
+        $mock = $this->getMockForTrait('Shieldon\Firewall\IpTrait');
         $mock->setIp('192.168.3.3');
 
         $this->assertSame('192.168.3.3', $mock->getIp());
@@ -36,7 +36,7 @@ class IpTraitTest extends \PHPUnit\Framework\TestCase
 
     public function testSetRdns()
     {
-        $mock = $this->getMockForTrait('Shieldon\Firewall\Traits\IpTrait');
+        $mock = $this->getMockForTrait('Shieldon\Firewall\IpTrait');
         $mock->setRdns('unitest.local');
 
         $this->assertSame('unitest.local', $mock->getRdns());
@@ -44,7 +44,7 @@ class IpTraitTest extends \PHPUnit\Framework\TestCase
 
     public function testGetRdns()
     {
-        $mock = $this->getMockForTrait('Shieldon\Firewall\Traits\IpTrait');
+        $mock = $this->getMockForTrait('Shieldon\Firewall\IpTrait');
         $mock->setRdns('unitest.local2');
 
         $this->assertSame('unitest.local2', $mock->getRdns());

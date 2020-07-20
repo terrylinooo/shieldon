@@ -17,15 +17,15 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Captcha as Captcha;
-use Shieldon\Firewall\Driver as Driver;
+use Shieldon\Firewall\Firewall\Driver\DriverFactory;
 use Shieldon\Firewall\Middleware as Middleware;
 
 use Shieldon\Messenger as Messenger;
 use Shieldon\Firewall\Messenger\MessengerFactory;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\Log\ActionLogger;
-use Shieldon\Firewall\Traits\FirewallTrait;
-use Shieldon\Firewall\Traits\Firewall\XssProtectionTrait;
+use Shieldon\Firewall\FirewallTrait;
+use Shieldon\Firewall\Firewall\XssProtectionTrait;
 use Shieldon\Psr15\RequestHandler;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
@@ -228,126 +228,26 @@ class Firewall
     }
 
     /**
-     * Set a data driver for Shieldon use.
+     * Set a data driver for the use of Shiedon Firewall.
+     * Currently supports File, Redis, MySQL and SQLite.
      *
      * @return void
      */
     protected function setDriver(): void
     {
         $driverType = $this->getOption('driver_type');
+        $driverSetting = $this->getOption($driverType, 'drivers');
 
-        switch ($driverType) {
+        if (isset($driverSetting['directory_path'])) {
+            $driverSetting['directory_path'] = $driverSetting['directory_path'] ?: $this->directory;
+        }
 
-            case 'redis':
-            
-                $redisSetting = $this->getOption('redis', 'drivers');
+        $driverInstance = DriverFactory::getInstance($driverType, $driverSetting);
 
-                try {
-
-                    $host = '127.0.0.1';
-                    $port = 6379;
-
-                    if (!empty($redisSetting['host'])) {
-                        $host = $redisSetting['host'];
-                    }
-
-                    if (!empty($redisSetting['port'])) {
-                        $port = $redisSetting['port'];
-                    }
-
-                    // Create a Redis instance.
-                    $redis = new Redis();
-                    $redis->connect($host, $port);
-
-                    if (!empty($redisSetting['auth'])) {
-
-                        // @codeCoverageIgnoreStart
-                        $redis->auth($redisSetting['auth']);
-                        // @codeCoverageIgnoreEnd
-                    }
-
-                    // Use Redis data driver.
-                    $this->kernel->add(new Driver\RedisDriver($redis));
-
-                // @codeCoverageIgnoreStart
-                } catch(RedisException $e) {
-                    $this->status = false;
-
-                    echo $e->getMessage();
-                }
-                // @codeCoverageIgnoreEnd
-
-                break;
-
-            case 'file':
-            
-                $fileSetting = $this->getOption('file', 'drivers');
-
-                if (empty($fileSetting['directory_path'])) {
-                    $fileSetting['directory_path'] = $this->directory;
-                }
-
-                // Use File data driver.
-                $this->kernel->add(new Driver\FileDriver($fileSetting['directory_path']));
-
-                break;
-
-            case 'sqlite':
-            
-                $sqliteSetting = $this->getOption('sqlite', 'drivers');
-
-                if (empty($sqliteSetting['directory_path'])) {
-                    $sqliteSetting['directory_path'] = '';
-                    $this->status = false;
-                }
-
-                try {
-                    
-                    // Specific the sqlite file location.
-                    $sqliteLocation = $sqliteSetting['directory_path'] . '/shieldon.sqlite3';
-
-                    // Create a PDO instance.
-                    $pdoInstance = new PDO('sqlite:' . $sqliteLocation);
-
-                    // Use Sqlite data driver.
-                    $this->kernel->add(new Driver\SqliteDriver($pdoInstance));
-    
-                // @codeCoverageIgnoreStart
-                } catch(PDOException $e) {
-                    $this->status = false;
-
-                    echo $e->getMessage();
-                }
-                // @codeCoverageIgnoreEnd
-
-                break;
-
-            case 'mysql':
-            default:
-
-                $mysqlSetting = $this->getOption('mysql', 'drivers');
-
-                try {
-
-                    // Create a PDO instance.
-                    $pdoInstance = new PDO(
-                        'mysql:host=' 
-                            . $mysqlSetting['host']   . ';dbname=' 
-                            . $mysqlSetting['dbname'] . ';charset=' 
-                            . $mysqlSetting['charset']
-                        , (string) $mysqlSetting['user']
-                        , (string) $mysqlSetting['pass']
-                    );
-
-                    // Use MySQL data driver.
-                    $this->kernel->add(new Driver\MysqlDriver($pdoInstance));
-
-                // @codeCoverageIgnoreStart
-                } catch(PDOException $e) {
-                    echo $e->getMessage();
-                }
-                // @codeCoverageIgnoreEnd
-            // end switch.
+        $this->status = false;
+        if ($driverInstance !== null) {
+            $this->kernel->add($driverInstance);
+            $this->status = true;
         }
     }
 
@@ -678,6 +578,10 @@ class Firewall
      */
     protected function setCronJob(): void 
     {
+        if (!$this->status) {
+            return;
+        }
+
         $cronjobSetting = $this->getOption('reset_circle', 'cronjob');
 
         if ($cronjobSetting['enable']) {

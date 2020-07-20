@@ -84,22 +84,16 @@ return [
 
         // Data driver: File system.
         'mysql' => [
-            'enable' => true,
-            'config' => [
-                'host'    => '127.0.0.1',
-                'dbname'  => 'shieldon_db',
-                'user'    => 'shieldon_user',
-                'pass'    => '1234',
-                'charset' => 'utf8',
-            ],
+            'host'    => '127.0.0.1',
+            'dbname'  => 'shieldon_db',
+            'user'    => 'shieldon_user',
+            'pass'    => '1234',
+            'charset' => 'utf8',
         ],
 
         // Data driver: SQLite.
         'sqlite' => [
-            'enable' => true,
-            'config' => [
-                'directory_path' => '',
-            ],
+            'directory_path' => '',
         ],
     ],
 

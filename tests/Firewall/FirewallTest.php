@@ -218,26 +218,6 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->run();
     }
 
-    public function testDataDriverOptionSqliteEmpty()
-    {
-        $this->testFromJsonConfig();
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
-        $firewall->getKernel()->driver->rebuild();
-
-        $firewall->setConfig('driver_type', 'sqlite');
-        $firewall->setConfig('drivers.sqlite.directory_path', '');
-
-        $firewall->getKernel()->setIp(rand_ip());
-        $firewall->setup();
-   
-        $reflection = new \ReflectionObject($firewall);
-        $t = $reflection->getProperty('status');
-        $t->setAccessible(true);
-        $firewallStatus = $t->getValue($firewall);
-
-        $this->assertFalse($firewallStatus);
-    }
-
     public function testSetCronJobOption()
     {
         $this->testFromJsonConfig();

@@ -16,7 +16,7 @@ class FirewallTraitTest extends \PHPUnit\Framework\TestCase
 {
     public function testConfig()
     {
-        $mock = $this->getMockForTrait('Shieldon\Firewall\Traits\FirewallTrait');
+        $mock = $this->getMockForTrait('Shieldon\Firewall\FirewallTrait');
         $mock->setConfig('a', 'one');
         $mock->setConfig('b.c', 'two');
         $mock->setConfig('d.e.f', 'three');

@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Traits;
+namespace Shieldon\Firewall;
 
 use function count;
 use function explode;
