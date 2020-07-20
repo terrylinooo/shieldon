@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Kernel;
+use function Shieldon\Firewall\__;
+use function Shieldon\Firewall\get_cpu_usage;
+use function Shieldon\Firewall\get_memory_usage;
 use function file_exists;
 use function file_put_contents;
 use function filter_var;
@@ -194,5 +197,37 @@ trait RuleTrait
             'log_data' => $logData,
             'handle_type' => $handleType,
         ];
+    }
+
+    /**
+     * Prepare the message body for messenger modules to sent.
+     *
+     * @param array $logData
+     * @param int   $handleType
+     * 
+     * @return void
+     */
+    private function prepareMessengerBody(array $logData, int $handleType): void
+    {
+        // The data strings that will be appended to message body.
+        $prepareMessageData = [
+            __('core', 'messenger_text_ip')       => $logData['log_ip'],
+            __('core', 'messenger_text_rdns')     => $logData['ip_resolve'],
+            __('core', 'messenger_text_reason')   => __('core', 'messenger_text_reason_code_' . $logData['reason']),
+            __('core', 'messenger_text_handle')   => __('core', 'messenger_text_handle_type_' . $handleType),
+            __('core', 'messenger_text_system')   => '',
+            __('core', 'messenger_text_cpu')      => get_cpu_usage(),
+            __('core', 'messenger_text_memory')   => get_memory_usage(),
+            __('core', 'messenger_text_time')     => date('Y-m-d H:i:s', $logData['time']),
+            __('core', 'messenger_text_timezone') => date_default_timezone_get(),
+        ];
+
+        $message = __('core', 'messenger_notification_subject', 'Notification for {0}', [$this->ip]) . "\n\n";
+
+        foreach ($prepareMessageData as $key => $value) {
+            $message .= $key . ': ' . $value . "\n";
+        }
+
+        $this->msgBody = $message;
     }
 }

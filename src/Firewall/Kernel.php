@@ -370,40 +370,6 @@ class Kernel
         }
     }
 
-    
-
-    /**
-     * Prepare the message body for messenger modules to sent.
-     *
-     * @param array $logData
-     * @param int   $handleType
-     * 
-     * @return void
-     */
-    private function prepareMessengerBody(array $logData, int $handleType): void
-    {
-        // The data strings that will be appended to message body.
-        $prepareMessageData = [
-            __('core', 'messenger_text_ip')       => $logData['log_ip'],
-            __('core', 'messenger_text_rdns')     => $logData['ip_resolve'],
-            __('core', 'messenger_text_reason')   => __('core', 'messenger_text_reason_code_' . $logData['reason']),
-            __('core', 'messenger_text_handle')   => __('core', 'messenger_text_handle_type_' . $handleType),
-            __('core', 'messenger_text_system')   => '',
-            __('core', 'messenger_text_cpu')      => get_cpu_usage(),
-            __('core', 'messenger_text_memory')   => get_memory_usage(),
-            __('core', 'messenger_text_time')     => date('Y-m-d H:i:s', $logData['time']),
-            __('core', 'messenger_text_timezone') => date_default_timezone_get(),
-        ];
-
-        $message = __('core', 'messenger_notification_subject', 'Notification for {0}', [$this->ip]) . "\n\n";
-
-        foreach ($prepareMessageData as $key => $value) {
-            $message .= $key . ': ' . $value . "\n";
-        }
-
-        $this->msgBody = $message;
-    }
-
     /**
      * Check if current IP is trusted or not.
      *

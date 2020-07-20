@@ -16,35 +16,18 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Kernel;
-
-
-use Shieldon\Firewall\Middleware as Middleware;
-
 use Shieldon\Firewall\Utils\Container;
-use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\FirewallTrait;
+use Shieldon\Firewall\MainTrait;
 use Shieldon\Firewall\MessengerTrait;
 use Shieldon\Firewall\Firewall\XssProtectionTrait;
 use Shieldon\Psr15\RequestHandler;
 use function Shieldon\Firewall\get_request;
-
-use RuntimeException;
-
-use function array_column;
 use function defined;
 use function file_exists;
 use function file_get_contents;
-use function file_put_contents;
-use function is_dir;
 use function json_decode;
-use function json_encode;
-use function mkdir;
 use function rtrim;
-use function strpos;
-use function umask;
-use function time;
-use function strtotime;
-use function date;
 
 /**
  * Managed Firewall.
@@ -71,54 +54,6 @@ class Firewall
         Container::set('firewall', $this);
 
         $this->kernel = new Kernel($request, $response);
-    }
-
-    /**
-     * Set up the path of the configuration file.
-     *
-     * @param string $source The path.
-     * @param string $type   The type.
-     * 
-     * @return void
-     */
-    public function configure(string $source, string $type = 'json')
-    {
-        if ($type === 'json') {
-            $this->directory = rtrim($source, '\\/');
-            $configFilePath = $this->directory . '/' . $this->filename;
-
-            if (file_exists($configFilePath)) {
-                $jsonString = file_get_contents($configFilePath);
-
-            } else {
-                $jsonString = file_get_contents(__DIR__ . '/../../config.json');
-
-                if (defined('PHP_UNIT_TEST')) {
-                    $jsonString = file_get_contents(__DIR__ . '/../../tests/config.json');
-                }
-            }
-
-            $this->configuration = json_decode($jsonString, true);
-            $this->kernel->managedBy('managed');
-
-        } elseif ($type === 'php') {
-            $this->configuration = require $source;
-            $this->kernel->managedBy('config');
-        }
-
-        $this->setup();
-    }
-
-    /**
-     * Add middlewares and use them before going into Shieldon kernal.
-     *
-     * @param MiddlewareInterface $middleware A PSR-15 middlewares.
-     *
-     * @return void
-     */
-    public function add(MiddlewareInterface $middleware)
-    {
-        $this->middlewares[] = $middleware;
     }
 
     /**
@@ -157,6 +92,42 @@ class Firewall
         $this->setDenyTooManyAttempts();
 
         $this->setIptablesBridgeDirectory();
+    }
+
+    /**
+     * Set up the path of the configuration file.
+     *
+     * @param string $source The path.
+     * @param string $type   The type.
+     * 
+     * @return void
+     */
+    public function configure(string $source, string $type = 'json')
+    {
+        if ($type === 'json') {
+            $this->directory = rtrim($source, '\\/');
+            $configFilePath = $this->directory . '/' . $this->filename;
+
+            if (file_exists($configFilePath)) {
+                $jsonString = file_get_contents($configFilePath);
+
+            } else {
+                $jsonString = file_get_contents(__DIR__ . '/../../config.json');
+
+                if (defined('PHP_UNIT_TEST')) {
+                    $jsonString = file_get_contents(__DIR__ . '/../../tests/config.json');
+                }
+            }
+
+            $this->configuration = json_decode($jsonString, true);
+            $this->kernel->managedBy('managed');
+
+        } elseif ($type === 'php') {
+            $this->configuration = require $source;
+            $this->kernel->managedBy('config');
+        }
+
+        $this->setup();
     }
 
     /**
@@ -201,5 +172,17 @@ class Firewall
         }
 
         return $this->kernel->respond();
+    }
+
+    /**
+     * Add middlewares and use them before going into Shieldon kernal.
+     *
+     * @param MiddlewareInterface $middleware A PSR-15 middlewares.
+     *
+     * @return void
+     */
+    public function add(MiddlewareInterface $middleware)
+    {
+        $this->middlewares[] = $middleware;
     }
 }
