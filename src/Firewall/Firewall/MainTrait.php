@@ -206,4 +206,225 @@ trait MainTrait
             }
         }
     }
+
+    /**
+     * Apply the denied list and the allowed list to Ip Component.
+     */
+    protected function applyComponentIpManager()
+    {
+        $ipList = $this->getOption('ip_manager');
+
+        $allowedList = [];
+        $deniedList = [];
+
+        if (is_array($ipList)) {
+            foreach ($ipList as $ip) {
+
+                if (0 === strpos($this->kernel->getCurrentUrl(), $ip['url']) ) {
+    
+                    if ('allow' === $ip['rule']) {
+                        $allowedList[] = $ip['ip'];
+                    }
+    
+                    if ('deny' === $ip['rule']) {
+                        $deniedList[] = $ip['ip'];
+                    }
+                }
+            }
+        }
+
+        $this->kernel->component['Ip']->setAllowedItems($allowedList);
+        $this->kernel->component['Ip']->setDeniedItems($deniedList);
+    }
+
+/**
+     * Set the channel ID.
+     *
+     * @return void
+     */
+    protected function setChannel(): void
+    {
+        $channelId = $this->getOption('channel_id');
+
+        if ($channelId) {
+            $this->kernel->setChannel($channelId);
+        }
+    }
+
+    /**
+     * If you use CDN, please choose the real IP source.
+     *
+     * @return void
+     */
+    protected function setIpSource(): void
+    {
+        $ipSourceType = $this->getOption('ip_variable_source');
+        $serverParams = get_request()->getServerParams();
+
+        /**
+         * REMOTE_ADDR: general
+         * HTTP_CF_CONNECTING_IP: Cloudflare
+         * HTTP_X_FORWARDED_FOR: Google Cloud CDN, Google Load-balancer, AWS.
+         * HTTP_X_FORWARDED_HOST: KeyCDN, or other CDN providers not listed here.
+         * 
+         */
+        $key = array_search(true, $ipSourceType);
+        $ip = $serverParams[$key];
+
+        if (empty($ip)) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException('IP source is not set correctly.');
+            // @codeCoverageIgnoreEnd
+        }
+
+        $this->kernel->setIp($ip);
+    }
+
+    /**
+     * Set deny attempts.
+     *
+     * @return void
+     */
+    protected function setDenyTooManyAttempts(): void
+    {
+        $setting = $this->getOption('failed_attempts_in_a_row', 'events');
+
+        $enableDataCircle     = $setting['data_circle']['enable']     ?: false;
+        $enableSystemFirewall = $setting['system_firewall']['enable'] ?: false;
+
+        $this->kernel->setProperty('deny_attempt_enable', [
+            'data_circle'     => $enableDataCircle,
+            'system_firewall' => $enableSystemFirewall,
+        ]);
+
+        $this->kernel->setProperty('deny_attempt_buffer', [
+            'data_circle'     => $setting['data_circle']['buffer'] ?? 10,
+            'system_firewall' => $setting['data_circle']['buffer'] ?? 10,
+        ]);
+
+        // Check the time of the last failed attempt. @since 0.2.0
+        $recordAttempt = $this->getOption('record_attempt');
+
+        $detectionPeriod = $recordAttempt['detection_period'] ?? 5;
+        $timeToReset     = $recordAttempt['time_to_reset']    ?? 1800;
+
+        $this->kernel->setProperty('record_attempt_detection_period', $detectionPeriod);
+        $this->kernel->setProperty('reset_attempt_counter', $timeToReset);
+    }
+
+    /**
+     * Set iptables working folder.
+     *
+     * @return void
+     */
+    protected function setIptablesBridgeDirectory(): void
+    {
+        $iptablesSetting = $this->getOption('config', 'iptables');
+        $this->kernel->setProperty('iptables_watching_folder',  $iptablesSetting['watching_folder']);
+    }
+
+    /**
+     * Set the online session limit.
+     *
+     * @return void
+     */
+    protected function setSessionLimit(): void
+    {
+        $sessionLimitSetting = $this->getOption('online_session_limit');
+
+        if ($sessionLimitSetting['enable']) {
+
+            $onlineUsers = $sessionLimitSetting['config']['count']  ?? 100;
+            $alivePeriod = $sessionLimitSetting['config']['period'] ?? 300;
+
+            $this->kernel->limitSession($onlineUsers, $alivePeriod);
+        }
+    }
+
+    /**
+     * Set the cron job.
+     * This is triggered by the pageviews, not system cron job.
+     *
+     * @return void
+     */
+    protected function setCronJob(): void 
+    {
+        if (!$this->status) {
+            return;
+        }
+
+        $cronjobSetting = $this->getOption('reset_circle', 'cronjob');
+
+        if ($cronjobSetting['enable']) {
+
+            $nowTime = time();
+
+            $lastResetTime = $cronjobSetting['config']['last_update'];
+
+            if (!empty($lastResetTime) ) {
+                $lastResetTime = strtotime($lastResetTime);
+            } else {
+                // @codeCoverageIgnoreStart
+                $lastResetTime = strtotime(date('Y-m-d 00:00:00'));
+                // @codeCoverageIgnoreEnd
+            }
+
+            if (($nowTime - $lastResetTime) > $cronjobSetting['config']['period']) {
+
+                $updateResetTime = date('Y-m-d 00:00:00');
+
+                // Update new reset time.
+                $this->setConfig('cronjob.reset_circle.config.last_update', $updateResetTime);
+                $this->updateConfig();
+
+                // Remove all logs.
+                $this->kernel->driver->rebuild();
+            }
+        }
+    }
+
+    /**
+     * Set the URLs that want to be excluded from Shieldon protection.
+     *
+     * @return void
+     */
+    protected function setExcludedUrls(): void
+    {
+        $excludedUrls = $this->getOption('excluded_urls');
+
+        if (!empty($excludedUrls)) {
+            $list = array_column($excludedUrls, 'url');
+
+            $this->kernel->setExcludedUrls($list);
+        }
+    }
+
+    /**
+     * WWW-Athentication.
+     *
+     * @return void
+     */
+    protected function setPageAuthentication(): void
+    {
+        $authenticateList = $this->getOption('www_authenticate');
+
+        if (is_array($authenticateList)) {
+            $this->add(new Middleware\httpAuthentication($authenticateList));
+        }
+    }
+
+    /**
+     * Set dialog UI.
+     *
+     * @return void
+     */
+    protected function setDialogUserInterface()
+    {
+        $ui = $this->getOption('dialog_ui');
+
+        if (!empty($ui)) {
+            get_session()->set('shieldon_ui_lang', $ui['lang']);
+            $this->kernel->setDialogUI($this->getOption('dialog_ui'));
+        }
+    }
 }
