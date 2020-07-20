@@ -10,16 +10,16 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Messenger;
+namespace Shieldon\Firewall\Firewall\Messenger;
 
 use Shieldon\Messenger\Messenger\MessengerInterface;
-use Shieldon\Messenger\Mail;
+use Shieldon\Messenger\Smtp;
 use function Shieldon\Firewall\__;
 
 /**
- * The get for PHP native mail.
+ * The get for SMTP.
  */
-class ItemPhpNativeMail
+class ItemSmtp
 {
     /**
      * Initialize and get the instance.
@@ -32,8 +32,12 @@ class ItemPhpNativeMail
     {
         $sender     = $setting['config']['sender']     ?? '';
         $recipients = $setting['config']['recipients'] ?? [];
+        $host       = $setting['config']['host']       ?? '';
+        $user       = $setting['config']['user']       ?? '';
+        $pass       = $setting['config']['pass']       ?? '';
+        $port       = $setting['config']['port'] ?? '';
 
-        $instance = new Mail();
+        $instance = new Smtp($user, $pass, $host, (int) $port);
         $instance->setSubject(__('core', 'messenger_text_mail_subject'));
         $instance->addSender($sender);
 

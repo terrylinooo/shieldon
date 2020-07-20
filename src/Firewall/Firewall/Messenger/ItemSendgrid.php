@@ -10,16 +10,16 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Messenger;
+namespace Shieldon\Firewall\Firewall\Messenger;
 
 use Shieldon\Messenger\Messenger\MessengerInterface;
-use Shieldon\Messenger\Smtp;
+use Shieldon\Messenger\Sendgrid;
 use function Shieldon\Firewall\__;
 
 /**
- * The get for SMTP.
+ * The get for Sendgrid.
  */
-class ItemSmtp
+class ItemSendgrid
 {
     /**
      * Initialize and get the instance.
@@ -30,14 +30,11 @@ class ItemSmtp
      */
     public static function get(array $setting): MessengerInterface
     {
-        $sender     = $setting['config']['sender']     ?? '';
+        $apiKey = $setting['config']['api_key'] ?? '';
+        $sender = $setting['config']['sender'] ?? '';
         $recipients = $setting['config']['recipients'] ?? [];
-        $host       = $setting['config']['host']       ?? '';
-        $user       = $setting['config']['user']       ?? '';
-        $pass       = $setting['config']['pass']       ?? '';
-        $port       = $setting['config']['port'] ?? '';
 
-        $instance = new Smtp($user, $pass, $host, (int) $port);
+        $instance = new Sendgrid($apiKey);
         $instance->setSubject(__('core', 'messenger_text_mail_subject'));
         $instance->addSender($sender);
 

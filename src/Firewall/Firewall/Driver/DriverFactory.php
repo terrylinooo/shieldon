@@ -31,7 +31,6 @@ class DriverFactory
     {
         $className = '\Shieldon\Firewall\Firewall\Driver\Item' . self::getCamelCase($type) . 'Driver';
 
-        // Return null if the try-catch throw exception.
         return $className::get($setting);
     }
 

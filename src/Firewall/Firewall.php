@@ -17,11 +17,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Captcha as Captcha;
-use Shieldon\Firewall\Firewall\Driver\DriverFactory;
+
 use Shieldon\Firewall\Middleware as Middleware;
 
-use Shieldon\Messenger as Messenger;
-use Shieldon\Firewall\Messenger\MessengerFactory;
+use Shieldon\Firewall\Firewall\Driver\DriverFactory;
+use Shieldon\Firewall\Firewall\Messenger\MessengerFactory;
+use Shieldon\Firewall\Firewall\Captcha\CaptchaFactory;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\FirewallTrait;
@@ -394,6 +395,33 @@ class Firewall
     {
         $recaptchaSetting = $this->getOption('recaptcha', 'captcha_modules');
         $imageSetting = $this->getOption('image', 'captcha_modules');
+
+        $captchaList = [
+            'recaptcha',
+            'image',
+        ];
+
+        foreach ($captchaList as $captcha) {
+            $setting = $this->getOption($captcha, 'captcha_modules');
+
+            if (is_array($setting)) {
+
+                // Initialize messenger instances from the factory/
+                if (CaptchaFactory::check($captcha, $setting)) {
+    
+                    $this->kernel->add(
+                        CaptchaFactory::getInstance(
+                            // The ID of the captcha module in the configuration.
+                            $captcha, 
+                            // The settings of the captcha module in the configuration.
+                            $setting    
+                        )
+                    );
+                }
+            }
+
+            unset($setting);
+        }
 
         if ($recaptchaSetting['enable']) {
 

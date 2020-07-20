@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Messenger;
+namespace Shieldon\Firewall\Firewall\Messenger;
 
 use Shieldon\Messenger\Messenger\MessengerInterface;
-use Shieldon\Messenger\Telegram;
+use Shieldon\Messenger\RocketChat;
 
 /**
- * The get for Telegram.
+ * The get for RocketChat.
  */
-class ItemTelegram
+class ItemRocketChat
 {
     /**
      * Initialize and get the instance.
@@ -29,9 +29,11 @@ class ItemTelegram
      */
     public static function get(array $setting): MessengerInterface
     {
-        $apiKey  = $setting['config']['api_key'] ?? '';
-        $channel = $setting['config']['channel'] ?? '';
-        
-        return new Telegram($apiKey, $channel);
+        $serverUrl   = $setting['config']['server_url']   ?? '';
+        $userId      = $setting['config']['user_id']      ?? '';
+        $accessToken = $setting['config']['access_token'] ?? '';
+        $channel     = $setting['config']['channel']      ?? '';
+
+        return new RocketChat($accessToken, $userId, $serverUrl, $channel);
     }
 }

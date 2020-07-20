@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Messenger;
+namespace Shieldon\Firewall\Firewall\Messenger;
 
 use Shieldon\Messenger\Messenger\MessengerInterface;
-use Shieldon\Messenger\RocketChat;
+use Shieldon\Messenger\SlackWebhook;
 
 /**
- * The get for RocketChat.
+ * The get for Slack Webhook.
  */
-class ItemRocketChat
+class ItemSlackWebhook
 {
     /**
      * Initialize and get the instance.
@@ -29,11 +29,8 @@ class ItemRocketChat
      */
     public static function get(array $setting): MessengerInterface
     {
-        $serverUrl   = $setting['config']['server_url']   ?? '';
-        $userId      = $setting['config']['user_id']      ?? '';
-        $accessToken = $setting['config']['access_token'] ?? '';
-        $channel     = $setting['config']['channel']      ?? '';
+        $webhookUrl = $setting['config']['webhook_url'] ?? '';
 
-        return new RocketChat($accessToken, $userId, $serverUrl, $channel);
+        return new SlackWebhook($webhookUrl);
     }
 }

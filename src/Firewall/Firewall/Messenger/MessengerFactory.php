@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Messenger;
+namespace Shieldon\Firewall\Firewall\Messenger;
 
 use Shieldon\Messenger\Messenger\MessengerInterface;
 
@@ -29,7 +29,7 @@ class MessengerFactory
      */
     public static function getInstance(string $messenger, array $setting): MessengerInterface
     {
-        $className = '\Shieldon\Firewall\Messenger\Item' . self::getCamelCase($messenger);
+        $className = '\Shieldon\Firewall\Firewall\Messenger\Item' . self::getCamelCase($messenger);
 
         return $className::get($setting);
     }

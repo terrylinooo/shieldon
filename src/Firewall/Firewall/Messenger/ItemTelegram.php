@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Messenger;
+namespace Shieldon\Firewall\Firewall\Messenger;
 
 use Shieldon\Messenger\Messenger\MessengerInterface;
-use Shieldon\Messenger\SlackWebhook;
+use Shieldon\Messenger\Telegram;
 
 /**
- * The get for Slack Webhook.
+ * The get for Telegram.
  */
-class ItemSlackWebhook
+class ItemTelegram
 {
     /**
      * Initialize and get the instance.
@@ -29,8 +29,9 @@ class ItemSlackWebhook
      */
     public static function get(array $setting): MessengerInterface
     {
-        $webhookUrl = $setting['config']['webhook_url'] ?? '';
-
-        return new SlackWebhook($webhookUrl);
+        $apiKey  = $setting['config']['api_key'] ?? '';
+        $channel = $setting['config']['channel'] ?? '';
+        
+        return new Telegram($apiKey, $channel);
     }
 }
