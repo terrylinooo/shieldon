@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Firewall\Captcha;
 
 use Shieldon\Firewall\Captcha\CaptchaInterface;
-use Shieldon\Firewall\Captcha\ImageCaptcha;
+use Shieldon\Firewall\Captcha\ReCaptcha;
 
 /**
  * Get File driver.
@@ -29,25 +29,13 @@ class ItemReCaptcha
      */
     public static function get(array $setting): CaptchaInterface
     {
-        $type = $setting['config']['type'] ?? 'alnum';
-        $length = $setting['config']['length'] ?? 8;
+        $recaptchaSetting = [
+            'key'     => $setting['config']['site_key'],
+            'secret'  => $setting['config']['secret_key'],
+            'version' => $setting['config']['version'],
+            'lang'    => $setting['config']['lang'],
+        ];
 
-        switch ($type) {
-            case 'numeric':
-                $imageCaptchaConfig['pool'] = '0123456789';
-                break;
-
-            case 'alpha':
-                $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyz';
-                break;
-
-            case 'alnum':
-            default:
-                $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        }
-
-        $imageCaptchaConfig['word_length'] = $length;
-
-        return new ImageCaptcha($imageCaptchaConfig);
+        return new ReCaptcha($recaptchaSetting);
     }
 }

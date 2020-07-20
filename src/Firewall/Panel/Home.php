@@ -322,7 +322,7 @@ class Home extends BaseController
         $captcha = $t->getValue($this->kernel);
 
         $data['captcha'] = [
-            'recaptcha'    => (isset($captcha['Recaptcha']) ? true : false),
+            'recaptcha'    => (isset($captcha['ReCaptcha']) ? true : false),
             'imagecaptcha' => (isset($captcha['ImageCaptcha']) ? true : false),
         ];
 

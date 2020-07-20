@@ -25,7 +25,7 @@ use function json_decode;
 /**
  * Google reCaptcha.
  */
-class Recaptcha extends CaptchaProvider
+class ReCaptcha extends CaptchaProvider
 {
     protected $key = '';
     protected $secret = '';

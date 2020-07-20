@@ -422,42 +422,6 @@ class Firewall
 
             unset($setting);
         }
-
-        if ($recaptchaSetting['enable']) {
-
-            $googleRecaptcha = [
-                'key'     => $recaptchaSetting['config']['site_key'],
-                'secret'  => $recaptchaSetting['config']['secret_key'],
-                'version' => $recaptchaSetting['config']['version'],
-                'lang'    => $recaptchaSetting['config']['lang'],
-            ];
-
-            $this->kernel->add(new Captcha\Recaptcha($googleRecaptcha));
-        }
-
-        if ($imageSetting['enable']) {
-
-            $type = $imageSetting['config']['type'] ?? 'alnum';
-            $length = $imageSetting['config']['length'] ?? 8;
-
-            switch ($type) {
-                case 'numeric':
-                    $imageCaptchaConfig['pool'] = '0123456789';
-                    break;
-
-                case 'alpha':
-                    $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyz';
-                    break;
-
-                case 'alnum':
-                default:
-                    $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            }
-
-            $imageCaptchaConfig['word_length'] = $length;
-
-            $this->kernel->add(new Captcha\ImageCaptcha($imageCaptchaConfig));
-        }
     }
 
     /**

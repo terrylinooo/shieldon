@@ -149,14 +149,14 @@ class User extends BaseController
 
         if ($recaptchaSetting['enable']) {
 
-            $googleRecaptcha = [
+            $googleReCaptcha = [
                 'key'     => $recaptchaSetting['config']['site_key'],
                 'secret'  => $recaptchaSetting['config']['secret_key'],
                 'version' => $recaptchaSetting['config']['version'],
                 'lang'    => $recaptchaSetting['config']['lang'],
             ];
 
-            $this->captcha[] = new Captcha\Recaptcha($googleRecaptcha);
+            $this->captcha[] = new Captcha\ReCaptcha($googleReCaptcha);
         }
 
         if ($imageSetting['enable']) {
