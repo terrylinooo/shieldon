@@ -431,7 +431,12 @@ class Firewall
      */
     protected function setMessengers(): void
     {
-        // // The ID list of the messenger modules.
+        /*
+        |--------------------------------------------------------------------------
+        | Set messenger modules.
+        |--------------------------------------------------------------------------
+        */
+
         $messengerList = [
             'telegram',
             'line_notify',
@@ -465,30 +470,20 @@ class Firewall
 
             unset($setting);
         }
-    }
 
-    /**
-     * Set message events.
-     *
-     * @return void
-     */
-    protected function setMessageEvents(): void
-    {
+       /*
+        |--------------------------------------------------------------------------
+        | Set messenger events.
+        |--------------------------------------------------------------------------
+        */
+
         $setting = $this->getOption('failed_attempts_in_a_row', 'events');
 
-        $notifyDataCircle = false;
-        $notifySystemFirewall = false;
-
-        if ($setting['data_circle']['messenger']) {
-            $notifyDataCircle = true;
-        }
-
-        if ($setting['system_firewall']['messenger']) {
-            $notifyDataCircle = true;
-        }
+        $notifyDataCircle     = $setting['data_circle']['messenger']     ?: false;
+        $notifySystemFirewall = $setting['system_firewall']['messenger'] ?: false;
 
         $this->kernel->setProperty('deny_attempt_notify', [
-            'data_circle' => $notifyDataCircle,
+            'data_circle'     => $notifyDataCircle,
             'system_firewall' => $notifySystemFirewall,
         ]);
     }
@@ -502,24 +497,16 @@ class Firewall
     {
         $setting = $this->getOption('failed_attempts_in_a_row', 'events');
 
-        $enableDataCircle = false;
-        $enableSystemFirewall = false;
-
-        if ($setting['data_circle']['enable']) {
-            $enableDataCircle = true;
-        }
-
-        if ($setting['system_firewall']['enable']) {
-            $enableSystemFirewall = true;
-        }
+        $enableDataCircle     = $setting['data_circle']['enable']     ?: false;
+        $enableSystemFirewall = $setting['system_firewall']['enable'] ?: false;
 
         $this->kernel->setProperty('deny_attempt_enable', [
-            'data_circle' => $enableDataCircle,
+            'data_circle'     => $enableDataCircle,
             'system_firewall' => $enableSystemFirewall,
         ]);
 
         $this->kernel->setProperty('deny_attempt_buffer', [
-            'data_circle' => $setting['data_circle']['buffer'] ?? 10,
+            'data_circle'     => $setting['data_circle']['buffer'] ?? 10,
             'system_firewall' => $setting['data_circle']['buffer'] ?? 10,
         ]);
 
@@ -527,7 +514,7 @@ class Firewall
         $recordAttempt = $this->getOption('record_attempt');
 
         $detectionPeriod = $recordAttempt['detection_period'] ?? 5;
-        $timeToReset = $recordAttempt['time_to_reset'] ?? 1800;
+        $timeToReset     = $recordAttempt['time_to_reset']    ?? 1800;
 
         $this->kernel->setProperty('record_attempt_detection_period', $detectionPeriod);
         $this->kernel->setProperty('reset_attempt_counter', $timeToReset);
@@ -555,7 +542,7 @@ class Firewall
 
         if ($sessionLimitSetting['enable']) {
 
-            $onlineUsers = $sessionLimitSetting['config']['count'] ?? 100;
+            $onlineUsers = $sessionLimitSetting['config']['count']  ?? 100;
             $alivePeriod = $sessionLimitSetting['config']['period'] ?? 300;
 
             $this->kernel->limitSession($onlineUsers, $alivePeriod);
@@ -680,6 +667,4 @@ class Firewall
             $this->kernel->setDialogUI($this->getOption('dialog_ui'));
         }
     }
-
-  
 }
