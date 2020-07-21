@@ -18,12 +18,12 @@ use function str_replace;
 use function time;
 
 /*
- * @since 1.0.0
+ * The main functionality for this trait is to limit the online session amount.
  */
-trait LimitSessionTrait
+trait SessionTrait
 {
    /**
-     * Is to limit traffic?
+     * Are you willing to limit the online session amount?
      *
      * @var array
      */

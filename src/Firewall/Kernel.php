@@ -44,7 +44,7 @@ use Shieldon\Firewall\IpTrait;
 use Shieldon\Firewall\Kernel\FilterTrait;
 use Shieldon\Firewall\Kernel\ComponentTrait;
 use Shieldon\Firewall\Kernel\RuleTrait;
-use Shieldon\Firewall\Kernel\LimitSessionTrait;
+use Shieldon\Firewall\Kernel\SessionTrait;
 use Shieldon\Messenger\Messenger\MessengerInterface;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_cpu_usage;
@@ -85,7 +85,7 @@ class Kernel
     use FilterTrait;
     use ComponentTrait;
     use RuleTrait;
-    use LimitSessionTrait;
+    use SessionTrait;
 
     // Reason codes (allow)
     const REASON_IS_SEARCH_ENGINE = 100;
@@ -681,48 +681,59 @@ class Kernel
         $response = get_response();
         $type = '';
 
-        if (self::RESPONSE_TEMPORARILY_DENY === $this->result) {
-            $type = 'captcha';
-            $statusCode = 403; // Forbidden.
+        $httpStatusCodes = [
+            self::RESPONSE_TEMPORARILY_DENY => [
+                'type' => 'captcha',
+                'code' => 403, // Forbidden.
+            ],
 
-        } elseif (self::RESPONSE_LIMIT_SESSION === $this->result) {
-            $type = 'session_limitation';
-            $statusCode = 429; // Too Many Requests.
+            self::RESPONSE_LIMIT_SESSION => [
+                'type' => 'session_limitation',
+                'code' => 429, // Too Many Requests.
+            ],
 
-        } elseif (self::RESPONSE_DENY === $this->result) {
-            $type = 'rejection';
-            $statusCode = 400; // Bad request.
-        }
+            self::RESPONSE_DENY => [
+                'type' => 'rejection',
+                'code' => 400, // Bad request.
+            ],
+        ];
 
         // Nothing happened. Return.
-        if (empty($type)) {
-            // @codeCoverageIgnoreStart
+        if (empty($httpStatusCodes[$this->result])) {
             return $response;
-            // @codeCoverageIgnoreEnd
         }
+
+        $type = $httpStatusCodes[$this->result]['type'];
+        $statusCode = $httpStatusCodes[$this->result]['code'];
+
 
         $viewPath = $this->getTemplate($type);
 
         // The language of output UI. It is used on views.
         $langCode = get_session()->get('shieldon_ui_lang') ?? 'en';
+
+        $showOnlineInformation = false;
+        $showUserInformation = false;
+        
         // Show online session count. It is used on views.
-        $showOnlineInformation = true;
+        if (!empty($this->properties['display_online_info'])) {
+            $showOnlineInformation = true;
+            $onlineinfo['queue'] = $this->sessionStatus['queue'];
+            $onlineinfo['count'] = $this->sessionStatus['count'];
+            $onlineinfo['period'] = $this->sessionLimit['period'];
+        } 
+
         // Show user information such as IP, user-agent, device name.
-        $showUserInformation = true;
-
-        if (empty($this->properties['display_online_info'])) {
-            $showOnlineInformation = false;
-        }
-
-        if (empty($this->properties['display_user_info'])) {
-            $showUserInformation = false;
-        }
-
-        if ($showUserInformation) {
+        if (!empty($this->properties['display_user_info'])) {
+            $showUserInformation = true;
             $dialoguserinfo['ip'] = $this->ip;
             $dialoguserinfo['rdns'] = $this->rdns;
             $dialoguserinfo['user_agent'] = get_request()->getHeaderLine('user-agent');
         }
+
+        // Captcha form
+        $form = $this->getCurrentUrl();
+        $captchas = $this->captcha;
 
         $ui = [
             'background_image' => $this->dialogUI['background_image'] ?? '',
@@ -747,9 +758,11 @@ class Kernel
         unset(
             $css,
             $ui,
+            $form,
+            $captchas,
+            $csrf,
             $langCode,
             $showOnlineInformation,
-            $showLineupInformation,
             $showUserInformation
         );
 

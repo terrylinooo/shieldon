@@ -41,7 +41,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                             <?php _e('core', 'deny_message', 'The IP address you are using has been blocked.') ?>
 						</div>
                     </div>
-					<?php if (! empty($dialoguserinfo)) : ?>
+					<?php if (!empty($dialoguserinfo)) : ?>
 						<div class="status-user-info">
 							<?php foreach ($dialoguserinfo as $key => $userinfo) : ?>
 								<div class="row">

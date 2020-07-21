@@ -43,13 +43,13 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-clock_96x96.png';
 					</div>
  
                     <div class="status-info">
-                        <?php _e('core', 'lineup_info', '', ['<strong>' . $this->sessionStatus['queue'] . '</strong>']); ?><br />
+                        <?php _e('core', 'lineup_info', '', ['<strong>' . $onlineinfo['queue'] . '</strong>']); ?><br />
 
                         <?php if ($showOnlineInformation) : ?>
-                            <?php _e('core', 'online_info', '', ['<strong>' . $this->sessionStatus['count'] . '</strong>']); ?><br />
+                            <?php _e('core', 'online_info', '', ['<strong>' . $onlineinfo['count'] . '</strong>']); ?><br />
                         <?php endif; ?>
 
-                        <br /><small><?php _e('core', 'keepalive_info', '', [$this->sessionLimit['period']]); ?></small>
+                        <br /><small><?php _e('core', 'keepalive_info', '', [$onlineinfo['period']]); ?></small>
 
                     </div>
 				</div>

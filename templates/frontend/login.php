@@ -117,7 +117,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                     </div>
                 </div>
 				<div class="card-body">
-                    <form action="<?php echo $_SERVER['REQUEST_URI'] ?>" method="post" autocomplete="off">
+                    <form action="<?php echo $form ?>" method="post" autocomplete="off">
                         <div class="main-content">
                             <?php if (! empty($error)) : ?>
                             <div class="error-notice">
@@ -130,9 +130,9 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                             <div class="input-box">
                                 <input type="password" name="s_pass" placeholder="Password" class="form-input" />
                             </div>
-                            <?php if (! empty($this->captcha)) : ?>
+                            <?php if (! empty($captchas)) : ?>
                             <div class="input-box">
-                                <?php foreach ($this->captcha as $captcha) : ?>
+                                <?php foreach ($captchas as $captcha) : ?>
                                     <?php echo $captcha->form(); ?>
                                 <?php endforeach; ?>
                             </div>
@@ -141,7 +141,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                                 <button type="submit" class="btn-submit"><?= _e('panel', 'login_btn_login', 'Login'); ?></button>
                             </div>
                         </div>
-                        <?php $this->_csrf(); ?>
+                        <?php $csrf; ?>
                     </form>
 				</div>
             </div>
