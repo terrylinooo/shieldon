@@ -72,6 +72,17 @@ trait FilterTrait
     ];
 
     /**
+     * Start an action for this IP address, allow or deny, and give a reason for it.
+     *
+     * @param int    $actionCode - 0: deny, 1: allow, 9: unban.
+     * @param string $reasonCode
+     * @param string $assignIp
+     * 
+     * @return void
+     */
+    abstract function action(int $actionCode, int $reasonCode, string $assignIp = ''): void;
+
+    /**
      * Set the filters.
      *
      * @param array $settings filter settings.

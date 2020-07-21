@@ -275,14 +275,14 @@ class Kernel
      *
      * @return void
      */
-    protected function log(int $actionCode): void
+    protected function log(int $actionCode, $ip = ''): void
     {
         if (!$this->logger) {
             return;
         }
 
         $logData = [];
-        $logData['ip'] = $this->getIp();
+        $logData['ip'] = $ip ?? $this->getIp();
         $logData['session_id'] = get_session()->get('id');
         $logData['action_code'] = $actionCode;
         $logData['timesamp'] = time();
@@ -349,7 +349,6 @@ class Kernel
             // check if is a a bad robot already defined in settings.
             if ($component->isDenied()) {
 
-                // @since 0.1.8
                 $this->action(
                     self::ACTION_DENY,
                     $component->getDenyStatusCode()
@@ -395,37 +394,25 @@ class Kernel
             $rdns = gethostbyaddr($ip);
         }
 
-        switch ($actionCode) {
-            case self::ACTION_ALLOW: // acutally not used.
-            case self::ACTION_DENY:  // actually not used.
-            case self::ACTION_TEMPORARILY_DENY:
-                $logData['log_ip']     = $ip;
-                $logData['ip_resolve'] = $rdns;
-                $logData['time']       = $now;
-                $logData['type']       = $actionCode;
-                $logData['reason']     = $reasonCode;
-                $logData['attempts']   = 0;
+        if ($actionCode === self::ACTION_UNBAN) {
+            $this->driver->delete($ip, 'rule');
+        } else {
+            $logData['log_ip']     = $ip;
+            $logData['ip_resolve'] = $rdns;
+            $logData['time']       = $now;
+            $logData['type']       = $actionCode;
+            $logData['reason']     = $reasonCode;
+            $logData['attempts']   = 0;
 
-                $this->driver->save($ip, $logData, 'rule');
-                break;
-            
-            case self::ACTION_UNBAN:
-                $this->driver->delete($ip, 'rule');
-                break;
+            $this->driver->save($ip, $logData, 'rule');
         }
 
         // Remove logs for this IP address because It already has it's own rule on system.
-        // No need to count it anymore.
+        // No need to count for it anymore.
         $this->driver->delete($ip, 'filter');
 
-        if (null !== $this->logger) {
-            $log['ip']          = $ip;
-            $log['session_id']  = get_session()->get('id');
-            $log['action_code'] = $actionCode;
-            $log['timesamp']    = $now;
-
-            $this->logger->add($log);
-        }
+        // Log this action.
+        $this->log($actionCode, $ip);
     }
 
     // @codeCoverageIgnoreEnd
@@ -435,8 +422,6 @@ class Kernel
     |                            Public APIs
     | -------------------------------------------------------------------
     */
-
-
 
     /**
      * Set a captcha.
@@ -571,7 +556,8 @@ class Kernel
  
         $this->action(
             self::ACTION_DENY,
-            self::REASON_MANUAL_BAN, $ip
+            self::REASON_MANUAL_BAN,
+            $ip
         );
     }
 
@@ -590,7 +576,8 @@ class Kernel
 
         $this->action(
             self::ACTION_UNBAN,
-            self::REASON_MANUAL_BAN, $ip
+            self::REASON_MANUAL_BAN,
+            $ip
         );
         $this->log(self::ACTION_UNBAN);
 
