@@ -706,7 +706,6 @@ class Kernel
         $type = $httpStatusCodes[$this->result]['type'];
         $statusCode = $httpStatusCodes[$this->result]['code'];
 
-
         $viewPath = $this->getTemplate($type);
 
         // The language of output UI. It is used on views.
@@ -736,12 +735,18 @@ class Kernel
         $captchas = $this->captcha;
 
         $ui = [
-            'background_image' => $this->dialogUI['background_image'] ?? '',
-            'bg_color'         => $this->dialogUI['bg_color']         ?? '#ffffff',
-            'header_bg_color'  => $this->dialogUI['header_bg_color']  ?? '#212531',
-            'header_color'     => $this->dialogUI['header_color']     ?? '#ffffff',
-            'shadow_opacity'   => $this->dialogUI['shadow_opacity']   ?? '0.2',
+            'background_image' => '',
+            'bg_color'         => '#ffffff',
+            'header_bg_color'  => '#212531',
+            'header_color'     => '#ffffff',
+            'shadow_opacity'   => '0.2',
         ];
+
+        foreach (array_keys($ui) as $key) {
+            if (!empty($this->dialogUI[$key])) {
+                $ui[$key] = $this->dialogUI[$key];
+            }
+        }
 
         if (!defined('SHIELDON_VIEW')) {
             define('SHIELDON_VIEW', true);
