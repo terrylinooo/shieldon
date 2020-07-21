@@ -182,7 +182,7 @@ trait ComponentTrait
                 $this->action($actionCode, $reasonCode);
 
                 // $resultCode = $actionCode
-                return $this->result = $this->sessionHandler($actionCode);
+                $this->result = $this->sessionHandler($actionCode);
                 return true;
             }
         }
