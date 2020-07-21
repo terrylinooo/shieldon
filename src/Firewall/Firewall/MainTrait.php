@@ -14,6 +14,14 @@ namespace Shieldon\Firewall\Firewall;
 
 use Shieldon\Firewall\Firewall\Driver\DriverFactory;
 use Shieldon\Firewall\Firewall\Captcha\CaptchaFactory;
+use Shieldon\Firewall\Log\ActionLogger;
+use Shieldon\Firewall\Middleware as Middleware;
+use function Shieldon\Firewall\get_request;
+use function Shieldon\Firewall\get_session;
+
+use RuntimeException;
+use function strpos;
+use function time;
 
 /*
  * Main Trait for Firwall class.

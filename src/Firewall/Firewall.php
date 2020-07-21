@@ -19,7 +19,7 @@ use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\FirewallTrait;
 use Shieldon\Firewall\Firewall\MainTrait;
-use Shieldon\Firewall\MessengerTrait;
+use Shieldon\Firewall\Firewall\Messenger\MessengerTrait;
 use Shieldon\Firewall\Firewall\XssProtectionTrait;
 use Shieldon\Psr15\RequestHandler;
 use function Shieldon\Firewall\get_request;

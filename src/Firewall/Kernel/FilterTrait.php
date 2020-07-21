@@ -103,40 +103,26 @@ trait FilterTrait
             $logData['hostname'] = $this->rdns;
             $logData['last_time'] = $now;
 
-            // Filter: HTTP referrer information.
-            $filterReferer = $this->filterReferer($logData, $ipDetail, $isFlagged);
-            $isFlagged = $filterReferer['is_flagged'];
-            $logData = $filterReferer['log_data'];
+            foreach (array_keys($this->filterStatus) as $filter) {
 
-            if ($filterReferer['is_reject']) {
-                return kernel::RESPONSE_TEMPORARILY_DENY;
-            }
+                // For example: filterSession
+                $method = 'filter' . ucfirst($filter);
 
-            // Filter: Session.
-            $filterSession = $this->filterSession($logData, $ipDetail, $isFlagged);
-            $isFlagged = $filterSession['is_flagged'];
-            $logData = $filterSession['log_data'];
+                // For example: call $this->filterSession
+                $filterReturnData = $this->{$method}($logData, $ipDetail, $isFlagged);
 
-            if ($filterSession['is_reject']) {
-                return kernel::RESPONSE_TEMPORARILY_DENY;
-            }
+                // The log data will be updated by the filter.
+                $logData = $filterReturnData['log_data'];
 
-            // Filter: JavaScript produced cookie.
-            $filterCookie = $this->filterCookie($logData, $ipDetail, $isFlagged);
-            $isFlagged = $filterCookie['is_flagged'];
-            $logData = $filterCookie['log_data'];
+                // The flag will be passed to the next Filter.
+                $isFlagged = $filterReturnData['is_flagged'];
 
-            if ($filterCookie['is_reject']) {
-                return kernel::RESPONSE_TEMPORARILY_DENY;
-            }
+                // If we find this session reached the filter limit, reject it.
+                $isReject = $filterReturnData['is_reject'];
 
-            // Filter: frequency.
-            $filterFrequency = $this->filterFrequency($logData, $ipDetail, $isFlagged);
-            $isFlagged = $filterFrequency['is_flagged'];
-            $logData = $filterFrequency['log_data'];
-
-            if ($filterFrequency['is_reject']) {
-                return kernel::RESPONSE_TEMPORARILY_DENY;
+                if ($isReject) {
+                    return kernel::RESPONSE_TEMPORARILY_DENY;
+                }
             }
 
             // Is fagged as unusual beavior? Count the first time.

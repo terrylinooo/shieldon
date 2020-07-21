@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Messenger;
+namespace Shieldon\Firewall\Firewall\Messenger;
 
 /*
  * Messenger Trait is loaded in Firewall instance only.
@@ -74,7 +74,7 @@ trait MessengerTrait
      *
      * @return void
      */
-    protected function setMessengerEvents(): void
+    protected function setMessageEvents(): void
     {
         $setting = $this->getOption('failed_attempts_in_a_row', 'events');
 
