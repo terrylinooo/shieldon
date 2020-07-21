@@ -51,10 +51,10 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel->driver->rebuild();
 
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
-        $kernel->add(new \Shieldon\Firewall\Component\Ip());
-        $kernel->add(new \Shieldon\Firewall\Component\UserAgent());
-        $kernel->add(new \Shieldon\Firewall\Component\TrustedBot());
-        $kernel->add(new \Shieldon\Firewall\Component\Rdns());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\Ip());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\UserAgent());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\Rdns());
 
         $kernel->setChannel('test_shieldon_detect');
         $kernel->driver->rebuild();
@@ -239,13 +239,13 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         $kernel = get_testing_shieldon_instance($driver);
 
-        $kernel->add(new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+        $kernel->setLogger(new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon'));
 
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
-        $kernel->add(new \Shieldon\Firewall\Component\Ip());
-        $kernel->add(new \Shieldon\Firewall\Component\UserAgent());
-        $kernel->add(new \Shieldon\Firewall\Component\TrustedBot());
-        $kernel->add(new \Shieldon\Firewall\Component\Rdns());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\Ip());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\UserAgent());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\Rdns());
 
         $kernel->setChannel('test_shieldon_detect');
         $kernel->driver->rebuild();
@@ -285,7 +285,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     public function testGetComponent()
     {
         $kernel = new \Shieldon\Firewall\Kernel();
-        $kernel->add(new \Shieldon\Firewall\Component\Ip());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\Ip());
 
         $reflection = new \ReflectionObject($kernel);
         $method = $reflection->getMethod('getComponent');
@@ -441,7 +441,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $driver = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
-        $kernel->add($driver);
+        $kernel->setDriver($driver);
 
         if ($kernel->driver === $driver) {
             $this->assertTrue(true);
@@ -455,7 +455,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel = new \Shieldon\Firewall\Kernel();
   
         $logger = new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon');
-        $kernel->add($logger);
+        $kernel->setLogger($logger);
 
         if ($kernel->logger === $logger) {
             $this->assertTrue(true);
@@ -497,7 +497,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     {
         $kernel = new \Shieldon\Firewall\Kernel();
         $imageCaptcha = new \Shieldon\Firewall\Captcha\ImageCaptcha();
-        $kernel->add($imageCaptcha);
+        $kernel->setCaptcha($imageCaptcha);
 
         $reflection = new \ReflectionObject($kernel);
         $t = $reflection->getProperty('captcha');
@@ -514,7 +514,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     public function testCaptchaResponse($driver = 'sqlite')
     {
         $kernel = new \Shieldon\Firewall\Kernel();
-        $kernel->add(new \Shieldon\Firewall\Captcha\ImageCaptcha());
+        $kernel->setCaptcha(new \Shieldon\Firewall\Captcha\ImageCaptcha());
         $result = $kernel->captchaResponse();
         $this->assertFalse($result);
 
@@ -544,7 +544,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     {
         $kernel = new \Shieldon\Firewall\Kernel();
         $ipComponent = new \Shieldon\Firewall\Component\Ip();
-        $kernel->add($ipComponent);
+        $kernel->setComponent($ipComponent);
 
         if ($kernel->component['Ip'] === $ipComponent) {
             $this->assertTrue(true);
@@ -672,7 +672,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel = get_testing_shieldon_instance($driver);
         $kernel->driver->rebuild();
 
-        $kernel->add(new \Shieldon\Firewall\Component\Ip());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\Ip());
 
         $kernel->setIp('8.8.8.8');
 
@@ -711,11 +711,11 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $rdns = new \Shieldon\Firewall\Component\Rdns();
         $rdns->setStrict(true);
 
-        $kernel->add($trustedBot);
-        $kernel->add($ip);
-        $kernel->add($headerComponent);
-        $kernel->add($userAgent);
-        $kernel->add($rdns);
+        $kernel->setComponent($trustedBot);
+        $kernel->setComponent($ip);
+        $kernel->setComponent($headerComponent);
+        $kernel->setComponent($userAgent);
+        $kernel->setComponent($rdns);
         
         // By default, it will block this session because of no common header information
 
@@ -728,7 +728,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         // BING
         $kernel = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
-        $kernel->add(new \Shieldon\Firewall\Component\TrustedBot());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('40.77.169.1', true);
    
         $result = $kernel->run();
@@ -741,7 +741,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         // GOOGLE
         $kernel = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
-        $kernel->add(new \Shieldon\Firewall\Component\TrustedBot());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('66.249.66.1', true);
         $result = $kernel->run();
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
@@ -753,7 +753,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         // YAHOO
         $kernel = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)';
-        $kernel->add(new \Shieldon\Firewall\Component\TrustedBot());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('8.12.144.1', true);
         $result = $kernel->run();
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
@@ -765,7 +765,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         // OTHER
         $kernel = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)';
-        $kernel->add(new \Shieldon\Firewall\Component\TrustedBot());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('100.43.90.1', true);
         $result = $kernel->run();
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
@@ -1024,7 +1024,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         $telegram = new \Shieldon\Messenger\Telegram('test', 'test');
 
-        $kernel->add($telegram);
+        $kernel->setMessenger($telegram);
     }
 
     public function testSetDialogUI()
@@ -1068,13 +1068,13 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         //$_SERVER['HTTP_USER_AGENT'] = 'google';
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
 
-        $kernel->add(new \Shieldon\Firewall\Component\TrustedBot());
-        $kernel->add(new \Shieldon\Firewall\Component\Ip());
-        $kernel->add(new \Shieldon\Firewall\Component\UserAgent());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\Ip());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\UserAgent());
         
-        $kernel->add(new \Shieldon\Firewall\Component\Rdns());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\Rdns());
 
-        $kernel->add(new \MockMessenger());
+        $kernel->setMessenger(new \MockMessenger());
 
         $kernel->setChannel('test_shieldon_deny_attempt');
         $kernel->driver->rebuild();
@@ -1164,7 +1164,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_USER_AGENT'] = 'google';
 
         $kernel = get_testing_shieldon_instance();
-        $kernel->add(new \Shieldon\Firewall\Component\TrustedBot());
+        $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->disableFilters();
         $result = $kernel->run();
 
@@ -1222,59 +1222,5 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel = new \Shieldon\Firewall\Kernel();
         $kernel->setTemplateDirectory('/');
         $kernel->run();
-    }
-
-    public function testAddAndRemoveClasses()
-    {
-        $kernel = new \Shieldon\Firewall\Kernel();
-        $kernel->add(new \Shieldon\Messenger\Telegram('test', 'test'));
-        $kernel->add(new \Shieldon\Messenger\Sendgrid('test'));
-        $kernel->add(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
-
-        $reflection = new \ReflectionObject($kernel);
-        $t = $reflection->getProperty('messenger');
-        $d = $reflection->getProperty('driver');
-        $t->setAccessible(true);
-        $d->setAccessible(true);
-        $messengers = $t->getValue($kernel);
-        $driver = $d->getValue($kernel);
-
-        $this->assertTrue(($messengers[0] instanceof \Shieldon\Messenger\Telegram));
-        $this->assertTrue(($messengers[1] instanceof \Shieldon\Messenger\Sendgrid));
-        $this->assertTrue(($driver instanceof \Shieldon\Firewall\Driver\FileDriver));
-
-        $kernel->remove('messenger');
-        $kernel->remove('driver');
-
-        $messengers = $t->getValue($kernel);
-        $driver = $d->getValue($kernel);
-
-        $this->assertEquals(count($messengers), 0);
-        $this->assertEquals($driver, null);
-    }
-
-    public function testAddAndRemoveSpecificClass()
-    {
-        $kernel = new \Shieldon\Firewall\Kernel();
-        $kernel->add(new \Shieldon\Messenger\Telegram('test', 'test'));
-        $kernel->add(new \Shieldon\Messenger\Sendgrid('test'));
-        $kernel->add(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
-
-        $reflection = new \ReflectionObject($kernel);
-        $t = $reflection->getProperty('messenger');
-        $d = $reflection->getProperty('driver');
-        $t->setAccessible(true);
-        $d->setAccessible(true);
-        $messengers = $t->getValue($kernel);
-        $driver = $d->getValue($kernel);
-
-        $kernel->remove('messenger', 'Telegram');
-        $kernel->remove('driver', 'FileDriver');
-
-        $messengers = $t->getValue($kernel);
-        $driver = $d->getValue($kernel);
-
-        $this->assertEquals(count($messengers), 1);
-        $this->assertEquals($driver, null);
     }
 }

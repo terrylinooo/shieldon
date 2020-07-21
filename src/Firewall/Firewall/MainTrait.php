@@ -57,7 +57,7 @@ trait MainTrait
 
         $this->status = false;
         if ($driverInstance !== null) {
-            $this->kernel->add($driverInstance);
+            $this->kernel->setDriver($driverInstance);
             $this->status = true;
         }
     }
@@ -148,14 +148,14 @@ trait MainTrait
                 $componentInstance = new $class();
 
                 if ($className === 'Ip') {
-                    $this->kernel->add($componentInstance);
+                    $this->kernel->setComponent($componentInstance);
 
                     // Need Ip component to be loaded before calling this method.
                     $this->applyComponentIpManager();
                     
                 } elseif ($config['strict_mode']) {
                     $componentInstance->setStrict(true);
-                    $this->kernel->add($componentInstance);
+                    $this->kernel->setComponent($componentInstance);
                 }
             }
         }
@@ -184,7 +184,7 @@ trait MainTrait
                 // Initialize messenger instances from the factory/
                 if (CaptchaFactory::check($captcha, $setting)) {
     
-                    $this->kernel->add(
+                    $this->kernel->setCaptcha(
                         CaptchaFactory::getInstance(
                             // The ID of the captcha module in the configuration.
                             $captcha, 
@@ -210,7 +210,7 @@ trait MainTrait
 
         if ($loggerSetting['enable']) {
             if (!empty($loggerSetting['config']['directory_path'])) {
-                $this->kernel->add(new ActionLogger($loggerSetting['config']['directory_path']));
+                $this->kernel->setLogger(new ActionLogger($loggerSetting['config']['directory_path']));
             }
         }
     }

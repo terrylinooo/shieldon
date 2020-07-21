@@ -10,13 +10,15 @@
 
 declare(strict_types=1);
 
+use Shieldon\Messenger\Messenger\MessengerInterface;
+
 /**
  * For unit-testing purpose.
  * 
  * @author Terry L. <contact@terryl.in>
  * @since 1.0.0
  */
-class MockMessenger
+class MockMessenger implements MessengerInterface
 {
     /**
      * Constructor.

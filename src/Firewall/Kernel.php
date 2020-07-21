@@ -197,10 +197,6 @@ class Kernel
      */
     protected $messenger = [];
 
- 
-
-
-
     /**
      * Result.
      *
@@ -230,18 +226,11 @@ class Kernel
     protected $dialogUI = [];
 
     /**
-     * Store the class information used in Shieldon.
-     *
-     * @var array
-     */
-    protected $registrar = [];
-
-    /**
      * Strict mode.
      * 
      * Set by `strictMode()` only. The default value of this propertry is undefined.
      *
-     * @var bool
+     * @var bool|null
      */
     protected $strictMode;
 
@@ -282,7 +271,7 @@ class Kernel
         $session = HttpFactory::createSession();
 
         $this->properties = get_default_properties();
-        $this->add(new Foundation());
+        $this->setCaptcha(new Foundation());
 
         Container::set('request', $request);
         Container::set('response', $response);
@@ -490,7 +479,6 @@ class Kernel
                 return $this->result = self::RESPONSE_DENY;
             }
         }
-        
 
         /*
         |--------------------------------------------------------------------------
@@ -566,8 +554,6 @@ class Kernel
         }
     }
 
-    
-
     // @codeCoverageIgnoreEnd
 
     /*
@@ -577,111 +563,66 @@ class Kernel
     */
 
     /**
-     * Register classes to Shieldon core.
-     * setDriver, setLogger, setComponent and setCaptcha are deprecated methods
-     * and no more used.
+     * Set a commponent.
      *
-     * @param object $instance Component classes that used on Shieldon.
+     * @param ComponentProvider $instance
      *
      * @return void
      */
-    public function add($instance)
+    public function setComponent(ComponentProvider $instance): void
     {
-        static $i = 2;
-
         $class = $this->getClassName($instance);
-
-        if ($instance instanceof DriverProvider) {
-            $this->driver = $instance;
-            $this->registrar[0] = [
-                'category' => 'driver',
-                'class' => $class,
-            ];
-        }
-
-        if ($instance instanceof ActionLogger) {
-            $this->logger = $instance;
-            $this->registrar[1] = [
-                'category' => 'logger',
-                'class' => $class,
-            ];
-        }
-
-        if ($instance instanceof CaptchaInterface) {
-            $this->captcha[$class] = $instance;
-            $this->registrar[$i] = [
-                'category' => 'captcha',
-                'class' => $class,
-            ];
-            $i++;
-        }
-
-        if ($instance instanceof ComponentProvider) {
-            $this->component[$class] = $instance;
-            $this->registrar[$i] = [
-                'category' => 'component',
-                'class' => $class,
-            ];
-            $i++;
-        }
-
-        if ($instance instanceof MessengerInterface) {
-            $this->messenger[] = $instance;
-            $this->registrar[$i] = [
-                'category' => 'messenger',
-                'class' => $class,
-            ];
-            $i++;
-        }
+        $this->component[$class] = $instance;
     }
 
     /**
-     * Remove registered classes from the Kernel.
+     * Set a captcha.
      *
-     * @param string $category  The class category.
-     * @param string $className The class name.
+     * @param CaptchaInterface $instance
      *
      * @return void
      */
-    public function remove(string $category, string $className = '')
+    public function setCaptcha(CaptchaInterface $instance): void
     {
-        if ($className !== '') {
-            foreach ($this->getRegistrar() as $k => $v) {
-                if ($category === $v['category'] && $className === $v['class']) {
-                    if (is_array($this->{$category})) {
-                        foreach ($this->{$category} as $k2 => $instance) {
-                            if ($this->getClassName($instance) === $className) {
-                                unset($this->{$category}[$k2]);
-                            }
-                        }
-                    } else {
-                        $this->{$category} = null;
-                    }
-                    unset($this->registrar[$k]);
-                }
-            }
-        } else {
-            foreach ($this->getRegistrar() as $k => $v) {
-                if ($category === $v['category']) {
-                    if (is_array($this->{$category})) {
-                        $this->{$category} = [];
-                    } else {
-                        $this->{$category} = null;
-                    }
-                    unset($this->registrar[$k]);
-                }
-            }
-        }
+        $class = $this->getClassName($instance);
+        $this->captcha[$class] = $instance;
     }
 
     /**
-     * Fetch the class list from registrar.
+     * Set a data driver.
      *
-     * @return array
+     * @param DriverProvider $driver Query data from the driver you choose to use.
+     *
+     * @return void
      */
-    public function getRegistrar(): array
+    public function setDriver(DriverProvider $driver): void
     {
-        return $this->registrar;
+        $this->driver = $driver;
+    }
+
+    /**
+     * Set a action log logger.
+     *
+     * @param ActionLogger $logger
+     *
+     * @return void
+     */
+    public function setLogger(ActionLogger $logger): void
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Set a messenger
+     *
+     * @param MessengerInterfa $instance
+     *
+     * @return void
+     */
+    public function setMessenger(MessengerInterface $instance): void
+    {
+        $class = $this->getClassName($instance);
+        $this->messengers[$class] = $instance;
     }
 
     /**
@@ -1036,7 +977,7 @@ class Kernel
      */
     public function run(): int
     {
-        if (!isset($this->registrar[0])) {
+        if (!isset($this->driver)) {
             throw new RuntimeException(
                 'Must register at least one data driver.'
             );

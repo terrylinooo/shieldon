@@ -89,7 +89,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
     switch ($driver) {
 
         case 'file':
-            $kernel->add(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+            $kernel->setDriver(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
             break;
 
         case 'mysql':
@@ -107,15 +107,15 @@ function get_testing_shieldon_instance($driver = 'sqlite')
                 $db['pass']
             );
 
-            $kernel->add(new \Shieldon\Firewall\Driver\MysqlDriver($pdoInstance));
+            $kernel->setDriver(new \Shieldon\Firewall\Driver\MysqlDriver($pdoInstance));
             break;
 
         case 'redis':
             $redisInstance = new \Redis();
             $redisInstance->connect('127.0.0.1', 6379); 
-            $kernel->add(new \Shieldon\Firewall\Driver\RedisDriver($redisInstance));
+            $kernel->setDriver(new \Shieldon\Firewall\Driver\RedisDriver($redisInstance));
             break;
-
+        /*
         case 'memcache':
             try {
                 $memcacheInstance = new \Memcache();
@@ -128,7 +128,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
                     die('Cannot connect to Memcache server.');
                 }
             }
-            $kernel->add(new \Shieldon\Firewall\Driver\MemcacheDriver($memcacheInstance));
+            $kernel->setDriver(new \Shieldon\Firewall\Driver\MemcacheDriver($memcacheInstance));
             break;
 
         case 'mongodb':
@@ -141,16 +141,16 @@ function get_testing_shieldon_instance($driver = 'sqlite')
                     die('Cannot connect to MongoDB.');
                 }
             }
-            $kernel->add(new \Shieldon\Firewall\Driver\MongoDriver($mongoInstance));
+            $kernel->setDriver(new \Shieldon\Firewall\Driver\MongoDriver($mongoInstance));
             break;
-
+        */
         case 'sqlite':
         default:
             $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
 
             try {
                 $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-                $kernel->add(new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance));
+                $kernel->setDriver(new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance));
             } catch(\PDOException $e) {
                 throw $e->getMessage();
             }
