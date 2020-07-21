@@ -35,8 +35,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Captcha\CaptchaInterface;
 use Shieldon\Firewall\Captcha\Foundation;
-use Shieldon\Firewall\Component\ComponentInterface;
-use Shieldon\Firewall\Component\ComponentProvider;
 use Shieldon\Firewall\Driver\DriverProvider;
 use Shieldon\Firewall\Helpers;
 use Shieldon\Firewall\HttpFactory;
@@ -304,46 +302,27 @@ class Kernel
 
         $this->initComponents();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Stage - Looking for rule table.
-        |--------------------------------------------------------------------------
-        */
-
+        // Stage 1. - Looking for rule table.
         if ($this->IsRuleExist()) {
             return $this->result;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Statge - Detect popular search engine.
-        |--------------------------------------------------------------------------
-        */
-
+        // Statge 2a - Detect popular search engine.
         if ($this->isTrustedBot()) {
             return $this->result;
         }
 
+        // Statge 2b - Reject fake search engine crawlers.
         if ($this->isFakeRobot()) {
             return $this->result;
         }
         
-        /*
-        |--------------------------------------------------------------------------
-        | Stage - IP component.
-        |--------------------------------------------------------------------------
-        */
-
+        // Stage 3 - IP manager.
         if ($this->isIpComponent()) {
             return $this->result;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Stage - Check all other components.
-        |--------------------------------------------------------------------------
-        */
-
+        // Stage 4 - Check other components.
         foreach ($this->component as $component) {
 
             // check if is a a bad robot already defined in settings.
@@ -358,18 +337,12 @@ class Kernel
             }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Stage - Filters
-        |--------------------------------------------------------------------------
-        | This IP address is not listed in rule table, let's detect it.
-        |
-        */
-
+        // Stage 5 - Check filters if set.
         if (array_search(true, $this->filterStatus)) {
             return $this->result = $this->sessionHandler($this->filter());
         }
 
+        // Stage 6 - Go into session limit check.
         return $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
     }
 

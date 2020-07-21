@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Component\ComponentInterface;
+use Shieldon\Firewall\Component\ComponentProvider;
 
 /*
  * @since 1.0.0
