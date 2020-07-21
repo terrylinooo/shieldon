@@ -16,7 +16,7 @@ use Shieldon\Firewall\Kernel;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session;
 use function Shieldon\Firewall\unset_superglobal;
-
+use function time;
 /*
  * This trait is used on Kernel only.
  */

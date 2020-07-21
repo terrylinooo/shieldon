@@ -31,46 +31,35 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Shieldon\Firewall\Captcha\CaptchaInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Shieldon\Firewall\Captcha\Foundation;
-use Shieldon\Firewall\Driver\DriverProvider;
 use Shieldon\Firewall\Helpers;
 use Shieldon\Firewall\HttpFactory;
-use Shieldon\Firewall\Log\ActionLogger;
-use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\IpTrait;
-use Shieldon\Firewall\Kernel\FilterTrait;
+use Shieldon\Firewall\Kernel\CaptchaTrait;
 use Shieldon\Firewall\Kernel\ComponentTrait;
+use Shieldon\Firewall\Kernel\FilterTrait;
+use Shieldon\Firewall\Kernel\MessengerTrait;
 use Shieldon\Firewall\Kernel\RuleTrait;
 use Shieldon\Firewall\Kernel\SessionTrait;
-use Shieldon\Messenger\Messenger\MessengerInterface;
-use function Shieldon\Firewall\__;
-use function Shieldon\Firewall\get_cpu_usage;
+use Shieldon\Firewall\Log\ActionLogger;
+use Shieldon\Firewall\Utils\Container;
 use function Shieldon\Firewall\get_default_properties;
-use function Shieldon\Firewall\get_memory_usage;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session;
 
-
 use Closure;
 use InvalidArgumentException;
-use LogicException;
 use RuntimeException;
 use function file_exists;
-use function file_put_contents;
-use function filter_var;
 use function get_class;
 use function gethostbyaddr;
 use function is_dir;
-use function is_writable;
-use function microtime;
 use function ob_end_clean;
 use function ob_get_contents;
 use function ob_start;
-use function str_replace;
 use function strpos;
 use function strrpos;
 use function substr;
@@ -81,9 +70,12 @@ use function time;
  */
 class Kernel
 {
-    use IpTrait;
-    use FilterTrait;
+    use CaptchaTrait;
     use ComponentTrait;
+    use DriverTrait;
+    use FilterTrait;
+    use IpTrait;
+    use MessengerTrait;
     use RuleTrait;
     use SessionTrait;
 
@@ -139,11 +131,22 @@ class Kernel
     const KERNEL_DIR = __DIR__;
 
     /**
-     * Driver for storing data.
+     * The result passed from filters, compoents, etc.
+     * 
+     * DENY    : 0
+     * ALLOW   : 1
+     * CAPTCHA : 2
      *
-     * @var \Shieldon\Firewall\Driver\DriverProvider
+     * @var int
      */
-    public $driver;
+    protected $result = 1;
+
+    /**
+     * default settings
+     *
+     * @var array
+     */
+    protected $properties = [];
 
     /**
      * Logger instance.
@@ -160,56 +163,11 @@ class Kernel
     protected $closures = [];
 
     /**
-     * default settings
-     *
-     * @var array
-     */
-    protected $properties = [];
-
-    /**
-     * This is for creating data tables automatically
-     * Turn it off, if you don't want to check data tables every connection.
-     *
-     * @var bool
-     */
-    protected $autoCreateDatabase = true;
-
-    /**
-     * Container for captcha addons.
-     * The collection of \Shieldon\Firewall\Captcha\CaptchaInterface
-     *
-     * @var array
-     */
-    public $captcha = [];
-
-    /**
-     * The ways Shieldon send a message to when someone has been blocked.
-     * The collection of \Shieldon\Messenger\Messenger\MessengerInterface
-     *
-     * @var array
-     */
-    protected $messenger = [];
-
-    /**
-     * Result.
-     *
-     * @var int
-     */
-    protected $result = 1;
-
-    /**
      * URLs that are excluded from Shieldon's protection.
      *
      * @var array
      */
     protected $excludedUrls = [];
-
-    /**
-     * Which type of configuration source that Shieldon firewall managed?
-     *
-     * @var string
-     */
-    protected $firewallType = 'self'; // managed | config | self | demo
 
     /**
      * Custom dialog UI settings.
@@ -235,11 +193,12 @@ class Kernel
     protected $templateDirectory = '';
 
     /**
-     * The message that will be sent to the third-party API.
+     * Which type of configuration source that Shieldon firewall managed?
+     * value: managed | config | self | demo
      *
      * @var string
      */
-    protected $msgBody = '';
+    protected $firewallType = 'self'; 
 
     /**
      * Shieldon constructor.
@@ -267,408 +226,63 @@ class Kernel
     }
 
     /**
-     * Log actions.
-     *
-     * @param int $actionCode The code number of the action.
-     *
-     * @return void
-     */
-    protected function log(int $actionCode, $ip = ''): void
-    {
-        if (!$this->logger) {
-            return;
-        }
-
-        $logData = [];
-        $logData['ip'] = $ip ?? $this->getIp();
-        $logData['session_id'] = get_session()->get('id');
-        $logData['action_code'] = $actionCode;
-        $logData['timesamp'] = time();
-
-        $this->logger->add($logData);
-    }
-
-    /**
      * Run, run, run!
      *
      * Check the rule tables first, if an IP address has been listed.
      * Call function filter() if an IP address is not listed in rule tables.
      *
-     * @return int The response code.
+     * @return 
      */
-    protected function process(): int
+    public function run(): int
     {
-        $this->driver->init($this->autoCreateDatabase);
-
-        $this->initComponents();
-
-        // Stage 1. - Looking for rule table.
-        if ($this->IsRuleExist()) {
-            return $this->result;
-        }
-
-        // Statge 2a - Detect popular search engine.
-        if ($this->isTrustedBot()) {
-            return $this->result;
-        }
-
-        // Statge 2b - Reject fake search engine crawlers.
-        if ($this->isFakeRobot()) {
-            return $this->result;
-        }
-        
-        // Stage 3 - IP manager.
-        if ($this->isIpComponent()) {
-            return $this->result;
-        }
-
-        // Stage 4 - Check other components.
-        foreach ($this->component as $component) {
-
-            // check if is a a bad robot already defined in settings.
-            if ($component->isDenied()) {
-
-                $this->action(
-                    self::ACTION_DENY,
-                    $component->getDenyStatusCode()
-                );
-
-                return $this->result = self::RESPONSE_DENY;
-            }
-        }
-
-        // Stage 5 - Check filters if set.
-        if (array_search(true, $this->filterStatus)) {
-            return $this->result = $this->sessionHandler($this->filter());
-        }
-
-        // Stage 6 - Go into session limit check.
-        return $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
-    }
-
-    /**
-     * Start an action for this IP address, allow or deny, and give a reason for it.
-     *
-     * @param int    $actionCode - 0: deny, 1: allow, 9: unban.
-     * @param string $reasonCode
-     * @param string $assignIp
-     * 
-     * @return void
-     */
-    protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
-    {
-        $ip = $this->ip;
-        $rdns = $this->rdns;
-        $now = time();
-        $logData = [];
-    
-        if ('' !== $assignIp) {
-            $ip = $assignIp;
-            $rdns = gethostbyaddr($ip);
-        }
-
-        if ($actionCode === self::ACTION_UNBAN) {
-            $this->driver->delete($ip, 'rule');
-        } else {
-            $logData['log_ip']     = $ip;
-            $logData['ip_resolve'] = $rdns;
-            $logData['time']       = $now;
-            $logData['type']       = $actionCode;
-            $logData['reason']     = $reasonCode;
-            $logData['attempts']   = 0;
-
-            $this->driver->save($ip, $logData, 'rule');
-        }
-
-        // Remove logs for this IP address because It already has it's own rule on system.
-        // No need to count for it anymore.
-        $this->driver->delete($ip, 'filter');
-
-        // Log this action.
-        $this->log($actionCode, $ip);
-    }
-
-    // @codeCoverageIgnoreEnd
-
-    /*
-    | -------------------------------------------------------------------
-    |                            Public APIs
-    | -------------------------------------------------------------------
-    */
-
-    /**
-     * Set a captcha.
-     *
-     * @param CaptchaInterface $instance
-     *
-     * @return void
-     */
-    public function setCaptcha(CaptchaInterface $instance): void
-    {
-        $class = $this->getClassName($instance);
-        $this->captcha[$class] = $instance;
-    }
-
-    /**
-     * Set a data driver.
-     *
-     * @param DriverProvider $driver Query data from the driver you choose to use.
-     *
-     * @return void
-     */
-    public function setDriver(DriverProvider $driver): void
-    {
-        $this->driver = $driver;
-    }
-
-    /**
-     * Set a action log logger.
-     *
-     * @param ActionLogger $logger
-     *
-     * @return void
-     */
-    public function setLogger(ActionLogger $logger): void
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * Set a messenger
-     *
-     * @param MessengerInterfa $instance
-     *
-     * @return void
-     */
-    public function setMessenger(MessengerInterface $instance): void
-    {
-        $class = $this->getClassName($instance);
-        $this->messengers[$class] = $instance;
-    }
-
-    /**
-     * Strict mode.
-     * This option will take effects to all components.
-     * 
-     * @param bool $bool Set true to enble strict mode, false to disable it overwise.
-     *
-     * @return void
-     */
-    public function setStrict(bool $bool)
-    {
-        $this->strictMode = $bool;
-    }
-
-
-
-    /**
-     * For first time installation only. This is for creating data tables automatically.
-     * Turning it on will check the data tables exist or not at every single pageview, 
-     * it's not good for high traffic websites.
-     *
-     * @param bool $bool
-     * 
-     * @return void
-     */
-    public function createDatabase(bool $bool)
-    {
-        $this->autoCreateDatabase = $bool;
-    }
-
-    /**
-     * Set a data channel.
-     *
-     * This will create databases for the channel.
-     *
-     * @param string $channel Specify a channel.
-     *
-     * @return void
-     */
-    public function setChannel(string $channel)
-    {
-        if (!$this->driver instanceof DriverProvider) {
-            throw new LogicException('setChannel method requires setDriver set first.');
-        } else {
-            $this->driver->setChannel($channel);
-        }
-    }
-
-    /**
-     * Return the result from Captchas.
-     *
-     * @return bool
-     */
-    public function captchaResponse(): bool
-    {
-        foreach ($this->captcha as $captcha) {
-            
-            if (!$captcha->response()) {
-                return false;
-            }
-        }
-
-        if (!empty($this->sessionLimit['count'])) {
-            $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
-        }
-
-        return true;
-    }
-
-    /**
-     * Ban an IP.
-     *
-     * @param string $ip A valid IP address.
-     *
-     * @return void
-     */
-    public function ban(string $ip = ''): void
-    {
-        if ('' === $ip) {
-            $ip = $this->ip;
-        }
- 
-        $this->action(
-            self::ACTION_DENY,
-            self::REASON_MANUAL_BAN,
-            $ip
-        );
-    }
-
-    /**
-     * Unban an IP.
-     *
-     * @param string $ip A valid IP address.
-     *
-     * @return void
-     */
-    public function unban(string $ip = ''): void
-    {
-        if ('' === $ip) {
-            $ip = $this->ip;
-        }
-
-        $this->action(
-            self::ACTION_UNBAN,
-            self::REASON_MANUAL_BAN,
-            $ip
-        );
-        $this->log(self::ACTION_UNBAN);
-
-        $this->result = self::RESPONSE_ALLOW;
-    }
-
-    /**
-     * Set a property setting.
-     *
-     * @param string $key   The key of a property setting.
-     * @param mixed  $value The value of a property setting.
-     *
-     * @return void
-     */
-    public function setProperty(string $key = '', $value = '')
-    {
-        if (isset($this->properties[$key])) {
-            $this->properties[$key] = $value;
-        }
-    }
-
-    /**
-     * Set the property settings.
-     * 
-     * @param array $settings The settings.
-     *
-     * @return void
-     */
-    public function setProperties(array $settings): void
-    {
-        foreach (array_keys($this->properties) as $k) {
-            if (isset($settings[$k])) {
-                $this->properties[$k] = $settings[$k];
-            }
-        }
-    }
-
-    /**
-     * Limt online sessions.
-     *
-     * @param int $count
-     * @param int $period
-     *
-     * @return void
-     */
-    public function limitSession(int $count = 1000, int $period = 300): void
-    {
-        $this->sessionLimit = [
-            'count' => $count,
-            'period' => $period
-        ];
-    }
-
-    /**
-     * Customize the dialog UI.
-     *
-     * @return void
-     */
-    public function setDialogUI(array $settings): void
-    {
-        $this->dialogUI = $settings;
-    }
-
-    /**
-     * Set the frontend template directory.
-     *
-     * @param string $directory
-     *
-     * @return void
-     */
-    public function setTemplateDirectory(string $directory)
-    {
-        if (!is_dir($directory)) {
-            throw new InvalidArgumentException('The template directory does not exist.');
-        }
-        $this->templateDirectory = $directory;
-    }
-
-    /**
-     * Get a template PHP file.
-     *
-     * @param string $type The template type.
-     *
-     * @return string
-     */
-    protected function getTemplate(string $type): string
-    {
-        $directory = self::KERNEL_DIR . '/../../templates/frontend';
-
-        if (!empty($this->templateDirectory)) {
-            $directory = $this->templateDirectory;
-        }
-
-        $path = $directory . '/' . $type . '.php';
-
-        if (!file_exists($path)) {
+        if (!isset($this->driver)) {
             throw new RuntimeException(
-                sprintf(
-                    'The templeate file is missing. (%s)',
-                    $path
-                )
+                'Must register at least one data driver.'
             );
         }
+        
+        // Ignore the excluded urls.
+        if (!empty($this->excludedUrls)) {
+            foreach ($this->excludedUrls as $url) {
+                if (0 === strpos(get_request()->getUri()->getPath(), $url)) {
+                    return $this->result = self::RESPONSE_ALLOW;
+                }
+            }
+        }
 
-        return $path;
-    }
+        // Execute closure functions.
+        foreach ($this->closures as $closure) {
+            $closure();
+        }
 
-    /**
-     * Get a class name without namespace string.
-     *
-     * @param object $instance Class
-     * 
-     * @return void
-     */
-    protected function getClassName($instance): string
-    {
-        $class = get_class($instance);
-        return substr($class, strrpos($class, '\\') + 1); 
+        $result = $this->process();
+
+        if ($result !== self::RESPONSE_ALLOW) {
+
+            // Current session did not pass the CAPTCHA, it is still stuck in CAPTCHA page.
+            $actionCode = self::LOG_CAPTCHA;
+
+            // If current session's respone code is RESPONSE_DENY, record it as `blacklist_count` in our logs.
+            // It is stuck in warning page, not CAPTCHA.
+            if ($result === self::RESPONSE_DENY) {
+                $actionCode = self::LOG_BLACKLIST;
+            }
+
+            if ($result === self::RESPONSE_LIMIT_SESSION) {
+                $actionCode = self::LOG_LIMIT;
+            }
+
+            $this->log($actionCode);
+
+        } else {
+
+            $this->log(self::LOG_PAGEVIEW);
+        }
+
+        // @ MessengerTrait
+        $this->triggerMessengers();
+
+        return $result;
     }
 
     /**
@@ -782,83 +396,103 @@ class Kernel
     }
 
     /**
-     * Run, run, run!
+     * Ban an IP.
      *
-     * Check the rule tables first, if an IP address has been listed.
-     * Call function filter() if an IP address is not listed in rule tables.
+     * @param string $ip A valid IP address.
      *
-     * @return 
+     * @return void
      */
-    public function run(): int
+    public function ban(string $ip = ''): void
     {
-        if (!isset($this->driver)) {
-            throw new RuntimeException(
-                'Must register at least one data driver.'
-            );
+        if ('' === $ip) {
+            $ip = $this->ip;
         }
-        
-        // Ignore the excluded urls.
-        if (!empty($this->excludedUrls)) {
-            foreach ($this->excludedUrls as $url) {
-                if (0 === strpos(get_request()->getUri()->getPath(), $url)) {
-                    return $this->result = self::RESPONSE_ALLOW;
-                }
-            }
-        }
-
-        // Execute closure functions.
-        foreach ($this->closures as $closure) {
-            $closure();
-        }
-
-        $result = $this->process();
-
-        if ($result !== self::RESPONSE_ALLOW) {
-
-            // Current session did not pass the CAPTCHA, it is still stuck in CAPTCHA page.
-            $actionCode = self::LOG_CAPTCHA;
-
-            // If current session's respone code is RESPONSE_DENY, record it as `blacklist_count` in our logs.
-            // It is stuck in warning page, not CAPTCHA.
-            if ($result === self::RESPONSE_DENY) {
-                $actionCode = self::LOG_BLACKLIST;
-            }
-
-            if ($result === self::RESPONSE_LIMIT_SESSION) {
-                $actionCode = self::LOG_LIMIT;
-            }
-
-            $this->log($actionCode);
-
-        } else {
-
-            $this->log(self::LOG_PAGEVIEW);
-        }
-
  
-        if (!empty($this->msgBody)) {
- 
-            // @codeCoverageIgnoreStart
-
-            try {
-                foreach ($this->messenger as $messenger) {
-                    $messenger->setTimeout(2);
-                    $messenger->send($this->msgBody);
-                }
-            } catch (RuntimeException $e) {
-                // Do not throw error, becasue the third-party services might be unavailable.
-            }
-
-            // @codeCoverageIgnoreEnd
-        }
-
-
-        return $result;
+        $this->action(
+            self::ACTION_DENY,
+            self::REASON_MANUAL_BAN,
+            $ip
+        );
     }
 
-    
+    /**
+     * Unban an IP.
+     *
+     * @param string $ip A valid IP address.
+     *
+     * @return void
+     */
+    public function unban(string $ip = ''): void
+    {
+        if ('' === $ip) {
+            $ip = $this->ip;
+        }
 
+        $this->action(
+            self::ACTION_UNBAN,
+            self::REASON_MANUAL_BAN,
+            $ip
+        );
+        $this->log(self::ACTION_UNBAN);
 
+        $this->result = self::RESPONSE_ALLOW;
+    }
+
+    /**
+     * Set a property setting.
+     *
+     * @param string $key   The key of a property setting.
+     * @param mixed  $value The value of a property setting.
+     *
+     * @return void
+     */
+    public function setProperty(string $key = '', $value = '')
+    {
+        if (isset($this->properties[$key])) {
+            $this->properties[$key] = $value;
+        }
+    }
+
+    /**
+     * Set the property settings.
+     * 
+     * @param array $settings The settings.
+     *
+     * @return void
+     */
+    public function setProperties(array $settings): void
+    {
+        foreach (array_keys($this->properties) as $k) {
+            if (isset($settings[$k])) {
+                $this->properties[$k] = $settings[$k];
+            }
+        }
+    }
+
+    /**
+     * Strict mode.
+     * This option will take effects to all components.
+     * 
+     * @param bool $bool Set true to enble strict mode, false to disable it overwise.
+     *
+     * @return void
+     */
+    public function setStrict(bool $bool)
+    {
+        $this->strictMode = $bool;
+    }
+
+    /**
+     * Set a action log logger.
+     *
+     * @param ActionLogger $logger
+     *
+     * @return void
+     */
+    public function setLogger(ActionLogger $logger): void
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * Set the URLs you want them to be excluded them from protection.
@@ -886,6 +520,73 @@ class Kernel
     }
 
     /**
+     * Customize the dialog UI.
+     *
+     * @return void
+     */
+    public function setDialogUI(array $settings): void
+    {
+        $this->dialogUI = $settings;
+    }
+
+    /**
+     * Set the frontend template directory.
+     *
+     * @param string $directory
+     *
+     * @return void
+     */
+    public function setTemplateDirectory(string $directory)
+    {
+        if (!is_dir($directory)) {
+            throw new InvalidArgumentException('The template directory does not exist.');
+        }
+        $this->templateDirectory = $directory;
+    }
+
+    /**
+     * Get a template PHP file.
+     *
+     * @param string $type The template type.
+     *
+     * @return string
+     */
+    protected function getTemplate(string $type): string
+    {
+        $directory = self::KERNEL_DIR . '/../../templates/frontend';
+
+        if (!empty($this->templateDirectory)) {
+            $directory = $this->templateDirectory;
+        }
+
+        $path = $directory . '/' . $type . '.php';
+
+        if (!file_exists($path)) {
+            throw new RuntimeException(
+                sprintf(
+                    'The templeate file is missing. (%s)',
+                    $path
+                )
+            );
+        }
+
+        return $path;
+    }
+
+    /**
+     * Get a class name without namespace string.
+     *
+     * @param object $instance Class
+     * 
+     * @return void
+     */
+    protected function getClassName($instance): string
+    {
+        $class = get_class($instance);
+        return substr($class, strrpos($class, '\\') + 1); 
+    }
+
+    /**
      * Print a JavasSript snippet in your webpages.
      * 
      * This snippet generate cookie on client's browser,then we check the 
@@ -893,7 +594,7 @@ class Kernel
      *
      * @return string
      */
-    public function outputJsSnippet(): string
+    public function getJavascript(): string
     {
         $tmpCookieName = $this->properties['cookie_name'];
         $tmpCookieDomain = $this->properties['cookie_domain'];
@@ -939,5 +640,133 @@ class Kernel
         if (in_array($type, ['managed', 'config', 'demo'])) {
             $this->firewallType = $type;
         }
+    }
+
+    /*
+    |-------------------------------------------------------------------
+    | Non-public methids.
+    |-------------------------------------------------------------------
+    */
+
+    /**
+     * Run, run, run!
+     *
+     * Check the rule tables first, if an IP address has been listed.
+     * Call function filter() if an IP address is not listed in rule tables.
+     *
+     * @return int The response code.
+     */
+    protected function process(): int
+    {
+        $this->driver->init($this->autoCreateDatabase);
+
+        $this->initComponents();
+
+        // Stage 1. - Looking for rule table.
+        if ($this->IsRuleExist()) {
+            return $this->result;
+        }
+
+        // Statge 2a - Detect popular search engine.
+        if ($this->isTrustedBot()) {
+            return $this->result;
+        }
+
+        // Statge 2b - Reject fake search engine crawlers.
+        if ($this->isFakeRobot()) {
+            return $this->result;
+        }
+        
+        // Stage 3 - IP manager.
+        if ($this->isIpComponent()) {
+            return $this->result;
+        }
+
+        // Stage 4 - Check other components.
+        foreach ($this->component as $component) {
+
+            // check if is a a bad robot already defined in settings.
+            if ($component->isDenied()) {
+
+                $this->action(
+                    self::ACTION_DENY,
+                    $component->getDenyStatusCode()
+                );
+
+                return $this->result = self::RESPONSE_DENY;
+            }
+        }
+
+        // Stage 5 - Check filters if set.
+        if (array_search(true, $this->filterStatus)) {
+            return $this->result = $this->sessionHandler($this->filter());
+        }
+
+        // Stage 6 - Go into session limit check.
+        return $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
+    }
+
+    /**
+     * Start an action for this IP address, allow or deny, and give a reason for it.
+     *
+     * @param int    $actionCode - 0: deny, 1: allow, 9: unban.
+     * @param string $reasonCode
+     * @param string $assignIp
+     * 
+     * @return void
+     */
+    protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
+    {
+        $ip = $this->ip;
+        $rdns = $this->rdns;
+        $now = time();
+        $logData = [];
+    
+        if ('' !== $assignIp) {
+            $ip = $assignIp;
+            $rdns = gethostbyaddr($ip);
+        }
+
+        if ($actionCode === self::ACTION_UNBAN) {
+            $this->driver->delete($ip, 'rule');
+        } else {
+            $logData['log_ip']     = $ip;
+            $logData['ip_resolve'] = $rdns;
+            $logData['time']       = $now;
+            $logData['type']       = $actionCode;
+            $logData['reason']     = $reasonCode;
+            $logData['attempts']   = 0;
+
+            $this->driver->save($ip, $logData, 'rule');
+        }
+
+        // Remove logs for this IP address because It already has it's own rule on system.
+        // No need to count for it anymore.
+        $this->driver->delete($ip, 'filter');
+
+        // Log this action.
+        $this->log($actionCode, $ip);
+    }
+
+    /**
+     * Log actions.
+     *
+     * @param int $actionCode The code number of the action.
+     *
+     * @return void
+     */
+    protected function log(int $actionCode, $ip = ''): void
+    {
+        if (!$this->logger) {
+            return;
+        }
+
+        $logData = [];
+        $logData['ip'] = $ip ?? $this->getIp();
+        $logData['session_id'] = get_session()->get('id');
+        $logData['action_code'] = $actionCode;
+        $logData['timesamp'] = time();
+
+        $this->logger->add($logData);
     }
 }

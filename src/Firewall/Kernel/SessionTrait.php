@@ -59,6 +59,22 @@ trait SessionTrait
     ];
 
     /**
+     * Limt online sessions.
+     *
+     * @param int $count
+     * @param int $period
+     *
+     * @return void
+     */
+    public function limitSession(int $count = 1000, int $period = 300): void
+    {
+        $this->sessionLimit = [
+            'count' => $count,
+            'period' => $period
+        ];
+    }
+
+    /**
      * Get online people count. If enable limitSession.
      *
      * @return int

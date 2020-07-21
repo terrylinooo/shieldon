@@ -49,7 +49,7 @@ trait RuleTrait
      *
      * @return bool
      */
-    private function IsRuleExist()
+    protected function IsRuleExist()
     {
         $ipRule = $this->driver->get($this->ip, 'rule');
 
@@ -116,7 +116,10 @@ trait RuleTrait
 
         // Notify this event to messenger.
         if ($this->event['trigger_messengers']) {
-            $this->prepareMessengerBody($logData, $handleType);
+            $message = $this->prepareMessengerBody($logData, $handleType);
+
+            // Method from MessageTrait.
+            $this->setMessageBody($message);
         }
 
         return true;
@@ -131,7 +134,7 @@ trait RuleTrait
      * 
      * @return array
      */
-    private function determineAttemptsTemporaryDeny(array $logData, int $handleType, int $attempts): array
+    protected function determineAttemptsTemporaryDeny(array $logData, int $handleType, int $attempts): array
     {
         if ($this->properties['deny_attempt_enable']['data_circle']) {
             $this->event['update_rule_table'] = true;
@@ -167,7 +170,7 @@ trait RuleTrait
      * 
      * @return array
      */
-    private function determineAttemptsPermanentDeny(array $logData, int $handleType, int $attempts): array
+    protected function determineAttemptsPermanentDeny(array $logData, int $handleType, int $attempts): array
     {
         if ($this->properties['deny_attempt_enable']['system_firewall']) {
             $this->event['update_rule_table'] = true;
@@ -219,9 +222,9 @@ trait RuleTrait
      * @param array $logData
      * @param int   $handleType
      * 
-     * @return void
+     * @return string
      */
-    private function prepareMessengerBody(array $logData, int $handleType): void
+    protected function prepareMessengerBody(array $logData, int $handleType): string
     {
         // The data strings that will be appended to message body.
         $prepareMessageData = [
@@ -242,6 +245,6 @@ trait RuleTrait
             $message .= $key . ': ' . $value . "\n";
         }
 
-        $this->msgBody = $message;
+        return $message;
     }
 }
