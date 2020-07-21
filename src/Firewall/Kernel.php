@@ -260,14 +260,8 @@ class Kernel
         // Load helper functions. This is the must.
         new Helpers();
 
-        if (is_null($request)) {
-            $request = HttpFactory::createRequest();
-        }
-
-        if (is_null($response)) {
-            $response = HttpFactory::createResponse();
-        }
-
+        $request = $request ?? HttpFactory::createRequest();
+        $response = $response ?? HttpFactory::createResponse();
         $session = HttpFactory::createSession();
 
         $this->properties = get_default_properties();
@@ -288,15 +282,17 @@ class Kernel
      */
     protected function log(int $actionCode): void
     {
-        if (null !== $this->logger) {
-            $logData = [];
-            $logData['ip'] = $this->getIp();
-            $logData['session_id'] = get_session()->get('id');
-            $logData['action_code'] = $actionCode;
-            $logData['timesamp'] = time();
-    
-            $this->logger->add($logData);
+        if (!$this->logger) {
+            return;
         }
+
+        $logData = [];
+        $logData['ip'] = $this->getIp();
+        $logData['session_id'] = get_session()->get('id');
+        $logData['action_code'] = $actionCode;
+        $logData['timesamp'] = time();
+
+        $this->logger->add($logData);
     }
 
     /**
@@ -488,12 +484,7 @@ class Kernel
         |
         */
 
-        if (
-            $this->filterStatus['frequency'] ||
-            $this->filterStatus['referer'] ||
-            $this->filterStatus['session'] ||
-            $this->filterStatus['cookie']
-        ) {
+        if (array_search(true, $this->filterStatus)) {
             return $this->result = $this->sessionHandler($this->filter());
         }
 
