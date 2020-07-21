@@ -245,7 +245,7 @@ trait MainTrait
         $this->kernel->component['Ip']->setDeniedItems($deniedList);
     }
 
-/**
+    /**
      * Set the channel ID.
      *
      * @return void
