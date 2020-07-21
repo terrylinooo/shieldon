@@ -18,7 +18,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\FirewallTrait;
-use Shieldon\Firewall\MainTrait;
+use Shieldon\Firewall\Firewall\MainTrait;
 use Shieldon\Firewall\MessengerTrait;
 use Shieldon\Firewall\Firewall\XssProtectionTrait;
 use Shieldon\Psr15\RequestHandler;

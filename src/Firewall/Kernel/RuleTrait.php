@@ -28,6 +28,20 @@ use function time;
 trait RuleTrait
 {
     /**
+     * The events.
+     *
+     * @var array
+     */
+    protected $event = [
+
+        // Update rule table when this value true.
+        'update_rule_table' => false,
+
+        // Send notifications when this value true.
+        'trigger_messengers' => false,
+    ];
+
+    /**
      * Look up the rule table.
      *
      * If a specific IP address doesn't exist, return false. 
