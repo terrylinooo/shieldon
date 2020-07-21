@@ -182,7 +182,7 @@ class Kernel
      *
      * @var array
      */
-    protected $captcha = [];
+    public $captcha = [];
 
     /**
      * The ways Shieldon send a message to when someone has been blocked.
@@ -436,18 +436,7 @@ class Kernel
     | -------------------------------------------------------------------
     */
 
-    /**
-     * Set a commponent.
-     *
-     * @param ComponentProvider $instance
-     *
-     * @return void
-     */
-    public function setComponent(ComponentProvider $instance): void
-    {
-        $class = $this->getClassName($instance);
-        $this->component[$class] = $instance;
-    }
+
 
     /**
      * Set a captcha.
@@ -497,22 +486,6 @@ class Kernel
     {
         $class = $this->getClassName($instance);
         $this->messengers[$class] = $instance;
-    }
-
-    /**
-     * Get a component instance from component's container.
-     *
-     * @param string $name The component's class name.
-     *
-     * @return ComponentInterface|null
-     */
-    public function getComponent(string $name)
-    {
-        if (isset($this->component[$name])) {
-            return $this->component[$name];
-        }
-
-        return null;
     }
 
     /**

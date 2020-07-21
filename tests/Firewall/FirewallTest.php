@@ -315,7 +315,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $_POST['shieldon_captcha'] = 'ok';
         reload_request();
 
-        $firewall->getKernel()->remove('captcha');
+        $firewall->getKernel()->captcha = [];
         $firewall->getKernel()->add(new \Shieldon\Firewall\Captcha\Foundation());
 
         $response = $firewall->run();

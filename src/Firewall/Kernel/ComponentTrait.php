@@ -27,13 +27,40 @@ trait ComponentTrait
     public $component = [];
 
     /**
+     * Set a commponent.
+     *
+     * @param ComponentProvider $instance
+     *
+     * @return void
+     */
+    public function setComponent(ComponentProvider $instance): void
+    {
+        $class = $this->getClassName($instance);
+        $this->component[$class] = $instance;
+    }
+
+    /**
      * Get a component instance from component's container.
      *
      * @param string $name The component's class name.
      *
      * @return ComponentInterface|null
      */
-    abstract function getComponent(string $name);
+    public function getComponent(string $name)
+    {
+        if (!isset($this->component[$name])) {
+            return null;
+        }
+
+        return $this->component[$name];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stage in Kernel
+    |--------------------------------------------------------------------------
+    | The below methods are used in "process" method in Kernel.
+    */
 
     /**
      * Initialize components.
