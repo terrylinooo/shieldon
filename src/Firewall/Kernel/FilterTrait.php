@@ -72,6 +72,57 @@ trait FilterTrait
     ];
 
     /**
+     * Set the filters.
+     *
+     * @param array $settings filter settings.
+     *
+     * @return void
+     */
+    public function setFilters(array $settings)
+    {
+        foreach (array_keys($this->filterStatus) as $k) {
+            if (isset($settings[$k])) {
+                $this->filterStatus[$k] = $settings[$k] ?? false;
+            }
+        }
+    }
+
+    /**
+     * Set a filter.
+     *
+     * @param string $filterName The filter's name.
+     * @param bool   $value      True for enabling the filter, overwise.
+     *
+     * @return void
+     */
+    public function setFilter(string $filterName, bool $value): void
+    {
+        if (isset($this->filterStatus[$filterName])) {
+            $this->filterStatus[$filterName] = $value;
+        }
+    }
+
+    /**
+     * Disable filters.
+     */
+    public function disableFilters(): void
+    {
+        $this->setFilters([
+            'session'   => false,
+            'cookie'    => false,
+            'referer'   => false,
+            'frequency' => false,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stage in Kernel
+    |--------------------------------------------------------------------------
+    | The below methods are used in "process" method in Kernel.
+    */
+
+    /**
      * Detect and analyze an user's behavior.
      *
      * @return int The response code.
@@ -103,6 +154,7 @@ trait FilterTrait
             $logData['hostname'] = $this->rdns;
             $logData['last_time'] = $now;
 
+            // Start checking...
             foreach (array_keys($this->filterStatus) as $filter) {
 
                 // For example: filterSession
@@ -150,6 +202,13 @@ trait FilterTrait
 
         return kernel::RESPONSE_ALLOW;
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | The below methods are used only in "filter" method in current Trait.
+    | See "Start checking..."
+    |--------------------------------------------------------------------------
+    */
 
     /**
      * When the user is first time visiting our webiste.

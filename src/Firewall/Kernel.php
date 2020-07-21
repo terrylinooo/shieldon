@@ -501,18 +501,7 @@ class Kernel
         $this->strictMode = $bool;
     }
 
-    /**
-     * Disable filters.
-     */
-    public function disableFilters(): void
-    {
-        $this->setFilters([
-            'session'   => false,
-            'cookie'    => false,
-            'referer'   => false,
-            'frequency' => false,
-        ]);
-    }
+
 
     /**
      * For first time installation only. This is for creating data tables automatically.
@@ -889,36 +878,7 @@ class Kernel
         return $result;
     }
 
-    /**
-     * Set the filters.
-     *
-     * @param array $settings filter settings.
-     *
-     * @return void
-     */
-    public function setFilters(array $settings)
-    {
-        foreach (array_keys($this->filterStatus) as $k) {
-            if (isset($settings[$k])) {
-                $this->filterStatus[$k] = $settings[$k] ?? false;
-            }
-        }
-    }
-
-    /**
-     * Set a filter.
-     *
-     * @param string $filterName The filter's name.
-     * @param bool   $value      True for enabling the filter, overwise.
-     *
-     * @return void
-     */
-    public function setFilter(string $filterName, bool $value): void
-    {
-        if (isset($this->filterStatus[$filterName])) {
-            $this->filterStatus[$filterName] = $value;
-        }
-    }
+    
 
 
 
