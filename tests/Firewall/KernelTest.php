@@ -803,10 +803,10 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($sessionCount, 10);
     }
 
-    public function testOutputJsSnippet()
+    public function testGetJavascript()
     {
         $kernel = new \Shieldon\Firewall\Kernel();
-        $js = $kernel->outputJsSnippet();
+        $js = $kernel->getJavascript();
 
         if (! empty($js)) {
             $this->assertTrue(true);

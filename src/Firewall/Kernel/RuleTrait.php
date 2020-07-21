@@ -49,7 +49,7 @@ trait RuleTrait
      *
      * @return bool
      */
-    protected function IsRuleExist()
+    protected function isRuleExist()
     {
         $ipRule = $this->driver->get($this->ip, 'rule');
 

@@ -188,4 +188,27 @@ trait ComponentTrait
         }
         return false;
     }
+
+    /**
+     * Check other compoents.
+     *
+     * @return bool
+     */
+    protected function isComponents()
+    {
+        foreach ($this->component as $component) {
+
+            if ($component->isDenied()) {
+
+                $this->action(
+                    self::ACTION_DENY,
+                    $component->getDenyStatusCode()
+                );
+
+                $this->result = self::RESPONSE_DENY;
+                return true;
+            }
+        }
+        return false;
+    }
 }

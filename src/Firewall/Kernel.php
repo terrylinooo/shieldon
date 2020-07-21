@@ -657,47 +657,26 @@ class Kernel
 
         $this->initComponents();
 
-        // Stage 1. - Looking for rule table.
-        if ($this->IsRuleExist()) {
-            return $this->result;
-        }
+        $processMethods = [
+            'isRuleExist',   // Stage 1. - Looking for rule table.
+            'isTrustedBot',  // Stage 2 - Detect popular search engine.
+            'isFakeRobot',   // Stage 3 - Reject fake search engine crawlers.
+            'isIpComponent', // Stage 4 - IP manager.
+            'isComponents'    // Stage 5 - Check other components.
+        ];
 
-        // Statge 2a - Detect popular search engine.
-        if ($this->isTrustedBot()) {
-            return $this->result;
-        }
-
-        // Statge 2b - Reject fake search engine crawlers.
-        if ($this->isFakeRobot()) {
-            return $this->result;
-        }
-        
-        // Stage 3 - IP manager.
-        if ($this->isIpComponent()) {
-            return $this->result;
-        }
-
-        // Stage 4 - Check other components.
-        foreach ($this->component as $component) {
-
-            // check if is a a bad robot already defined in settings.
-            if ($component->isDenied()) {
-
-                $this->action(
-                    self::ACTION_DENY,
-                    $component->getDenyStatusCode()
-                );
-
-                return $this->result = self::RESPONSE_DENY;
+        foreach ($processMethods as $method) {
+            if ($this->{$method}()) {
+                return $this->result;
             }
         }
 
-        // Stage 5 - Check filters if set.
+        // Stage 6 - Check filters if set.
         if (array_search(true, $this->filterStatus)) {
             return $this->result = $this->sessionHandler($this->filter());
         }
 
-        // Stage 6 - Go into session limit check.
+        // Stage 7 - Go into session limit check.
         return $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
     }
 
