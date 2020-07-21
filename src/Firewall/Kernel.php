@@ -39,6 +39,7 @@ use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\IpTrait;
 use Shieldon\Firewall\Kernel\CaptchaTrait;
 use Shieldon\Firewall\Kernel\ComponentTrait;
+use Shieldon\Firewall\Kernel\DriverTrait;
 use Shieldon\Firewall\Kernel\FilterTrait;
 use Shieldon\Firewall\Kernel\MessengerTrait;
 use Shieldon\Firewall\Kernel\RuleTrait;
@@ -235,18 +236,12 @@ class Kernel
      */
     public function run(): int
     {
-        if (!isset($this->driver)) {
-            throw new RuntimeException(
-                'Must register at least one data driver.'
-            );
-        }
-        
+        $this->assertDriver();
+
         // Ignore the excluded urls.
-        if (!empty($this->excludedUrls)) {
-            foreach ($this->excludedUrls as $url) {
-                if (0 === strpos(get_request()->getUri()->getPath(), $url)) {
-                    return $this->result = self::RESPONSE_ALLOW;
-                }
+        foreach ($this->excludedUrls as $url) {
+            if (strpos($this->getCurrentUrl(), $url) === 0) {
+                return $this->result = self::RESPONSE_ALLOW;
             }
         }
 

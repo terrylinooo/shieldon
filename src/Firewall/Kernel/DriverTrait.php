@@ -14,6 +14,7 @@ namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Driver\DriverProvider;
 use LogicException;
+use RuntimeException;
 
 /*
  * Messenger Trait is loaded in Kernel instance only.
@@ -56,7 +57,7 @@ trait DriverTrait
      *
      * @return void
      */
-    public function setChannel(string $channel)
+    public function setChannel(string $channel): void
     {
         if (!$this->driver instanceof DriverProvider) {
             throw new LogicException('setChannel method requires setDriver set first.');
@@ -74,8 +75,22 @@ trait DriverTrait
      * 
      * @return void
      */
-    public function createDatabase(bool $bool)
+    public function createDatabase(bool $bool): void
     {
         $this->autoCreateDatabase = $bool;
+    }
+
+    /**
+     * Check the data driver, throw an exception if not set.
+     *
+     * @return void
+     */
+    protected function assertDriver(): void
+    {
+        if (!isset($this->driver)) {
+            throw new RuntimeException(
+                'Data driver must be set.'
+            );
+        }
     }
 }
