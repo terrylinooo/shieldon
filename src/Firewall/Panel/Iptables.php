@@ -186,73 +186,75 @@ class Iptables extends BaseController
     {
         $postParams = get_request()->getParsedBody();
 
-        if ($this->iptablesFormPostVerification($postParams)) {
-            $ip       = $postParams['ip'];
-            $port     = $postParams['port'];
-            $subnet   = $postParams['subnet'];
-            $protocol = $postParams['protocol'];
-            $action   = $postParams['action'];
-            $cPort    = $postParams['port_custom'] ?? 'all';
+        if (!$this->iptablesFormPostVerification($postParams)) {
+            return;
+        }
 
-            $isRemoval = false;
+        $ip       = $postParams['ip'];
+        $port     = $postParams['port'];
+        $subnet   = $postParams['subnet'];
+        $protocol = $postParams['protocol'];
+        $action   = $postParams['action'];
+        $cPort    = $postParams['port_custom'] ?? 'all';
 
-            if (isset($postParams['remove']) && $postParams['remove'] === 'yes') {
-                $isRemoval = true;
-            }
+        $isRemoval = false;
 
-            if ('custom' === $port) {
-                $port = $cPort;
-            }
+        if (isset($postParams['remove']) && $postParams['remove'] === 'yes') {
+            $isRemoval = true;
+        }
 
-            $ipv = '4';
+        if ('custom' === $port) {
+            $port = $cPort;
+        }
 
-            if ('IPv6' === $type) {
-                $ipv = '6';
-            }
+        $ipv = '4';
 
-            /**
-             * The process of add or remove command string from two files:
-             * 
-             * (1) The command file -
-             *     This file is used on display the commands on the page 
-             *     Iptables Manager.
-             * (2) The queue file -
-             *     This file is a bridge between Shieldon Firewall and Iptalbes.
-             *     ipbales_bridge.sh will monitor this file, once commands come, 
-             *     transforming the commands into Iptables syntax commands and 
-             *     then execute the Iptables commands.
-             */
-            if (!$isRemoval) {
-                $originCommandString = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
+        if ('IPv6' === $type) {
+            $ipv = '6';
+        }
 
-                // Delete line from the log file.
-                $fileArr = file($commandLogFile);
+        /**
+         * The process of add or remove command string from two files:
+         * 
+         * (1) The command file -
+         *     This file is used on display the commands on the page 
+         *     Iptables Manager.
+         * (2) The queue file -
+         *     This file is a bridge between Shieldon Firewall and Iptalbes.
+         *     ipbales_bridge.sh will monitor this file, once commands come, 
+         *     transforming the commands into Iptables syntax commands and 
+         *     then execute the Iptables commands.
+         */
+        if (!$isRemoval) {
+            $originCommandString = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
 
-                if (is_array($fileArr)) {
-                    $keyFound = array_search(trim($originCommandString), $fileArr);
-                    unset($fileArr[$keyFound]);
+            // Delete line from the log file.
+            $fileArr = file($commandLogFile);
 
-                    $t = [];
-                    $i = 0;
-                    foreach ($fileArr as $f) {
-                        $t[$i] = trim($f);
-                        $i++;
-                    }
-                    file_put_contents($commandLogFile, implode(PHP_EOL, $t));
+            if (is_array($fileArr)) {
+                $keyFound = array_search(trim($originCommandString), $fileArr);
+                unset($fileArr[$keyFound]);
+
+                $t = [];
+                $i = 0;
+                foreach ($fileArr as $f) {
+                    $t[$i] = trim($f);
+                    $i++;
                 }
-
-                $applyCommand = "delete,$ipv,$ip,$subnet,$port,$protocol,$action";
-
-                file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
-
-                // Becase we need system cronjob done, and then the web page will show the actual results.
-                sleep(10);
-            } else {
-                $applyCommand = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
-
-                file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
-                sleep(1);
+                file_put_contents($commandLogFile, implode(PHP_EOL, $t));
             }
+
+            $applyCommand = "delete,$ipv,$ip,$subnet,$port,$protocol,$action";
+
+            file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
+
+            // Becase we need system cronjob done, and then the web page will show the actual results.
+            sleep(10);
+        } else {
+            $applyCommand = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
+
+            file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
+            sleep(1);
         }
     }
 
@@ -317,7 +319,10 @@ class Iptables extends BaseController
     {
         if (
             isset($postParams['port']) &&
-            (is_numeric($postParams['port']) || in_array($postParams['port'], ['all', 'custom']))
+            (
+                is_numeric($postParams['port']) || 
+                in_array($postParams['port'], ['all', 'custom'])
+            )
         ) {
             return true;
         }
@@ -335,7 +340,10 @@ class Iptables extends BaseController
     {
         if (
             isset($postParams['subnet']) && 
-            (is_numeric($postParams['subnet']) || $postParams['subnet'] === 'null')
+            (
+                is_numeric($postParams['subnet']) || 
+                $postParams['subnet'] === 'null'
+            )
         ) {
             return true;
         }
