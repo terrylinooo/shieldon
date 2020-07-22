@@ -90,10 +90,6 @@ class SqlDriverProvider extends DriverProvider
             'session' => 'doFetchFromSessionTable',
         ];
 
-        if (empty($tables[$type])) {
-            return [];
-        }
-
         $method = $tables[$type];
 
         // Fetch from SqlDriverTrait.
@@ -110,11 +106,7 @@ class SqlDriverProvider extends DriverProvider
             'filter' => 'doFetchAllFromFilterTable',
             'session' => 'doFetchAllFromSessionTable',
         ];
-
-        if (empty($tables[$type])) {
-            return [];
-        }
-        
+ 
         $method = $tables[$type];
 
         // Fetch from SqlDriverTrait.
@@ -140,10 +132,6 @@ class SqlDriverProvider extends DriverProvider
                 'field' => 'id',
             ],
         ];
-
-        if (empty($tables[$type])) {
-            return false;
-        }
 
         $tableName = $tables[$type]['table'];
         $field = $tables[$type]['field'];
@@ -205,7 +193,6 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
-
         $tables = [
             'rule' => [
                 'table' => $this->tableRuleList,

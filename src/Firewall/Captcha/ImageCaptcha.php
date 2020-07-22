@@ -100,8 +100,8 @@ class ImageCaptcha extends CaptchaProvider
             'colors'       => [
                 'background' => [255, 255, 255],
                 'border'     => [153, 200, 255],
-                'text'		 => [51,  153, 255],
-                'grid'		 => [153, 200, 255]
+                'text'       => [51,  153, 255],
+                'grid'       => [153, 200, 255]
             ]
         ];
 
@@ -194,6 +194,59 @@ class ImageCaptcha extends CaptchaProvider
         }
 
         return $html;
+    }
+
+    /**
+     * Create CAPTCHA
+     *
+     * @return	string
+     */
+    protected function createCaptcha()
+    {
+        $imgWidth = $this->properties['img_width'];
+        $imgHeight = $this->properties['img_height'];
+
+        $this->createCanvas($imgWidth, $imgHeight);
+
+        // Assign colors. 
+        $colors = [];
+
+        foreach ($this->properties['colors'] as $k => $v) {
+            // Create image resources for each color.
+            $colors[$k] = imagecolorallocate($this->im, $v[0], $v[1], $v[2]);
+        }
+
+        $this->createRandomWords();
+
+        $this->createBackground(
+            $imgWidth,
+            $imgHeight, 
+            $colors['background']
+        );
+
+        $this->createSpiralPattern(
+            $imgWidth,
+            $imgHeight,
+            $colors['grid']
+        );
+
+        $this->writeText(
+            $imgWidth,
+            $imgHeight,
+            $colors['text']
+        );
+
+        $this->createBorder(
+            $imgWidth,
+            $imgHeight,
+            $colors['border']
+        );
+
+        // Save hash to the user sesssion.
+        $hash = password_hash($this->word, PASSWORD_BCRYPT);
+        get_session()->set('shieldon_image_captcha_hash', $hash);
+
+        return $this->getImageBase64Content();
     }
 
     /**
@@ -367,58 +420,5 @@ class ImageCaptcha extends CaptchaProvider
         imagedestroy($this->im);
 
         return base64_encode($imageContent);
-    }
-
-    /**
-     * Create CAPTCHA
-     *
-     * @return	string
-     */
-    protected function createCaptcha()
-    {
-        $imgWidth = $this->properties['img_width'];
-        $imgHeight = $this->properties['img_height'];
-
-        $this->createCanvas($imgWidth, $imgHeight);
-
-        // Assign colors. 
-        $colors = [];
-
-        foreach ($this->properties['colors'] as $k => $v) {
-            // Create image resources for each color.
-            $colors[$k] = imagecolorallocate($this->im, $v[0], $v[1], $v[2]);
-        }
-
-        $this->createRandomWords();
-
-        $this->createBackground(
-            $imgWidth,
-            $imgHeight, 
-            $colors['background']
-        );
-
-        $this->createSpiralPattern(
-            $imgWidth,
-            $imgHeight,
-            $colors['grid']
-        );
-
-        $this->writeText(
-            $imgWidth,
-            $imgHeight,
-            $colors['text']
-        );
-
-        $this->createBorder(
-            $imgWidth,
-            $imgHeight,
-            $colors['border']
-        );
-
-        // Save hash to the user sesssion.
-        $hash = password_hash($this->word, PASSWORD_BCRYPT);
-        get_session()->set('shieldon_image_captcha_hash', $hash);
-
-        return $this->getImageBase64Content();
     }
 }
