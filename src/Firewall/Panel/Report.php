@@ -212,61 +212,9 @@ class Report extends BaseController
     {
         $ruleList = $this->kernel->driver->getAll('rule');
 
-        $data['component_ip']         = 0;
-        $data['component_rdns']       = 0;
-        $data['component_header']     = 0;
-        $data['component_useragent']  = 0;
-        $data['component_trustedbot'] = 0;
-
-        $data['filter_cookie']    = 0;
-        $data['filter_referer']   = 0;
-        $data['filter_session']   = 0;
-        $data['filter_frequency'] = 0;
-
-        // Components.
-        $data['rule_list']['ip']         = [];
-        $data['rule_list']['rdns']       = [];
-        $data['rule_list']['header']     = [];
-        $data['rule_list']['useragent']  = [];
-        $data['rule_list']['trustedbot'] = [];
-
-        // Filters.
-        $data['rule_list']['cookie']    = [];
-        $data['rule_list']['referer']   = [];
-        $data['rule_list']['session']   = [];
-        $data['rule_list']['frequency'] = [];
-
-        $counter = [];
-        $info = [];
-
-        $counter[$this->kernel::REASON_DENY_IP]                 = 0;
-        $counter[$this->kernel::REASON_COMPONENT_IP]            = 0;
-        $counter[$this->kernel::REASON_COMPONENT_RDNS]          = 0;
-        $counter[$this->kernel::REASON_COMPONENT_HEADER]        = 0;
-        $counter[$this->kernel::REASON_COMPONENT_USERAGENT]     = 0;
-        $counter[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT] = 0;
-        $counter[$this->kernel::REASON_TOO_MANY_ACCESSES]       = 0;
-        $counter[$this->kernel::REASON_REACHED_LIMIT_DAY]       = 0;
-        $counter[$this->kernel::REASON_REACHED_LIMIT_HOUR]      = 0;
-        $counter[$this->kernel::REASON_REACHED_LIMIT_MINUTE]    = 0;
-        $counter[$this->kernel::REASON_REACHED_LIMIT_SECOND]    = 0;
-        $counter[$this->kernel::REASON_EMPTY_REFERER]           = 0;
-        $counter[$this->kernel::REASON_EMPTY_JS_COOKIE]         = 0;
-        $counter[$this->kernel::REASON_TOO_MANY_SESSIONS]       = 0;
-        $info[$this->kernel::REASON_DENY_IP]                    = [];
-        $info[$this->kernel::REASON_COMPONENT_IP]               = [];
-        $info[$this->kernel::REASON_COMPONENT_RDNS]             = [];
-        $info[$this->kernel::REASON_COMPONENT_HEADER]           = [];
-        $info[$this->kernel::REASON_COMPONENT_USERAGENT]        = [];
-        $info[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT]    = [];
-        $info[$this->kernel::REASON_DENY_IP]                    = [];
-        $info[$this->kernel::REASON_REACHED_LIMIT_DAY]          = [];
-        $info[$this->kernel::REASON_REACHED_LIMIT_HOUR]         = [];
-        $info[$this->kernel::REASON_REACHED_LIMIT_MINUTE]       = [];
-        $info[$this->kernel::REASON_REACHED_LIMIT_SECOND]       = [];
-        $info[$this->kernel::REASON_EMPTY_REFERER]              = [];
-        $info[$this->kernel::REASON_EMPTY_JS_COOKIE]            = [];
-        $info[$this->kernel::REASON_TOO_MANY_SESSIONS]          = [];
+        $data = $this->getDataDefault();
+        $counter = $this->getCounterDefault();
+        $info = $this->getInfoDefault();
 
         foreach ($ruleList as $ruleInfo) {
             $reason = $ruleInfo['reason']; 
@@ -337,6 +285,96 @@ class Report extends BaseController
         $data['filter_session'] = $a;
         $data['rule_list']['session'] = $b;
         unset($a, $b);
+
+        return $data;
+    }
+
+    /**
+     * Get counter default.
+     *
+     * @return array
+     */
+    private function getCounterDefault(): array
+    {
+        $counter = [];
+
+        $counter[$this->kernel::REASON_DENY_IP]                 = 0;
+        $counter[$this->kernel::REASON_COMPONENT_IP]            = 0;
+        $counter[$this->kernel::REASON_COMPONENT_RDNS]          = 0;
+        $counter[$this->kernel::REASON_COMPONENT_HEADER]        = 0;
+        $counter[$this->kernel::REASON_COMPONENT_USERAGENT]     = 0;
+        $counter[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT] = 0;
+        $counter[$this->kernel::REASON_TOO_MANY_ACCESSES]       = 0;
+        $counter[$this->kernel::REASON_REACHED_LIMIT_DAY]       = 0;
+        $counter[$this->kernel::REASON_REACHED_LIMIT_HOUR]      = 0;
+        $counter[$this->kernel::REASON_REACHED_LIMIT_MINUTE]    = 0;
+        $counter[$this->kernel::REASON_REACHED_LIMIT_SECOND]    = 0;
+        $counter[$this->kernel::REASON_EMPTY_REFERER]           = 0;
+        $counter[$this->kernel::REASON_EMPTY_JS_COOKIE]         = 0;
+        $counter[$this->kernel::REASON_TOO_MANY_SESSIONS]       = 0;
+
+        return $counter;
+    }
+
+    /**
+     * Get info default.
+     *
+     * @return array
+     */
+    private function getInfoDefault(): array
+    {
+        $info = [];
+
+        $info[$this->kernel::REASON_DENY_IP]                 = [];
+        $info[$this->kernel::REASON_COMPONENT_IP]            = [];
+        $info[$this->kernel::REASON_COMPONENT_RDNS]          = [];
+        $info[$this->kernel::REASON_COMPONENT_HEADER]        = [];
+        $info[$this->kernel::REASON_COMPONENT_USERAGENT]     = [];
+        $info[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT] = [];
+        $info[$this->kernel::REASON_DENY_IP]                 = [];
+        $info[$this->kernel::REASON_REACHED_LIMIT_DAY]       = [];
+        $info[$this->kernel::REASON_REACHED_LIMIT_HOUR]      = [];
+        $info[$this->kernel::REASON_REACHED_LIMIT_MINUTE]    = [];
+        $info[$this->kernel::REASON_REACHED_LIMIT_SECOND]    = [];
+        $info[$this->kernel::REASON_EMPTY_REFERER]           = [];
+        $info[$this->kernel::REASON_EMPTY_JS_COOKIE]         = [];
+        $info[$this->kernel::REASON_TOO_MANY_SESSIONS]       = [];
+
+        return $info;
+    }
+
+    /**
+     * Get data default.
+     *
+     * @return array
+     */
+    private function getDataDefault(): array
+    {
+        $data = [];
+
+        $data['component_ip']         = 0;
+        $data['component_rdns']       = 0;
+        $data['component_header']     = 0;
+        $data['component_useragent']  = 0;
+        $data['component_trustedbot'] = 0;
+
+        $data['filter_cookie']    = 0;
+        $data['filter_referer']   = 0;
+        $data['filter_session']   = 0;
+        $data['filter_frequency'] = 0;
+
+        // Components.
+        $data['rule_list']['ip']         = [];
+        $data['rule_list']['rdns']       = [];
+        $data['rule_list']['header']     = [];
+        $data['rule_list']['useragent']  = [];
+        $data['rule_list']['trustedbot'] = [];
+
+        // Filters.
+        $data['rule_list']['cookie']    = [];
+        $data['rule_list']['referer']   = [];
+        $data['rule_list']['session']   = [];
+        $data['rule_list']['frequency'] = [];
 
         return $data;
     }
