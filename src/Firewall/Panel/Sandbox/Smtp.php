@@ -45,16 +45,25 @@ class Smtp
      */
     private function sandbox($getParams, $message)
     {
-        $type = $getParams['type'] ?? '';
-        $host = $getParams['host'] ?? '';
-        $user = $getParams['user'] ?? '';
-        $pass = $getParams['pass'] ?? '';
-        $port = $getParams['port'] ?? '';
+        $params = [
+            'type',
+            'host',
+            'user',
+            'pass',
+            'port',
+            'sender',
+            'recipients',
+        ];
 
-        $sender = $getParams['sender'] ?? '';
-        $recipients = $getParams['recipients'] ?? '';
+        foreach ($params as $param) {
+            ${$param} = $getParams[$param] ?? '';
 
-        if (!$this->checkHost($host) || !is_numeric($port) || empty($user) || empty($pass)) {
+            if (empty(${$param})) {
+                return false;
+            }
+        }
+
+        if (!$this->checkHost($host)) {
             return false;
         }
 
@@ -62,29 +71,28 @@ class Smtp
             $host = $type . '://' . $host;
         }
 
-        if (!empty($sender) && $recipients) {
-            $recipients = str_replace("\r", '|', $recipients);
-            $recipients = str_replace("\n", '|', $recipients);
-            $recipients = explode('|', $recipients);
+        $recipients = str_replace("\r", '|', $recipients);
+        $recipients = str_replace("\n", '|', $recipients);
+        $recipients = explode('|', $recipients);
 
-            $messenger = new SmtpTest($user, $pass, $host, (int) $port);
+        $messenger = new SmtpTest($user, $pass, $host, (int) $port);
 
-            foreach ($recipients as $recipient) {
-                if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
-                    $messenger->addRecipient($recipient);
-                }
-            }
-
-            if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
-                $messenger->addSender($sender);
-            }
-
-            $messenger->setSubject($message['title']);
-
-            if ($messenger->send($message['body'])) {
-                return true;
+        foreach ($recipients as $recipient) {
+            if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                $messenger->addRecipient($recipient);
             }
         }
+
+        if (filter_var($sender, FILTER_VALIDATE_EMAIL)) {
+            $messenger->addSender($sender);
+        }
+
+        $messenger->setSubject($message['title']);
+
+        if ($messenger->send($message['body'])) {
+            return true;
+        }
+        
         return false;
     }
 
