@@ -540,48 +540,6 @@ class Kernel
     }
 
     /**
-     * Get a template PHP file.
-     *
-     * @param string $type The template type.
-     *
-     * @return string
-     */
-    protected function getTemplate(string $type): string
-    {
-        $directory = self::KERNEL_DIR . '/../../templates/frontend';
-
-        if (!empty($this->templateDirectory)) {
-            $directory = $this->templateDirectory;
-        }
-
-        $path = $directory . '/' . $type . '.php';
-
-        if (!file_exists($path)) {
-            throw new RuntimeException(
-                sprintf(
-                    'The templeate file is missing. (%s)',
-                    $path
-                )
-            );
-        }
-
-        return $path;
-    }
-
-    /**
-     * Get a class name without namespace string.
-     *
-     * @param object $instance Class
-     * 
-     * @return void
-     */
-    protected function getClassName($instance): string
-    {
-        $class = get_class($instance);
-        return substr($class, strrpos($class, '\\') + 1); 
-    }
-
-    /**
      * Print a JavasSript snippet in your webpages.
      * 
      * This snippet generate cookie on client's browser,then we check the 
@@ -742,5 +700,47 @@ class Kernel
         $logData['timesamp'] = time();
 
         $this->logger->add($logData);
+    }
+
+    /**
+     * Get a template PHP file.
+     *
+     * @param string $type The template type.
+     *
+     * @return string
+     */
+    protected function getTemplate(string $type): string
+    {
+        $directory = self::KERNEL_DIR . '/../../templates/frontend';
+
+        if (!empty($this->templateDirectory)) {
+            $directory = $this->templateDirectory;
+        }
+
+        $path = $directory . '/' . $type . '.php';
+
+        if (!file_exists($path)) {
+            throw new RuntimeException(
+                sprintf(
+                    'The templeate file is missing. (%s)',
+                    $path
+                )
+            );
+        }
+
+        return $path;
+    }
+
+    /**
+     * Get a class name without namespace string.
+     *
+     * @param object $instance Class
+     * 
+     * @return void
+     */
+    protected function getClassName($instance): string
+    {
+        $class = get_class($instance);
+        return substr($class, strrpos($class, '\\') + 1); 
     }
 }

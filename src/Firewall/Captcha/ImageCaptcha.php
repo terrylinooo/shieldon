@@ -92,15 +92,15 @@ class ImageCaptcha extends CaptchaProvider
     public function __construct(array $config = [])
     {
         $defaults = [
-            'img_width'	  => 250,
-            'img_height'  => 50,
-            'word_length' => 8,
+            'img_width'	   => 250,
+            'img_height'   => 50,
+            'word_length'  => 8,
             'font_spacing' => 10,
-            'pool'		  => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-            'colors'	  => [
+            'pool'         => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            'colors'       => [
                 'background' => [255, 255, 255],
-                'border'	 => [153, 200, 255],
-                'text'		 => [51, 153, 255],
+                'border'     => [153, 200, 255],
+                'text'		 => [51,  153, 255],
                 'grid'		 => [153, 200, 255]
             ]
         ];
