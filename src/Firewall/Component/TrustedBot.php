@@ -43,7 +43,8 @@ class TrustedBot extends ComponentProvider
     private $userAgent = '';
 
     /**
-     * For testing purpse. (Unit test)
+     * Of course this option is always true. 
+     * But it can be false to ignore the check when executing the unit tests.
      *
      * @var bool
      */
@@ -157,71 +158,63 @@ class TrustedBot extends ComponentProvider
      */
     public function isAllowed(): bool
     {
-        if (!empty($this->allowedList)) {
+        $userAgent = array_unique(
+            array_column($this->allowedList, 'userAgent')
+        );
 
-            $userAgent = array_unique(array_column($this->allowedList, 'userAgent'));
+        if (!preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgent)) {
+            // Okay, current request's user-agent string doesn't contain our truested bots' infroamtion.
+            // Ignore it.
+            return false;
+        }
 
-            if (!preg_match('/(' . implode('|', $userAgent) . ')/i', $this->userAgent)) {
-                // Okay, current request's user-agent string doesn't contain our truested bots' infroamtion.
-                // Ignore it.
-                return false;
+        $rdns = array_unique(
+            array_column($this->allowedList, 'rdns')
+        );
+
+        $rdnsCheck = false;
+
+        // We will check the RDNS record to see if it is in the whitelist.
+        if (preg_match('/(' . implode('|', $rdns) . ')/i', $this->rdns)) {
+
+            // To prevent "fake" RDNS such as "abc.google.com.fakedomain.com" pass thorugh our checking process.
+            // We need to check it one by one.
+            foreach ($rdns as $r) {
+
+                // For example:
+                // $x = strstr('abc.googlebot.com.fake', '.googlebot.com');
+                // $x will be `.googlebot.com.fake` so that we can identify this is a fake domain.
+                $x = strstr($this->rdns, $r);
+
+                // `.googlebot.com` === `.googlebot.com`
+                if ($x === $r) {
+                    $rdnsCheck = true;
+                }
             }
 
-            $rdns = array_unique(array_column($this->allowedList, 'rdns'));
+            if ($rdnsCheck) {
+                $ip = gethostbyname($this->rdns);
 
-            $rdnsCheck = false;
-
-            // We will check the RDNS record to see if it is in the whitelist.
-            if (preg_match('/(' . implode('|', $rdns) . ')/i', $this->rdns)) {
-
-                if ($this->checkFakeRdns) {
-
-                    // To prevent "fake" RDNS such as "abc.google.com.fakedomain.com" pass thorugh our checking process.
-                    // We need to check it one by one.
-                    foreach ($rdns as $r) {
-
-                        // For example:
-                        // $x = strstr('abc.googlebot.com.fake', '.googlebot.com');
-                        // $x will be `.googlebot.com.fake` so that we can identify this is a fake domain.
-                        $x = strstr($this->rdns, $r);
-            
-                        // `.googlebot.com` === `.googlebot.com`
-                        if ($x === $r) {
-                            $rdnsCheck = true;
-                        }
-                    }
-                }
-
-                if ($rdnsCheck) {
-                    $ip = gethostbyname($this->rdns);
-
-                    if ($this->strictMode) {
-
-                        // If the IP is different as hostname's resolved IP. It is maybe a fake bot.
-                        if ($ip !== $this->ip) {
-                            $this->isFake = true;
-                            return false;
-                        }
-                    }
-                }
-
-                if ($this->checkFakeRdns) {
-
-                    // We can identify that current access uses a fake RDNS record.
-                    if (!$rdnsCheck) {
+                if ($this->strictMode) {
+                    if ($ip !== $this->ip) {
+                        // If the IP is different as hostname's resolved IP. It might be a fake bot.
                         $this->isFake = true;
                         return false;
                     }
                 }
 
-                return true;
+            } else {
+                // We can identify that current access uses a fake RDNS record.
+                $this->isFake = true;
+                return false;
             }
 
-            // Here, once a request uses a user-agent that contains search engine information, but it does't pass the RDNS check.
-            // We can identify it is fake.
-            $this->isFake = true;
+            return true;
         }
 
+        // Here, once a request uses a user-agent that contains search engine information, but it does't pass the RDNS check.
+        // We can identify it is fake.
+        $this->isFake = true;
         return false;
     }
 
