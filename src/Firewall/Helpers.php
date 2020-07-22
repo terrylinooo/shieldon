@@ -17,6 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Utils\Collection;
 use Shieldon\Firewall\Utils\Container;
+
 use function explode;
 use function file_exists;
 use function func_get_arg;
@@ -276,7 +277,7 @@ function get_default_properties(): array
             'd' => 60
         ],
 
-        'time_reset_limit' => 3600,
+        'time_reset_limit'       => 3600,
         'interval_check_referer' => 5,
         'interval_check_session' => 30,
         'limit_unusual_behavior' => [
@@ -285,11 +286,11 @@ function get_default_properties(): array
             'referer' => 10
         ],
 
-        'cookie_name' => 'ssjd',
-        'cookie_domain' => '',
-        'cookie_value' => '1',
+        'cookie_name'         => 'ssjd',
+        'cookie_domain'       => '',
+        'cookie_value'        => '1',
         'display_online_info' => true,
-        'display_user_info' => false,
+        'display_user_info'   => false,
 
         /**
          * If you set this option enabled, Shieldon will record every CAPTCHA fails in a row, 
@@ -331,7 +332,7 @@ function get_default_properties(): array
 /**
  * PSR-7 HTTP server request
  *
- * @return \Psr\Http\Message\ServerRequestInterface
+ * @return ServerRequestInterface
  */
 function get_request(): ServerRequestInterface
 {
@@ -365,7 +366,7 @@ function get_response(): ResponseInterface
 /**
  * Session
  *
- * @return \Shieldon\Firewall\Utils\Collection
+ * @return Collection
  */
 function get_session(): Collection
 {
@@ -382,7 +383,7 @@ function get_session(): Collection
 /**
  * Set a PSR-7 HTTP server request into container.
  *
- * @param \Psr\Http\Message\ServerRequestInterface $request
+ * @param ServerRequestInterface $request
  *
  * @return void
  */
@@ -394,13 +395,111 @@ function set_request(ServerRequestInterface $request): void
 /**
  * Set a PSR-7 HTTP response into container.
  *
- * @param \Psr\Http\Message\ResponseInterface $response
+ * @param ResponseInterface $response
  *
  * @return void
  */
 function set_response(ResponseInterface $response): void
 {
     Container::set('response', $response, true);
+}
+
+/**
+ * Unset cookie.
+ *
+ * @param string|null $name The name (key) in the array of the superglobal.
+ *
+ * @return void
+ */
+function unset_global_cookie($name = null): void
+{
+    if (empty($name)) {
+        $cookieParams = get_request()->getCookieParams();
+        set_request(get_request()->withCookieParams([]));
+        foreach (array_keys($cookieParams) as $name) {
+            set_response(get_response()->withHeader(
+                'Set-Cookie',
+                "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+            ));
+        }
+        $_COOKIE = [];
+
+        return;
+    }
+
+    $cookieParams = get_request()->getCookieParams();
+    unset($cookieParams[$name]);
+    set_request(get_request()->withCookieParams($cookieParams));
+    set_response(get_response()->withHeader(
+        'Set-Cookie',
+        "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+    ));
+    // Prevent direct access to superglobal.
+    unset($_COOKIE[$name]);
+}
+
+/**
+ * Unset post.
+ *
+ * @param string|null $name The name (key) in the array of the superglobal.
+ *
+ * @return void
+ */
+function unset_global_post($name = null): void
+{
+    if (empty($name)) {
+        set_request(get_request()->withParsedBody([]));
+        $_POST = [];
+
+        return;
+    }
+
+    $postParams = get_request()->getParsedBody();
+    unset($postParams[$name]);
+    set_request(get_request()->withParsedBody($postParams));
+    unset($_POST[$name]);
+}
+
+/**
+ * Unset get.
+ *
+ * @param string|null $name The name (key) in the array of the superglobal.
+ *
+ * @return void
+ */
+function unset_global_get($name = null): void
+{
+    if (empty($name)) {
+        set_request(get_request()->withQueryParams([]));
+        $_GET = [];
+
+        return;
+    }
+
+    $getParams = get_request()->getQueryParams();
+    unset($getParams[$name]);
+    set_request(get_request()->withQueryParams($getParams));
+    unset($_GET[$name]);
+}
+
+/**
+ * Unset session.
+ *
+ * @param string|null $name The name (key) in the array of the superglobal.
+ *
+ * @return void
+ */
+function unset_global_session($name = null): void
+{
+    if (empty($name)) {
+        get_session()->clear();
+        $_SESSION = [];
+
+        return;
+    }
+
+    get_session()->remove($name);
+    unset($_SESSION[$name]);
 }
 
 /**
@@ -412,76 +511,17 @@ function set_response(ResponseInterface $response): void
  */
 function unset_superglobal($name, string $type): void
 {
-    if (is_string($name)) {
+    $types = [
+        'get',
+        'post',
+        'cookie',
+        'session',
+    ];
 
-        switch ($type) {
-            case 'cookie':
-                $cookieParams = get_request()->getCookieParams();
-                unset($cookieParams[$name]);
-                set_request(get_request()->withCookieParams($cookieParams));
-                set_response(get_response()->withHeader(
-                    'Set-Cookie',
-                    "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
-                ));
-                // Prevent direct access to superglobal.
-                unset($_COOKIE[$name]);
-                break;
-    
-            case 'post':
-                $postParams = get_request()->getParsedBody();
-                unset($postParams[$name]);
-                set_request(get_request()->withParsedBody($postParams));
-                unset($_POST[$name]);
-                break;
-    
-            case 'get':
-                $getParams = get_request()->getQueryParams();
-                unset($getParams[$name]);
-                set_request(get_request()->withQueryParams($getParams));
-                unset($_GET[$name]);
-                break;
-    
-            case 'session':
-                get_session()->remove($name);
-                unset($_SESSION[$name]);
-                break;
-    
-            default:
-                break;
-        }
-
-    } elseif (is_null($name)) {
-
-        switch ($type) {
-            case 'cookie':
-                $cookieParams = get_request()->getCookieParams();
-                set_request(get_request()->withCookieParams([]));
-                foreach (array_keys($cookieParams) as $name) {
-                    set_response(get_response()->withHeader(
-                        'Set-Cookie',
-                        "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
-                    ));
-                }
-                $_COOKIE = [];
-                break;
-    
-            case 'post':
-                set_request(get_request()->withParsedBody([]));
-                $_POST = [];
-                break;
-    
-            case 'get':
-                set_request(get_request()->withQueryParams([]));
-                $_GET = [];
-                break;
- 
-            case 'session':
-                get_session()->clear();
-                $_SESSION = [];
-                break;
-
-            default:
-                break;
-        }
+    if (!in_array($type, $types)) {
+        return;
     }
+
+    $method = '\Shieldon\Firewall\unset_global_' . $type;
+    $method($name, $type);
 }
