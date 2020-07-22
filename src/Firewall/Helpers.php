@@ -50,6 +50,67 @@ class Helpers
 }
 
 /**
+ * Get user lang.
+ * 
+ * This method is a part of  __()
+ *
+ * @return string
+ */
+function get_user_lang(): string
+{
+    static $lang;
+
+    if (!$lang) {
+        $lang = 'en';
+
+        // Fetch session variables.
+        $session = get_session();
+        $panelLang = $session->get('shieldon_panel_lang');
+        $uiLang = $session->get('shieldon_ui_lang');
+    
+        if (!empty($panelLang)) {
+            $lang = $panelLang;
+        } elseif (!empty($uiLang)) {
+            $lang = $uiLang;
+        }
+    }
+
+    return $lang;
+}
+
+/**
+ * Include i18n file.
+ * 
+ * This method is a part of  __()
+ *
+ * @param string $lang
+ * @param string $filename
+ *
+ * @return void
+ */
+function include_i18n_file(string $lang, string $filename): array
+{
+    $content = [];
+    $lang = str_replace('-', '_', $lang);
+
+    if (stripos($lang, 'zh_') !== false) {
+        if (stripos($lang, 'zh_CN') !== false) {
+            $lang = 'zh_CN';
+        } else {
+            $lang = 'zh';
+        }
+    }
+
+    $file = __DIR__ . '/../../localization/' . $lang . '/' . $filename . '.php';
+    
+    if (file_exists($file)) {
+        $content = include $file;
+    }
+
+    return $content;
+}
+
+/**
  * Get locale message.
  *
  * @return string
@@ -77,38 +138,11 @@ function __(): string
     $langcode    = func_get_arg(1); // required.
     $placeholder = ($num > 2) ? func_get_arg(2) : '';
     $replacement = ($num > 3) ? func_get_arg(3) : [];
-    $lang        = 'en';
-
-    // Fetch session variables.
-    $session = get_session();
-    $panelLang = $session->get('shieldon_panel_lang');
-    $uiLang = $session->get('shieldon_ui_lang');
-
-    if (!empty($panelLang)) {
-        $lang = $panelLang;
-    } elseif (!empty($uiLang)) {
-        $lang = $uiLang;
-    }
+    $lang        = get_user_lang();
 
     if (empty($i18n[$filename]) && empty($fileChecked[$filename])) {
-
         $fileChecked[$filename] = true;
-
-        $lang = str_replace('-', '_', $lang);
-
-        if (stripos($lang, 'zh_') !== false) {
-            if (stripos($lang, 'zh_CN') !== false) {
-                $lang = 'zh_CN';
-            } else {
-                $lang = 'zh';
-            }
-        }
-
-        $file = __DIR__ . '/../../localization/' . $lang . '/' . $filename . '.php';
-        
-        if (file_exists($file)) {
-            $i18n[$filename] = include $file;
-        }
+        $i18n[$filename] = include_i18n_file($lang, $filename);
     }
 
     // If we don't get the string from the localization file, use placeholder instead.
