@@ -257,7 +257,7 @@ class Iptables extends BaseController
     }
 
     /**
-     * Verify the form.
+     * Verify the form fields.
      *
      * @param array $postParams
      *
@@ -265,42 +265,117 @@ class Iptables extends BaseController
      */
     private function iptablesFormPostVerification(array $postParams): bool
     {
-        if (!(
-            isset($postParams['ip']) &&
-            filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)
-        )) {
+        if (!$this->checkFieldIp($postParams)) {
             return false;
         }
 
-        if (!(
-            isset($postParams['port']) &&
-            (is_numeric($postParams['port']) || in_array($postParams['port'], ['all', 'custom']))
-        )) {
+        if (!$this->checkFieldPort($postParams)) {
             return false;
         }
 
-        if (!(
-            isset($postParams['subnet']) && 
-            (is_numeric($postParams['subnet']) || $postParams['subnet'] === 'null')
-        )) {
+        if (!$this->checkFieldSubnet($postParams)) {
             return false;
         }
 
-        if (!(
-            isset($postParams['protocol']) && 
-            in_array($postParams['protocol'], ['tcp', 'udp', 'all'])
-        )) {
+        if (!$this->checkFieldProtocol($postParams)) {
             return false;
         }
 
-        if (!(
-            isset($postParams['action']) && 
-            in_array($postParams['action'], ['allow', 'deny'])
-        )) {
+        if (!$this->checkFieldAction($postParams)) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Verify the form  field - Ip.
+     *
+     * @param array $postParams
+     *
+     * @return bool
+     */
+    private function checkFieldIp($postParams): bool
+    {
+        if (
+            isset($postParams['ip']) &&
+            filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Verify the form field - Port.
+     *
+     * @param array $postParams
+     *
+     * @return bool
+     */
+    private function checkFieldPort($postParams): bool
+    {
+        if (
+            isset($postParams['port']) &&
+            (is_numeric($postParams['port']) || in_array($postParams['port'], ['all', 'custom']))
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Verify the form field - Subnet.
+     *
+     * @param array $postParams
+     *
+     * @return bool
+     */
+    private function checkFieldSubnet($postParams): bool
+    {
+        if (
+            isset($postParams['subnet']) && 
+            (is_numeric($postParams['subnet']) || $postParams['subnet'] === 'null')
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Verify the form field - Protocol.
+     *
+     * @param array $postParams
+     *
+     * @return bool
+     */
+    private function checkFieldProtocol($postParams): bool
+    {
+        if (
+            isset($postParams['protocol']) && 
+            in_array($postParams['protocol'], ['tcp', 'udp', 'all'])
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Verify the form field - Action.
+     *
+     * @param array $postParams
+     *
+     * @return bool
+     */
+    private function checkFieldAction($postParams): bool
+    {
+        if (
+            isset($postParams['action']) && 
+            in_array($postParams['action'], ['allow', 'deny'])
+        ) {
+            return true;
+        }
+        return false;
     }
 }
 
