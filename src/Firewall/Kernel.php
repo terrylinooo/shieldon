@@ -175,7 +175,7 @@ class Kernel
      *
      * @var array
      */
-    protected $dialogUI = [];
+    protected $dialog = [];
 
     /**
      * Strict mode.
@@ -352,8 +352,8 @@ class Kernel
         ];
 
         foreach (array_keys($ui) as $key) {
-            if (!empty($this->dialogUI[$key])) {
-                $ui[$key] = $this->dialogUI[$key];
+            if (!empty($this->dialog[$key])) {
+                $ui[$key] = $this->dialog[$key];
             }
         }
 
@@ -519,9 +519,9 @@ class Kernel
      *
      * @return void
      */
-    public function setDialogUI(array $settings): void
+    public function setDialog(array $settings): void
     {
-        $this->dialogUI = $settings;
+        $this->dialog = $settings;
     }
 
     /**
@@ -622,11 +622,11 @@ class Kernel
     }
 
     /**
-     * Displayed on Firewall Panel, tell you current what type of current
-     * configuration is used for.
+     * Displayed on Firewall Panel, telling you current what type of 
+     * configuration is used.
      * 
      * @param string $type The type of configuration.
-     *                     demo | managed | config
+     *                     accepted value: demo | managed | config
      *
      * @return void
      */
@@ -658,11 +658,11 @@ class Kernel
         $this->initComponents();
 
         $processMethods = [
-            'isRuleExist',   // Stage 1. - Looking for rule table.
+            'isRuleExist',   // Stage 1 - Looking for rule table.
             'isTrustedBot',  // Stage 2 - Detect popular search engine.
             'isFakeRobot',   // Stage 3 - Reject fake search engine crawlers.
             'isIpComponent', // Stage 4 - IP manager.
-            'isComponents'    // Stage 5 - Check other components.
+            'isComponents'   // Stage 5 - Check other components.
         ];
 
         foreach ($processMethods as $method) {

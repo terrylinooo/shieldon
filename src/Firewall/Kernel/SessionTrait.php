@@ -61,8 +61,10 @@ trait SessionTrait
     /**
      * Limt online sessions.
      *
-     * @param int $count
-     * @param int $period
+     * @param int $count  The amount of online users. If reached, users will be
+     *                    in queue.
+     * @param int $period The period of time allows users browsering. 
+     *                    (unit: second)
      *
      * @return void
      */
@@ -166,14 +168,12 @@ trait SessionTrait
         return self::RESPONSE_ALLOW;
     }
 
-
-
     // @codeCoverageIgnoreStart
 
     /**
      * For testing propose.
      *
-     * @param string $sessionId
+     * @param string $sessionId The session Id.
      *
      * @return void
      */
@@ -183,4 +183,6 @@ trait SessionTrait
             get_session()->set('id', $sessionId);
         }
     }
+
+    // @codeCoverageIgnoreEnd
 }

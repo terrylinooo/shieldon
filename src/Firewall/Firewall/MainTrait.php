@@ -432,7 +432,7 @@ trait MainTrait
 
         if (!empty($ui)) {
             get_session()->set('shieldon_ui_lang', $ui['lang']);
-            $this->kernel->setDialogUI($this->getOption('dialog_ui'));
+            $this->kernel->setDialog($this->getOption('dialog_ui'));
         }
     }
 }

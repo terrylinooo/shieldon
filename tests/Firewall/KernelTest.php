@@ -1027,11 +1027,11 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel->setMessenger($telegram);
     }
 
-    public function testSetDialogUI()
+    public function testSetDialog()
     {
         $kernel = new \Shieldon\Firewall\Kernel();
 
-        $kernel->setDialogUI([]);
+        $kernel->setDialog([]);
     }
 
     public function testSetExcludedUrls()

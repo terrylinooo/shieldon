@@ -163,14 +163,11 @@ final class ActionLogParser
     }
 
     /**
-     * Parse specific period of time of data.
-     * 
-     * Warning: This method may take long time to generate real-time stats on a high-traffic website.
-     * Aprroximately 10,000 rows for 3-5 seconds, depnonds on your server's CPU speed.
+     * Get the start and end date depends on the log type.
      *
-     * @return self
+     * @return array
      */
-    public function parsePeriodData(): self
+    protected function getStartEndDate(): array
     {
         switch ($this->type) {
 
@@ -230,6 +227,26 @@ final class ActionLogParser
             // endswitch;
         }
 
+        return [
+            'start' => $startDate,
+            'end' => $endDate,
+        ];
+    }
+
+    /**
+     * Parse specific period of time of data.
+     * 
+     * Warning: This method may take long time to generate real-time stats on a high-traffic website.
+     * Aprroximately 10,000 rows for 3-5 seconds, depnonds on your server's CPU speed.
+     *
+     * @return void
+     */
+    public function parsePeriodData(): void
+    {
+        $dateRange = $this->getStartEndDate();
+        $startDate = $dateRange['start'];
+        $endDate = $dateRange['end'];
+
         // Fetch data from log files.
         $logs = $this->logger->get($startDate, $endDate);
 
@@ -272,8 +289,6 @@ final class ActionLogParser
                 }
             }
         }
-
-        return $this;
     }
     
     /**
@@ -281,15 +296,13 @@ final class ActionLogParser
      *
      * @param string $type Period type.
      *
-     * @return self
+     * @return void
      */
-    public function prepare(string $type = 'today'): self
+    public function prepare(string $type = 'today'): void
     {
         $this->type = $type;
 
         $this->parsePeriodData($this->type);
-
-        return $this;
     }
 
     /**
