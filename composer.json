@@ -18,11 +18,11 @@
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0",
         "shieldon/messenger": "^1",
-        "shieldon/psr-http": "^1.2"
+        "shieldon/psr-http": "^1.2",
+        "shieldon/web-security": "^1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7",
-        "shieldon/messenger": "^1"
+        "phpunit/phpunit": "^7"
     },
     "autoload": {
         "psr-4": {

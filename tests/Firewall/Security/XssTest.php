@@ -16,7 +16,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 {
     public function testClean()
     {
-        $xssInstance = new \Shieldon\Firewall\Security\Xss();
+        $xssInstance = new \Shieldon\Security\Xss();
 
         $_POST['username'] = 'javascript:/*--></title></style></textarea></script></xmp><svg/onload=\'+/"/+/onmouseover=1/+/[*/[]/+alert(1)//\'>';
 
@@ -39,7 +39,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
     public function testBypassList()
     {
-        $xssInstance = new \Shieldon\Firewall\Security\Xss();
+        $xssInstance = new \Shieldon\Security\Xss();
 
         // You can add as many bybass string as you want for testing.
         $bypassList = file(__DIR__ . '/../../XssBypass/test_list.txt');
@@ -70,7 +70,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
         print_cli_msg('XSS Bypass image test', 'notice', true);
 
-        $xssInstance = new \Shieldon\Firewall\Security\Xss();
+        $xssInstance = new \Shieldon\Security\Xss();
         $fileFiltered = $xssInstance->clean($file, true);
 
         $this->assertSame($fileFiltered['Software'], '">[removed]alert&#40;123&#41;[removed]<"');
@@ -86,7 +86,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
     public function testImage_part2()
     {
-        $xssInstance = new \Shieldon\Firewall\Security\Xss();
+        $xssInstance = new \Shieldon\Security\Xss();
 
         $image = __DIR__ . '/../../XssBypass/test_sample_3.jpg';
         $result = $xssInstance->checkImage($image);
@@ -106,7 +106,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
     public function testEntityDecode()
     {
-        $xssInstance = new \Shieldon\Firewall\Security\Xss();
+        $xssInstance = new \Shieldon\Security\Xss();
 
         $string = 'I will "walk" the <b>dog</b> now. &lpar;ok)';
 
@@ -136,7 +136,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
     public function testSanitizeFilename()
     {
-        $xssInstance = new \Shieldon\Firewall\Security\Xss();
+        $xssInstance = new \Shieldon\Security\Xss();
 
         $filename = $xssInstance->sanitizeFilename('something<?php exit;?>.jpg');
 

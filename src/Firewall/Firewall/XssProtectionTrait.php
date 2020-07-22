@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Firewall;
 
-use Shieldon\Firewall\Security\Xss;
+use Shieldon\Security\Xss;
 
 use function array_keys;
 
