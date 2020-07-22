@@ -265,43 +265,42 @@ class Iptables extends BaseController
      */
     private function iptablesFormPostVerification(array $postParams): bool
     {
-        $con1 = (
+        if (!(
             isset($postParams['ip']) &&
             filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)
-        );
-
-        $con2 = (
-            isset($postParams['port']) &&
-            (
-                is_numeric($postParams['port']) ||
-                $postParams['port'] === 'all' ||
-                $postParams['port'] === 'custom'
-            )
-        );
-
-        $con3 = (
-            isset($postParams['subnet']) && 
-            (
-                is_numeric($postParams['subnet']) || 
-                $postParams['subnet'] === 'null'
-            )
-        );
-
-        $con4 = (
-            isset($postParams['protocol']) && 
-            in_array($postParams['protocol'], ['tcp', 'udp', 'all'])
-        );
-
-        $con5 = (
-            isset($postParams['action']) && 
-            in_array($postParams['action'], ['allow', 'deny'])
-        );
-
-        if ($con1 && $con2 && $con3 && $con4 && $con5) {
-            return true;
+        )) {
+            return false;
         }
 
-        return false;
+        if (!(
+            isset($postParams['port']) &&
+            (is_numeric($postParams['port']) || in_array($postParams['port'], ['all', 'custom']))
+        )) {
+            return false;
+        }
+
+        if (!(
+            isset($postParams['subnet']) && 
+            (is_numeric($postParams['subnet']) || $postParams['subnet'] === 'null')
+        )) {
+            return false;
+        }
+
+        if (!(
+            isset($postParams['protocol']) && 
+            in_array($postParams['protocol'], ['tcp', 'udp', 'all'])
+        )) {
+            return false;
+        }
+
+        if (!(
+            isset($postParams['action']) && 
+            in_array($postParams['action'], ['allow', 'deny'])
+        )) {
+            return false;
+        }
+
+        return true;
     }
 }
 
