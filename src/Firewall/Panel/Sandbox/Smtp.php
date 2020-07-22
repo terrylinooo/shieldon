@@ -45,6 +45,14 @@ class Smtp
      */
     private function sandbox($getParams, $message)
     {
+        $type = '';
+        $host = '';
+        $user = '';
+        $pass = '';
+        $port = '';
+        $sender = '';
+        $recipients = '';
+
         $params = [
             'type',
             'host',
@@ -67,7 +75,7 @@ class Smtp
             return false;
         }
 
-        if ('ssl' === $type || 'tls' === $type) {
+        if (in_array($type, ['ssl', 'tls'])) {
             $host = $type . '://' . $host;
         }
 

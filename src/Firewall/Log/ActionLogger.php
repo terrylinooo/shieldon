@@ -119,82 +119,14 @@ final class ActionLogger
     {
         $results = [];
 
-        // if $fromYmd is set, overwrite the default one (today).
-        if ('' !== $fromYmd) {
-            $fromYmd = date('Ymd', strtotime($fromYmd));
-
-            $this->file = $fromYmd . '.' . $this->extension;
-            $this->filePath = rtrim($this->directory, '/') . '/' . $this->file;
+        if (empty($fromYmd)) {
+            return [];
         }
 
         if ('' === $toYmd) {
-
-            if (file_exists($this->filePath)) {
-
-                $logFile = fopen($this->filePath, 'r');
-
-                while (!feof($logFile)) {
-                    $line = fgets($logFile);
-
-                    if (!empty($line)) {
-                        $data = explode(',', trim($line));
-                    }
-        
-                    if (!empty($data[0])) {
-                        $results[] = [
-                            'ip'          => $data[0],
-                            'session_id'  => $data[1],
-                            'action_code' => $data[2],
-                            'timesamp'    => $data[3],
-                        ];
-                    }
-                    unset($line, $data);
-                }
-                fclose($logFile);
-            }
-
-        } elseif ('' !== $fromYmd && '' !== $toYmd) {
-
-            // for quering date range.
-            $toYmd = date('Ymd', strtotime($toYmd));
-
-            $begin = new DateTime($fromYmd);
-            $end = new DateTime($toYmd);
-            $end = $end->modify('+1 day'); 
-            
-            $interval = new DateInterval('P1D');
-            $daterange = new DatePeriod($begin, $interval, $end);
-            
-            $logFile = '';
-    
-            foreach ($daterange as $date) {
-
-                $thisDayLogFile = $this->directory . '/' . $date->format('Ymd') . '.' . $this->extension;
-
-                if (file_exists($thisDayLogFile)) {
-
-                    $logFile = fopen($thisDayLogFile, 'r');
-
-                    while (!feof($logFile)) {
-                        $line = fgets($logFile);
-
-                        if (!empty($line)) {
-                            $data = explode(',', trim($line));
-                        }
-
-                        if (!empty($data[0])) {
-                            $results[] = [
-                                'ip'          => $data[0],
-                                'session_id'  => $data[1],
-                                'action_code' => $data[2],
-                                'timesamp'    => $data[3],
-                            ];
-                        }
-                        unset($line, $data);
-                    }
-                    fclose($logFile);
-                }
-            }
+            $results = $this->getDataFromSingleDate($fromYmd, $toYmd);
+        } else {
+            $results = $this->getDataFromRange($fromYmd, $toYmd);
         }
 
         return $results;
@@ -289,5 +221,106 @@ final class ActionLogger
         }
 
         return $data;
+    }
+
+/**
+     * Get data from log file.
+     *
+     * @param string $fromYmd The string in Ymd Date format.
+     * @param string $toYmd   The end date.
+     *
+     * @return array
+     */
+    private function getDataFromSingleDate(string $fromYmd = '', string $toYmd = ''): array
+    {
+        $results = [];
+
+        $fromYmd = date('Ymd', strtotime($fromYmd));
+
+        $this->file = $fromYmd . '.' . $this->extension;
+        $this->filePath = rtrim($this->directory, '/') . '/' . $this->file;
+
+        if (file_exists($this->filePath)) {
+
+            $logFile = fopen($this->filePath, 'r');
+
+            while (!feof($logFile)) {
+                $line = fgets($logFile);
+
+                if (!empty($line)) {
+                    $data = explode(',', trim($line));
+                }
+    
+                if (!empty($data[0])) {
+                    $results[] = [
+                        'ip'          => $data[0],
+                        'session_id'  => $data[1],
+                        'action_code' => $data[2],
+                        'timesamp'    => $data[3],
+                    ];
+                }
+                unset($line, $data);
+            }
+            fclose($logFile);
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get data from log files.
+     *
+     * @param string $fromYmd The string in Ymd Date format.
+     * @param string $toYmd   The end date.
+     *
+     * @return array
+     */
+    private function getDataFromRange(string $fromYmd = '', string $toYmd = ''): array
+    {
+        $results = [];
+
+        // for quering date range.
+        $fromYmd = date('Ymd', strtotime($fromYmd));
+        $toYmd = date('Ymd', strtotime($toYmd));
+
+        $begin = new DateTime($fromYmd);
+        $end = new DateTime($toYmd);
+        $end = $end->modify('+1 day'); 
+
+        $interval = new DateInterval('P1D');
+        $daterange = new DatePeriod($begin, $interval, $end);
+
+        $logFile = '';
+
+        foreach ($daterange as $date) {
+
+            $thisDayLogFile = $this->directory . '/' . $date->format('Ymd') . '.' . $this->extension;
+
+            if (file_exists($thisDayLogFile)) {
+
+                $logFile = fopen($thisDayLogFile, 'r');
+
+                while (!feof($logFile)) {
+                    $line = fgets($logFile);
+
+                    if (!empty($line)) {
+                        $data = explode(',', trim($line));
+                    }
+
+                    if (!empty($data[0])) {
+                        $results[] = [
+                            'ip'          => $data[0],
+                            'session_id'  => $data[1],
+                            'action_code' => $data[2],
+                            'timesamp'    => $data[3],
+                        ];
+                    }
+                    unset($line, $data);
+                }
+                fclose($logFile);
+            }
+        }
+
+        return $results;
     }
 }
