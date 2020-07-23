@@ -37,13 +37,88 @@ class User extends BaseController
     }
 
     /**
+     * Login as demonstration.
+     *
+     * @param string $username The username.
+     * @param string $password The password.
+     *
+     * @return void
+     */
+    private function userLoginAsDemo($username, $password)
+    {
+        $login = false;
+        $errorMsg = '';
+
+        if ($username === 'demo' && $password === 'demo') {
+            $login = true;
+        }
+
+        return [
+            'result' => $login,
+            'message' => $errorMsg,
+        ];
+    }
+
+    /**
+     * Login as administration.
+     *
+     * @param string $username The username.
+     * @param string $password The password.
+     *
+     * @return void
+     */
+    private function userLoginAsAdmin($username, $password)
+    {
+        $admin = $this->getConfig('admin');
+
+        $login = false;
+        $errorMsg = '';
+
+        if (
+            // Default password, unencrypted.
+            $admin['user']  === $username && 
+            'shieldon_pass' === $username &&
+            'shieldon_pass' === $admin['pass']
+        ) {
+            $login = true;
+
+        } elseif (
+            // User has already changed password, encrypted.
+            $admin['user'] === $username && 
+            password_verify($password, $admin['pass'])
+        ) {
+            $login = true;
+
+        } else {
+            $errorMsg = __('panel', 'login_message_invalid_user_or_pass', 'Invalid username or password.');
+        }
+
+        // Check the response from Captcha modules.
+        foreach ($this->captcha as $captcha) {
+            if (!$captcha->response()) {
+                $login = false;
+                $errorMsg = __('panel', 'login_message_invalid_captcha', 'Invalid Captcha code.');
+            }
+        }
+        
+
+        return [
+            'result' => $login,
+            'message' => $errorMsg,
+        ];
+    }
+
+    /**
      * Login
+     * 
+     * @param string $mode login mode.
      *
      * @return ResponseInterface
      */
-    public function login(): ResponseInterface
+    public function login($mode): ResponseInterface
     {
         $this->applyCaptchaForms();
+        $this->mode = $mode;
 
         $postParams = get_request()->getParsedBody();
 
@@ -52,34 +127,14 @@ class User extends BaseController
 
         if (isset($postParams['s_user']) && isset($postParams['s_pass'])) {
 
-            $admin = $this->getConfig('admin');
-
-            if (
-                // Default password, unencrypted.
-                $admin['user']  === $postParams['s_user'] && 
-                'shieldon_pass' === $postParams['s_pass'] &&
-                'shieldon_pass' === $admin['pass']
-            ) {
-                $login = true;
-
-            } elseif (
-                // User has already changed password, encrypted.
-                $admin['user'] === $postParams['s_user'] && 
-                password_verify($postParams['s_pass'], $admin['pass'])
-            ) {
-                $login = true;
-    
+            if ($this->mode === 'demo') {
+                $loginResult = $this->userLoginAsDemo($postParams['s_user'], $postParams['s_pass']);
             } else {
-                $data['error'] = __('panel', 'login_message_invalid_user_or_pass', 'Invalid username or password.');
+                $loginResult = $this->userLoginAsAdmin($postParams['s_user'], $postParams['s_pass']);
             }
-
-            // Check the response from Captcha modules.
-            foreach ($this->captcha as $captcha) {
-                if (!$captcha->response()) {
-                    $login = false;
-                    $data['error'] = __('panel', 'login_message_invalid_captcha', 'Invalid Captcha code.');
-                }
-            }
+    
+            $login = $loginResult['result'];
+            $data['error'] = $loginResult['message'];
         }
 
         if ($login) {
@@ -137,7 +192,7 @@ class User extends BaseController
             unset_superglobal('shieldon_panel_lang', 'session');
         }
 
-        return $response->withdHeader('Location', $this->url('user/login'));
+        return $response->withHeader('Location', $this->url('user/login'));
     }
 
     /**

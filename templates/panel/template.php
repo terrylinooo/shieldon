@@ -133,7 +133,7 @@ if (
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item"><?php _e('panel', 'channel', 'Channel'); ?> <strong class="status-field"><?php echo $channel_name; ?></strong></li>
                     <li class="nav-item"><?php _e('panel', 'mode', 'Mode'); ?> <strong class="status-field"><?php echo $mode_name; ?></strong></li>
-                    <li class="nav-item"><a href="<?php echo $page_url; ?>?so_page=logout" class="nav-link"><?php _e('panel', 'logout', 'Logout'); ?></a></li>
+                    <li class="nav-item"><a href="<?php echo $this->url('user/logout') ?>" class="nav-link"><?php _e('panel', 'logout', 'Logout'); ?></a></li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><?php _e('panel', 'nav_locale', 'Locale'); ?></a>
                         <div class="dropdown-menu dropdown-menu-right">

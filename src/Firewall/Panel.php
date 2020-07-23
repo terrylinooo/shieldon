@@ -160,7 +160,7 @@ class Panel
         $check = get_session()->get('shieldon_user_login');
 
         if (empty($check)) {
-            $this->resolver((new User)->login());
+            $this->resolver((new User)->login($this->mode));
         }
     }
 

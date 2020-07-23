@@ -274,15 +274,12 @@ class BaseController
      * Return the relative URL.
      *
      * @param string $path The page's path.
-     * @param string $tab  Tab.
      *
      * @return string
      */
-    protected function url(string $path = '', string $tab = ''): string
+    protected function url(string $path = ''): string
     {
-        $query = !empty($tab) ? '?tab=' . $tab : '';
-
-        return '/' . trim($this->base, '/') . '/' . $path . '/' . $query;
+        return '/' . trim($this->base, '/') . '/' . $path . '/';
     }
 
     /**
@@ -306,7 +303,15 @@ class BaseController
      */
     protected function saveConfig(): void
     {
+        if ($this->mode !== 'managed') {
+            return;
+
+        }
         $postParams = get_request()->getParsedBody();
+
+        if (!is_array($postParams)) {
+            return;
+        }
 
         $configFilePath = $this->directory . '/' . $this->filename;
 
@@ -314,10 +319,6 @@ class BaseController
             if (!empty($csrfInfo['name'])) {
                 unset_superglobal($csrfInfo['name'], 'post');
             }
-        }
-
-        if (empty($postParams) || !is_array($postParams) || 'managed' !== $this->mode) {
-            return;
         }
 
         $this->saveConfigPrepareSettings($postParams);
@@ -352,57 +353,51 @@ class BaseController
      */
     protected function _(string $field, $default = ''): void
     {
-        if (is_string($this->getConfig($field)) || is_numeric($this->getConfig($field))) {
+        if ('demo' === $this->mode) {
 
-            if ('demo' === $this->mode) {
+            // Hide sensitive data because of security concerns.
+            $hiddenForDemo = [
+                'drivers.redis.auth',
+                'drivers.file.directory_path',
+                'drivers.sqlite.directory_path',
+                'drivers.mysql.dbname',
+                'drivers.mysql.user',
+                'drivers.mysql.pass',
+                'captcha_modules.recaptcha.config.site_key',
+                'captcha_modules.recaptcha.config.secret_key',
+                'loggers.action.config.directory_path',
+                'admin.user',
+                'admin.pass',
+                'admin.last_modified',
+                'messengers.telegram.config.api_key',
+                'messengers.telegram.config.channel',
+                'messengers.sendgrid.config.api_key',
+                'messengers.sendgrid.config.sender',
+                'messengers.sendgrid.config.recipients',
+                'messengers.line_notify.config.access_token',
+                'iptables.config.watching_folder',
+                'ip6tables.config.watching_folder',
+                'messengers.sendgrid.config.recipients', // array
+            ];
 
-                // Hide sensitive data because of security concerns.
-                $hiddenForDemo = [
-                    'drivers.redis.auth',
-                    'drivers.file.directory_path',
-                    'drivers.sqlite.directory_path',
-                    'drivers.mysql.dbname',
-                    'drivers.mysql.user',
-                    'drivers.mysql.pass',
-                    'captcha_modules.recaptcha.config.site_key',
-                    'captcha_modules.recaptcha.config.secret_key',
-                    'loggers.action.config.directory_path',
-                    'admin.user',
-                    'admin.pass',
-                    'admin.last_modified',
-                    'messengers.telegram.config.api_key',
-                    'messengers.telegram.config.channel',
-                    'messengers.sendgrid.config.api_key',
-                    'messengers.sendgrid.config.sender',
-                    'messengers.sendgrid.config.recipients',
-                    'messengers.line_notify.config.access_token',
-                    'iptables.config.watching_folder',
-                    'ip6tables.config.watching_folder',
-                ];
-
-                if (in_array($field, $hiddenForDemo)) {
-                    echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
-                    return;
-                }
-            } 
-
-            echo (!empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
-            
-        } elseif (is_array($this->getConfig($field))) {
-
-            if ('demo' === $this->mode) {
-                $hiddenForDemo = [
-                    'messengers.sendgrid.config.recipients'
-                ];
-
-                if (in_array($field, $hiddenForDemo)) {
-                    echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
-                    return;
-                }
+            if (in_array($field, $hiddenForDemo)) {
+                echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
+                return;
             }
-
-            echo implode("\n", $this->getConfig($field));
         }
+
+        $fieldtype = gettype($this->getConfig($field));
+
+        if (in_array($fieldtype, ['integer', 'string', 'double'])) {
+            echo (!empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
+            return;
+
+        } elseif (in_array($fieldtype, ['array'])) {
+            echo implode("\n", $this->getConfig($field));
+            return;
+        }
+
+        echo '';
     }
 
     /**

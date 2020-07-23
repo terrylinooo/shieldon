@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel;
 
+use Shieldon\Firewall\Utils\Container;
+
 /*
  * Tradit for demonstration.
  */
@@ -44,9 +46,11 @@ trait DemoModeTrait
      */
     public function demo(string $user = '', string $pass = ''): void
     {
-        $this->demoUser['user'] = $user ?? 'demo';
-        $this->demoUser['pass'] = $pass ?? 'demo';
+        $this->demoUser['user'] = $user ?: 'demo';
+        $this->demoUser['pass'] = $pass ?: 'demo';
 
         $this->mode = 'demo';
+
+        Container::get('shieldon')->managedBy('demo');
     }
 }
