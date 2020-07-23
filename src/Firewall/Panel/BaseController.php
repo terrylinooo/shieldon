@@ -24,6 +24,7 @@ use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session;
 use function Shieldon\Firewall\unset_superglobal;
+use function Shieldon\Firewall\get_user_lang;
 
 use RuntimeException;
 use function array_push;
@@ -142,13 +143,7 @@ class BaseController
             get_session()->remove('flash_messages');
         }
 
-        $this->locate = 'en';
-
-        $sessionLang = get_session()->get('shieldon_panel_lang');
-
-        if (!empty($sessionLang)) {
-            $this->locate = $sessionLang;
-        }
+        $this->locate = get_user_lang();
     }
 
     /**
@@ -387,13 +382,12 @@ class BaseController
 
                 if (in_array($field, $hiddenForDemo)) {
                     echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
-                } else {
-                    echo (!empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
+                    return;
                 }
+            } 
 
-            } else {
-                echo (!empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
-            }
+            echo (!empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
+            
         } elseif (is_array($this->getConfig($field))) {
 
             if ('demo' === $this->mode) {
@@ -403,22 +397,20 @@ class BaseController
 
                 if (in_array($field, $hiddenForDemo)) {
                     echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
-                } else {
-                    echo implode("\n", $this->getConfig($field));
+                    return;
                 }
-
-            } else {
-                echo implode("\n", $this->getConfig($field));
             }
+
+            echo implode("\n", $this->getConfig($field));
         }
     }
 
     /**
      * Use on HTML checkbox and radio elements.
      *
-     * @param string $value
-     * @param mixed  $valueChecked
-     * @param bool   $isConfig
+     * @param string $value        The variable or configuation field.
+     * @param mixed  $valueChecked The value.
+     * @param bool   $isConfig     Is it a configuration field or not.
      *
      * @return void
      */
@@ -427,35 +419,32 @@ class BaseController
         if ($isConfig) {
             if ($this->getConfig($value) === $valueChecked) {
                 echo 'checked';
-            } else {
-                echo '';
+                return;
             }
         } else {
             if ($value === $valueChecked) {
                 echo 'checked';
-            } else {
-                echo '';
+                return;
             }
         }
+
+        echo '';
     }
 
     /**
      * Echo correspondence string on Messenger setting page.
      *
-     * @param string $moduleName
-     * @param string $echoType
+     * @param string $moduleName The messenger module's name.
+     * @param string $echoType   Value: css | icon
      *
      * @return void
      */
     protected function _m(string $moduleName, string $echoType = 'css'): void
     {
-        if ('css' === $echoType) {
-            echo $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? 'success' : '';
-        }
+        $echo['css'] = $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? 'success' : '';
+        $echo['icon'] = $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation"></i>';
 
-        if ('icon' === $echoType) {
-            echo $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation"></i>';
-        }
+        echo $echo[$echoType];
     }
 
     /**
