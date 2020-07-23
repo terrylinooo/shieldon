@@ -68,7 +68,7 @@ class UserAgent implements MiddlewareInterface
     /**
      * Constructor.
      * 
-     * @param array  $deniedList The list that want to be denied.
+     * @param array $deniedList The list that want to be denied.
      *
      * @return void
      */

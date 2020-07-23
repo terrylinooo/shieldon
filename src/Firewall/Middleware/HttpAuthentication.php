@@ -48,7 +48,7 @@ class HttpAuthentication implements MiddlewareInterface
      *
      * @var array
      */
-    protected $protectedUrlList = [
+    protected $list = [
         [
             // Begin-with URL 
             'url' => '/wp-amdin', 
@@ -73,14 +73,14 @@ class HttpAuthentication implements MiddlewareInterface
     /**
      * Constructor.
      * 
-     * @param array  $protectedUrlList The list that want to be protected.
-     * @param string $realm            The welcome message.
+     * @param array  $list  The list that want to be protected.
+     * @param string $realm The welcome message.
      *
      * @return void
      */
-    public function __construct(array $protectedUrlList = [], string $realm = 'Welcome to area 51.')
+    public function __construct(array $list = [], string $realm = 'Welcome to area 51.')
     {
-        $this->set($protectedUrlList);
+        $this->set($list);
         $this->realm = $realm;
     }
 
@@ -92,12 +92,12 @@ class HttpAuthentication implements MiddlewareInterface
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface  $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $currentUrl = $request->getUri()->getPath();
         $serverParams = $request->getServerParams();
 
-        foreach ($this->protectedUrlList as $urlInfo) {
+        foreach ($this->list as $urlInfo) {
 
             // If we have set the protection for current URL.
             if (0 === strpos($currentUrl, $urlInfo['url'])) {
@@ -108,9 +108,9 @@ class HttpAuthentication implements MiddlewareInterface
                     !isset($serverParams['PHP_AUTH_PW'])
                 ) {
                     $authenticate = 'Basic realm="' . $this->realm . '"';
-                    return (new Response)->
-                        withStatus(self::HTTP_STATUS_CODE)->
-                        withHeader('WWW-Authenticate', $authenticate);
+                    return (new Response)
+                        ->withStatus(self::HTTP_STATUS_CODE)
+                        ->withHeader('WWW-Authenticate', $authenticate);
                 }
 
                 // Identify the username and password for current URL.
@@ -130,17 +130,17 @@ class HttpAuthentication implements MiddlewareInterface
     /**
      * Set up the URL list that you want to protect.
      * 
-     * @param $protectedUrlList
+     * @param $list The URL list want to be protected.
      *
      * @return void
      */
-    public function set(array $protectedUrlList = []): void
+    public function set(array $list = []): void
     {
-        if (!empty($protectedUrlList)) {
-            $count = count($protectedUrlList);
-            $urlCount = count(array_column($protectedUrlList, 'url'));
-            $userCount = count(array_column($protectedUrlList, 'user'));
-            $passCount = count(array_column($protectedUrlList, 'pass'));
+        if (!empty($list)) {
+            $count = count($list);
+            $urlCount = count(array_column($list, 'url'));
+            $userCount = count(array_column($list, 'user'));
+            $passCount = count(array_column($list, 'pass'));
 
             if (
                 $count !== $urlCount || 
@@ -152,8 +152,7 @@ class HttpAuthentication implements MiddlewareInterface
                 );
             }
 
-            $this->protectedUrlList = $protectedUrlList;
+            $this->list = $list;
         }
     }
 }
-
