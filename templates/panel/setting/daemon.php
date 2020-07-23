@@ -282,7 +282,7 @@ use function Shieldon\Firewall\_e;
     </div>
 </div>
 <div class="section-body my-0" data-parent="iptables-section">
-    <p><?php _e('panel', 'setting_note_install_iptables', 'Make sure you have installed <strong>iptables</strong> and <strong>ip6tables</strong> already in your server, and employ <strong>fiewall.sh</strong> in <strong>crontab</strong> correctly.'); ?></p>
+    <p><?php _e('panel', 'setting_note_install_iptables', 'Make sure you have installed <strong>iptables</strong> and <strong>ip6tables</strong> already in your server, and employ <strong>iptables_bridge.sh</strong> in <strong>crontab</strong> correctly.'); ?></p>
     <table class="setting-table">
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_watching_folder', 'Watching Folder'); ?></td>

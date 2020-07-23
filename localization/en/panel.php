@@ -399,7 +399,7 @@ return [
     'setting_heading_deny_attempts' => 'Deny Attempts',
     'setting_desc_deny_attempts' => 'Say goodbye to bad behavior visitors.',
     'setting_label_system_firewall' => 'System Firewall',
-    'setting_note_install_iptables' => 'Make sure you have installed <strong>iptables</strong> and <strong>ip6tables</strong> already in your server, and employ <strong>fiewall.sh</strong> in <strong>crontab</strong> correctly.',
+    'setting_note_install_iptables' => 'Make sure you have installed <strong>iptables</strong> and <strong>ip6tables</strong> already in your server, and employ <strong>iptables_bridge.sh</strong> in <strong>crontab</strong> correctly.',
     'setting_label_watching_folder' => 'Watching Folder',
     'setting_label_cronjob' => 'Cron Job',
     'setting_note_cronjob' => 'Please use this code into the crontab file on your server.',

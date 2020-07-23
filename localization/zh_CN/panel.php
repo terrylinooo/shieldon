@@ -376,7 +376,7 @@ return [
     'setting_heading_deny_attempts' => '拒决多次尝试',
     'setting_desc_deny_attempts' => '和意图不轨的访客说再见。',
     'setting_label_system_firewall' => '系统防火墙',
-    'setting_note_install_iptables' => '确定您已经安装<strong>iptables</strong> 以及<strong>ip6tables</strong> 在您的伺服器中，而且在<strong>crontab</strong> 中正确地采用<strong >fiewall.sh</strong>。',
+    'setting_note_install_iptables' => '确定您已经安装<strong>iptables</strong> 以及<strong>ip6tables</strong> 在您的伺服器中，而且在<strong>crontab</strong> 中正确地采用<strong >iptables_bridge.sh</strong>。',
     'setting_label_watching_folder' => '监视资料夹',
     'setting_label_cronjob' => '系统排程',
     'setting_note_cronjob' => '请使用这段程式码到您的伺服器中的 crontab 档案。',

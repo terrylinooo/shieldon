@@ -182,7 +182,7 @@ class Iptables extends BaseController
      *
      * @return void
      */
-    private function iptablesFormPost(string $type, string $commandLogFile, string $iptablesQueueFile)
+    private function iptablesFormPost(string $type, string $commandLogFile, string $iptablesQueueFile): void
     {
         $postParams = get_request()->getParsedBody();
 
@@ -198,19 +198,14 @@ class Iptables extends BaseController
         $cPort    = $postParams['port_custom'] ?? 'all';
 
         $isRemoval = false;
+        $ipv = substr($type, -1);
 
-        if (isset($postParams['remove']) && $postParams['remove'] === 'yes') {
+        if ($postParams['remove'] === 'yes') {
             $isRemoval = true;
         }
 
-        if ('custom' === $port) {
+        if ($port === 'custom') {
             $port = $cPort;
-        }
-
-        $ipv = '4';
-
-        if ('IPv6' === $type) {
-            $ipv = '6';
         }
 
         /**
@@ -225,16 +220,16 @@ class Iptables extends BaseController
          *     transforming the commands into Iptables syntax commands and 
          *     then execute the Iptables commands.
          */
-        if (!$isRemoval) {
+        if ($isRemoval) {
             $originCommandString = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
 
             // Delete line from the log file.
             $fileArr = file($commandLogFile);
-
+    
             if (is_array($fileArr)) {
                 $keyFound = array_search(trim($originCommandString), $fileArr);
                 unset($fileArr[$keyFound]);
-
+    
                 $t = [];
                 $i = 0;
                 foreach ($fileArr as $f) {
@@ -243,19 +238,18 @@ class Iptables extends BaseController
                 }
                 file_put_contents($commandLogFile, implode(PHP_EOL, $t));
             }
-
+    
             $applyCommand = "delete,$ipv,$ip,$subnet,$port,$protocol,$action";
-
-            file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
-
-            // Becase we need system cronjob done, and then the web page will show the actual results.
-            sleep(10);
-        } else {
-            $applyCommand = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
-
             file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
             sleep(1);
+            return;
         }
+
+        $applyCommand = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
+        file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
+
+        // Becase we need system cronjob done, and then the web page will show the actual results.
+        sleep(10);
     }
 
     /**
