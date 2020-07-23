@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Driver;
 
 use Shieldon\Firewall\Driver\DriverProvider;
+use Shieldon\Firewall\Driver\FileDriverTrait;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RuntimeException;
 
 use function file_exists;
 use function file_get_contents;
@@ -24,11 +24,8 @@ use function in_array;
 use function is_dir;
 use function json_decode;
 use function ksort;
-use function mkdir;
 use function rmdir;
-use function str_replace;
 use function touch;
-use function umask;
 use function unlink;
 
 /**
@@ -36,6 +33,8 @@ use function unlink;
  */
 class FileDriver extends DriverProvider
 {
+    use FileDriverTrait;
+
     /**
      * The directory that data files stored to.
      *
@@ -275,60 +274,8 @@ class FileDriver extends DriverProvider
     }
 
     /**
-     * Create a directory for storing data files.
-     *
-     * @return bool
-     */
-    protected function createDirectory(): bool
-    {
-        $conA = $conB = $conC = false;
-
-        $checkingFile = $this->directory . '/' . $this->channel . '_' . $this->checkPoint;
-
-        if (!file_exists($checkingFile)) {
-            $originalUmask = umask(0);
-
-            if (!is_dir($this->getDirectory('filter'))) {
-                $conA = @mkdir($this->getDirectory('filter'), 0777, true);
-            }
-    
-            if (!is_dir($this->getDirectory('rule'))) {
-                $conB = @mkdir($this->getDirectory('rule'), 0777, true);
-            }
-    
-            if (!is_dir($this->getDirectory('session'))) {
-                $conC = @mkdir($this->getDirectory('session'), 0777, true);
-            }
-
-            if (!($conA && $conB && $conC)) {
-                return false;
-            }
-
-            file_put_contents($checkingFile, ' ');
-            umask($originalUmask);
-        }
-
-        return true;
-    }
-
-    /**
-     * Check the directory if is writable.
-     *
-     * @return bool
-     */
-    protected function checkDirectory(): bool
-    {
-        if (!is_dir($this->directory) || !is_writable($this->directory)) {
-            throw new RuntimeException(
-                'The directory defined by File Driver must be writable. (' . $this->directory . ')'
-            );
-        }
-
-        return true;
-    }
-
-    /**
      * Remove a Shieldon log file.
+     * Removing a log file works as the same as removing a SQL table's row.
      * 
      * @param string $logFilePath The absolute path of the log file.
      *
@@ -340,44 +287,6 @@ class FileDriver extends DriverProvider
             return unlink($logFilePath);
         }
         return false;
-    }
-
-    /**
-     * Get filename.
-     *
-     * @param string $ip   IP address.
-     * @param string $type The table name of the data cycle.
-     *
-     * @return string
-     */
-    private function getFilename(string $ip, string $type = 'filter'): string
-    {
-        $ip = str_replace(':', '-', $ip);
-        $path = [];
-
-        $path['filter'] = $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
-        $path['session'] = $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
-        $path['rule'] = $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
-
-        return $path[$type] ?? '';
-    }
-
-    /**
-     * Get directory.
-     *
-     * @param string $type The table name of the data cycle.
-     *
-     * @return string
-     */
-    private function getDirectory(string $type = 'filter'): string
-    {
-        $path = [];
-
-        $path['filter'] = $this->directory . '/' . $this->tableFilterLogs;
-        $path['session'] = $this->directory . '/' . $this->tableSessions;
-        $path['rule'] = $this->directory . '/' . $this->tableRuleList;
-
-        return $path[$type] ?? '';
     }
 }
 
