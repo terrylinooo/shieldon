@@ -264,7 +264,7 @@ trait FilterTrait
 
                 // Get values from data table. We will count it and save it back to data table.
                 // If an user is already in your website, it is impossible no referer when he views other pages.
-                $logData['flag_empty_referer'] = $ipDetail['flag_empty_referer'] ?? 0;
+                $logData['flag_empty_referer'] = $ipDetail['flag_empty_referer'];
 
                 if (empty(get_request()->getHeaderLine('referer'))) {
                     $logData['flag_empty_referer']++;
@@ -307,7 +307,7 @@ trait FilterTrait
             if ($logData['last_time'] - $ipDetail['last_time'] > $this->properties['interval_check_session']) {
 
                 // Get values from data table. We will count it and save it back to data table.
-                $logData['flag_multi_session'] = $ipDetail['flag_multi_session'] ?? 0;
+                $logData['flag_multi_session'] = $ipDetail['flag_multi_session'];
                 
                 if (get_session()->get('id') !== $ipDetail['session']) {
 
@@ -353,8 +353,8 @@ trait FilterTrait
         if ($this->filterStatus['cookie']) {
 
             // Get values from data table. We will count it and save it back to data table.
-            $logData['flag_js_cookie'] = $ipDetail['flag_js_cookie'] ?? 0;
-            $logData['pageviews_cookie'] = $ipDetail['pageviews_cookie'] ?? 0;
+            $logData['flag_js_cookie'] = $ipDetail['flag_js_cookie'];
+            $logData['pageviews_cookie'] = $ipDetail['pageviews_cookie'];
 
             $c = $this->properties['cookie_name'];
 

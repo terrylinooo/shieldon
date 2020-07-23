@@ -74,50 +74,49 @@ trait MainTrait
      */
     protected function setFilters(): void
     {
-        $sessionSetting   = $this->getOption('session', 'filters');
-        $cookieSetting    = $this->getOption('cookie', 'filters');
-        $refererSetting   = $this->getOption('referer', 'filters');
-        $frequencySetting = $this->getOption('frequency', 'filters');
-
-        $filterConfig = [
-            'session'   => $sessionSetting['enable'],
-            'cookie'    => $cookieSetting['enable'],
-            'referer'   => $refererSetting['enable'],
-            'frequency' => $frequencySetting['enable'],
+        $filters = [
+            'session',
+            'cookie',
+            'referer',
+            'frequency',
         ];
 
-        $this->kernel->setFilters($filterConfig);
+        foreach ($filters as $filter) {
+            $setting = $this->getOption($filter, 'filters');
+            $settings[$filter] = $setting;
+            $filterConfig[$filter] = $setting['enable'];
+            $filterLimit[$filter] = $setting['config']['quota'] ?? 5;
+            unset($setting);
+        }
+        unset($filterLimit['frequency']);
 
-        $this->kernel->setProperty('limit_unusual_behavior', [
-            'session' => $sessionSetting['config']['quota'] ?? 5,
-            'cookie'  => $cookieSetting['config']['quota'] ?? 5,
-            'referer' => $refererSetting['config']['quota'] ?? 5,
-        ]);
+        $this->kernel->setFilters($filterConfig);
+        $this->kernel->setProperty('limit_unusual_behavior', $filterLimit);
 
         // if ($frequencySetting['enable']) {
         $frequencyQuota = [
-            's' => $frequencySetting['config']['quota_s'] ?? 2,
-            'm' => $frequencySetting['config']['quota_m'] ?? 10,
-            'h' => $frequencySetting['config']['quota_h'] ?? 30,
-            'd' => $frequencySetting['config']['quota_d'] ?? 60,
+            's' => $settings['frequency']['config']['quota_s'] ?? 2,
+            'm' => $settings['frequency']['config']['quota_m'] ?? 10,
+            'h' => $settings['frequency']['config']['quota_h'] ?? 30,
+            'd' => $settings['frequency']['config']['quota_d'] ?? 60,
         ];
 
         $this->kernel->setProperty('time_unit_quota', $frequencyQuota);
 
         // if ($cookieSetting['enable']) {
-        $cookieName = $cookieSetting['config']['cookie_name'] ?? 'ssjd';
-        $cookieDomain = $cookieSetting['config']['cookie_domain'] ?? '';
-        $cookieValue = $cookieSetting['config']['cookie_value'] ?? '1';
+        $cookieName   = $settings['cookie']['config']['cookie_name']   ?? 'ssjd';
+        $cookieDomain = $settings['cookie']['config']['cookie_domain'] ?? '';
+        $cookieValue  = $settings['cookie']['config']['cookie_value']  ?? '1';
 
         $this->kernel->setProperty('cookie_name', $cookieName);
         $this->kernel->setProperty('cookie_domain', $cookieDomain);
         $this->kernel->setProperty('cookie_value', $cookieValue);
 
         // if ($refererSetting['enable']) {
-        $this->kernel->setProperty('interval_check_referer', $refererSetting['config']['time_buffer']);
+        $this->kernel->setProperty('interval_check_referer', $settings['referer']['config']['time_buffer']);
 
         // if ($sessionSetting['enable']) {
-        $this->kernel->setProperty('interval_check_session', $sessionSetting['config']['time_buffer']);
+        $this->kernel->setProperty('interval_check_session', $settings['referer']['config']['time_buffer']);
     }
 
     /**
