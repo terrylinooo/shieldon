@@ -85,7 +85,7 @@ trait MainTrait
             $setting = $this->getOption($filter, 'filters');
             $settings[$filter] = $setting;
             $filterConfig[$filter] = $setting['enable'];
-            $filterLimit[$filter] = $setting['config']['quota'] ?? 5;
+            $filterLimit[$filter] = $setting['config']['quota']; // 5
             unset($setting);
         }
         unset($filterLimit['frequency']);
@@ -93,35 +93,18 @@ trait MainTrait
         $this->kernel->setFilters($filterConfig);
         $this->kernel->setProperty('limit_unusual_behavior', $filterLimit);
 
-        $frequencyDefaults = [
-            's' => 2,
-            'm' => 10,
-            'h' => 30,
-            'd' => 60,
+        $frequencyQuota = [
+            's' => $settings['frequency']['config']['quota_s'],
+            'm' => $settings['frequency']['config']['quota_m'],
+            'h' => $settings['frequency']['config']['quota_h'],
+            'd' => $settings['frequency']['config']['quota_d'],
         ];
-
-        $frequencyQuota = [];
-        foreach ($frequencyDefaults as $k => $quota) {
-            $i = 'quota_' .  $k;
-            $frequencyQuota[$k] = $settings['frequency']['config'][$i] ?? $quota;
-        }
 
         $this->kernel->setProperty('time_unit_quota', $frequencyQuota);
 
-        $cookieDefaults = [
-            'cookie_name' => 'ssjd',
-            'cookie_domain' => '',
-            'cookie_value' => '1',
-        ];
-
-        $cookieValue = [];
-        foreach ($cookieDefaults as $k => $value) {
-            $cookieValue[$k] = $settings['cookie']['config'][$k] ?? $value;
-        }
-
-        $this->kernel->setProperty('cookie_name', $cookieValue['cookie_name']);
-        $this->kernel->setProperty('cookie_domain', $cookieValue['cookie_domain']);
-        $this->kernel->setProperty('cookie_value', $cookieValue['cookie_value']);
+        $this->kernel->setProperty('cookie_name', $settings['cookie']['config']['cookie_name']);      // ssjd
+        $this->kernel->setProperty('cookie_domain', $settings['cookie']['config']['cookie_domain']);  // ''
+        $this->kernel->setProperty('cookie_value', $settings['cookie']['config']['cookie_value']);    // 1
 
         $this->kernel->setProperty('interval_check_referer', $settings['referer']['config']['time_buffer']);
         $this->kernel->setProperty('interval_check_session', $settings['referer']['config']['time_buffer']);
@@ -153,17 +136,14 @@ trait MainTrait
 
             if ($config['enable']) {
                 $componentInstance = new $class();
+                $componentInstance->setStrict($config['strict_mode']);
 
                 if ($className === 'Ip') {
-                    $this->kernel->setComponent($componentInstance);
-
                     // Need Ip component to be loaded before calling this method.
                     $this->applyComponentIpManager();
-                    
-                } elseif ($config['strict_mode']) {
-                    $componentInstance->setStrict(true);
-                    $this->kernel->setComponent($componentInstance);
                 }
+
+                $this->kernel->setComponent($componentInstance);
             }
         }
     }
@@ -184,22 +164,19 @@ trait MainTrait
         ];
 
         foreach ($captchaList as $captcha) {
-            $setting = $this->getOption($captcha, 'captcha_modules');
+            $setting = (array) $this->getOption($captcha, 'captcha_modules');
 
-            if (is_array($setting)) {
+            // Initialize messenger instances from the factory/
+            if (CaptchaFactory::check($captcha, $setting)) {
 
-                // Initialize messenger instances from the factory/
-                if (CaptchaFactory::check($captcha, $setting)) {
-    
-                    $this->kernel->setCaptcha(
-                        CaptchaFactory::getInstance(
-                            // The ID of the captcha module in the configuration.
-                            $captcha, 
-                            // The settings of the captcha module in the configuration.
-                            $setting    
-                        )
-                    );
-                }
+                $this->kernel->setCaptcha(
+                    CaptchaFactory::getInstance(
+                        // The ID of the captcha module in the configuration.
+                        $captcha, 
+                        // The settings of the captcha module in the configuration.
+                        $setting    
+                    )
+                );
             }
 
             unset($setting);
@@ -227,23 +204,21 @@ trait MainTrait
      */
     protected function applyComponentIpManager()
     {
-        $ipList = $this->getOption('ip_manager');
+        $ipList = (array) $this->getOption('ip_manager');
 
         $allowedList = [];
         $deniedList = [];
 
-        if (is_array($ipList)) {
-            foreach ($ipList as $ip) {
+        foreach ($ipList as $ip) {
 
-                if (0 === strpos($this->kernel->getCurrentUrl(), $ip['url']) ) {
-    
-                    if ('allow' === $ip['rule']) {
-                        $allowedList[] = $ip['ip'];
-                    }
-    
-                    if ('deny' === $ip['rule']) {
-                        $deniedList[] = $ip['ip'];
-                    }
+            if (0 === strpos($this->kernel->getCurrentUrl(), $ip['url']) ) {
+
+                if ('allow' === $ip['rule']) {
+                    $allowedList[] = $ip['ip'];
+                }
+
+                if ('deny' === $ip['rule']) {
+                    $deniedList[] = $ip['ip'];
                 }
             }
         }
@@ -364,10 +339,6 @@ trait MainTrait
      */
     protected function setCronJob(): void 
     {
-        if (!$this->status) {
-            return;
-        }
-
         $cronjobSetting = $this->getOption('reset_circle', 'cronjob');
 
         if ($cronjobSetting['enable']) {
