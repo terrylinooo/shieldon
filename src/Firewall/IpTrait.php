@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * php version 7.1.0
+ *
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -15,8 +25,8 @@ namespace Shieldon\Firewall;
 use function substr;
 use function gethostbyaddr;
 
-/*
- * @since 1.0.0
+/**
+ * IP Trait
  */
 trait IpTrait
 {
@@ -29,8 +39,8 @@ trait IpTrait
 
     /**
      * The RDNS recond of the Robot's IP address.
-     * This is the most important value because that most popular search engines' IP can be resolved to
-     * their domain name, except Baidu.
+     * This is the most important value because that the IP of the most popular 
+     * search engines can be resolved to their domain name.
      *
      * @var string
      */
@@ -40,8 +50,8 @@ trait IpTrait
      * Set an IP address.
      * If you want to deal with the proxy and CDN IPs.
      *
-     * @param string $ip
-     * @param bool   $queryRdns
+     * @param string $ip        The IP address.
+     * @param bool   $queryRdns The option to query RDNS.
      *
      * @return void
      */
@@ -51,10 +61,11 @@ trait IpTrait
 
         if ($queryRdns) {
 
-            // Check if your IP is from localhost, perhaps your are in development environment?
+            // Check if your IP is from localhost, perhaps your are in development 
+            // environment?
             if (
-                (substr($this->ip, 0 , 8) === '192.168.') ||
-                (substr($this->ip, 0 , 6) === '127.0.')
+                substr($this->ip, 0, 8) === '192.168.' || 
+                substr($this->ip, 0, 6) === '127.0.'
             ) {
                 $this->setRdns('localhost');
             } else {

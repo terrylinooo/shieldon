@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * php version 7.1.0
+ *
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -84,8 +94,8 @@ function get_user_lang(): string
  * 
  * This method is a part of  __()
  *
- * @param string $lang
- * @param string $filename
+ * @param string $lang     The language code.
+ * @param string $filename The i18n language pack file.
  *
  * @return void
  */
@@ -146,7 +156,8 @@ function __(): string
         $i18n[$filename] = include_i18n_file($lang, $filename);
     }
 
-    // If we don't get the string from the localization file, use placeholder instead.
+    // If we don't get the string from the localization file, use placeholder 
+    // instead.
     $resultString = $placeholder;
 
     if (!empty($i18n[$filename][$langcode])) {
@@ -189,7 +200,7 @@ function _e(): void
 /**
  * Mask strings with asterisks.
  *
- * @param string $str
+ * @param string $str The text.
  *
  * @return string
  */
@@ -211,9 +222,9 @@ function mask_string($str): string
 /**
  * Get current CPU usage information.
  *
- * This function is only used in sending notifications and it is unavailable on Win system.
- * If you are using shared hosting and your hosting provider has disabled `sys_getloadavg`
- * and `shell_exec`, it won't work either.
+ * This function is only used in sending notifications and it is unavailable 
+ * on Win system. If you are using shared hosting and your hosting provider 
+ * has disabled `sys_getloadavg` and `shell_exec`, it won't work either.
  *
  * @return string
  */
@@ -238,8 +249,8 @@ function get_cpu_usage(): string
 /**
  * Get current RAM usage information. 
  *
- * If you are using shared hosting and your hosting provider has disabled `shell_exec`, 
- * This function may not work.
+ * If you are using shared hosting and your hosting provider has disabled 
+ * `shell_exec`, this function may not work as expected.
  *
  * @return string
  */
@@ -293,12 +304,13 @@ function get_default_properties(): array
         'display_user_info'   => false,
 
         /**
-         * If you set this option enabled, Shieldon will record every CAPTCHA fails in a row, 
-         * Once that user have reached the limitation number, Shieldon will put it as a blocked IP in rule table,
-         * until the new data cycle begins.
+         * If you set this option enabled, Shieldon will record every CAPTCHA fails 
+         * in a row, once that user have reached the limitation number, Shieldon will
+         * put it as a blocked IP in rule table, until the new data cycle begins.
          * 
-         * Once that user have been blocked, they are still access the warning page, it means that they are not
-         * humain for sure, so let's throw them into the system firewall and say goodbye to them forever.
+         * Once that user have been blocked, they are still access the warning page, 
+         * it means that they are not humain for sure, so let's throw them into the 
+         * system firewall and say goodbye to them forever.
          */
         'deny_attempt_enable' => [
             'data_circle'     => false,
@@ -314,9 +326,9 @@ function get_default_properties(): array
         ],
 
         /**
-         * To prevent dropping social platform robots into iptables firewall, such as Facebook, Line, 
-         * and others who scrape snapshots from your web pages, you should adjust the values below 
-         * to fit your needs. (unit: second)
+         * To prevent dropping social platform robots into iptables firewall, such 
+         * as Facebook, Line and others who scrape snapshots from your web pages, 
+         * you should adjust the values below to fit your needs. (unit: second)
          */
         'record_attempt_detection_period' => 5, // 5 seconds.
 
@@ -383,7 +395,7 @@ function get_session(): Collection
 /**
  * Set a PSR-7 HTTP server request into container.
  *
- * @param ServerRequestInterface $request
+ * @param ServerRequestInterface $request The PSR-7 server request.
  *
  * @return void
  */
@@ -395,7 +407,7 @@ function set_request(ServerRequestInterface $request): void
 /**
  * Set a PSR-7 HTTP response into container.
  *
- * @param ResponseInterface $response
+ * @param ResponseInterface $response The PSR-7 server response.
  *
  * @return void
  */
@@ -417,10 +429,12 @@ function unset_global_cookie($name = null): void
         $cookieParams = get_request()->getCookieParams();
         set_request(get_request()->withCookieParams([]));
         foreach (array_keys($cookieParams) as $name) {
-            set_response(get_response()->withHeader(
-                'Set-Cookie',
-                "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
-            ));
+            set_response(
+                get_response()->withHeader(
+                    'Set-Cookie',
+                    "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+                )
+            );
         }
         $_COOKIE = [];
 
@@ -429,11 +443,19 @@ function unset_global_cookie($name = null): void
 
     $cookieParams = get_request()->getCookieParams();
     unset($cookieParams[$name]);
-    set_request(get_request()->withCookieParams($cookieParams));
-    set_response(get_response()->withHeader(
-        'Set-Cookie',
-        "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
-    ));
+
+    set_request(
+        get_request()->withCookieParams(
+            $cookieParams
+        )
+    );
+
+    set_response(
+        get_response()->withHeader(
+            'Set-Cookie',
+            "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+        )
+    );
     // Prevent direct access to superglobal.
     unset($_COOKIE[$name]);
 }
@@ -507,6 +529,8 @@ function unset_global_session($name = null): void
  *
  * @param string|null $name The name (key) in the array of the superglobal.
  *                          If $name is null that means clear all.
+ * @param string      $type The type of the superglobal.
+ *
  * @return void
  */
 function unset_superglobal($name, string $type): void

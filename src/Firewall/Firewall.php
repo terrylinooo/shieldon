@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * php version 7.1.0
+ *
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -48,6 +58,9 @@ class Firewall
 
     /**
      * Constructor.
+     * 
+     * @param ServerRequestInterface|null $request  A PSR-7 server request.
+     * @param ResponseInterface|null      $response A PSR-7 server response.
      */
     public function __construct(?ServerRequestInterface $request = null, ?ResponseInterface $response = null)
     {
@@ -125,7 +138,7 @@ class Firewall
             $this->kernel->managedBy('managed');
 
         } elseif ($type === 'php') {
-            $this->configuration = require $source;
+            $this->configuration = include $source;
             $this->kernel->managedBy('config');
         }
 

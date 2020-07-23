@@ -1,30 +1,21 @@
 <?php
-/*
- * @name        Shieldon Firewall
- * @author      Terry Lin
- * @link        https://github.com/terrylinooo/shieldon
- * @package     Shieldon
- * @since       1.0.0
- * @version     2.0.0
- * @license     MIT
+/**
+ * This file is part of the Shieldon package.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * (c) Terry L. <contact@terryl.in>
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * php version 7.1.0
+ *
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -143,7 +134,7 @@ class Kernel
     protected $result = 1;
 
     /**
-     * default settings
+     * Default settings
      *
      * @var array
      */
@@ -203,12 +194,13 @@ class Kernel
 
     /**
      * Shieldon constructor.
-     * 
+     *
      * @param ServerRequestInterface|null $request  A PSR-7 server request.
-     * 
+     * @param ResponseInterface|null      $response A PSR-7 server response.
+     *
      * @return void
      */
-    public function __construct(?ServerRequestInterface $request  = null, ?ResponseInterface $response = null)
+    public function __construct(?ServerRequestInterface $request = null, ?ResponseInterface $response = null)
     {
         // Load helper functions. This is the must.
         new Helpers();
@@ -232,7 +224,7 @@ class Kernel
      * Check the rule tables first, if an IP address has been listed.
      * Call function filter() if an IP address is not listed in rule tables.
      *
-     * @return 
+     * @return int
      */
     public function run(): int
     {
@@ -254,10 +246,12 @@ class Kernel
 
         if ($result !== self::RESPONSE_ALLOW) {
 
-            // Current session did not pass the CAPTCHA, it is still stuck in CAPTCHA page.
+            // Current session did not pass the CAPTCHA, it is still stuck in 
+            // CAPTCHA page.
             $actionCode = self::LOG_CAPTCHA;
 
-            // If current session's respone code is RESPONSE_DENY, record it as `blacklist_count` in our logs.
+            // If current session's respone code is RESPONSE_DENY, record it as 
+            // `blacklist_count` in our logs.
             // It is stuck in warning page, not CAPTCHA.
             if ($result === self::RESPONSE_DENY) {
                 $actionCode = self::LOG_BLACKLIST;
@@ -361,10 +355,10 @@ class Kernel
             define('SHIELDON_VIEW', true);
         }
 
-        $css = require $this->getTemplate('css/default');
+        $css = include $this->getTemplate('css/default');
 
         ob_start();
-        require $viewPath;
+        include $viewPath;
         $output = ob_get_contents();
         ob_end_clean();
 
@@ -384,10 +378,10 @@ class Kernel
         $stream->write($output);
         $stream->rewind();
 
-        return $response->
-            withHeader('X-Protected-By', 'shieldon.io')->
-            withBody($stream)->
-            withStatus($statusCode);
+        return $response
+            ->withHeader('X-Protected-By', 'shieldon.io')
+            ->withBody($stream)
+            ->withStatus($statusCode);
     }
 
     /**
@@ -419,7 +413,7 @@ class Kernel
      */
     public function unban(string $ip = ''): void
     {
-        if ('' === $ip) {
+        if ($ip === '') {
             $ip = $this->ip;
         }
 
@@ -480,7 +474,7 @@ class Kernel
     /**
      * Set a action log logger.
      *
-     * @param ActionLogger $logger
+     * @param ActionLogger $logger Record action logs for users.
      *
      * @return void
      */
@@ -516,6 +510,8 @@ class Kernel
 
     /**
      * Customize the dialog UI.
+     * 
+     * @param array $settings The dialog UI settings.
      *
      * @return void
      */
@@ -527,14 +523,16 @@ class Kernel
     /**
      * Set the frontend template directory.
      *
-     * @param string $directory
+     * @param string $directory The directory in where the template files are placed.
      *
      * @return void
      */
     public function setTemplateDirectory(string $directory)
     {
         if (!is_dir($directory)) {
-            throw new InvalidArgumentException('The template directory does not exist.');
+            throw new InvalidArgumentException(
+                'The template directory does not exist.'
+            );
         }
         $this->templateDirectory = $directory;
     }
@@ -641,14 +639,18 @@ class Kernel
     /**
      * Start an action for this IP address, allow or deny, and give a reason for it.
      *
-     * @param int    $actionCode - 0: deny, 1: allow, 9: unban.
-     * @param string $reasonCode
-     * @param string $assignIp
+     * @param int    $actionCode The action code. - 0: deny, 1: allow, 9: unban.
+     * @param string $reasonCode The response code.
+     * @param string $assignIp   The IP address.
      * 
      * @return void
      */
-    protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
-    {
+    protected function action(
+        int    $actionCode,
+        int    $reasonCode,
+        string $assignIp = ''
+    ): void {
+
         $ip = $this->ip;
         $rdns = $this->rdns;
         $now = time();
@@ -683,7 +685,8 @@ class Kernel
     /**
      * Log actions.
      *
-     * @param int $actionCode The code number of the action.
+     * @param int    $actionCode The code number of the action.
+     * @param string $ip         The IP address.
      *
      * @return void
      */

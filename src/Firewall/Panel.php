@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * php version 7.1.0
+ * 
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -22,25 +32,14 @@ use function Shieldon\Firewall\get_response;
 use function call_user_func;
 use function explode;
 use function in_array;
-use function ini_set;
 use function property_exists;
-use function set_time_limit;
 use function str_replace;
 use function trim;
 use function ucfirst;
 
 /**
- * Increase PHP execution time. Becasue of taking long time to parse logs in a high-traffic site.
- */
-set_time_limit(3600);
-
-/**
- * Increase the memory limit. Becasue the log files may be large in a high-traffic site.
- */
-ini_set('memory_limit', '128M');
-
-/**
  * Firewall's Control Panel
+ *
  * Display a Control Panel UI for developers or administrators.
  */
 class Panel
@@ -102,6 +101,8 @@ class Panel
      * Display pages.
      * 
      * @param string $basePath The base URL of the firewall panel.
+     * 
+     * @return void
      */
     public function entry($basePath): void
     {
@@ -165,8 +166,10 @@ class Panel
     }
 
     /**
-     * @param string $method
-     * @param array  $args
+     * Magic method.
+     * 
+     * @param string $method The method name.
+     * @param array  $args   The arguments.
      *
      * @return mixed
      */
@@ -175,10 +178,7 @@ class Panel
         if (property_exists($this, $method)) {
             $callable = $this->{$method};
 
-            if (
-                isset($args[0]) && 
-                $args[0] instanceof ResponseInterface
-            ) {
+            if (isset($args[0]) && $args[0] instanceof ResponseInterface) {
                 return $callable($args[0]);
             }
         }

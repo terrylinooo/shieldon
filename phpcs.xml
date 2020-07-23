@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHP_CodeSniffer" xsi:noNamespaceSchemaLocation="phpcs.xsd">
+    <description>The coding standard for PHP_CodeSniffer itself.</description>
+
+    <file>autoload.php</file>
+    <file>src</file>
+
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg name="parallel" value="75"/>
+    <arg value="np"/>
+
+    <rule ref="Internal.Tokenizer.Exception">
+        <type>error</type>
+    </rule>
+
+    <rule ref="PEAR">
+        <exclude name="PEAR.NamingConventions.ValidFunctionName"/>
+        <exclude name="PEAR.NamingConventions.ValidVariableName"/>
+        <exclude name="PEAR.Commenting.ClassComment"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingCategoryTag"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingPackageTag"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingLinkTag"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingVersion"/>
+        <exclude name="PEAR.Commenting.InlineComment"/>
+        <exclude name="PEAR.ControlStructures.MultiLineCondition"/>
+        <exclude name="PEAR.WhiteSpace.ScopeIndent.IncorrectExact"/>
+    </rule>
+
+    <rule ref="PSR2.Classes.PropertyDeclaration"/>
+    <rule ref="PSR2.Methods.MethodDeclaration"/>
+    <rule ref="PSR2.Files.EndFileNewline"/>
+    <rule ref="PSR12.Files.OpenTag"/>
+
+    <!-- Only one argument per line in multi-line function calls -->
+    <rule ref="PEAR.Functions.FunctionCallSignature">
+        <properties>
+            <property name="allowMultipleArguments" value="false"/>
+        </properties>
+    </rule>
+
+    <!-- Private methods MUST not be prefixed with an underscore -->
+    <rule ref="PSR2.Methods.MethodDeclaration.Underscore">
+        <type>error</type>
+    </rule>
+
+    <!-- Private properties MUST not be prefixed with an underscore -->
+    <rule ref="PSR2.Classes.PropertyDeclaration.Underscore">
+        <type>error</type>
+    </rule>
+
+</ruleset>

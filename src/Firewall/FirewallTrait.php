@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * php version 7.1.0
+ *
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -98,7 +108,7 @@ trait FirewallTrait
     /**
      * Get a variable from configuration.
      *
-     * @param string $field 
+     * @param string $field The field of the configuration.
      *
      * @return mixed
      */
@@ -111,6 +121,7 @@ trait FirewallTrait
             case 1:
                 return $this->configuration[$v[0]] ?? '';
                 break;
+
             case 2:
                 return $this->configuration[$v[0]][$v[1]] ?? '';
                 break;
@@ -133,8 +144,9 @@ trait FirewallTrait
     /**
      * Set a variable to the configuration.
      *
-     * @param string $field
-     * @param mixed  $value
+     * @param string $field The field of the configuration.
+     * @param mixed  $value The vale of a field in the configuration.
+     *
      * @return void
      */
     public function setConfig(string $field, $value)
@@ -171,8 +183,8 @@ trait FirewallTrait
      * This method is same as `$this->getConfig()` but returning value from array directly, 
      * saving a `explode()` process.
      *
-     * @param string $option
-     * @param string $section
+     * @param string $option  The option of the section in the the configuration.
+     * @param string $section The section in the configuration.
      *
      * @return mixed
      */
@@ -200,10 +212,13 @@ trait FirewallTrait
 
         if (!file_exists($configFilePath)) {
             if (!is_dir($this->directory)) {
+
                 // @codeCoverageIgnoreStart
+        
                 $originalUmask = umask(0);
                 @mkdir($this->directory, 0777, true);
                 umask($originalUmask);
+
                 // @codeCoverageIgnoreEnd
             }
         }
