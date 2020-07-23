@@ -169,62 +169,54 @@ final class ActionLogParser
      */
     protected function getStartEndDate(): array
     {
-        switch ($this->type) {
+        $dataRange = [
+            'yesterday' => [
+                'start' => date('Ymd', strtotime('yesterday')),
+                'end'   => date('Ymd'),
+            ],
+            'past_seven_days' => [
+                'start' => date('Ymd', strtotime('-7 days')),
+                'end'   => date('Ymd'),
+            ],
+            'this_month' => [
+                'start' => date('Ym') . '01',
+                'end'   => date('Ym') . '31',
+            ],
+            'last_month' => [
+                'start' => date('Ym', strtotime('-1 month')) . '01',
+                'end'   => date('Ym', strtotime('-1 month')) . '31',
+            ],
+            'past_seven_hours' => [
+                'start' => date('Ymd', strtotime('yesterday')),
+                'end'   => date('Ymd'),
+            ],
+            'today' => [
+                'start' => date('Ymd'),
+                'end'   => '',
+            ],
+        ];
 
-            case 'yesterday':
-                // Set start date and end date.
-                $startDate = date('Ymd', strtotime('yesterday'));
+        if (empty($dataRange[$this->type])) {
+            if (preg_match('/past_([0-9]+)_days/', $this->type, $matches) ) {
+                $dayCount = $matches[1];
+                $startDate = date('Ymd', strtotime('-' . $dayCount . ' days'));
                 $endDate = date('Ymd');
-                break;
-    
-            case 'past_seven_days':
-                $startDate = date('Ymd', strtotime('-7 days'));
-                $endDate = date('Ymd');
-                break;
 
-            case 'this_month':
-                $startDate = date('Ym') . '01';
-                $endDate = date('Ym') . '31';
-                break;
-
-            case 'last_month':
-                $startDate = date('Ym', strtotime('-1 month')) . '01';
-                $endDate = date('Ym', strtotime('-1 month')) . '31';
-                break;
-
-            case 'past_seven_hours':
-                $startDate = date('Ymd', strtotime('yesterday'));
-                $endDate = date('Ymd');
-                break;
-
-            case 'today':
+                $this->periods['past_' . $dayCount . '_days'] = [
+                    'timesamp_begin' => strtotime(date('Ymd', strtotime('-' . $dayCount . ' days'))),
+                    'timesamp_end'   => strtotime('today'),
+                    'display_format' => 'D',
+                    'display_count'  => $dayCount,
+                    'period'         => 86400,
+                ];
+            } else {
                 $startDate = date('Ymd');
                 $endDate = '';
-                break;
-
-            default:
-
-                // We also accept querying N days data from logs. For example: `past_365_days`.
-                if (preg_match('/past_([0-9]+)_days/', $this->type, $matches) ) {
-
-                    $dayCount = $matches[1];
-                    $startDate = date('Ymd', strtotime('-' . $dayCount . ' days'));
-                    $endDate = date('Ymd');
-
-                    $this->periods['past_' . $dayCount . '_days'] = [
-                        'timesamp_begin' => strtotime(date('Ymd', strtotime('-' . $dayCount . ' days'))),
-                        'timesamp_end'   => strtotime('today'),
-                        'display_format' => 'D',
-                        'display_count'  => $dayCount,
-                        'period'         => 86400,
-                    ];
-
-                } else {
-                    $startDate = date('Ymd');
-                    $endDate = '';
-                    $this->periods[$this->type] = $this->periods['today'];
-                }
-            // endswitch;
+                $this->periods[$this->type] = $this->periods['today'];
+            }
+        } else {
+            $startDate = $dataRange[$this->type]['start'];
+            $endDate = $dataRange[$this->type]['end'];
         }
 
         return [
