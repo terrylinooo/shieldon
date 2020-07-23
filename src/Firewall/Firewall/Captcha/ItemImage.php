@@ -18,7 +18,7 @@ use Shieldon\Firewall\Captcha\ImageCaptcha;
 /**
  * Get File driver.
  */
-class ItemImageCaptcha
+class ItemImage
 {
     /**
      * Initialize and get the instance.

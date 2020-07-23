@@ -50,7 +50,7 @@ class CaptchaFactory
 
         // If the class doesn't exist.
         if (!file_exists(__DIR__ . '/' . self::getCamelCase($type) . '.php')) {
-            return false;
+   //         return false;
         }
 
         return true;

@@ -14,7 +14,8 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
-use Shieldon\Firewall\Captcha as Captcha;
+use Shieldon\Firewall\Firewall\Captcha\CaptchaFactory;
+use Shieldon\Firewall\Captcha\Foundation;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
@@ -37,85 +38,13 @@ class User extends BaseController
     }
 
     /**
-     * Login as demonstration.
-     *
-     * @param string $username The username.
-     * @param string $password The password.
-     *
-     * @return void
-     */
-    private function userLoginAsDemo($username, $password)
-    {
-        $login = false;
-        $errorMsg = '';
-
-        if ($username === 'demo' && $password === 'demo') {
-            $login = true;
-        }
-
-        return [
-            'result' => $login,
-            'message' => $errorMsg,
-        ];
-    }
-
-    /**
-     * Login as administration.
-     *
-     * @param string $username The username.
-     * @param string $password The password.
-     *
-     * @return void
-     */
-    private function userLoginAsAdmin($username, $password)
-    {
-        $admin = $this->getConfig('admin');
-
-        $login = false;
-        $errorMsg = '';
-
-        if (
-            // Default password, unencrypted.
-            $admin['user']  === $username && 
-            'shieldon_pass' === $username &&
-            'shieldon_pass' === $admin['pass']
-        ) {
-            $login = true;
-
-        } elseif (
-            // User has already changed password, encrypted.
-            $admin['user'] === $username && 
-            password_verify($password, $admin['pass'])
-        ) {
-            $login = true;
-
-        } else {
-            $errorMsg = __('panel', 'login_message_invalid_user_or_pass', 'Invalid username or password.');
-        }
-
-        // Check the response from Captcha modules.
-        foreach ($this->captcha as $captcha) {
-            if (!$captcha->response()) {
-                $login = false;
-                $errorMsg = __('panel', 'login_message_invalid_captcha', 'Invalid Captcha code.');
-            }
-        }
-        
-
-        return [
-            'result' => $login,
-            'message' => $errorMsg,
-        ];
-    }
-
-    /**
      * Login
      * 
      * @param string $mode login mode.
      *
      * @return ResponseInterface
      */
-    public function login($mode): ResponseInterface
+    public function login($mode = ''): ResponseInterface
     {
         $this->applyCaptchaForms();
         $this->mode = $mode;
@@ -138,12 +67,17 @@ class User extends BaseController
         }
 
         if ($login) {
+            $captchaResult = $this->checkCaptchaValidation();
+            $login = $captchaResult['result'];
+            $data['error'] = $captchaResult['message'];
 
-            // This session variable is to mark current session as a logged user.
-            get_session()->set('shieldon_user_login', true);
+            if ($login) {
+                // This session variable is to mark current session as a logged user.
+                get_session()->set('shieldon_user_login', true);
 
-            // Redirect to overview page if logged in successfully.
-            return get_response()->withHeader('Location', $this->url('home/overview'));
+                // Redirect to overview page if logged in successfully.
+                return get_response()->withHeader('Location', $this->url('home/overview'));
+            }
         }
 
         // Start to prompt a login form is not logged.
@@ -202,46 +136,111 @@ class User extends BaseController
      */
     protected function applyCaptchaForms(): void
     {
-        $this->captcha[] = new Captcha\Foundation();
+        $this->captcha[] = new Foundation();
 
-        $recaptchaSetting = $this->getConfig('captcha_modules.recaptcha');
-        $imageSetting = $this->getConfig('captcha_modules.image');
+        $captchaList = [
+            'recaptcha',
+            'image',
+        ];
 
-        if ($recaptchaSetting['enable']) {
+        foreach ($captchaList as $captcha) {
+            $setting = $this->getConfig('captcha_modules.' . $captcha);
 
-            $googleReCaptcha = [
-                'key'     => $recaptchaSetting['config']['site_key'],
-                'secret'  => $recaptchaSetting['config']['secret_key'],
-                'version' => $recaptchaSetting['config']['version'],
-                'lang'    => $recaptchaSetting['config']['lang'],
-            ];
-
-            $this->captcha[] = new Captcha\ReCaptcha($googleReCaptcha);
-        }
-
-        if ($imageSetting['enable']) {
-
-            $type = $imageSetting['config']['type'] ?? 'alnum';
-            $length = $imageSetting['config']['length'] ?? 8;
-
-            switch ($type) {
-                case 'numeric':
-                    $imageCaptchaConfig['pool'] = '0123456789';
-                    break;
-
-                case 'alpha':
-                    $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyz';
-                    break;
-
-                case 'alnum':
-                default:
-                    $imageCaptchaConfig['pool'] = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (is_array($setting)) {
+                if (CaptchaFactory::check($captcha, $setting)) {
+                    $this->captcha[] = CaptchaFactory::getInstance($captcha, $setting);
+                }
             }
-
-            $imageCaptchaConfig['word_length'] = $length;
-
-            $this->captcha[] = new Captcha\ImageCaptcha($imageCaptchaConfig);
+            unset($setting);
         }
+    }
+
+    /**
+     * Login as demonstration.
+     *
+     * @param string $username The username.
+     * @param string $password The password.
+     *
+     * @return void
+     */
+    private function userLoginAsDemo($username, $password)
+    {
+        $login = false;
+        $errorMsg = '';
+
+        if ($username === 'demo' && $password === 'demo') {
+            $login = true;
+        }
+
+        return [
+            'result' => $login,
+            'message' => $errorMsg,
+        ];
+    }
+
+    /**
+     * Login as administration.
+     *
+     * @param string $username The username.
+     * @param string $password The password.
+     *
+     * @return void
+     */
+    private function userLoginAsAdmin($username, $password)
+    {
+        $admin = $this->getConfig('admin');
+
+        $login = false;
+        $errorMsg = '';
+
+        if (
+            // Default password, unencrypted.
+            $admin['user'] === $username && 
+            $admin['pass'] === $password
+        ) {
+            $login = true;
+
+        } elseif (
+            // User has already changed password, encrypted.
+            $admin['user'] === $username && 
+            password_verify($password, $admin['pass'])
+        ) {
+            $login = true;
+
+        } else {
+            $errorMsg = __('panel', 'login_message_invalid_user_or_pass', 'Invalid username or password.');
+        }
+
+        // Check the response from Captcha modules.
+ 
+
+        return [
+            'result' => $login,
+            'message' => $errorMsg,
+        ];
+    }
+
+    /**
+     * Check Captcha.
+     *
+     * @return array
+     */
+    private function checkCaptchaValidation(): array
+    {
+        $login = true;
+        $errorMsg = '';
+
+        foreach ($this->captcha as $captcha) {
+            if (!$captcha->response()) {
+                $login = false;
+                $errorMsg = __('panel', 'login_message_invalid_captcha', 'Invalid Captcha code.');
+            }
+        }
+
+        return [
+            'result' => $login,
+            'message' => $errorMsg,
+        ];
     }
 }
 

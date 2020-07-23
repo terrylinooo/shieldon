@@ -18,7 +18,7 @@ use Shieldon\Firewall\Captcha\ReCaptcha;
 /**
  * Get File driver.
  */
-class ItemReCaptcha
+class ItemRecaptcha
 {
     /**
      * Initialize and get the instance.

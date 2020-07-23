@@ -87,6 +87,8 @@ class Firewall
 
         $this->setMessengers();
 
+        $this->setCaptchas();
+
         $this->setMessageEvents();
 
         $this->setDenyTooManyAttempts();
