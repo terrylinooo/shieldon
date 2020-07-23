@@ -29,7 +29,7 @@ class httpAuthenticationTest extends \PHPUnit\Framework\TestCase
         $_SERVER['REQUEST_URI'] = '/wp-amdin';
         
         $firewall = new \Shieldon\Firewall\Firewall();
-        $firewall->add(new \Shieldon\Firewall\Middleware\httpAuthentication());
+        $firewall->add(new \Shieldon\Firewall\Middleware\HttpAuthentication());
         $response = $firewall->run();
         $this->assertSame($response->getStatusCode(), 401);
     }

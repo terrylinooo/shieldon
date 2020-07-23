@@ -399,7 +399,7 @@ trait MainTrait
         $authenticateList = $this->getOption('www_authenticate');
 
         if (is_array($authenticateList)) {
-            $this->add(new Middleware\httpAuthentication($authenticateList));
+            $this->add(new Middleware\HttpAuthentication($authenticateList));
         }
     }
 
