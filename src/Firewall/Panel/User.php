@@ -67,17 +67,11 @@ class User extends BaseController
         }
 
         if ($login) {
-            $captchaResult = $this->checkCaptchaValidation();
-            $login = $captchaResult['result'];
-            $data['error'] = $captchaResult['message'];
+            // This session variable is to mark current session as a logged user.
+            get_session()->set('shieldon_user_login', true);
 
-            if ($login) {
-                // This session variable is to mark current session as a logged user.
-                get_session()->set('shieldon_user_login', true);
-
-                // Redirect to overview page if logged in successfully.
-                return get_response()->withHeader('Location', $this->url('home/overview'));
-            }
+            // Redirect to overview page if logged in successfully.
+            return get_response()->withHeader('Location', $this->url('home/overview'));
         }
 
         // Start to prompt a login form is not logged.
@@ -172,6 +166,10 @@ class User extends BaseController
             $login = true;
         }
 
+        $captcha = $this->checkCaptchaValidation($login, $errorMsg);
+        $login = $captcha['result'];
+        $errorMsg = $captcha['message'];
+
         return [
             'result' => $login,
             'message' => $errorMsg,
@@ -211,8 +209,9 @@ class User extends BaseController
             $errorMsg = __('panel', 'login_message_invalid_user_or_pass', 'Invalid username or password.');
         }
 
-        // Check the response from Captcha modules.
- 
+        $captcha = $this->checkCaptchaValidation($login, $errorMsg);
+        $login = $captcha['result'];
+        $errorMsg = $captcha['message'];
 
         return [
             'result' => $login,
@@ -222,14 +221,14 @@ class User extends BaseController
 
     /**
      * Check Captcha.
+     * 
+     * @param bool   $login    The login status that will be overwritten.
+     * @param string $errorMsg The error message.
      *
      * @return array
      */
-    private function checkCaptchaValidation(): array
+    private function checkCaptchaValidation(bool $login, string $errorMsg): array
     {
-        $login = true;
-        $errorMsg = '';
-
         foreach ($this->captcha as $captcha) {
             if (!$captcha->response()) {
                 $login = false;
