@@ -362,7 +362,6 @@ trait FilterTrait
 
             // Checking if a cookie is created by JavaScript.
             if (!empty($jsCookie)) {
-
                 if ($jsCookie == '1') {
                     $logData['pageviews_cookie']++;
 
@@ -437,33 +436,17 @@ trait FilterTrait
                     // He or she will get banned.
                     if ($logData['pageviews_' . $unit] > $this->properties['time_unit_quota'][$unit]) {
 
-                        if ($unit === 's') {
-                            $this->action(
-                                kernel::ACTION_TEMPORARILY_DENY,
-                                kernel::REASON_REACHED_LIMIT_SECOND
-                            );
-                        }
+                        $actionReason = [
+                            's' => kernel::REASON_REACHED_LIMIT_SECOND,
+                            'm' => kernel::REASON_REACHED_LIMIT_MINUTE,
+                            'h' => kernel::REASON_REACHED_LIMIT_HOUR,
+                            'd' => kernel::REASON_REACHED_LIMIT_DAY,
+                        ];
 
-                        if ($unit === 'm') {
-                            $this->action(
-                                kernel::ACTION_TEMPORARILY_DENY,
-                                kernel::REASON_REACHED_LIMIT_MINUTE
-                            );
-                        }
-
-                        if ($unit === 'h') {
-                            $this->action(
-                                kernel::ACTION_TEMPORARILY_DENY,
-                                kernel::REASON_REACHED_LIMIT_HOUR
-                            );
-                        }
-
-                        if ($unit === 'd') {
-                            $this->action(
-                                kernel::ACTION_TEMPORARILY_DENY,
-                                kernel::REASON_REACHED_LIMIT_DAY
-                            );
-                        }
+                        $this->action(
+                            kernel::ACTION_TEMPORARILY_DENY,
+                            $actionReason[$unit]
+                        );
 
                         $isReject = true;
                     }

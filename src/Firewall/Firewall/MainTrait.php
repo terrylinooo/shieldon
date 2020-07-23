@@ -93,29 +93,37 @@ trait MainTrait
         $this->kernel->setFilters($filterConfig);
         $this->kernel->setProperty('limit_unusual_behavior', $filterLimit);
 
-        // if ($frequencySetting['enable']) {
-        $frequencyQuota = [
-            's' => $settings['frequency']['config']['quota_s'] ?? 2,
-            'm' => $settings['frequency']['config']['quota_m'] ?? 10,
-            'h' => $settings['frequency']['config']['quota_h'] ?? 30,
-            'd' => $settings['frequency']['config']['quota_d'] ?? 60,
+        $frequencyDefaults = [
+            's' => 2,
+            'm' => 10,
+            'h' => 30,
+            'd' => 60,
         ];
+
+        $frequencyQuota = [];
+        foreach ($frequencyDefaults as $k => $quota) {
+            $i = 'quota_' .  $k;
+            $frequencyQuota[$k] = $settings['frequency']['config'][$i] ?? $quota;
+        }
 
         $this->kernel->setProperty('time_unit_quota', $frequencyQuota);
 
-        // if ($cookieSetting['enable']) {
-        $cookieName   = $settings['cookie']['config']['cookie_name']   ?? 'ssjd';
-        $cookieDomain = $settings['cookie']['config']['cookie_domain'] ?? '';
-        $cookieValue  = $settings['cookie']['config']['cookie_value']  ?? '1';
+        $cookieDefaults = [
+            'cookie_name' => 'ssjd',
+            'cookie_domain' => '',
+            'cookie_value' => '1',
+        ];
 
-        $this->kernel->setProperty('cookie_name', $cookieName);
-        $this->kernel->setProperty('cookie_domain', $cookieDomain);
-        $this->kernel->setProperty('cookie_value', $cookieValue);
+        $cookieValue = [];
+        foreach ($cookieDefaults as $k => $value) {
+            $cookieValue[$k] = $settings['cookie']['config'][$k] ?? $value;
+        }
 
-        // if ($refererSetting['enable']) {
+        $this->kernel->setProperty('cookie_name', $cookieValue['cookie_name']);
+        $this->kernel->setProperty('cookie_domain', $cookieValue['cookie_domain']);
+        $this->kernel->setProperty('cookie_value', $cookieValue['cookie_value']);
+
         $this->kernel->setProperty('interval_check_referer', $settings['referer']['config']['time_buffer']);
-
-        // if ($sessionSetting['enable']) {
         $this->kernel->setProperty('interval_check_session', $settings['referer']['config']['time_buffer']);
     }
 
