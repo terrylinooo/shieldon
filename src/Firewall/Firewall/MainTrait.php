@@ -279,27 +279,21 @@ trait MainTrait
     {
         $setting = $this->getOption('failed_attempts_in_a_row', 'events');
 
-        $enableDataCircle     = $setting['data_circle']['enable']     ?: false;
-        $enableSystemFirewall = $setting['system_firewall']['enable'] ?: false;
-
         $this->kernel->setProperty('deny_attempt_enable', [
-            'data_circle'     => $enableDataCircle,
-            'system_firewall' => $enableSystemFirewall,
+            'data_circle' => $setting['data_circle']['enable'],         // false   
+            'system_firewall' => $setting['system_firewall']['enable'], // false   
         ]);
 
         $this->kernel->setProperty('deny_attempt_buffer', [
-            'data_circle'     => $setting['data_circle']['buffer'] ?? 10,
-            'system_firewall' => $setting['data_circle']['buffer'] ?? 10,
+            'data_circle' => $setting['data_circle']['buffer'],         // 10
+            'system_firewall' => $setting['system_firewall']['buffer'], // 10
         ]);
 
-        // Check the time of the last failed attempt. @since 0.2.0
+        // Check the time of the last failed attempt.
         $recordAttempt = $this->getOption('record_attempt');
 
-        $detectionPeriod = $recordAttempt['detection_period'] ?? 5;
-        $timeToReset     = $recordAttempt['time_to_reset']    ?? 1800;
-
-        $this->kernel->setProperty('record_attempt_detection_period', $detectionPeriod);
-        $this->kernel->setProperty('reset_attempt_counter', $timeToReset);
+        $this->kernel->setProperty('record_attempt_detection_period', $recordAttempt['detection_period']); // 5
+        $this->kernel->setProperty('reset_attempt_counter', $recordAttempt['time_to_reset']);              // 1800
     }
 
     /**

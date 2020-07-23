@@ -200,24 +200,17 @@ trait ConfigMethodsTrait
             return false;
         }
 
-        switch ($this->configuration['driver_type']) {
-            case 'mysql':
-                $result = $this->saveCofigCheckDataDriverMySql($result);
-                break;
+        $type = $this->configuration['driver_type'];
 
-            case 'sqlite':
-                $result = $this->saveCofigCheckDataDriverSqlLite($result);
-                break;
+        $methods = [
+            'mysql' => 'saveCofigCheckDataDriverMySql',
+            'sqlite' => 'saveCofigCheckDataDriverSqlLite',
+            'redis' => 'saveCofigCheckDataDriverRedis',
+            'file' => 'saveCofigCheckDataDriverFile',
+        ];
 
-            case 'redis':
-                $result = $this->saveCofigCheckDataDriverRedis($result);
-                break;
-
-            case 'file':
-            default:
-                $result = $this->saveCofigCheckDataDriverFile($result);
-            // endswitch
-        }
+        $method = $methods[$type];
+        $result = $result = $this->{$method}($result);
 
         return $result;
     }
