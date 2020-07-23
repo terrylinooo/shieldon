@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * php version 7.1.0
+ * 
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -326,7 +336,7 @@ final class ActionLogParser
     /**
      * Get parsed perid data.
      *
-     * @param string $ip   IP address.
+     * @param string $ip The IP address.
      *
      * @return array
      */
@@ -454,9 +464,9 @@ final class ActionLogParser
     /**
      * Parse log data for showing on dashboard.
      *
-     * @param array  $logActionCode The log action code.
-     * @param string $t             Time period type. (For example: `today`, `yesterday`, `past_seven_days`)
-     * @param string $k             Time period key. (For example: `12:00 am`, `20190812`)
+     * @param array  $log The log action code.
+     * @param string $t   Time period type. (For example: `today`, `yesterday`, `past_seven_days`)
+     * @param string $k   Time period key. (For example: `12:00 am`, `20190812`)
      *
      * @return void
      */
