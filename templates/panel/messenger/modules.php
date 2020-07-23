@@ -20,7 +20,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'messenger_heading_telegram', 'Telegram'); ?></h2>
     <div class="confirm-test-container">
         <button type="button" class="btn btn-confirm-test" data-module="telegram">Test</button>
-        <span id="test-result-telegram" class="<?php $this->_m('telegram', 'css'); ?>"><?php $this->_m('telegram', 'icon'); ?></span>
+        <span id="test-result-telegram" class="<?php $this->messengerAjaxStatus('telegram', 'css'); ?>"><?php $this->messengerAjaxStatus('telegram', 'icon'); ?></span>
     </div>
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">
@@ -56,7 +56,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'messenger_heading_line_notify', 'Line Notify'); ?></h2>
     <div class="confirm-test-container">
         <button type="button" class="btn btn-confirm-test" data-module="line-notify">Test</button>
-        <span id="test-result-line-notify" class="<?php $this->_m('line_notify', 'css'); ?>"><?php $this->_m('line_notify', 'icon'); ?></span>
+        <span id="test-result-line-notify" class="<?php $this->messengerAjaxStatus('line_notify', 'css'); ?>"><?php $this->messengerAjaxStatus('line_notify', 'icon'); ?></span>
     </div>
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">
@@ -82,7 +82,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'messenger_heading_slack', 'Slack'); ?></h2>
     <div class="confirm-test-container">
         <button type="button" class="btn btn-confirm-test" data-module="slack">Test</button>
-        <span id="test-result-slack" class="<?php $this->_m('slack', 'css'); ?>"><?php $this->_m('slack', 'icon'); ?></span>
+        <span id="test-result-slack" class="<?php $this->messengerAjaxStatus('slack', 'css'); ?>"><?php $this->messengerAjaxStatus('slack', 'icon'); ?></span>
     </div>
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">
@@ -118,7 +118,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'messenger_heading_slack_webhook', 'Slack Webhook'); ?></h2>
     <div class="confirm-test-container">
         <button type="button" class="btn btn-confirm-test" data-module="slack-webhook">Test</button>
-        <span id="test-result-slack-webhook" class="<?php $this->_m('slack_webhook', 'css'); ?>"><?php $this->_m('slack_webhook', 'icon'); ?></span>
+        <span id="test-result-slack-webhook" class="<?php $this->messengerAjaxStatus('slack_webhook', 'css'); ?>"><?php $this->messengerAjaxStatus('slack_webhook', 'icon'); ?></span>
     </div>
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">
@@ -144,7 +144,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'messenger_heading_rocket_chat', 'Rocket Chat'); ?></h2>
     <div class="confirm-test-container">
         <button type="button" class="btn btn-confirm-test" data-module="rocket-chat">Test</button>
-        <span id="test-result-rocket-chat" class="<?php $this->_m('rocket_chat', 'css'); ?>"><?php $this->_m('rocket_chat', 'icon'); ?></span>
+        <span id="test-result-rocket-chat" class="<?php $this->messengerAjaxStatus('rocket_chat', 'css'); ?>"><?php $this->messengerAjaxStatus('rocket_chat', 'icon'); ?></span>
     </div>
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">
@@ -200,7 +200,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'messenger_heading_smtp', 'SMTP'); ?></h2>
     <div class="confirm-test-container">
         <button type="button" class="btn btn-confirm-test" data-module="smtp">Test</button>
-        <span id="test-result-smtp" class="<?php $this->_m('smtp', 'css'); ?>"><?php $this->_m('smtp', 'icon'); ?></span>
+        <span id="test-result-smtp" class="<?php $this->messengerAjaxStatus('smtp', 'css'); ?>"><?php $this->messengerAjaxStatus('smtp', 'icon'); ?></span>
     </div>
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">
@@ -304,7 +304,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'messenger_heading_php_mail', 'Native PHP Mail'); ?></h2>
     <div class="confirm-test-container">
         <button type="button" class="btn btn-confirm-test" data-module="native-php-mail">Test</button>
-        <span id="test-result-native-php-mail" class="<?php $this->_m('native_php_mail', 'css'); ?>"><?php $this->_m('native_php_mail', 'icon'); ?></span>
+        <span id="test-result-native-php-mail" class="<?php $this->messengerAjaxStatus('native_php_mail', 'css'); ?>"><?php $this->messengerAjaxStatus('native_php_mail', 'icon'); ?></span>
     </div>
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">
@@ -341,7 +341,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'messenger_heading_sendgrid', 'SendGrid'); ?></h2>
     <div class="confirm-test-container">
         <button type="button" class="btn btn-confirm-test" data-module="sendgrid">Test</button>
-        <span id="test-result-sendgrid" class="<?php $this->_m('sendgrid', 'css'); ?>"><?php $this->_m('sendgrid', 'icon'); ?></span>
+        <span id="test-result-sendgrid" class="<?php $this->messengerAjaxStatus('sendgrid', 'css'); ?>"><?php $this->messengerAjaxStatus('sendgrid', 'icon'); ?></span>
     </div>
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">
@@ -388,7 +388,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'messenger_heading_mailgun', 'MailGun'); ?></h2>
     <div class="confirm-test-container">
         <button type="button" class="btn btn-confirm-test" data-module="mailgun">Test</button>
-        <span id="test-result-mailgun" class="<?php $this->_m('mailgun', 'css'); ?>"><?php $this->_m('mailgun', 'icon'); ?></span>
+        <span id="test-result-mailgun" class="<?php $this->messengerAjaxStatus('mailgun', 'css'); ?>"><?php $this->messengerAjaxStatus('mailgun', 'icon'); ?></span>
     </div>
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">

@@ -86,11 +86,11 @@ class User extends BaseController
             'shadow_opacity'   => '0.2',
         ];
 
-        $data['csrf'] = $this->_csrf();
+        $data['csrf'] = $this->fieldCsrf();
         $data['form'] = get_request()->getUri()->getPath();
         $data['captchas'] = $this->captcha;
 
-        $data['css'] = require $this->kernel::KERNEL_DIR . '/../../templates/frontend/css/default.php';
+        $data['css'] = include $this->kernel::KERNEL_DIR . '/../../templates/frontend/css/default.php';
 
         unset($ui);
 

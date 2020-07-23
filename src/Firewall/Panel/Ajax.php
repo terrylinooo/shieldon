@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * php version 7.1.0
+ * 
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -14,18 +24,17 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
-use Shieldon\Messenger as Messenger;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session;
 use function Shieldon\Firewall\set_request;
+use function array_map;
 use function explode;
-use function filter_var;
+use function file_exists;
 use function gethostname;
-use function is_numeric;
+use function implode;
 use function json_encode;
-use function str_replace;
 
 /**
  * User
@@ -48,7 +57,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    public function  __call($function , $args)
+    public function __call($function , $args)
     {
         $className = 'Shieldon\Firewall\Panel\Sandbox\\' . $function;
 
@@ -106,9 +115,15 @@ class Ajax extends BaseController
 
         // Name the testing method.
         $method = explode('-', $moduleName);
-        $method = implode('', array_map(function($word) {
-            return ucwords($word); 
-        }, $method));
+        $method = implode(
+            '', 
+            array_map(
+                function ($word) {
+                    return ucwords($word); 
+                }, 
+                $method
+            )
+        );
 
         // Call testing method if exists.
         if ($this->{$method}($getParams, $message)) {
@@ -160,4 +175,3 @@ class Ajax extends BaseController
         return $response;
     }
 }
-

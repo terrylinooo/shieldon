@@ -29,7 +29,7 @@ $timezone = '';
         <div class="so-setting-page">
             <table class="setting-table">
                 <form method="post">
-                <?php $this->_csrf(); ?>
+                <?php $this->fieldCsrf(); ?>
                 <tr>
                     <td class="r1">POST</td>
                     <td class="r2">

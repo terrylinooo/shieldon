@@ -57,7 +57,7 @@ composer require shieldon/shieldon
 
 Or, download it and include the Shieldon autoloader.
 ```php
-require 'Shieldon/autoload.php';
+include 'Shieldon/autoload.php';
 ```
 
 ## Implementing
@@ -155,7 +155,7 @@ Welcome to contribute your idea to this project. Before sending your pull reques
 #### Requirements
 
 - MySQL or MariaDB installed.
-- Redis installed. (Also require PHP extension `php_redis`)
+- Redis installed. (Also include PHP extension `php_redis`)
 
 #### Steps
 

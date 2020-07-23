@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * php version 7.1.0
+ * 
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -33,9 +43,8 @@ use function defined;
 use function extract;
 use function file_exists;
 use function file_put_contents;
+use function in_array;
 use function is_array;
-use function is_numeric;
-use function is_string;
 use function json_encode;
 use function ob_end_clean;
 use function ob_get_contents;
@@ -43,7 +52,7 @@ use function ob_start;
 use function trim;
 
 /**
- * User
+ * Base controller.
  */
 class BaseController
 {
@@ -77,7 +86,7 @@ class BaseController
     ];
 
     /**
-     * see $this->csrf()
+     * See $this->csrf()
      *
      * @var array
      */
@@ -170,7 +179,7 @@ class BaseController
     
         if (file_exists($viewFilePath)) {
             ob_start();
-            require $viewFilePath;
+            include $viewFilePath;
             $output = ob_get_contents();
             ob_end_clean();
         }
@@ -227,14 +236,15 @@ class BaseController
     }
 
     /**
-     * Include a view file.
+     * Include a view file. This 
+     * This method is used in a template loading other templates.
      *
      * @param string $page The page type. (filename)
      * @param array  $data The variables passed to that page.
      *
      * @return void
      */
-    protected function _include(string $page, array $data = []): void
+    protected function loadViewPart(string $page, array $data = []): void
     {
         if (!defined('SHIELDON_VIEW')) {
             define('SHIELDON_VIEW', true);
@@ -244,7 +254,7 @@ class BaseController
             ${$k} = $v;
         }
 
-        require __DIR__ . '/../../../templates/' . $page . '.php';
+        include __DIR__ . '/../../../templates/' . $page . '.php';
     }
 
     /**
@@ -263,11 +273,14 @@ class BaseController
             $class = 'danger';
         }
 
-        array_push($this->messages, [
-            'type' => $type,
-            'text' => $text,
-            'class' => $class,
-        ]);
+        array_push(
+            $this->messages,
+            [
+                'type' => $type,
+                'text' => $text,
+                'class' => $class,
+            ]
+        );
     }
 
     /**
@@ -287,7 +300,7 @@ class BaseController
      *
      * @return void
      */
-    public function _csrf(): void
+    public function fieldCsrf(): void
     {
         if (!empty($this->csrfField)) {
             foreach ($this->csrfField as $value) {
@@ -333,7 +346,8 @@ class BaseController
         if ($result) {
             file_put_contents($configFilePath, json_encode($this->configuration));
 
-            $this->pushMessage('success',
+            $this->pushMessage(
+                'success',
                 __(
                     'panel',
                     'success_settings_saved',
@@ -347,13 +361,13 @@ class BaseController
      * Echo the setting string to the template.
      *
      * @param string $field   Field.
-     * @param mixed  $defailt Default value.
+     * @param mixed  $default Default value.
      *
      * @return void
      */
     protected function _(string $field, $default = ''): void
     {
-        if ('demo' === $this->mode) {
+        if ($this->mode === 'demo') {
 
             // Hide sensitive data because of security concerns.
             $hiddenForDemo = [
@@ -434,10 +448,15 @@ class BaseController
      *
      * @return void
      */
-    protected function _m(string $moduleName, string $echoType = 'css'): void
+    protected function messengerAjaxStatus(string $moduleName, string $echoType = 'css'): void
     {
-        $echo['css'] = $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? 'success' : '';
-        $echo['icon'] = $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation"></i>';
+        $echo['css'] = $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? 
+            'success' :
+            '';
+        
+        $echo['icon'] = $this->getConfig('messengers.' . $moduleName . '.confirm_test') ?
+            '<i class="fas fa-check"></i>' :
+            '<i class="fas fa-exclamation"></i>';
 
         echo $echo[$echoType];
     }
@@ -445,8 +464,8 @@ class BaseController
     /**
      * Use on HTML select elemets.
      *
-     * @param string $value
-     * @param mixed  $valueChecked
+     * @param string $value        The value.
+     * @param mixed  $valueChecked The value to confirm.
      *
      * @return void
      */
@@ -459,4 +478,3 @@ class BaseController
         }
     }
 }
-

@@ -124,6 +124,6 @@ use function Shieldon\Firewall\mask_string;
     if (! empty($period_data)) {
         $data['period_data'] = $period_data;
         $data['past_seven_hours'] = $past_seven_hours;
-        $this->_include('panel/js/chart', $data);
+        $this->loadViewPart('panel/js/chart', $data);
     }
 ?>

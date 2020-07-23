@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * php version 7.1.0
+ * 
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -176,9 +186,12 @@ class Setting extends BaseController
             $excludedUrls = $this->getConfig('excluded_urls');
 
             if ('add' === $action) {
-                array_push($excludedUrls, [
-                    'url' => $url
-                ]);
+                array_push(
+                    $excludedUrls,
+                    [
+                        'url' => $url
+                    ]
+                );
 
             } elseif ('remove' === $action) {
                 unset($excludedUrls[$order]);
@@ -243,7 +256,8 @@ class Setting extends BaseController
             $jsonData = json_decode($importedFileContent, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->pushMessage('error',
+                $this->pushMessage(
+                    'error',
                     __(
                         'panel',
                         'error_invalid_json_file',
@@ -277,7 +291,8 @@ class Setting extends BaseController
                 $configFilePath = $this->directory . '/' . $this->filename;
                 file_put_contents($configFilePath, json_encode($this->configuration));
 
-                $this->pushMessage('success',
+                $this->pushMessage(
+                    'success',
                     __(
                         'panel',
                         'success_json_imported',
@@ -292,7 +307,8 @@ class Setting extends BaseController
             }
         }
 
-        $this->pushMessage('error',
+        $this->pushMessage(
+            'error',
             __(
                 'panel',
                 'error_invalid_config_file',
@@ -305,4 +321,3 @@ class Setting extends BaseController
         return $response->withHeader('Location', $this->url('setting/basic'));
     }
 }
-

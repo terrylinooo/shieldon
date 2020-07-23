@@ -19,10 +19,10 @@ use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Helpers;
 
-require __DIR__ . '/../autoload.php';
-require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../vendor/shieldon/messenger/autoload.php';
-require __DIR__ . '/Mock/MockMessenger.php';
+include __DIR__ . '/../autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
+include __DIR__ . '/../vendor/shieldon/messenger/autoload.php';
+include __DIR__ . '/Mock/MockMessenger.php';
 
 /**
  * Create a writable directrory for unit testing.

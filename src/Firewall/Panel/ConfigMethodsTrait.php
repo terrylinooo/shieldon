@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * php version 7.1.0
+ * 
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -35,11 +45,11 @@ use function umask;
  */
 trait ConfigMethodsTrait
 {
-     /**
+    /**
      * Parse the POST fields and set them into configuration data structure.
      * Used for saveConfig method only.
      *
-     * @param array $postParams
+     * @param array $postParams The PSR-7 variable of $_POST
      *
      * @return void
      */
@@ -72,14 +82,16 @@ trait ConfigMethodsTrait
                 } else if ($postKey === 'messengers__sendgrid__config__recipients') {
                     $this->setConfig(
                         'messengers.sendgrid.config.recipients',
-                        preg_split('/\r\n|[\r\n]/',
-                        $postData)
+                        preg_split(
+                            '/\r\n|[\r\n]/',
+                            $postData
+                        )
                     );
 
                 } elseif (is_numeric($postData)) {
                     $this->setConfig(str_replace('__', '.', $postKey), (int) $postData);
 
-                } else  {
+                } else {
                     $this->setConfig(str_replace('__', '.', $postKey), $postData);
                 }
             }
@@ -88,6 +100,8 @@ trait ConfigMethodsTrait
 
     /**
      * Check the settings of Action Logger.
+     * 
+     * @param bool $result The result passed from previous check.
      *
      * @return bool
      */
@@ -116,7 +130,8 @@ trait ConfigMethodsTrait
 
             if (!is_writable($actionLogDir)) {
                 $result = false;
-                $this->pushMessage('error',
+                $this->pushMessage(
+                    'error',
                     __(
                         'panel',
                         'error_logger_directory_not_writable',
@@ -172,7 +187,8 @@ trait ConfigMethodsTrait
 
             $result = false;
 
-            $this->pushMessage('error',
+            $this->pushMessage(
+                'error',
                 __(
                     'panel',
                     'error_ip6tables_directory_not_writable',
@@ -241,7 +257,8 @@ trait ConfigMethodsTrait
 
                 $result = false;
 
-                $this->pushMessage('error', 
+                $this->pushMessage(
+                    'error', 
                     __(
                         'panel',
                         'error_mysql_connection',
@@ -254,7 +271,8 @@ trait ConfigMethodsTrait
 
         $result = false;
 
-        $this->pushMessage('error',
+        $this->pushMessage(
+            'error',
             __(
                 'panel',
                 'error_mysql_driver_not_supported',
@@ -302,7 +320,8 @@ trait ConfigMethodsTrait
             }
 
             if (!is_writable($sqliteFilePath)) {
-                $this->pushMessage('error',
+                $this->pushMessage(
+                    'error',
                     __(
                         'panel',
                         'error_sqlite_directory_not_writable',
@@ -317,7 +336,8 @@ trait ConfigMethodsTrait
 
         $result = false;
 
-        $this->pushMessage('error',
+        $this->pushMessage(
+            'error',
             __(
                 'panel',
                 'error_sqlite_driver_not_supported',
@@ -357,7 +377,8 @@ trait ConfigMethodsTrait
 
         $result = false;
 
-        $this->pushMessage('error',
+        $this->pushMessage(
+            'error',
             __(
                 'panel',
                 'error_redis_driver_not_supported',
@@ -394,7 +415,8 @@ trait ConfigMethodsTrait
 
         if (!is_writable($fileDir)) {
             $result = false;
-            $this->pushMessage('error',
+            $this->pushMessage(
+                'error',
                 __(
                     'panel',
                     'error_file_directory_not_writable',

@@ -37,7 +37,7 @@ function shieldon_firewall_autoload($className)
         $filepath = $dir . '/' . implode('/', $parts) . '.php';
 
         if (is_file($filepath)) {
-            require $filepath;
+            include $filepath;
         }
     }
 }

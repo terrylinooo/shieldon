@@ -37,7 +37,7 @@ use function Shieldon\Firewall\mask_string;
         <?php endif; ?>
         <div class="so-rule-form iptables-form">
             <form method="post" onsubmit="freezeUI();">
-                <?php $this->_csrf(); ?>
+                <?php $this->fieldCsrf(); ?>
                 <div class="d-inline-block align-top">
                     <label for="ip-address" style="padding-left: 10px;"><?php _e('panel', 'iptables_label_ip', 'IP'); ?></label><br />
                     <input name="ip" type="text" value="" id="ip-address" class="regular-text ">

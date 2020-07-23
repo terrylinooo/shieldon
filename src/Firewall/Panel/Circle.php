@@ -1,11 +1,21 @@
 <?php
-/*
+/**
  * This file is part of the Shieldon package.
  *
  * (c) Terry L. <contact@terryl.in>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * php version 7.1.0
+ * 
+ * @category  Web-security
+ * @package   Shieldon
+ * @author    Terry Lin <contact@terryl.in>
+ * @copyright 2019 terrylinooo
+ * @license   https://github.com/terrylinooo/shieldon/blob/2.x/LICENSE MIT
+ * @link      https://github.com/terrylinooo/shieldon
+ * @see       https://shieldon.io
  */
 
 declare(strict_types=1);
@@ -37,8 +47,6 @@ class Circle extends BaseController
     /**
      * Rule table for current cycle.
      *
-     * @param string
-     *
      * @return ResponseInterface
      */
     public function rule(): ResponseInterface
@@ -58,11 +66,11 @@ class Circle extends BaseController
                 case 'temporarily_ban':
                 case 'permanently_ban':
                 case 'allow':
-                    $logData['log_ip'] = $ip;
+                    $logData['log_ip']     = $ip;
                     $logData['ip_resolve'] = gethostbyaddr($ip);
-                    $logData['time'] = time();
-                    $logData['type'] = $actionCode[$action];
-                    $logData['reason'] = $this->kernel::REASON_MANUAL_BAN;
+                    $logData['time']       = time();
+                    $logData['type']       = $actionCode[$action];
+                    $logData['reason']     = $this->kernel::REASON_MANUAL_BAN;
 
                     $this->kernel->driver->save($ip, $logData, 'rule');
                     break;
@@ -117,8 +125,6 @@ class Circle extends BaseController
     /**
      * IP filter table for current cycle.
      *
-     * @param string
-     *
      * @return ResponseInterface
      */
     public function filter(): ResponseInterface
@@ -134,19 +140,17 @@ class Circle extends BaseController
     /**
      * Session table for current cycle.
      *
-     * @param string
-     *
      * @return ResponseInterface
      */
     public function session(): ResponseInterface
     {
         $data['session_list'] = $this->kernel->driver->getAll('session');
 
-        $data['is_session_limit'] = false;
-        $data['session_limit_count'] = 0;
+        $data['is_session_limit']     = false;
+        $data['session_limit_count']  = 0;
         $data['session_limit_period'] = 0;
-        $data['online_count'] = 0;
-        $data['expires'] = 0;
+        $data['online_count']         = 0;
+        $data['expires']              = 0;
 
         $reflection = new ReflectionObject($this->kernel);
         $t = $reflection->getProperty('sessionLimit');
@@ -163,11 +167,11 @@ class Circle extends BaseController
             $limitPeriod = $sessionLimit['period'];
         }
 
-        $data['is_session_limit'] = $isLimitSession;
-        $data['session_limit_count'] = $limitCount;
+        $data['is_session_limit']     = $isLimitSession;
+        $data['session_limit_count']  = $limitCount;
         $data['session_limit_period'] = $limitPeriod;
-        $data['online_count'] = count($data['session_list']);
-        $data['expires'] = (int) $data['session_limit_period'] * 60;
+        $data['online_count']         = count($data['session_list']);
+        $data['expires']              = (int) $data['session_limit_period'] * 60;
 
         $data['title'] = __('panel', 'menu_data_circle', 'Data Circle') . ' - ';
         $data['title'] .= __('panel', 'title_circle_session', 'Session Table');
@@ -175,4 +179,3 @@ class Circle extends BaseController
         return $this->renderPage('panel/table_sessions', $data);
     }
 }
-
