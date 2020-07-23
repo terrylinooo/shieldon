@@ -197,12 +197,7 @@ class Iptables extends BaseController
         $action   = $postParams['action'];
         $cPort    = $postParams['port_custom'] ?? 'all';
 
-        $isRemoval = false;
         $ipv = substr($type, -1);
-
-        if ($postParams['remove'] === 'yes') {
-            $isRemoval = true;
-        }
 
         if ($port === 'custom') {
             $port = $cPort;
@@ -220,7 +215,8 @@ class Iptables extends BaseController
          *     transforming the commands into Iptables syntax commands and 
          *     then execute the Iptables commands.
          */
-        if ($isRemoval) {
+        if ($postParams['remove'] === 'yes') {
+
             $originCommandString = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
 
             // Delete line from the log file.
@@ -293,10 +289,7 @@ class Iptables extends BaseController
      */
     private function checkFieldIp($postParams): bool
     {
-        if (
-            isset($postParams['ip']) &&
-            filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)
-        ) {
+        if (filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)) {
             return true;
         }
         return false;
@@ -312,11 +305,8 @@ class Iptables extends BaseController
     private function checkFieldPort($postParams): bool
     {
         if (
-            isset($postParams['port']) &&
-            (
-                is_numeric($postParams['port']) || 
-                in_array($postParams['port'], ['all', 'custom'])
-            )
+            is_numeric($postParams['port']) || 
+            in_array($postParams['port'], ['all', 'custom'])
         ) {
             return true;
         }
@@ -333,11 +323,8 @@ class Iptables extends BaseController
     private function checkFieldSubnet($postParams): bool
     {
         if (
-            isset($postParams['subnet']) && 
-            (
-                is_numeric($postParams['subnet']) || 
-                $postParams['subnet'] === 'null'
-            )
+            is_numeric($postParams['subnet']) || 
+            $postParams['subnet'] === 'null'
         ) {
             return true;
         }
@@ -353,10 +340,7 @@ class Iptables extends BaseController
      */
     private function checkFieldProtocol($postParams): bool
     {
-        if (
-            isset($postParams['protocol']) && 
-            in_array($postParams['protocol'], ['tcp', 'udp', 'all'])
-        ) {
+        if (in_array($postParams['protocol'], ['tcp', 'udp', 'all'])) {
             return true;
         }
         return false;
@@ -371,10 +355,7 @@ class Iptables extends BaseController
      */
     private function checkFieldAction($postParams): bool
     {
-        if (
-            isset($postParams['action']) && 
-            in_array($postParams['action'], ['allow', 'deny'])
-        ) {
+        if (in_array($postParams['action'], ['allow', 'deny'])) {
             return true;
         }
         return false;
