@@ -46,6 +46,7 @@ trait ConfigMethodsTrait
     protected function saveConfigPrepareSettings(array $postParams): void
     {
         foreach ($postParams as $postKey => $postData) {
+
             if (is_string($postData)) {
                 if ($postData === 'on') {
                     $this->setConfig(str_replace('__', '.', $postKey), true);
@@ -53,34 +54,33 @@ trait ConfigMethodsTrait
                 } elseif ($postData === 'off') {
                     $this->setConfig(str_replace('__', '.', $postKey), false);
 
-                } else {
-                    if ($postKey === 'ip_variable_source') {
-                        $this->setConfig('ip_variable_source.REMOTE_ADDR', false);
-                        $this->setConfig('ip_variable_source.HTTP_CF_CONNECTING_IP', false);
-                        $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', false);
-                        $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', false);
-                        $this->setConfig('ip_variable_source.' . $postData, true);
+                } elseif ($postKey === 'ip_variable_source') {
+                    $this->setConfig('ip_variable_source.REMOTE_ADDR', false);
+                    $this->setConfig('ip_variable_source.HTTP_CF_CONNECTING_IP', false);
+                    $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', false);
+                    $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', false);
+                    $this->setConfig('ip_variable_source.' . $postData, true);
 
-                    } elseif ($postKey === 'dialog_ui__shadow_opacity') {
-                        $this->setConfig('dialog_ui.shadow_opacity', (string) $postData);
+                } elseif ($postKey === 'dialog_ui__shadow_opacity') {
+                    $this->setConfig('dialog_ui.shadow_opacity', (string) $postData);
 
-                    } elseif ($postKey === 'admin__pass') {
-                        if (strlen($postParams['admin__pass']) < 58) {
-                            $this->setConfig('admin.pass', password_hash($postData, PASSWORD_BCRYPT));
-                        }
-                    } else if ($postKey === 'messengers__sendgrid__config__recipients') {
-                        $this->setConfig(
-                            'messengers.sendgrid.config.recipients',
-                            preg_split('/\r\n|[\r\n]/',
-                            $postData)
-                        );
-                    } else {
-                        if (is_numeric($postData)) {
-                            $this->setConfig(str_replace('__', '.', $postKey), (int) $postData);
-                        } else  {
-                            $this->setConfig(str_replace('__', '.', $postKey), $postData);
-                        }
+                } elseif ($postKey === 'admin__pass') {
+                    if (strlen($postParams['admin__pass']) < 58) {
+                        $this->setConfig('admin.pass', password_hash($postData, PASSWORD_BCRYPT));
                     }
+
+                } else if ($postKey === 'messengers__sendgrid__config__recipients') {
+                    $this->setConfig(
+                        'messengers.sendgrid.config.recipients',
+                        preg_split('/\r\n|[\r\n]/',
+                        $postData)
+                    );
+
+                } elseif (is_numeric($postData)) {
+                    $this->setConfig(str_replace('__', '.', $postKey), (int) $postData);
+
+                } else  {
+                    $this->setConfig(str_replace('__', '.', $postKey), $postData);
                 }
             }
         }
@@ -100,8 +100,6 @@ trait ConfigMethodsTrait
         // Check Action Logger settings.
         $enableActionLogger = $this->getConfig('loggers.action.enable');
         $actionLogDir = rtrim($this->getConfig('loggers.action.config.directory_path'), '\\/ ');
-
-        $result = true;
 
         if ($enableActionLogger) {
             if (empty($actionLogDir)) {
@@ -148,8 +146,6 @@ trait ConfigMethodsTrait
         $enableIptables = $this->getConfig('iptables.enable');
         $iptablesWatchingFolder = rtrim($this->getConfig('iptables.config.watching_folder'), '\\/ ');
 
-        $result = true;
-
         if ($enableIptables) {
             if (empty($iptablesWatchingFolder)) {
                 $iptablesWatchingFolder = $this->directory . '/iptables';
@@ -161,27 +157,28 @@ trait ConfigMethodsTrait
                 $originalUmask = umask(0);
                 mkdir($iptablesWatchingFolder, 0777, true);
                 umask($originalUmask);
-
-                // Create default log files.
-                if (is_writable($iptablesWatchingFolder)) {
-                    fopen($iptablesWatchingFolder . '/iptables_queue.log', 'w+');
-                    fopen($iptablesWatchingFolder . '/ipv4_status.log',    'w+');
-                    fopen($iptablesWatchingFolder . '/ipv6_status.log',    'w+');
-                    fopen($iptablesWatchingFolder . '/ipv4_command.log',   'w+');
-                    fopen($iptablesWatchingFolder . '/ipv6_command.log',   'w+');
-                }
             }
     
-            if (!is_writable($iptablesWatchingFolder)) {
-                $result = false;
-                $this->pushMessage('error',
-                    __(
-                        'panel',
-                        'error_ip6tables_directory_not_writable',
-                        'iptables watching folder requires the storage directory writable.'
-                    )
-                );
+            // Create default log files.
+            if (is_writable($iptablesWatchingFolder)) {
+                fopen($iptablesWatchingFolder . '/iptables_queue.log', 'w+');
+                fopen($iptablesWatchingFolder . '/ipv4_status.log',    'w+');
+                fopen($iptablesWatchingFolder . '/ipv6_status.log',    'w+');
+                fopen($iptablesWatchingFolder . '/ipv4_command.log',   'w+');
+                fopen($iptablesWatchingFolder . '/ipv6_command.log',   'w+');
+
+                return $result;
             }
+
+            $result = false;
+
+            $this->pushMessage('error',
+                __(
+                    'panel',
+                    'error_ip6tables_directory_not_writable',
+                    'iptables watching folder requires the storage directory writable.'
+                )
+            );
         }
 
         return $result;
