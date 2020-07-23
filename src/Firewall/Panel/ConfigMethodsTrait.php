@@ -225,6 +225,7 @@ trait ConfigMethodsTrait
     protected function saveCofigCheckDataDriverMySql(bool $result): bool
     {
         if (class_exists('PDO')) {
+
             $db = [
                 'host'    => $this->getConfig('drivers.mysql.host'),
                 'dbname'  => $this->getConfig('drivers.mysql.dbname'),
@@ -240,7 +241,9 @@ trait ConfigMethodsTrait
                     (string) $db['pass']
                 );
             } catch(PDOException $e) {
+
                 $result = false;
+
                 $this->pushMessage('error', 
                     __(
                         'panel',
@@ -249,16 +252,18 @@ trait ConfigMethodsTrait
                     )
                 );
             }
-        } else {
-            $result = false;
-            $this->pushMessage('error',
-                __(
-                    'panel',
-                    'error_mysql_driver_not_supported',
-                    'Your system doesn’t support MySQL driver.'
-                )
-            );
-        }
+            return $result;
+        } 
+
+        $result = false;
+
+        $this->pushMessage('error',
+            __(
+                'panel',
+                'error_mysql_driver_not_supported',
+                'Your system doesn’t support MySQL driver.'
+            )
+        );
 
         return $result;
     }
@@ -290,33 +295,39 @@ trait ConfigMethodsTrait
         }
 
         if (class_exists('PDO')) {
+
             try {
                 new PDO('sqlite:' . $sqliteFilePath);
+
             } catch(PDOException $e) { 
                 $this->pushMessage('error', $e->getMessage());
                 $result = false;
             }
-        } else {
-            $this->pushMessage('error',
-                __(
-                    'panel',
-                    'error_sqlite_driver_not_supported',
-                    'Your system doesn’t support SQLite driver.'
-                )
-            );
-            $result = false;
-        }
 
-        if (!is_writable($sqliteFilePath)) {
-            $this->pushMessage('error',
-                __(
-                    'panel',
-                    'error_sqlite_directory_not_writable',
-                    'SQLite data driver requires the storage directory writable.'
-                )
-            );
-            $result = false;
-        }
+            if (!is_writable($sqliteFilePath)) {
+                $this->pushMessage('error',
+                    __(
+                        'panel',
+                        'error_sqlite_directory_not_writable',
+                        'SQLite data driver requires the storage directory writable.'
+                    )
+                );
+                $result = false;
+            }
+
+            return $result;
+        } 
+
+        $result = false;
+
+        $this->pushMessage('error',
+            __(
+                'panel',
+                'error_sqlite_driver_not_supported',
+                'Your system doesn’t support SQLite driver.'
+            )
+        );
+
         return $result;
     }
 
@@ -330,6 +341,7 @@ trait ConfigMethodsTrait
     protected function saveCofigCheckDataDriverRedis(bool $result): bool
     {
         if (class_exists('Redis')) {
+
             try {
                 $redis = new Redis();
                 $redis->connect(
@@ -337,21 +349,25 @@ trait ConfigMethodsTrait
                     (int)    $this->getConfig('drivers.redis.port')
                 );
                 unset($redis);
+
             } catch(RedisException $e) {
                 $this->pushMessage('error', $e->getMessage());
                 $result = false;
             }
 
-        } else {     
-            $this->pushMessage('error',
-                __(
-                    'panel',
-                    'error_redis_driver_not_supported',
-                    'Your system doesn’t support Redis driver.'
-                )
-            );
-            $result = false;
+            return $result;
         }
+
+        $result = false;
+
+        $this->pushMessage('error',
+            __(
+                'panel',
+                'error_redis_driver_not_supported',
+                'Your system doesn’t support Redis driver.'
+            )
+        );
+
         return $result;
     }
 
