@@ -20,38 +20,33 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Tests;
+namespace Shieldon\FirewallTest\Panel;
 
-class PanelTest extends \PHPUnit\Framework\TestCase
+class DemoModeTraitTest extends \PHPUnit\Framework\TestCase
 {
-    public function testPanelLoginPage()
+    public function testAll()
     {
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
         $panel = new \Shieldon\Firewall\Panel();
+        $panel->demo('hello', 'world');
 
-        ob_start();
-        $panel->entry('firewall/panel');
-        $output = ob_get_contents();
-        ob_end_clean();
+        $reflection = new \ReflectionObject($panel);
+        $t = $reflection->getProperty('demoUser');
+        $t->setAccessible(true);
+        $demoUser = $t->getValue($panel);
 
-        $this->assertStringContainsString('Login', $output);
-    }
+        $t = $reflection->getProperty('mode');
+        $t->setAccessible(true);
+        $mode = $t->getValue($panel);
 
-    public function testPanelLoginPageDemoMode()
-    {
-        $firewall = new \Shieldon\Firewall\Firewall();
-        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $this->assertSame($demoUser['user'], 'hello');
+        $this->assertSame($demoUser['pass'], 'world');
+        $this->assertSame($mode, 'demo');
 
-        $panel = new \Shieldon\Firewall\Panel();
-        $panel->demo();
+        $kernel = $firewall->getKernel();
 
-        ob_start();
-        $panel->entry('firewall/panel');
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        $this->assertStringContainsString('Login (DEMO)', $output);
+        
     }
 }

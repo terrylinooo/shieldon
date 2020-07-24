@@ -48,6 +48,13 @@ trait DemoModeTrait
     ];
 
     /**
+     * Mask as demo.
+     *
+     * @var string
+     */
+    protected $maskasdemo = '';
+
+    /**
      * In demo mode, user's submit will not take effect.
      *
      * @param string $user The user name.
@@ -61,6 +68,7 @@ trait DemoModeTrait
         $this->demoUser['pass'] = $pass ?: 'demo';
 
         $this->mode = 'demo';
+        $this->maskasdemo = ' (DEMO)';
 
         Container::get('shieldon')->managedBy('demo');
     }

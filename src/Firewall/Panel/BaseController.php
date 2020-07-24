@@ -27,6 +27,7 @@ use Shieldon\Firewall\Firewall;
 use Shieldon\Firewall\FirewallTrait;
 use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\ConfigMethodsTrait;
+use Shieldon\Firewall\Panel\CsrfTrait;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\Log\ActionLogParser;
 use function Shieldon\Firewall\__;
@@ -56,9 +57,10 @@ use function trim;
  */
 class BaseController
 {
-    use FirewallTrait;
-    use DemoModeTrait;
     use ConfigMethodsTrait;
+    use CsrfTrait;
+    use DemoModeTrait;
+    use FirewallTrait;
 
     /**
      * LogPaeser instance.
@@ -84,13 +86,6 @@ class BaseController
         // Need to implement Action Logger to make it true.
         'logs' => false,
     ];
-
-    /**
-     * See $this->csrf()
-     *
-     * @var array
-     */
-    protected $csrfField = [];
 
     /**
      * Language code.
@@ -296,20 +291,6 @@ class BaseController
     }
 
     /**
-     * Output HTML input element with CSRF token.
-     *
-     * @return void
-     */
-    public function fieldCsrf(): void
-    {
-        if (!empty($this->csrfField)) {
-            foreach ($this->csrfField as $value) {
-                echo '<input type="hidden" name="' . $value['name'] . '" value="' . $value['value'] . '" id="csrf-field">';
-            }
-        }
-    }
-
-    /**
      * Save the configuration settings to the JSON file.
      *
      * @return void
@@ -318,14 +299,9 @@ class BaseController
     {
         if ($this->mode !== 'managed') {
             return;
-
-        }
-        $postParams = get_request()->getParsedBody();
-
-        if (!is_array($postParams)) {
-            return;
         }
 
+        $postParams = (array) get_request()->getParsedBody();
         $configFilePath = $this->directory . '/' . $this->filename;
 
         foreach ($this->csrfField as $csrfInfo) {

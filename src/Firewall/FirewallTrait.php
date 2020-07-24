@@ -42,7 +42,7 @@ trait FirewallTrait
      *
      * @var array
      */
-    protected $configuration;
+    protected $configuration = [];
 
     /**
      * If status is false and then Sheldon will stop working.

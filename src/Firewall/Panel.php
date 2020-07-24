@@ -24,6 +24,7 @@ namespace Shieldon\Firewall;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\HttpResolver;
+use Shieldon\Firewall\Panel\CsrfTrait;
 use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\User;
 use function Shieldon\Firewall\get_request;
@@ -45,6 +46,7 @@ use function ucfirst;
 class Panel
 {
     use DemoModeTrait;
+    use CsrfTrait;
 
     /**
      * Route map.
@@ -131,6 +133,7 @@ class Panel
             $controller = __CLASS__ . '\\' . ucfirst($controller);
 
             $controllerClass = new $controller();
+            $controllerClass->csrf($this->csrfField);
 
             if ('demo' === $this->mode) {
 
