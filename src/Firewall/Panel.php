@@ -125,9 +125,7 @@ class Panel
         $method = $urlParts[1] ?? 'index';
 
         if (in_array("$controller/$method", $this->registerRoutes)) {
-
-            define('SHIELDON_PANEL_BASE', $base);
-
+            $this->setRouteBase($base);
             $this->checkAuth();
 
             $controller = __CLASS__ . '\\' . ucfirst($controller);
@@ -152,6 +150,20 @@ class Panel
         }
        
         $this->resolver($response->withStatus(404));
+    }
+
+    /**
+     * Set the base route for the panel.
+     *
+     * @param string $base The base path.
+     *
+     * @return void
+     */
+    protected function setRouteBase(string $base)
+    {
+        if (!defined('SHIELDON_PANEL_BASE')) {
+            define('SHIELDON_PANEL_BASE', $base);
+        }
     }
 
     /**
