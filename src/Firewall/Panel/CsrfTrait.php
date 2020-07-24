@@ -48,13 +48,13 @@ trait CsrfTrait
     public function csrf(...$csrfparams): void
     {
         $count = count($csrfparams);
+        $csrfKey = '';
+        $csrfValue = '';
 
         if (1 === $count) {
             foreach ($csrfparams as $key => $value) {
-                $this->csrfField[] = [
-                    'name' => $key,
-                    'value' => $value,
-                ];
+                $csrfKey = $key;
+                $csrfValue = $value;
             }
 
         } elseif (2 === $count) {
@@ -66,14 +66,12 @@ trait CsrfTrait
             if (!empty($csrfparams[1]) && is_string($csrfparams[1])) {
                 $csrfValue = $csrfparams[1];
             }
-
-            if (!empty($csrfKey)) {
-                $this->csrfField[] = [
-                    'name' => $csrfKey,
-                    'value' => $csrfValue,
-                ];
-            }
         }
+
+        $this->csrfField[] = [
+            'name' => $csrfKey,
+            'value' => $csrfValue,
+        ];
     }
 
     /**
