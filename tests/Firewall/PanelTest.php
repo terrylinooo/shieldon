@@ -36,6 +36,22 @@ class PanelTest extends \PHPUnit\Framework\TestCase
         $output = ob_get_contents();
         ob_end_clean();
 
-        $this->assertStringContainsString('Login to Firewall Panel', $output);
+        $this->assertStringContainsString('Login', $output);
+    }
+
+    public function testPanelLoginPageDemoMode()
+    {
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+
+        $controlPanel = new \Shieldon\Firewall\Panel();
+        $controlPanel->demo();
+
+        ob_start();
+        $controlPanel->entry('firewall/panel');
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertStringContainsString('Login (DEMO)', $output);
     }
 }

@@ -63,6 +63,7 @@ class User extends BaseController
 
         $login = false;
         $data['error'] = '';
+        $titleDemo = '';
 
         if (isset($postParams['s_user']) && isset($postParams['s_pass'])) {
 
@@ -104,7 +105,11 @@ class User extends BaseController
 
         unset($ui);
 
-        $data['title'] = __('panel', 'title_login', 'Login');
+        if ($this->mode === 'demo') {
+            $titleDemo = ' (DEMO)';
+        }
+
+        $data['title'] = __('panel', 'title_login', 'Login') . $titleDemo;
 
         return $this->respond(
             $this->loadView('frontend/login', $data)
@@ -252,4 +257,3 @@ class User extends BaseController
         ];
     }
 }
-

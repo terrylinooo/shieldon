@@ -22,10 +22,11 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Firewall;
 
-use Shieldon\Firewall\Firewall\Driver\DriverFactory;
+use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Firewall\Captcha\CaptchaFactory;
+use Shieldon\Firewall\Firewall\Driver\DriverFactory;
 use Shieldon\Firewall\Log\ActionLogger;
-use Shieldon\Firewall\Middleware as Middleware;
+use Shieldon\Firewall\Middleware\HttpAuthentication;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session;
 
@@ -48,6 +49,32 @@ trait MainTrait
      * @return mixed
      */
     abstract function getOption(string $option, string $section = '');
+
+    /**
+     * Update configuration file.
+     *
+     * @return void
+     */
+    abstract function updateConfig();
+
+    /**
+     * Set a variable to the configuration.
+     *
+     * @param string $field The field of the configuration.
+     * @param mixed  $value The vale of a field in the configuration.
+     *
+     * @return void
+     */
+    abstract function setConfig(string $field, $value);
+
+    /**
+     * Add middlewares and use them before going into Shieldon kernal.
+     *
+     * @param MiddlewareInterface $middleware A PSR-15 middlewares.
+     *
+     * @return void
+     */
+    abstract function add(MiddlewareInterface $middleware);
 
     /**
      * Set a data driver for the use of Shiedon Firewall.
@@ -94,15 +121,23 @@ trait MainTrait
 
         foreach ($filters as $filter) {
             $setting = $this->getOption($filter, 'filters');
+
             $settings[$filter] = $setting;
             $filterConfig[$filter] = $setting['enable'];
-            $filterLimit[$filter] = $setting['config']['quota']; // 5
+            $filterLimit[$filter] = $setting['config']['quota']; // default: 5
+
             unset($setting);
         }
+
+        // filiterLimit property does not have this field.
         unset($filterLimit['frequency']);
 
         $this->kernel->setFilters($filterConfig);
-        $this->kernel->setProperty('limit_unusual_behavior', $filterLimit);
+
+        $this->kernel->setProperty(
+            'limit_unusual_behavior',
+            $filterLimit
+        );
 
         $frequencyQuota = [
             's' => $settings['frequency']['config']['quota_s'],
@@ -113,12 +148,30 @@ trait MainTrait
 
         $this->kernel->setProperty('time_unit_quota', $frequencyQuota);
 
-        $this->kernel->setProperty('cookie_name', $settings['cookie']['config']['cookie_name']);      // ssjd
-        $this->kernel->setProperty('cookie_domain', $settings['cookie']['config']['cookie_domain']);  // ''
-        $this->kernel->setProperty('cookie_value', $settings['cookie']['config']['cookie_value']);    // 1
+        $this->kernel->setProperty(
+            'cookie_name',
+            $settings['cookie']['config']['cookie_name'] // default: ssjd
+        );
 
-        $this->kernel->setProperty('interval_check_referer', $settings['referer']['config']['time_buffer']);
-        $this->kernel->setProperty('interval_check_session', $settings['referer']['config']['time_buffer']);
+        $this->kernel->setProperty(
+            'cookie_domain',
+            $settings['cookie']['config']['cookie_domain'] // default: ''
+        );
+
+        $this->kernel->setProperty(
+            'cookie_value',
+            $settings['cookie']['config']['cookie_value'] // default: 1
+        );
+
+        $this->kernel->setProperty(
+            'interval_check_referer',
+            $settings['referer']['config']['time_buffer']
+        );
+
+        $this->kernel->setProperty(
+            'interval_check_session',
+            $settings['referer']['config']['time_buffer']
+        );
     }
 
     /**
@@ -205,7 +258,9 @@ trait MainTrait
 
         if ($loggerSetting['enable']) {
             if (!empty($loggerSetting['config']['directory_path'])) {
-                $this->kernel->setLogger(new ActionLogger($loggerSetting['config']['directory_path']));
+                $this->kernel->setLogger(
+                    new ActionLogger($loggerSetting['config']['directory_path'])
+                );
             }
         }
     }
@@ -274,8 +329,11 @@ trait MainTrait
         $ip = $serverParams[$key];
 
         if (empty($ip)) {
+
             // @codeCoverageIgnoreStart
-            throw new RuntimeException('IP source is not set correctly.');
+            throw new RuntimeException(
+                'IP source is not set correctly.'
+            );
             // @codeCoverageIgnoreEnd
         }
 
@@ -347,8 +405,8 @@ trait MainTrait
 
         if ($sessionLimitSetting['enable']) {
 
-            $onlineUsers = $sessionLimitSetting['config']['count']  ?? 100;
-            $alivePeriod = $sessionLimitSetting['config']['period'] ?? 300;
+            $onlineUsers = $sessionLimitSetting['config']['count']; // default: 100
+            $alivePeriod = $sessionLimitSetting['config']['period']; // default: 300
 
             $this->kernel->limitSession($onlineUsers, $alivePeriod);
         }
@@ -425,9 +483,7 @@ trait MainTrait
 
         if (is_array($authenticateList)) {
             $this->add(
-                new Middleware\HttpAuthentication(
-                    $authenticateList
-                )
+                new HttpAuthentication($authenticateList)
             );
         }
     }

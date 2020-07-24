@@ -107,7 +107,7 @@ class FileDriver extends DriverProvider
      * 
      * @param string $type The type of the data table.
      * 
-     * @return bool
+     * @return array
      */
     protected function doFetchAll(string $type = 'filter'): array
     {

@@ -34,7 +34,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
     <link rel="icon" href="data:,">
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php _e('panel', 'login_heading_login', 'Login to Firewall Panel'); ?></title>
+    <title><?php echo $title; ?></title>
     <?php echo '<style>' . $css . '</style>'; ?>
 
     <style>

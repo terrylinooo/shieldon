@@ -168,6 +168,8 @@ class Panel
     /**
      * Magic method.
      * 
+     * Helps the property `$resolver` to work like a function.
+     * 
      * @param string $method The method name.
      * @param array  $args   The arguments.
      *
@@ -182,5 +184,7 @@ class Panel
                 return $callable($args[0]);
             }
         }
+        // @codeCoverageIgnoreStart
     }
+    // @codeCoverageIgnoreEnd
 }
