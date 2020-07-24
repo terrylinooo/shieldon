@@ -32,10 +32,11 @@ use function array_keys;
 trait XssProtectionTrait
 {
     /**
-     * Fetch value from configuration.
+     * Get options from the configuration file.
+     * This method is same as `$this->getConfig()` but returning value from array directly.
      *
-     * @param string $option
-     * @param string $section
+     * @param string $option  The option of the section in the the configuration.
+     * @param string $section The section in the configuration.
      *
      * @return mixed
      */
@@ -67,79 +68,93 @@ trait XssProtectionTrait
     /**
      * Clean the $_POST superglobal.
      *
-     * @param array $enable
-     * @param Xss   $xss
+     * @param array $enable The option to enable filtering $_POST.
+     * @param Xss   $xss    The Xss instance.
      *
      * @return void
      */
     private function cleanPost(array $enable, Xss $xss): void
     {
         if ($enable['post']) {
-            $this->kernel->setClosure('xss_post', function() use ($xss) {
-                if (!empty($_POST)) {
-                    foreach (array_keys($_POST) as $k) {
-                        $_POST[$k] = $xss->clean($_POST[$k]);
+
+            $this->kernel->setClosure(
+                'xss_post',
+                function () use ($xss) {
+                    if (!empty($_POST)) {
+                        foreach (array_keys($_POST) as $k) {
+                            $_POST[$k] = $xss->clean($_POST[$k]);
+                        }
                     }
                 }
-            });
+            );
         }
     }
 
     /**
      * Clean the $_GET superglobal.
      *
-     * @param array $enable
-     * @param Xss   $xss
+     * @param array $enable The option to enable filtering $_GET.
+     * @param Xss   $xss    The Xss instance.
      *
      * @return void
      */
     private function cleanGet(array $enable, Xss $xss): void
     {
         if ($enable['get']) {
-            $this->kernel->setClosure('xss_get', function() use ($xss) {
-                if (!empty($_GET)) {
-                    foreach (array_keys($_GET) as $k) {
-                        $_GET[$k] = $xss->clean($_GET[$k]);
+
+            $this->kernel->setClosure(
+                'xss_get',
+                function () use ($xss) {
+                    if (!empty($_GET)) {
+                        foreach (array_keys($_GET) as $k) {
+                            $_GET[$k] = $xss->clean($_GET[$k]);
+                        }
                     }
                 }
-            });
+            );
         }
     }
 
     /**
      * Clean the $_COOKIE superglobal.
      *
-     * @param array $enable
-     * @param Xss   $xss
+     * @param array $enable The option to enable filtering $_COOKIE.
+     * @param Xss   $xss    The Xss instance.
      *
      * @return void
      */
     private function cleanCookie(array $enable, Xss $xss): void
     {
         if ($enable['cookie']) {
-            $this->kernel->setClosure('xss_cookie', function() use ($xss) {
-                if (!empty($_COOKIE)) {
-                    foreach (array_keys($_COOKIE) as $k) {
-                        $_COOKIE[$k] = $xss->clean($_COOKIE[$k]);
+
+            $this->kernel->setClosure(
+                'xss_cookie',
+                function () use ($xss) {
+                    if (!empty($_COOKIE)) {
+                        foreach (array_keys($_COOKIE) as $k) {
+                            $_COOKIE[$k] = $xss->clean($_COOKIE[$k]);
+                        }
                     }
                 }
-            });
+            );
         }
     }
 
     /**
      * Clean the specific protected varibles.
      *
-     * @param array $protectedLis
-     * @param Xss   $xss
+     * @param array $protectedList The specific variables to be filtered.
+     * @param Xss   $xss           The Xss instance.
      *
      * @return void
      */
     private function cleanProtectedList(array $protectedList, Xss $xss): void
     {
         if (!empty($protectedList)) {
-            $this->kernel->setClosure('xss_protection', 
-                function() use ($xss, $protectedList) {
+
+            $this->kernel->setClosure(
+                'xss_protection', 
+                function () use ($xss, $protectedList) {
                     foreach ($protectedList as $v) {
                         $k = $v['variable'] ?? 'undefined';
         

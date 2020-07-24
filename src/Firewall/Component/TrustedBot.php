@@ -165,6 +165,8 @@ class TrustedBot extends ComponentProvider
 
     /**
      * Check the user-agent string and rdns in the trusted list.
+     * 
+     * @return bool
      */
     public function isAllowed(): bool
     {
@@ -230,6 +232,8 @@ class TrustedBot extends ComponentProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @return bool
      */
     public function isGoogle(): bool
     {
@@ -242,6 +246,8 @@ class TrustedBot extends ComponentProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @return bool
      */
     public function isYahoo(): bool
     {
@@ -254,6 +260,8 @@ class TrustedBot extends ComponentProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @return bool
      */
     public function isBing(): bool
     {
@@ -306,9 +314,12 @@ class TrustedBot extends ComponentProvider
      */
     public function addTrustedBot(string $name, string $useragent, string $rdns)
     {
-        $this->setAllowedItem([
-            'userAgent' => $useragent,
-            'rdns' => $rdns,
-        ], $name);
+        $this->setAllowedItem(
+            [
+                'userAgent' => $useragent,
+                'rdns' => $rdns,
+            ],
+            $name
+        );
     }
 }

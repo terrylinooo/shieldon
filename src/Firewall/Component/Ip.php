@@ -64,7 +64,7 @@ class Ip extends ComponentProvider
     /**
      * Check an IP if it exists in Anti-Scraping allow/deny list.
      *
-     * @param string $ip
+     * @param string $ip The IP address.
      *
      * @return array If data entry exists, it will return an array structure:
      *               - status: ALLOW | DENY
@@ -116,7 +116,7 @@ class Ip extends ComponentProvider
     /**
      * Check if a given IP is in a network
      *
-     * modified from: https://gist.github.com/tott/7684443
+     * This method is modified from: https://gist.github.com/tott/7684443
      *                https://github.com/cloudflare/CloudFlare-Tools/blob/master/cloudflare/inRange.php
      * We can it test here: http://jodies.de/ipcalc
      *
@@ -158,8 +158,9 @@ class Ip extends ComponentProvider
      *  0.0.0.0          00000000.00000000.00000000.00000000  /0   IP space
      * -------------------------------------------------------------------------------
      *
-     * @param  string $ip    IP to check in IPV4 and IPV6 format
-     * @param  string $range IP/CIDR netmask eg. 127.0.0.0/24, also 127.0.0.1 is accepted and /32 assumed
+     * @param string $ip      IP to check in IPV4 and IPV6 format
+     * @param string $ipRange IP/CIDR netmask eg. 127.0.0.0/24, also 127.0.0.1
+     *                        is accepted and /32 assumed
      *
      * @return bool true if the ip is in this range / false if not.
      */
@@ -266,7 +267,7 @@ class Ip extends ComponentProvider
         $ip = $ipData[0];
         $cidr = (int) $ipData[1] ?? 32;
 
-		$result[0] = long2ip((ip2long($ip)) & ((-1 << (32 - $cidr))));
+        $result[0] = long2ip((ip2long($ip)) & ((-1 << (32 - $cidr))));
         $result[1] = long2ip((ip2long($ip)) + pow(2, (32 - $cidr)) - 1);
 
         if ($isDecimal) {
@@ -274,13 +275,14 @@ class Ip extends ComponentProvider
             $result[1] = ip2long($result[1]);
         }
 
-		return $result;
+        return $result;
     }
 
     /**
      * Get the ipv6 full format and return it as a decimal value.
      *
-     * @param string $ip
+     * @param string $ip The IP address.
+     *
      * @return string
      */
     public function decimalIpv6(string $ip): string
@@ -301,10 +303,11 @@ class Ip extends ComponentProvider
     /**
      * Get the ipv6 full format and return it as a decimal value. (Confirmation version)
      *
-     * @param string $ip
+     * @param string $ip The IP address.
+     *
      * @return string
      */
-    public function _decimalIpv6($ip): string
+    public function decimalIpv6Confirm($ip): string
     {
         $binNum = '';
         foreach (unpack('C*', inet_pton($ip)) as $byte) {
@@ -315,6 +318,8 @@ class Ip extends ComponentProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @return bool
      */
     public function isDenied(): bool
     {
@@ -335,6 +340,8 @@ class Ip extends ComponentProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @return bool
      */
     public function isAllowed(): bool
     {

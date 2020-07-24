@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * This file is part of the Shieldon package.
  *
@@ -17,6 +17,8 @@
  * @link      https://github.com/terrylinooo/shieldon
  * @see       https://shieldon.io
  */
+
+declare(strict_types=1);
 
 namespace Shieldon\Firewall\Captcha;
 

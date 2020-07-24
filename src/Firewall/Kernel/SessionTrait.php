@@ -32,7 +32,7 @@ use function time;
  */
 trait SessionTrait
 {
-   /**
+    /**
      * Are you willing to limit the online session amount?
      *
      * @var array

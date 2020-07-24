@@ -39,8 +39,8 @@ interface ComponentInterface
     /**
      * Set denied item.
      *
-     * @param string|array $value
-     * @param string       $key
+     * @param string|array $value The value of the data.
+     * @param string       $key   The key of the data.
      *
      * @return void
      */
@@ -56,7 +56,7 @@ interface ComponentInterface
     /**
      * Remove a denied item.
      *
-     * @param string $key
+     * @param string $key The key of the data.
      *
      * @return void
      */
@@ -72,7 +72,7 @@ interface ComponentInterface
     /**
      * Check if a denied item exists.
      *
-     * @param string $key
+     * @param string $key The key of the data.
      *
      * @return bool
      */
@@ -81,7 +81,7 @@ interface ComponentInterface
     /**
      * Get denied items have the same prefix.
      *
-     * @param string $key
+     * @param string $key The key of the data.
      *
      * @return bool
      */
@@ -90,7 +90,7 @@ interface ComponentInterface
     /**
      * Remove denied items with the same prefix.
      *
-     * @param string $key
+     * @param string $key The key of the data.
      *
      * @return bool
      */

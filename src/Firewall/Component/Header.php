@@ -64,6 +64,8 @@ class Header extends ComponentProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @return bool
      */
     public function isDenied(): bool
     {

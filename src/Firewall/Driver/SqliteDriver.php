@@ -34,15 +34,17 @@ class SqliteDriver extends SqlDriverProvider
     /**
      * Constructor.
      *
-     * @param PDO $pdo
-     * @param bool $debug
+     * @param PDO  $pdo   The PDO instance.
+     * @param bool $debug The option to enable debugging or not.
+     * 
+     * @return void
      */
     public function __construct(PDO $pdo, bool $debug = false)
     {
         parent::__construct($pdo, $debug);
     }
 
-      /**
+    /**
      * Create SQL tables that Shieldon needs.
      *
      * @return bool
@@ -86,7 +88,7 @@ class SqliteDriver extends SqlDriverProvider
 
             return true;
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
         } catch (Exception $e) {
             return false;
         }
@@ -108,7 +110,7 @@ class SqliteDriver extends SqlDriverProvider
         try {
             $result = $this->db->query("SELECT 1 FROM $this->tableFilterLogs LIMIT 1");
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
         } catch (Exception $e) {
 
             // We got an exception == table not found

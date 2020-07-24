@@ -39,14 +39,16 @@ class RedisDriver extends DriverProvider
     /**
      * Redis instance.
      *
-     * @var object
+     * @var object|null
      */
     protected $redis;
 
     /**
      * Constructor.
      *
-     * @param Redis $redis
+     * @param Redis $redis The Redis instance.
+     * 
+     * @return void
      */
     public function __construct(Redis $redis)
     {
@@ -56,7 +58,7 @@ class RedisDriver extends DriverProvider
     /**
      * Set data channel.
      *
-     * @param string $channel
+     * @param string $channel The prefix of data tables.
      *
      * @return void
      */
@@ -92,6 +94,10 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $type The type of the data table.
+     * 
+     * @return bool
      */
     protected function doFetchAll(string $type = 'filter'): array
     {
@@ -129,6 +135,11 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The data id of the entry to fetch.
+     * @param string $type The type of the data table.
+     * 
+     * @return array
      */
     protected function doFetch(string $ip, string $type = 'filter'): array
     {
@@ -164,6 +175,11 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     *
+     * @param string $ip   The data id of the entry to check for.
+     * @param string $type The type of the data table.
+     *
+     * @return bool
      */
     protected function checkExist(string $ip, string $type = 'filter'): bool
     {
@@ -182,6 +198,13 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip     The data id.
+     * @param array  $data   The data.
+     * @param string $type   The type of the data table.
+     * @param int    $expire The data will be deleted after expiring.
+     *
+     * @return bool
      */
     protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
@@ -215,6 +238,11 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The key name of a redis entry.
+     * @param string $type The type of the data table.
+     * 
+     * @return bool
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
@@ -231,6 +259,10 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * Rebuild data tables.
+     *
+     * @return bool
      */
     protected function doRebuild(): bool
     {
@@ -249,8 +281,8 @@ class RedisDriver extends DriverProvider
     /**
      * Get key name.
      *
-     * @param string $ip
-     * @param string $type
+     * @param string $ip   The key name of a redis entry.
+     * @param string $type The type of the data table.
      *
      * @return string
      */
@@ -270,7 +302,7 @@ class RedisDriver extends DriverProvider
     /**
      * Get namespace.
      *
-     * @param string $type
+     * @param string $type The type of the data table.
      *
      * @return string
      */

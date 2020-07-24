@@ -27,6 +27,8 @@ use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session;
 use function Shieldon\Firewall\unset_superglobal;
 use function time;
+use function array_keys;
+
 /*
  * This trait is used on Kernel only.
  */
@@ -84,9 +86,9 @@ trait FilterTrait
     /**
      * Start an action for this IP address, allow or deny, and give a reason for it.
      *
-     * @param int    $actionCode - 0: deny, 1: allow, 9: unban.
-     * @param string $reasonCode
-     * @param string $assignIp
+     * @param int    $actionCode The action code. - 0: deny, 1: allow, 9: unban.
+     * @param string $reasonCode The response code.
+     * @param string $assignIp   The IP address.
      * 
      * @return void
      */
@@ -125,15 +127,19 @@ trait FilterTrait
 
     /**
      * Disable filters.
+     * 
+     * @return void
      */
     public function disableFilters(): void
     {
-        $this->setFilters([
-            'session'   => false,
-            'cookie'    => false,
-            'referer'   => false,
-            'frequency' => false,
-        ]);
+        $this->setFilters(
+            [
+                'session'   => false,
+                'cookie'    => false,
+                'referer'   => false,
+                'frequency' => false,
+            ]
+        );
     }
 
     /*
@@ -259,7 +265,7 @@ trait FilterTrait
      * Filter - Referer.
      *
      * @param array $logData   IP data from Shieldon log table.
-     * @param array $ipData    The IP log data.
+     * @param array $ipDetail  The IP log data.
      * @param bool  $isFlagged Is flagged as unusual behavior or not.
      *
      * @return array
@@ -303,7 +309,7 @@ trait FilterTrait
      * Filter - Session
      *
      * @param array $logData   IP data from Shieldon log table.
-     * @param array $ipData    The IP log data.
+     * @param array $ipDetail  The IP log data.
      * @param bool  $isFlagged Is flagged as unusual behavior or not.
      *
      * @return array
@@ -350,7 +356,7 @@ trait FilterTrait
      * Filter - Cookie
      *
      * @param array $logData   IP data from Shieldon log table.
-     * @param array $ipData    The IP log data.
+     * @param array $ipDetail  The IP log data.
      * @param bool  $isFlagged Is flagged as unusual behavior or not.
      *
      * @return array
@@ -415,7 +421,7 @@ trait FilterTrait
      * Filter - Frequency
      *
      * @param array $logData   IP data from Shieldon log table.
-     * @param array $ipData    The IP log data.
+     * @param array $ipDetail  The IP log data.
      * @param bool  $isFlagged Is flagged as unusual behavior or not.
      *
      * @return array

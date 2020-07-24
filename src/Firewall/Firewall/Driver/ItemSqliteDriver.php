@@ -52,7 +52,7 @@ class ItemSqliteDriver
             $pdoInstance = new PDO('sqlite:' . $sqliteLocation);
             $instance = new SqliteDriver($pdoInstance);
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
 
         } catch(PDOException $e) {
             echo $e->getMessage();

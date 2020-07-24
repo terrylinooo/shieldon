@@ -54,8 +54,8 @@ trait AllowedTrait
     /**
      * Add an allowed item to the whitelist pool.
      *
-     * @param string|array $value
-     * @param string       $key
+     * @param string|array $value The value of the data.
+     * @param string       $key   The key of the data.
      *
      * @return void
      */
@@ -82,6 +82,8 @@ trait AllowedTrait
     /**
      * Return the allowed item if exists.
      *
+     * @param string $key The key of the data.
+     *
      * @return string
      */
     public function removeAllowedItem(string $key): void
@@ -102,7 +104,7 @@ trait AllowedTrait
     /**
      * Check if a allowed item exists.
      *
-     * @param string $key
+     * @param string $key The key of the data.
      *
      * @return bool
      */
@@ -114,7 +116,7 @@ trait AllowedTrait
     /**
      * Check if a allowed item exists have the same prefix.
      *
-     * @param string $key
+     * @param string $key The key of the data.
      *
      * @return array
      */
@@ -132,7 +134,7 @@ trait AllowedTrait
     /**
      * Remove allowed items with the same prefix.
      *
-     * @param string $key
+     * @param string $key The key of the data.
      *
      * @return void
      */

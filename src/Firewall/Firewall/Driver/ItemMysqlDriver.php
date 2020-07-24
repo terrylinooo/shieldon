@@ -43,21 +43,22 @@ class ItemMysqlDriver
         $instance = null;
 
         try {
+  
+            $host = 'mysql' . 
+                ':host='    . $setting['host'] .
+                ';dbname='  . $setting['dbname'] .
+                ';charset=' . $setting['charset'];
+
+            $user = (string) $setting['user'];
+            $pass = (string) $setting['pass'];
 
             // Create a PDO instance.
-            $pdoInstance = new PDO(
-                'mysql:host=' 
-                    . $setting['host']   . ';dbname=' 
-                    . $setting['dbname'] . ';charset=' 
-                    . $setting['charset']
-                , (string) $setting['user']
-                , (string) $setting['pass']
-            );
+            $pdoInstance = new PDO($host, $user, $pass);
 
             // Use MySQL data driver.
             $instance = new MysqlDriver($pdoInstance);
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
 
         } catch(PDOException $e) {
             echo $e->getMessage();

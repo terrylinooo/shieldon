@@ -51,6 +51,8 @@ class Rdns extends ComponentProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @return bool
      */
     public function isDenied(): bool
     {

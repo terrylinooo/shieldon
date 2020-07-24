@@ -60,7 +60,7 @@ class CaptchaFactory
 
         // If the class doesn't exist.
         if (!file_exists(__DIR__ . '/' . self::getCamelCase($type) . '.php')) {
-   //         return false;
+            return false;
         }
 
         return true;
@@ -76,10 +76,15 @@ class CaptchaFactory
     public static function getCamelCase(string $string = '')
     {
         $str = explode('-', $string);
-        $str = implode('', array_map(function($word) {
-            return ucwords($word); 
-        }, $str));
-
+        $str = implode(
+            '',
+            array_map(
+                function ($word) {
+                    return ucwords($word); 
+                },
+                $str
+            )
+        );
         return $str;
     }
 }

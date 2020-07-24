@@ -39,10 +39,11 @@ use function time;
 trait MainTrait
 {
     /**
-     * Fetch value from configuration.
+     * Get options from the configuration file.
+     * This method is same as `$this->getConfig()` but returning value from array directly.
      *
-     * @param string $option
-     * @param string $section
+     * @param string $option  The option of the section in the the configuration.
+     * @param string $section The section in the configuration.
      *
      * @return mixed
      */
@@ -211,8 +212,10 @@ trait MainTrait
 
     /**
      * Apply the denied list and the allowed list to Ip Component.
+     * 
+     * @return void
      */
-    protected function applyComponentIpManager()
+    protected function applyComponentIpManager(): void
     {
         $ipList = (array) $this->getOption('ip_manager');
 
@@ -266,7 +269,6 @@ trait MainTrait
          * HTTP_CF_CONNECTING_IP: Cloudflare
          * HTTP_X_FORWARDED_FOR: Google Cloud CDN, Google Load-balancer, AWS.
          * HTTP_X_FORWARDED_HOST: KeyCDN, or other CDN providers not listed here.
-         * 
          */
         $key = array_search(true, $ipSourceType);
         $ip = $serverParams[$key];
@@ -289,21 +291,34 @@ trait MainTrait
     {
         $setting = $this->getOption('failed_attempts_in_a_row', 'events');
 
-        $this->kernel->setProperty('deny_attempt_enable', [
-            'data_circle' => $setting['data_circle']['enable'],         // false   
-            'system_firewall' => $setting['system_firewall']['enable'], // false   
-        ]);
+        $this->kernel->setProperty(
+            'deny_attempt_enable',
+            [
+                'data_circle'     => $setting['data_circle']['enable'],     // false   
+                'system_firewall' => $setting['system_firewall']['enable'], // false   
+            ]
+        );
 
-        $this->kernel->setProperty('deny_attempt_buffer', [
-            'data_circle' => $setting['data_circle']['buffer'],         // 10
-            'system_firewall' => $setting['system_firewall']['buffer'], // 10
-        ]);
+        $this->kernel->setProperty(
+            'deny_attempt_buffer',
+            [
+                'data_circle'     => $setting['data_circle']['buffer'],     // 10
+                'system_firewall' => $setting['system_firewall']['buffer'], // 10
+            ]
+        );
 
         // Check the time of the last failed attempt.
         $recordAttempt = $this->getOption('record_attempt');
 
-        $this->kernel->setProperty('record_attempt_detection_period', $recordAttempt['detection_period']); // 5
-        $this->kernel->setProperty('reset_attempt_counter', $recordAttempt['time_to_reset']);              // 1800
+        $this->kernel->setProperty(
+            'record_attempt_detection_period',
+            $recordAttempt['detection_period'] // 5
+        ); 
+
+        $this->kernel->setProperty(
+            'reset_attempt_counter',
+            $recordAttempt['time_to_reset'] // 1800
+        );  
     }
 
     /**
@@ -314,7 +329,11 @@ trait MainTrait
     protected function setIptablesBridgeDirectory(): void
     {
         $iptablesSetting = $this->getOption('config', 'iptables');
-        $this->kernel->setProperty('iptables_watching_folder',  $iptablesSetting['watching_folder']);
+
+        $this->kernel->setProperty(
+            'iptables_watching_folder',
+            $iptablesSetting['watching_folder']
+        );
     }
 
     /**
@@ -355,7 +374,9 @@ trait MainTrait
                 $lastResetTime = strtotime($lastResetTime);
             } else {
                 // @codeCoverageIgnoreStart
+
                 $lastResetTime = strtotime(date('Y-m-d 00:00:00'));
+
                 // @codeCoverageIgnoreEnd
             }
 
@@ -364,7 +385,11 @@ trait MainTrait
                 $updateResetTime = date('Y-m-d 00:00:00');
 
                 // Update new reset time.
-                $this->setConfig('cronjob.reset_circle.config.last_update', $updateResetTime);
+                $this->setConfig(
+                    'cronjob.reset_circle.config.last_update',
+                    $updateResetTime
+                );
+
                 $this->updateConfig();
 
                 // Remove all logs.
@@ -399,7 +424,11 @@ trait MainTrait
         $authenticateList = $this->getOption('www_authenticate');
 
         if (is_array($authenticateList)) {
-            $this->add(new Middleware\HttpAuthentication($authenticateList));
+            $this->add(
+                new Middleware\HttpAuthentication(
+                    $authenticateList
+                )
+            );
         }
     }
 

@@ -31,26 +31,26 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-clock_96x96.png';
 <html lang="<?php echo $langCode ?>">
 <head>
     <meta charset="utf-8">
-	<link rel="icon" href="data:,">
+    <link rel="icon" href="data:,">
     <meta name="robots" content="noindex, nofollow">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php _e('core', 'limit_title', 'Please line up'); ?></title>
     <?php echo '<style>' . $css . '</style>'; ?>
 </head>
 <body>
     <div id="wrapper" class="wrapper">
-		<div class="inner">
-			<div class="card">
-				<div class="card-header"><?php _e('core', 'limit_heading', 'Please line up') ?></div>
-				<div class="card-body">
-					<div class="status-container">
-						<div class="status-icon">
-							<img src="<?php echo $imgsrc; ?>">
-						</div>
-						<div class="status-message">
+        <div class="inner">
+            <div class="card">
+                <div class="card-header"><?php _e('core', 'limit_heading', 'Please line up') ?></div>
+                <div class="card-body">
+                    <div class="status-container">
+                        <div class="status-icon">
+                            <img src="<?php echo $imgsrc; ?>">
+                        </div>
+                        <div class="status-message">
                             <?php _e('core', 'limit_message', 'This page is limiting the number of people online. Please wait a moment.'); ?>
-						</div>
-					</div>
+                        </div>
+                    </div>
  
                     <div class="status-info">
                         <?php _e('core', 'lineup_info', '', ['<strong>' . $onlineinfo['queue'] . '</strong>']); ?><br />
@@ -62,9 +62,9 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-clock_96x96.png';
                         <br /><small><?php _e('core', 'keepalive_info', '', [$onlineinfo['period']]); ?></small>
 
                     </div>
-				</div>
-			</div>
-		</div>
-	</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

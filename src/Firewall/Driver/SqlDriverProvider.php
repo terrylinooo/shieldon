@@ -54,8 +54,10 @@ class SqlDriverProvider extends DriverProvider
     /**
      * Constructor.
      *
-     * @param PDO $pdo
-     * @param bool $debug
+     * @param PDO  $pdo   The PDO instance.
+     * @param bool $debug The option to enable debugging or not.
+     * 
+     * @return void
      */
     public function __construct(PDO $pdo, bool $debug = false)
     {
@@ -91,6 +93,11 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The data id of the entry to fetch.
+     * @param string $type The type of the data table.
+     * 
+     * @return array
      */
     protected function doFetch(string $ip, string $type = 'filter'): array
     {
@@ -106,8 +113,12 @@ class SqlDriverProvider extends DriverProvider
         return $this->{$method}($ip);
     }
 
-   /**
+    /**
      * {@inheritDoc}
+     * 
+     * @param string $type The type of the data table.
+     * 
+     * @return bool
      */
     protected function doFetchAll(string $type = 'filter'): array
     {
@@ -125,6 +136,11 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The data id of the entry to check for.
+     * @param string $type The type of the data table.
+     *
+     * @return bool
      */
     protected function checkExist(string $ip, string $type = 'filter'): bool
     {
@@ -165,6 +181,13 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip     The data id.
+     * @param array  $data   The data.
+     * @param string $type   The type of the data table.
+     * @param int    $expire The data will be deleted after expiring.
+     *
+     * @return bool
      */
     protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
@@ -200,6 +223,11 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The key name of a redis entry.
+     * @param string $type The type of the data table.
+     * 
+     * @return bool
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
@@ -234,6 +262,10 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * Rebuild data tables.
+     *
+     * @return bool
      */
     protected function doRebuild(): bool
     {
@@ -243,9 +275,9 @@ class SqlDriverProvider extends DriverProvider
     /**
      * Update database table.
      *
-     * @param string $table
-     * @param array  $data
-     * @param array  $where
+     * @param string $table The data table name.
+     * @param array  $data  The SELECT statement.
+     * @param array  $where The array creates WHERE clause.
      *
      * @return bool
      */
@@ -297,7 +329,7 @@ class SqlDriverProvider extends DriverProvider
 
             return $query->execute();
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
         
         } catch(Exception $e) {
             return false;
@@ -309,8 +341,8 @@ class SqlDriverProvider extends DriverProvider
     /**
      * Insert database table.
      *
-     * @param string $table
-     * @param array  $data
+     * @param string $table The data table name.
+     * @param array  $data  The data want to insert to the table.
      *
      * @return bool
      */
@@ -356,7 +388,7 @@ class SqlDriverProvider extends DriverProvider
 
             return $query->execute();
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
 
         } catch(Exception $e) {
             return false;
@@ -368,8 +400,8 @@ class SqlDriverProvider extends DriverProvider
     /**
      * Remove a row from a table.
      *
-     * @param string $table
-     * @param array $where
+     * @param string $table The data table name.
+     * @param array  $where The array creates WHERE clause.
      *
      * @return bool
      */
@@ -409,7 +441,7 @@ class SqlDriverProvider extends DriverProvider
 
             return $query->execute();
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
 
         } catch(Exception $e) {
             return false;
@@ -466,7 +498,7 @@ class SqlDriverProvider extends DriverProvider
 
             return true;
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
 
         } catch (Exception $e) {
             return false;
@@ -497,7 +529,7 @@ class SqlDriverProvider extends DriverProvider
 
             return true;
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
 
         } catch (Exception $e) {
             return false;

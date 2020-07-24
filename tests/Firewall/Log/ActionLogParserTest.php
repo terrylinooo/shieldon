@@ -218,9 +218,9 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
 
         switch ($type) {
             case 'yesterday':
-			case 'past_seven_days':
-			case 'this_month':
-			case 'last_month':
+            case 'past_seven_days':
+            case 'this_month':
+            case 'last_month':
             case 'past_seven_hours':
                 $this->assertSame(2, $periodData['captcha_success_count']);
                 $this->assertSame(3, $periodData['captcha_failure_count']);
@@ -231,7 +231,7 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
                 $this->assertSame(1, $periodData['session_limit_count']);
                 break;
 
-			case 'today':
+            case 'today':
                 $this->assertSame('5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['captcha_chart_string']);
                 $this->assertSame('9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['pageview_chart_string']);
                 $this->assertSame(2, $periodData['captcha_success_count']);
@@ -244,9 +244,9 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
                 $this->assertSame('2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['captcha_success_chart_string']);
                 $this->assertSame('3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['captcha_failure_chart_string']);
                 $this->assertSame("'12:00 am','01:00 am','02:00 am','03:00 am','04:00 am','05:00 am','06:00 am','07:00 am','08:00 am','09:00 am','10:00 am','11:00 am','12:00 pm','01:00 pm','02:00 pm','03:00 pm','04:00 pm','05:00 pm','06:00 pm','07:00 pm','08:00 pm','09:00 pm','10:00 pm','11:00 pm'", $periodData['label_chart_string']);
-				break;
+                break;
 
-			default:
+            default:
         }
     }
 
@@ -306,32 +306,32 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
         switch ($type) {
             // The startDate is supposed to be the same as parsePeriodData in ActionLogParser.
 
-			case 'yesterday':
-				// Set start date and end date.
-				$startDate = date('Ymd', strtotime('yesterday'));
-				break;
+            case 'yesterday':
+                // Set start date and end date.
+                $startDate = date('Ymd', strtotime('yesterday'));
+                break;
 
-			case 'past_seven_days':
-				$startDate = date('Ymd', strtotime('-7 days'));
-				break;
+            case 'past_seven_days':
+                $startDate = date('Ymd', strtotime('-7 days'));
+                break;
 
-			case 'this_month':
-				$startDate = date('Ym') . '01';
-				break;
+            case 'this_month':
+                $startDate = date('Ym') . '01';
+                break;
 
-			case 'last_month':
+            case 'last_month':
                 $startDate = date('Ym', strtotime('-1 month')) . '01';
-				break;
+                break;
 
             case 'past_seven_hours':
                 return strtotime('-7 hours') + $unit;
-				break;
+                break;
 
-			case 'today':
+            case 'today':
                 $startDate = date('Ymd');
-				break;
+                break;
 
-			default:
+            default:
 
                 if (preg_match('/past_([0-9]+)_days/', $type, $matches) ) {
 
@@ -341,7 +341,7 @@ class ActionLogParserTest extends \PHPUnit\Framework\TestCase
                 } else {
                     $startDate = date('Ymd');
                 }
-			// endswitch;
+            // endswitch;
         }
         
         $baseTimesamp = strtotime($startDate) + $unit;

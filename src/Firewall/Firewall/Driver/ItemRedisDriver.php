@@ -68,7 +68,7 @@ class ItemRedisDriver
             // Use Redis data driver.
             $instance = new RedisDriver($redis);
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
 
         } catch(RedisException $e) {
             echo $e->getMessage();

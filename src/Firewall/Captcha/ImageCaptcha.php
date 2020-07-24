@@ -95,14 +95,14 @@ class ImageCaptcha extends CaptchaProvider
      *
      * It will implement default configuration settings here.
      *
-     * @array $config
+     * @param array $config The settings for creating Captcha.
      *
      * @return void
      */
     public function __construct(array $config = [])
     {
         $defaults = [
-            'img_width'	   => 250,
+            'img_width'    => 250,
             'img_height'   => 50,
             'word_length'  => 8,
             'font_spacing' => 10,
@@ -209,7 +209,7 @@ class ImageCaptcha extends CaptchaProvider
     /**
      * Create CAPTCHA
      *
-     * @return	string
+     * @return string
      */
     protected function createCaptcha()
     {
@@ -283,8 +283,8 @@ class ImageCaptcha extends CaptchaProvider
      *
      * This method initialize the $im.
      * 
-     * @param int      $imgWidth  The width of the image.
-     * @param int      $imgHeight The height of the image.
+     * @param int $imgWidth  The width of the image.
+     * @param int $imgHeight The height of the image.
      *
      * @return void
      */
@@ -293,7 +293,7 @@ class ImageCaptcha extends CaptchaProvider
         if (function_exists('imagecreatetruecolor')) {
             $this->im = imagecreatetruecolor($imgWidth, $imgHeight);
     
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
 
         } else {
             $this->im = imagecreate($imgWidth, $imgHeight);
@@ -339,11 +339,11 @@ class ImageCaptcha extends CaptchaProvider
             mt_rand(6, $imgHeight);
 
         // Create the spiral pattern.
-        $theta = 1;
-        $thetac	= 7;
-        $radius	= 16;
+        $theta   = 1;
+        $thetac  = 7;
+        $radius  = 16;
         $circles = 20;
-        $points	= 32;
+        $points  = 32;
 
         for ($i = 0, $cp = ($circles * $points) - 1; $i < $cp; $i++) {
             $theta += $thetac;
@@ -379,7 +379,7 @@ class ImageCaptcha extends CaptchaProvider
         $y = 0;
 
         for ($i = 0; $i < $this->length; $i++) {
-            $y = mt_rand(0 , $imgHeight / 2);
+            $y = mt_rand(0, $imgHeight / 2);
             imagestring($this->im, 5, $x, $y, $this->word[$i], $textColor);
             $x += ($this->properties['font_spacing'] * 2);
         }
@@ -408,13 +408,13 @@ class ImageCaptcha extends CaptchaProvider
     private function getImageBase64Content(): string
     {
         // Generate image in base64 string.
-        ob_start ();
+        ob_start();
 
         if (function_exists('imagejpeg')) {
             $this->imageType = 'jpeg';
             imagejpeg($this->im);
 
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
 
         } elseif (function_exists('imagepng')) {
             $this->imageType = 'png';

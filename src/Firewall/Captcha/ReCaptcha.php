@@ -37,11 +37,39 @@ use function json_decode;
  */
 class ReCaptcha extends CaptchaProvider
 {
+    /**
+     * The site key.
+     *
+     * @var string
+     */
     protected $key = '';
+
+    /**
+     * The secret key.
+     *
+     * @var string
+     */
     protected $secret = '';
+
+    /**
+     * The version.
+     *
+     * @var string
+     */
     protected $version = 'v2';
+
+    /**
+     * The language code of the UI.
+     *
+     * @var string
+     */
     protected $lang = 'en';
 
+    /**
+     * The URL of Google ReCaptcha API.
+     *
+     * @var string
+     */
     protected $googleServiceUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
     /**
@@ -49,7 +77,7 @@ class ReCaptcha extends CaptchaProvider
      *
      * It will implement default configuration settings here.
      *
-     * @array $config
+     * @param array $config The settings of Google ReCpatcha.
      *
      * @return void
      */

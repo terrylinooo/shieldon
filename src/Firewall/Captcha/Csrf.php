@@ -48,7 +48,7 @@ class Csrf extends CaptchaProvider
      *
      * It will implement default configuration settings here.
      *
-     * @array $config
+     * @param array $config The field of the CSRF configuration.
      *
      * @return void
      */

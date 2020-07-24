@@ -147,12 +147,12 @@ class IpTest extends \PHPUnit\Framework\TestCase
     {
         $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->decimalIpv6('FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
-        $t = $ipComponent->_decimalIpv6('FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
+        $t = $ipComponent->decimalIpv6Confirm('FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
         $this->assertSame('338288524927261046600406220626806860202', $t);
         $this->assertSame('338288524927261046600406220626806860202', $t);
        
         $t = $ipComponent->decimalIpv6('2001:DB8:2de::e13');
-        $t = $ipComponent->_decimalIpv6('2001:DB8:2de::e13');
+        $t = $ipComponent->decimalIpv6Confirm('2001:DB8:2de::e13');
         $this->assertSame('42540766412169952080266446484866804624', $t);
         $this->assertSame('42540766412169952080266446484866804624', $t);
     }

@@ -78,7 +78,7 @@ class DriverProvider extends AbstractDriver
     /**
      * Set data channel.
      *
-     * @param string $channel
+     * @param string $channel The prefix of the data tables.
      *
      * @return void
      */
@@ -180,7 +180,7 @@ class DriverProvider extends AbstractDriver
     /**
      * Implement fetch.
      *
-     * @param string $ip The data id of the entry to fetch.
+     * @param string $ip   The data id of the entry to fetch.
      * @param string $type The type of data table. accepts: filter | session | rule
      *
      * @return array The data or an empty array.
@@ -205,7 +205,7 @@ class DriverProvider extends AbstractDriver
     /**
      * Implement has.
      *
-     * @param string $ip The data id of the entry to check for.
+     * @param string $ip   The data id of the entry to check for.
      * @param string $type The type of data table. accepts: filter | session | rule
      *
      * @return bool
@@ -220,6 +220,7 @@ class DriverProvider extends AbstractDriver
      *
      * @param string $ip     The IP address as the data id.
      * @param array  $data   The data.
+     * @param string $type   The type of the data table.
      * @param int    $expire The data will be deleted after expiring.
      *
      * @return bool
@@ -253,9 +254,10 @@ class DriverProvider extends AbstractDriver
     }
 
     /**
-     * Initial data tables.
-     * 
-     * @param bool $dbCheck
+     * Initialize data tables.
+     *
+     * @param bool $dbCheck This is for creating data tables automatically
+     *                      Turn it off, if you don't want to check data tables every pageview.
      *
      * @return void
      */

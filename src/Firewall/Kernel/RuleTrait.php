@@ -138,9 +138,9 @@ trait RuleTrait
     /**
      * Record the attempts when the user is temporarily denied by rule table.
      *
-     * @param array $logData
-     * @param int   $handleType
-     * @param int   $attempts
+     * @param array $logData    The log data.
+     * @param int   $handleType The type for i18n string of the message.
+     * @param int   $attempts   The attempt times.
      * 
      * @return array
      */
@@ -174,9 +174,9 @@ trait RuleTrait
     /**
      * Record the attempts when the user is permanently denied by rule table.
      *
-     * @param array $logData
-     * @param int   $handleType
-     * @param int   $attempts
+     * @param array $logData    The log data.
+     * @param int   $handleType The type for i18n string of the message.
+     * @param int   $attempts   The attempt times.
      * 
      * @return array
      */
@@ -229,8 +229,8 @@ trait RuleTrait
     /**
      * Prepare the message body for messenger modules to sent.
      *
-     * @param array $logData
-     * @param int   $handleType
+     * @param array $logData    The log data.
+     * @param int   $handleType The type for i18n string of the message.
      * 
      * @return string
      */

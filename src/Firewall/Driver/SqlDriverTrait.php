@@ -172,6 +172,7 @@ trait SqlDriverTrait
 
     /**
      * Fetch all data from session table.
+     *
      * @return array
      */
     protected function doFetchAllFromSessionTable(): array

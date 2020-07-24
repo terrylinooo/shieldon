@@ -40,7 +40,7 @@ trait ComponentTrait
     /**
      * Set a commponent.
      *
-     * @param ComponentProvider $instance
+     * @param ComponentProvider $instance The component instance.
      *
      * @return void
      */

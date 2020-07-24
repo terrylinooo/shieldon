@@ -179,9 +179,7 @@ trait FirewallTrait
 
     /**
      * Get options from the configuration file.
-     * 
-     * This method is same as `$this->getConfig()` but returning value from array directly, 
-     * saving a `explode()` process.
+     * This method is same as `$this->getConfig()` but returning value from array directly.
      *
      * @param string $option  The option of the section in the the configuration.
      * @param string $section The section in the configuration.

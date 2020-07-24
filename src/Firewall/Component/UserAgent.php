@@ -77,6 +77,8 @@ class UserAgent extends ComponentProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @return bool
      */
     public function isDenied(): bool
     {
@@ -99,6 +101,8 @@ class UserAgent extends ComponentProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @return int
      */
     public function getDenyStatusCode(): int
     {

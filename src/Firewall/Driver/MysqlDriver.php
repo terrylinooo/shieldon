@@ -33,8 +33,10 @@ class MysqlDriver extends SqlDriverProvider
     /**
      * Constructor.
      *
-     * @param PDO $pdo
-     * @param bool $debug
+     * @param PDO  $pdo   The PDO instance.
+     * @param bool $debug The option to enable debugging or not.
+     * 
+     * @return void
      */
     public function __construct(PDO $pdo, bool $debug = false)
     {

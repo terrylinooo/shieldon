@@ -81,7 +81,7 @@ trait DriverTrait
      * Turning it on will check the data tables exist or not at every single pageview, 
      * it's not good for high traffic websites.
      *
-     * @param bool $bool
+     * @param bool $bool The option to enable or disable automatically creating db.
      * 
      * @return void
      */

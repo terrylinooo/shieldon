@@ -40,7 +40,6 @@ interface DriverInterface
     /**
      * Get all entries from the driver provider.
      *
-     * @param string $ip   The IP address as well as the data id.
      * @param string $type The type of data table. accepts: filter | session | rule
      *
      * @return array The data or an empty array.
@@ -60,10 +59,9 @@ interface DriverInterface
     /**
      * Save data or replace old data to the new.
      *
-     * @param string $ip   The IP address as well as the data id.
-     * @param array  $data The data.
-     * @param string $type The type of data table. accepts: filter | session | rule
-     *
+     * @param string $ip     The IP address as well as the data id.
+     * @param array  $data   The data.
+     * @param string $type   The type of data table. accepts: filter | session | rule
      * @param int    $expire The data will be deleted after expiring.
      *
      * @return bool
@@ -98,5 +96,3 @@ interface DriverInterface
      */
     public function init(bool $dbCheck = true): void;
 }
-
-

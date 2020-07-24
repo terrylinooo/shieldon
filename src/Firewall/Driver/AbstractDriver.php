@@ -31,6 +31,11 @@ abstract class AbstractDriver implements DriverInterface
 {
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The data id of the entry to fetch.
+     * @param string $type The type of data table. accepts: filter | session | rule
+     *
+     * @return array
      */
     public function get(string $ip, string $type = 'filter'): array
     {
@@ -39,6 +44,10 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $type The type of data table. accepts: filter | session | rule
+     *
+     * @return array
      */
     public function getAll(string $type = 'filter'): array
     {
@@ -47,6 +56,11 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The IP address as well as the data id.
+     * @param string $type The type of data table. accepts: filter | session | rule
+     *
+     * @return bool
      */
     public function has(string $ip, string $type = 'filter'): bool
     {
@@ -55,6 +69,13 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip     The IP address as well as the data id.
+     * @param array  $data   The data.
+     * @param string $type   The type of data table. accepts: filter | session | rule
+     * @param int    $expire The data will be deleted after expiring.
+     *
+     * @return bool
      */
     public function save(string $ip, array $data, string $type = 'filter', int $expire = 0): bool
     {
@@ -63,6 +84,13 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The IP address as well as the data id.
+     * @param string $type The type of data table. accepts: filter | session | rule
+     *
+     * @return bool true if the data entry is deleted successfully.
+     *              deleting a non-existing entry is considered successful.
+     *              return false overwise.
      */
     public function delete(string $ip, string $type = 'filter'): bool
     {
@@ -71,6 +99,8 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
+     * 
+     * @return bool
      */
     public function rebuild(): bool
     {
@@ -79,6 +109,10 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
+     * 
+     * @param bool $dbCheck This is for creating data tables automatically
+     *
+     * @return void
      */
     public function init(bool $dbCheck = true): void
     {
@@ -88,7 +122,8 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * Implement fetch.
      *
-     * @param string $ip The data id of the entry to fetch.
+     * @param string $ip   The data id of the entry to fetch.
+     * @param string $type The type of the data table.
      *
      * @return array The data or an empty array.
      */
@@ -106,7 +141,8 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * Implement has.
      *
-     * @param string $ip The data id of the entry to check for.
+     * @param string $ip   The data id of the entry to check for.
+     * @param string $type The type of the data table.
      *
      * @return bool
      */
@@ -117,6 +153,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @param string $ip     The data id.
      * @param array  $data   The data.
+     * @param string $type   The type of the data table.
      * @param int    $expire The data will be deleted after expiring.
      *
      * @return bool
@@ -126,7 +163,8 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * Implement delete.
      *
-     * @param string $ip
+     * @param string $ip   The data id.
+     * @param string $type The type of the data table.
      *
      * @return bool
      */
@@ -142,7 +180,8 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * Initial data tables.
      * 
-     * @param bool $dbCheck
+     * @param bool $dbCheck This is for creating data tables automatically
+     *                      Turn it off, if you don't want to check data tables every pageview.
      *
      * @return void
      */

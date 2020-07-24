@@ -48,7 +48,7 @@ trait MessengerTrait
     /**
      * Set a messenger
      *
-     * @param MessengerInterfa $instance
+     * @param MessengerInterfa $instance The messenger instance.
      *
      * @return void
      */

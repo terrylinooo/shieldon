@@ -36,7 +36,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
         $_POST['products'] = [
             '<IMG SRC=javascript:alert(String.fromCharCode(88,83,83))>',
-            '<IMG SRC="jav	ascript:alert(\'XSS\');">',
+            '<IMG SRC="jav    ascript:alert(\'XSS\');">',
         ];
 
         $products = $xssInstance->clean($_POST['products'], false);

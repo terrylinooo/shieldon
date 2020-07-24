@@ -40,7 +40,7 @@ trait CaptchaTrait
     /**
      * Set a captcha.
      *
-     * @param CaptchaInterface $instance
+     * @param CaptchaInterface $instance The captcha instance.
      *
      * @return void
      */

@@ -71,7 +71,7 @@ class FileDriver extends DriverProvider
     /**
      * Constructor.
      *
-     * @param string $directory
+     * @param string $directory The directory for storing data files.
      */
     public function __construct(string $directory = '')
     {
@@ -104,6 +104,10 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $type The type of the data table.
+     * 
+     * @return bool
      */
     protected function doFetchAll(string $type = 'filter'): array
     {
@@ -143,6 +147,11 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The data id of the entry to fetch.
+     * @param string $type The type of the data table.
+     * 
+     * @return array
      */
     protected function doFetch(string $ip, string $type = 'filter'): array
     {
@@ -173,6 +182,11 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The data id of the entry to check for.
+     * @param string $type The type of the data table.
+     *
+     * @return bool
      */
     protected function checkExist(string $ip, string $type = 'filter'): bool
     {
@@ -185,6 +199,13 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip     The data id.
+     * @param array  $data   The data.
+     * @param string $type   The type of the data table.
+     * @param int    $expire The data will be deleted after expiring.
+     *
+     * @return bool
      */
     protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
@@ -215,6 +236,11 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * @param string $ip   The key name of a redis entry.
+     * @param string $type The type of the data table.
+     * 
+     * @return bool
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
@@ -232,6 +258,10 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
+     * 
+     * Rebuild data tables.
+     *
+     * @return bool
      */
     protected function doRebuild(): bool
     {
@@ -299,4 +329,3 @@ class FileDriver extends DriverProvider
         return false;
     }
 }
-

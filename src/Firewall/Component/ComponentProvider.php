@@ -75,8 +75,8 @@ abstract class ComponentProvider implements ComponentInterface
     /**
      * Set denied item.
      *
-     * @param string|array $value The value of a item.
-     * @param string       $key   The key of a item.
+     * @param string|array $value The value of a data item.
+     * @param string       $key   The key of a data item.
      *
      * @return void
      */
@@ -92,6 +92,8 @@ abstract class ComponentProvider implements ComponentInterface
 
     /**
      * Return the denied item if exists.
+     * 
+     * @param string $key The key of a data item.
      *
      * @return string
      */
@@ -112,6 +114,8 @@ abstract class ComponentProvider implements ComponentInterface
 
     /**
      * Return the denied item if exists.
+     * 
+     * @param string $key The key of a data item.
      *
      * @return string
      */
@@ -133,7 +137,7 @@ abstract class ComponentProvider implements ComponentInterface
     /**
      * Check if a denied item exists.
      *
-     * @param string $key
+     * @param string $key The key of a data item.
      *
      * @return bool
      */
@@ -145,7 +149,7 @@ abstract class ComponentProvider implements ComponentInterface
     /**
      * Check if a denied item exists have the same prefix.
      *
-     * @param string $key
+     * @param string $key The key of a data item.
      *
      * @return array
      */
@@ -163,7 +167,7 @@ abstract class ComponentProvider implements ComponentInterface
     /**
      * Remove denied items with the same prefix.
      *
-     * @param string $key
+     * @param string $key The key of a data item.
      *
      * @return void
      */

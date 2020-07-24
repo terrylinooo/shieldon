@@ -33,8 +33,8 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
     <meta charset="utf-8">
     <link rel="icon" href="data:,">
     <meta name="robots" content="noindex, nofollow">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= _e('panel', 'login_heading_login', 'Login to Firewall Panel'); ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?php _e('panel', 'login_heading_login', 'Login to Firewall Panel'); ?></title>
     <?php echo '<style>' . $css . '</style>'; ?>
 
     <style>
@@ -69,7 +69,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
             box-sizing: border-box;
             box-shadow: inset 0px 1px 0px 0px #dcecfb;
             background: linear-gradient(to bottom, #61b0ff 5%, #4c99e0 100%);
-	        background-color: #61b0ff;
+            background-color: #61b0ff;
             border: 1px solid #84bbf3;
             text-shadow: 0px 1px 0px #528ecc;
             cursor:pointer;
@@ -77,7 +77,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
 
         .btn-submit:hover {
             background:linear-gradient(to bottom, #4c99e0 5%, #61b0ff 100%);
-	        background-color:#4c99e0;
+            background-color:#4c99e0;
         }
 
         .btn-submit:active {
@@ -119,14 +119,14 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
 </head>
 <body>
     <div id="wrapper" class="wrapper">
-		<div class="inner">
-			<div class="card">
-				<div class="card-header">
+        <div class="inner">
+            <div class="card">
+                <div class="card-header">
                     <div class="logo-wrapper">
                         <img src="https://shieldon-io.github.io/static/images/logo.png" class="logo">
                     </div>
                 </div>
-				<div class="card-body">
+                <div class="card-body">
                     <form action="<?php echo $form ?>" method="post" autocomplete="off">
                         <div class="main-content">
                             <?php if (! empty($error)) : ?>
@@ -148,12 +148,12 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                             </div>
                             <?php endif; ?>
                             <div class="input-box">
-                                <button type="submit" class="btn-submit"><?= _e('panel', 'login_btn_login', 'Login'); ?></button>
+                                <button type="submit" class="btn-submit"><?php _e('panel', 'login_btn_login', 'Login'); ?></button>
                             </div>
                         </div>
                         <?php $csrf; ?>
                     </form>
-				</div>
+                </div>
             </div>
         </div> 
     </div>

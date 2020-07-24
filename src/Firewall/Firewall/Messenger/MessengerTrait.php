@@ -28,10 +28,11 @@ namespace Shieldon\Firewall\Firewall\Messenger;
 trait MessengerTrait
 {
     /**
-     * Fetch value from configuration.
+     * Get options from the configuration file.
+     * This method is same as `$this->getConfig()` but returning value from array directly.
      *
-     * @param string $option
-     * @param string $section
+     * @param string $option  The option of the section in the the configuration.
+     * @param string $section The section in the configuration.
      *
      * @return mixed
      */
@@ -91,9 +92,12 @@ trait MessengerTrait
         $notifyDataCircle = $setting['data_circle']['messenger'] ?: false;
         $notifySystemFirewall = $setting['system_firewall']['messenger'] ?: false;
 
-        $this->kernel->setProperty('deny_attempt_notify', [
-            'data_circle' => $notifyDataCircle,
-            'system_firewall' => $notifySystemFirewall,
-        ]);
+        $this->kernel->setProperty(
+            'deny_attempt_notify',
+            [
+                'data_circle'     => $notifyDataCircle,
+                'system_firewall' => $notifySystemFirewall,
+            ]
+        );
     }
 }
