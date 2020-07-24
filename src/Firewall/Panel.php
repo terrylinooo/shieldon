@@ -131,7 +131,7 @@ class Panel
             $controller = __CLASS__ . '\\' . ucfirst($controller);
 
             $controllerClass = new $controller();
-            $controllerClass->csrf($this->csrfField);
+           // $controllerClass->csrf($this->csrfField);
 
             if ('demo' === $this->mode) {
 
@@ -176,7 +176,16 @@ class Panel
         $check = get_session()->get('shieldon_user_login');
 
         if (empty($check)) {
-            $this->resolver((new User)->login($this->mode));
+            $user = new User();
+
+            if ($this->mode === 'demo') {
+                $user->demo(
+                    $this->demoUser['user'],
+                    $this->demoUser['pass']
+                );
+            }
+            
+            $this->resolver($user->login());
         }
     }
 

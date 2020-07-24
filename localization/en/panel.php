@@ -15,7 +15,7 @@ return [
     'title_messenger' => 'Messenger',
     'title_ip_manager' => 'IP Manager',
     'title_exclusion_list' => 'Exclusion',
-    'title_login' => 'Login',
+    'title_login' => 'Login to Shieldon firewall panel',
     'title_title_site_wide' => 'Shieldon Firewall',
     'title_circle_rule' => 'Rule Table',
     'title_circle_filter' => 'Filter Table',

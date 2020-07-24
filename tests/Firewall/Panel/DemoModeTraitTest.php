@@ -46,7 +46,5 @@ class DemoModeTraitTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($mode, 'demo');
 
         $kernel = $firewall->getKernel();
-
-        
     }
 }

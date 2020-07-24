@@ -63,7 +63,8 @@ class User extends BaseController
 
         $login = false;
         $data['error'] = '';
-        $addonTitle = $this->maskAsDemo;
+        $addonTitle = $this->markAsDemo;
+
 
         if (isset($postParams['s_user']) && isset($postParams['s_pass'])) {
 

@@ -36,7 +36,7 @@ class PanelTest extends \PHPUnit\Framework\TestCase
         $output = ob_get_contents();
         ob_end_clean();
 
-        $this->assertStringContainsString('Login', $output);
+        $this->assertStringContainsString('Login to Shieldon firewall panel', $output);
     }
 
     public function testPanelLoginPageDemoMode()
@@ -52,6 +52,6 @@ class PanelTest extends \PHPUnit\Framework\TestCase
         $output = ob_get_contents();
         ob_end_clean();
 
-        $this->assertStringContainsString('Login (DEMO)', $output);
+        $this->assertStringContainsString('Login to Shieldon firewall panel (DEMO)', $output);
     }
 }

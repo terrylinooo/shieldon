@@ -34,6 +34,15 @@ class SettingTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testSettingsBasicSaveConfig()
+    {
+        $this->assertPageOutputContainsString(
+            'firewall/panel/setting/basic',
+            'Basic Setting'
+        );
+    }
+
+
     public function testSettingsExclusion()
     {
         $this->assertPageOutputContainsString(
