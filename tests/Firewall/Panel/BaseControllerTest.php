@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Panel;
 
-define('SHIELDON_PANEL_BASE', '/');
+if (!defined('SHIELDON_PANEL_BASE')) {
+    define('SHIELDON_PANEL_BASE', '/');
+}
 
 class BaseControllerTest extends \PHPUnit\Framework\TestCase
 {
