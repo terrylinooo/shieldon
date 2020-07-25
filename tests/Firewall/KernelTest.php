@@ -699,6 +699,42 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($kernel::RESPONSE_DENY, $result);
     }
 
+    public function testSetStrict()
+    {
+        $kernel = new \Shieldon\Firewall\Kernel();
+        $kernel->setStrict(false);
+
+        $reflection = new \ReflectionObject($kernel);
+        $t = $reflection->getProperty('strictMode');
+        $t->setAccessible(true);
+  
+        $this->assertEquals('strictMode' , $t->name);
+        $this->assertFalse($t->getValue($kernel));
+    }
+
+    public function testSetStrictTrue()
+    {
+        $kernel = get_testing_shieldon_instance();
+        $kernel->driver->rebuild();
+        $kernel->setStrict(true);
+
+        $headerComponent = new \Shieldon\Firewall\Component\Header();
+        $trustedBot = new \Shieldon\Firewall\Component\TrustedBot();
+        $ip = new \Shieldon\Firewall\Component\Ip();
+        $userAgent = new \Shieldon\Firewall\Component\UserAgent();
+        $rdns = new \Shieldon\Firewall\Component\Rdns();
+
+        $kernel->setComponent($trustedBot);
+        $kernel->setComponent($ip);
+        $kernel->setComponent($headerComponent);
+        $kernel->setComponent($userAgent);
+        $kernel->setComponent($rdns);
+
+        $result = $kernel->run();
+
+        $this->assertEquals(0, $result);
+    }
+
     public function testRun($driver = 'sqlite')
     {
         $kernel = new \Shieldon\Firewall\Kernel();
@@ -736,8 +772,10 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         // Check trusted bots.
 
         // BING
-        $kernel = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
+        reload_request();
+
+        $kernel = get_testing_shieldon_instance($driver);
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('40.77.169.1', true);
    
@@ -749,8 +787,10 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
 
         // GOOGLE
-        $kernel = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
+        reload_request();
+
+        $kernel = get_testing_shieldon_instance($driver);
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('66.249.66.1', true);
         $result = $kernel->run();
@@ -761,8 +801,10 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
 
         // YAHOO
-        $kernel = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)';
+        reload_request();
+
+        $kernel = get_testing_shieldon_instance($driver);
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('8.12.144.1', true);
         $result = $kernel->run();
@@ -773,8 +815,10 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
 
         // OTHER
-        $kernel = get_testing_shieldon_instance($driver);
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)';
+        reload_request();
+
+        $kernel = get_testing_shieldon_instance($driver);
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('100.43.90.1', true);
         $result = $kernel->run();

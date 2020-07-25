@@ -29,9 +29,46 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_USER_AGENT'] = 'moz.com';
         reload_request();
 
+        $deniedList = [
+            'Ahrefs', 
+            'roger', 
+            'moz.com',
+            'MJ12bot',
+            'findlinks',
+            'Semrush',
+            'domain',
+            'copyright',
+            'archive', 
+        ];
+
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $firewall->add(new \Shieldon\Firewall\Middleware\UserAgent($deniedList));
+        $response = $firewall->run();
+        $this->assertSame($response->getStatusCode(), 400);
+    }
+
+    public function testUserAgentEmptyValue()
+    {
+        $_SERVER['HTTP_USER_AGENT'] = '';
+        reload_request();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->add(new \Shieldon\Firewall\Middleware\UserAgent());
         $response = $firewall->run();
         $this->assertSame($response->getStatusCode(), 400);
+    }
+
+    public function testUserAgentPass()
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)';
+        reload_request();
+
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->getKernel()->driver->rebuild();
+        $firewall->getKernel()->setIp('131.132.87.12');
+        $firewall->add(new \Shieldon\Firewall\Middleware\UserAgent());
+        $response = $firewall->run();
+        $this->assertSame($response->getStatusCode(), 200);
     }
 }

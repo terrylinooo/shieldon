@@ -27,7 +27,11 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
     public function testHeaderDeny()
     {
         $firewall = new \Shieldon\Firewall\Firewall();
-        $firewall->add(new \Shieldon\Firewall\Middleware\Header());
+        $firewall->add(new \Shieldon\Firewall\Middleware\Header([
+            'Accept',
+            'Accept-Language',
+            'Accept-Encoding',
+        ]));
         $response = $firewall->run();
         $this->assertSame($response->getStatusCode(), 406);
     }

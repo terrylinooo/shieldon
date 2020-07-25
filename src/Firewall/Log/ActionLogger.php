@@ -130,10 +130,6 @@ final class ActionLogger
     {
         $results = [];
 
-        if (empty($fromYmd)) {
-            return [];
-        }
-
         if ('' === $toYmd) {
             $results = $this->getDataFromSingleDate($fromYmd, $toYmd);
         } else {
