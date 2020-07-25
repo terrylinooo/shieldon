@@ -72,11 +72,9 @@ class Ip extends ComponentProvider
      *
      *               if nothing found, it will return an empty array instead.
      */
-    public function check(string $ip = ''): array
+    public function check(string $ip): array
     {
-        if ('' !== $ip) {
-            $this->setIp($ip);
-        }
+        $this->setIp($ip);
 
         if (!filter_var($this->ip, FILTER_VALIDATE_IP)) {
             return [
@@ -167,115 +165,105 @@ class Ip extends ComponentProvider
     public function inRange(string $ip, string $ipRange): bool
     {
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-
-            if (strpos($ipRange, '/') === false) {
-                $ipRange .= '/32';
-            }
-
-            // $range is in IP/CIDR format eg 127.0.0.1/24
-            list($ipRange, $netmask) = explode('/', $ipRange, 2);
- 
-            $rangeDecimal = ip2long($ipRange);
-            $ipDecimal = ip2long($ip);
-            $wildcardDecimal = pow(2, (32 - $netmask)) - 1;
-
-            // Bits that are set in $wildcardDecimal are not set, and vice versa.
-            // Bitwise Operators:
-            // https://www.php.net/manual/zh/language.operators.bitwise.php
-
-            $netmaskDecimal = ~ $wildcardDecimal;
-
-            return (($ipDecimal & $netmaskDecimal) === ($rangeDecimal & $netmaskDecimal));
+            return $this->inRangeIpv4($ip, $ipRange);
 
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-
-            $ip = $this->decimalIpv6($ip);
-
-            $pieces = explode('/', $ipRange, 2);
-            $leftPiece = $pieces[0];
-
-            // Extract out the main IP pieces
-            $ipPieces = explode('::', $leftPiece, 2);
-            $mainIpPiece = $ipPieces[0];
-            $lastIpPiece = $ipPieces[1];
-
-            // Pad out the shorthand entries.
-            $mainIpPieces = explode(':', $mainIpPiece);
-
-            foreach ($mainIpPieces as $key => $val) {
-                $mainIpPieces[$key] = str_pad($mainIpPieces[$key], 4, '0', STR_PAD_LEFT);
-            }
-
-            // Create the first and last pieces that will denote the IPV6 range.
-            $first = $mainIpPieces;
-            $last = $mainIpPieces;
-
-            // Check to see if the last IP block (part after ::) is set
-            $size = count($mainIpPieces);
-
-            if (trim($lastIpPiece) !== '') {
-                $lastPiece = str_pad($lastIpPiece, 4, '0', STR_PAD_LEFT);
-
-                // Build the full form of the IPV6 address considering the last IP block set
-                for ($i = $size; $i < 7; $i++) {
-                    $first[$i] = '0000';
-                    $last[$i] = 'ffff';
-                }
-
-                $mainIpPieces[7] = $lastPiece;
-    
-            } else {
-
-                // Build the full form of the IPV6 address
-                for ($i = $size; $i < 8; $i++) {
-                    $first[$i] = '0000';
-                    $last[$i] = 'ffff';
-                }
-            }
-
-            // Rebuild the final long form IPV6 address
-            $first = $this->decimalIpv6(implode(':', $first));
-            $last = $this->decimalIpv6(implode(':', $last));
-
-            return ($ip >= $first && $ip <= $last);
+            return $this->inRangeIpv6($ip, $ipRange);
         }
-
         return false;
     }
 
     /**
-     * Calculate an IP/CIDR to it's range.
-     * 
-     * For example:
-     * 
-     * '69.63.176.0/20' => [
-     *    0 => '69.63.176.0',    (min)
-     *    1 => '69.63.191.255',  (max)
-     * ];
+     * A child function of inRange(), check for IPv4
      *
-     * @param string $ip4Range  IP/CIDR
-     * @param bool   $isDecimal Return IP string to decimal.
+     * @param string $ip      IP to check in IPV4 and IPV6 format
+     * @param string $ipRange IP/CIDR netmask eg. 127.0.0.0/24, also 127.0.0.1
+     *                        is accepted and /32 assumed
      *
-     * @return array
+     * @return bool
      */
-    public function ipv4range($ip4Range, $isDecimal = false): array
+    protected function inRangeIp4(string $ip, string $ipRange): bool
     {
-        $result = [];
-
-        $ipData = explode('/', $ip4Range);
-
-        $ip = $ipData[0];
-        $cidr = (int) $ipData[1] ?? 32;
-
-        $result[0] = long2ip((ip2long($ip)) & ((-1 << (32 - $cidr))));
-        $result[1] = long2ip((ip2long($ip)) + pow(2, (32 - $cidr)) - 1);
-
-        if ($isDecimal) {
-            $result[0] = ip2long($result[0]);
-            $result[1] = ip2long($result[1]);
+        if (strpos($ipRange, '/') === false) {
+            $ipRange .= '/32';
         }
 
-        return $result;
+        // $range is in IP/CIDR format eg 127.0.0.1/24
+        list($ipRange, $netmask) = explode('/', $ipRange, 2);
+
+        $rangeDecimal = ip2long($ipRange);
+        $ipDecimal = ip2long($ip);
+        $wildcardDecimal = pow(2, (32 - $netmask)) - 1;
+
+        // Bits that are set in $wildcardDecimal are not set, and vice versa.
+        // Bitwise Operators:
+        // https://www.php.net/manual/zh/language.operators.bitwise.php
+
+        $netmaskDecimal = ~ $wildcardDecimal;
+
+        return (($ipDecimal & $netmaskDecimal) === ($rangeDecimal & $netmaskDecimal));
+    }
+
+    /**
+     * A child function of inRange(), check for IPv6
+     *
+     * @param string $ip      IP to check in IPV4 and IPV6 format
+     * @param string $ipRange IP/CIDR netmask eg. 127.0.0.0/24, also 127.0.0.1
+     *                        is accepted and /32 assumed
+     *
+     * @return bool
+     */
+    protected function inRangeIp6(string $ip, string $ipRange): bool
+    {
+        $ip = $this->decimalIpv6($ip);
+
+        $pieces = explode('/', $ipRange, 2);
+        $leftPiece = $pieces[0];
+
+        // Extract out the main IP pieces
+        $ipPieces = explode('::', $leftPiece, 2);
+        $mainIpPiece = $ipPieces[0];
+        $lastIpPiece = $ipPieces[1];
+
+        // Pad out the shorthand entries.
+        $mainIpPieces = explode(':', $mainIpPiece);
+
+        foreach ($mainIpPieces as $key => $val) {
+            $mainIpPieces[$key] = str_pad($mainIpPieces[$key], 4, '0', STR_PAD_LEFT);
+        }
+
+        // Create the first and last pieces that will denote the IPV6 range.
+        $first = $mainIpPieces;
+        $last = $mainIpPieces;
+
+        // Check to see if the last IP block (part after ::) is set
+        $size = count($mainIpPieces);
+
+        if (trim($lastIpPiece) !== '') {
+            $lastPiece = str_pad($lastIpPiece, 4, '0', STR_PAD_LEFT);
+
+            // Build the full form of the IPV6 address considering the last IP block set
+            for ($i = $size; $i < 7; $i++) {
+                $first[$i] = '0000';
+                $last[$i] = 'ffff';
+            }
+
+            $mainIpPieces[7] = $lastPiece;
+
+        } else {
+
+            // Build the full form of the IPV6 address
+            for ($i = $size; $i < 8; $i++) {
+                $first[$i] = '0000';
+                $last[$i] = 'ffff';
+            }
+        }
+
+        // Rebuild the final long form IPV6 address
+        $first = $this->decimalIpv6(implode(':', $first));
+        $last = $this->decimalIpv6(implode(':', $last));
+
+        return ($ip >= $first && $ip <= $last);
     }
 
     /**
@@ -352,7 +340,6 @@ class Ip extends ComponentProvider
                 }
             } else {
                 if ($allowedIp === $this->ip) {
-  
                     return true;
                 }
             }

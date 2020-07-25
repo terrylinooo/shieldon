@@ -64,12 +64,15 @@ trait FileDriverTrait
                 $conC = mkdir($this->getDirectory('session'), 0777, true);
             }
 
+            umask($originalUmask);
+
             if (!($conA && $conB && $conC)) {
+                // @codeCoverageIgnoreStart
                 return false;
+                // @codeCoverageIgnoreEnd
             }
 
             file_put_contents($checkingFile, ' ');
-            umask($originalUmask);
         }
 
         return true;

@@ -171,7 +171,8 @@ trait ComponentTrait
     {
         if ($this->getComponent('Ip')) {
 
-            $result = $this->getComponent('Ip')->check();
+            $result = $this->getComponent('Ip')->check($this->ip);
+
             $actionCode = self::ACTION_DENY;
 
             if (!empty($result)) {
