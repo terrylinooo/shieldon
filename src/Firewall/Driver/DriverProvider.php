@@ -266,5 +266,21 @@ class DriverProvider extends AbstractDriver
 
     }
 
+    /**
+     * Check data type.
+     *
+     * @param string $type The type of the data tables.
+     *
+     * @return void
+     */
+    protected function assertInvalidDataTable(string $type): void
+    {
+        if (!in_array($type, $this->tableTypes)) {
+            throw new RuntimeException(
+                'Invalid data type of the data tables.'
+            );
+        }
+    }
+
     // @codeCoverageIgnoreEnd
 }

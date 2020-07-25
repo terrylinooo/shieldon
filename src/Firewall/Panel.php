@@ -162,7 +162,9 @@ class Panel
     protected function setRouteBase(string $base)
     {
         if (!defined('SHIELDON_PANEL_BASE')) {
+            // @codeCoverageIgnoreStart
             define('SHIELDON_PANEL_BASE', $base);
+            // @codeCoverageIgnoreEnd
         }
     }
 

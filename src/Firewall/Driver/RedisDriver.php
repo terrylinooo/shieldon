@@ -103,32 +103,25 @@ class RedisDriver extends DriverProvider
     {
         $results = [];
 
-        switch ($type) {
+        $this->assertInvalidDataTable($type);
 
-            case 'rule':
-                // no break
-            case 'filter':
-                // no break
-            case 'session':
+        $keys = $this->redis->keys($this->getNamespace($type) . ':*');
 
-                $keys = $this->redis->keys($this->getNamespace($type) . ':*');
+        foreach ($keys as $key) {
+            $content = $this->redis->get($key);
+            $content = json_decode($content, true);
 
-                foreach ($keys as $key) {
-                    $content = $this->redis->get($key);
-                    $content = json_decode($content, true);
+            if ($type === 'session') {
+                $sort = $content['microtimesamp'] . '.' . $content['id']; 
+            } else {
+                $sort = $content['log_ip'];
+            }
 
-                    if ($type === 'session') {
-                        $sort = $content['microtimesamp'] . '.' . $content['id']; 
-                    } else {
-                        $sort = $content['log_ip'];
-                    }
-
-                    $results[$sort] = $content;   
-                }
-
-                // Sort by ascending timesamp (microtimesamp).
-                ksort($results);
+            $results[$sort] = $content;   
         }
+
+        // Sort by ascending timesamp (microtimesamp).
+        ksort($results);
 
         return $results;
     }

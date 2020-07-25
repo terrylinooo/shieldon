@@ -113,9 +113,7 @@ class FileDriver extends DriverProvider
     {
         $results = [];
 
-        if (!in_array($type, $this->tableTypes)) {
-            return $results;
-        }
+        $this->assertInvalidDataTable($type);
 
         $dir = $this->getDirectory($type);
 

@@ -66,6 +66,7 @@ class Session
 
         if ((php_sapi_name() !== 'cli')) {
 
+            // @codeCoverageIgnoreStart
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
@@ -73,6 +74,7 @@ class Session
             if (!$this->id) {
                 $this->id = session_id();
             }
+            // @codeCoverageIgnoreEnd
         }
 
         // If null, we give it a default value.

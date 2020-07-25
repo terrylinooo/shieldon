@@ -122,6 +122,8 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function doFetchAll(string $type = 'filter'): array
     {
+        $this->assertInvalidDataTable($type);
+
         $tables = [
             'rule' => 'doFetchAllFromRuleTable',
             'filter' => 'doFetchAllFromFilterTable',
