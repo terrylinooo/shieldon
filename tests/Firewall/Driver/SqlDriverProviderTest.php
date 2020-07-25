@@ -146,9 +146,8 @@ class SqlDriverProviderTest extends \PHPUnit\Framework\TestCase
         $methodDoFetchAll->invokeArgs($mockSqlDriver, ['filter']);
     }
 
-    public function testDoDelete()
+    public function testDoDeleteInvalidDataType()
     {
-        // Just for code coverage, for the final return - false.
         $db = [
             'host' => '127.0.0.1',
             'dbname' => 'shieldon_unittest',
@@ -167,6 +166,9 @@ class SqlDriverProviderTest extends \PHPUnit\Framework\TestCase
         $reflection = new \ReflectionObject($mockSqlDriver);
         $methodDoDelete = $reflection->getMethod('doDelete');
         $methodDoDelete->setAccessible(true);
+
+        $this->expectException(\RuntimeException::class);
+
         $methodDoDelete->invokeArgs($mockSqlDriver, ['19.89.6.4', 'never_forget']);
     }
 

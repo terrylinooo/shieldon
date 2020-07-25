@@ -335,5 +335,8 @@ class AllowTraitTest extends \PHPUnit\Framework\TestCase
     {
         $trustedbot = new \Shieldon\Firewall\Component\TrustedBot();
         $this->assertFalse($trustedbot->isAllowed());
+
+        $mock = $this->getMockForTrait('Shieldon\Firewall\Component\AllowedTrait');
+        $this->assertFalse($mock->isAllowed());
     }
 }

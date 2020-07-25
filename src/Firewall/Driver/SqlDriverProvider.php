@@ -79,9 +79,9 @@ class SqlDriverProvider extends DriverProvider
     protected function doInitialize(bool $dbCheck = true): void
     {
         if (!$this->isInitialized) {
-            if (!empty($this->channel)) {
-                $this->setChannel($this->channel);
-            }
+          //  if (!empty($this->channel)) {
+         //       $this->setChannel($this->channel);
+         //   }
 
             if ($dbCheck && !$this->checkTableExists()) {
                 $this->installSql();
@@ -193,6 +193,8 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
+        $this->assertInvalidDataTable($type);
+
         switch ($type) {
 
             case 'rule':
@@ -233,6 +235,8 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
+        $this->assertInvalidDataTable($type);
+
         $tables = [
             'rule' => [
                 'table' => $this->tableRuleList,
@@ -250,10 +254,6 @@ class SqlDriverProvider extends DriverProvider
                 'value' => $ip,
             ],
         ];
-
-        if (empty($tables[$type])) {
-            return false;
-        }
 
         $tableName = $tables[$type]['table'];
         $field = $tables[$type]['field'];

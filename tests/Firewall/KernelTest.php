@@ -1051,6 +1051,23 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel->setExcludedUrls([]);
     }
 
+    public function testIgnoreExcludedUrls()
+    {
+        $_SERVER['REQUEST_URI'] = '/ignore-this-url/index.html';
+        reload_request();
+
+        $kernel = get_testing_shieldon_instance();
+        $kernel->disableFilters();
+        
+        $kernel->setExcludedUrls([
+            '/ignore-this-url/index.html'
+        ]);
+
+        $result = $kernel->run();
+
+        $this->assertEquals(1, $result);
+    }
+
     public function testSetClosure()
     {
         $kernel = new \Shieldon\Firewall\Kernel();

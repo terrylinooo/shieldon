@@ -328,15 +328,9 @@ class ImageCaptcha extends CaptchaProvider
     private function createSpiralPattern(int $imgWidth, int $imgHeight, $gridColor)
     {
         // Determine angle and position.
-        $angle = ($this->length >= 6) ?
-            mt_rand(-($this->length - 6), ($this->length - 6)) :
-            0;
-
+        $angle = ($this->length >= 6) ? mt_rand(-($this->length - 6), ($this->length - 6)) : 0;
         $xAxis = mt_rand(6, (360 / $this->length) - 16);
-
-        $yAxis = ($angle >= 0) ?
-            mt_rand($imgHeight, $imgWidth) :
-            mt_rand(6, $imgHeight);
+        $yAxis = ($angle >= 0) ? mt_rand($imgHeight, $imgWidth) : mt_rand(6, $imgHeight);
 
         // Create the spiral pattern.
         $theta   = 1;
