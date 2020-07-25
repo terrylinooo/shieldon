@@ -165,10 +165,10 @@ class Ip extends ComponentProvider
     public function inRange(string $ip, string $ipRange): bool
     {
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            return $this->inRangeIpv4($ip, $ipRange);
+            return $this->inRangeIp4($ip, $ipRange);
 
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            return $this->inRangeIpv6($ip, $ipRange);
+            return $this->inRangeIp6($ip, $ipRange);
         }
         return false;
     }
