@@ -26,6 +26,7 @@ use Shieldon\Firewall\Component\ComponentProvider;
 use Shieldon\Firewall\Component\AllowedTrait;
 use Shieldon\Firewall\IpTrait;
 
+use function array_keys;
 use function base_convert;
 use function count;
 use function explode;
@@ -228,7 +229,7 @@ class Ip extends ComponentProvider
         // Pad out the shorthand entries.
         $mainIpPieces = explode(':', $mainIpPiece);
 
-        foreach ($mainIpPieces as $key => $val) {
+        foreach (array_keys($mainIpPieces) as $key) {
             $mainIpPieces[$key] = str_pad($mainIpPieces[$key], 4, '0', STR_PAD_LEFT);
         }
 

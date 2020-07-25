@@ -163,7 +163,6 @@ Welcome to contribute your idea to this project. Before sending your pull reques
     ```bash
     composer update
     ```
-
 2. Create a writable folder `tmp`. (same level with `src` folder.) for temporary testing files.
     ```bash
     mkdir tmp
@@ -181,11 +180,14 @@ Welcome to contribute your idea to this project. Before sending your pull reques
     ```bash
     mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
     ```
-
-#### Run test
-```bash
-composer test
-```
+6. Install PHP Xdebug.
+    ```bash
+    apt-get install php7.2-xdebug
+    ```
+7. Run test.
+    ```bash
+    composer test
+    ```
 
 ### Help with Transation
 
