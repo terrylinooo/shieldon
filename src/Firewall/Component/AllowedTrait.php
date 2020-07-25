@@ -40,7 +40,7 @@ trait AllowedTrait
     protected $allowedList = [];
 
     /**
-     * Add IP addresses to the whitelist pool.
+     * Add items to the whitelist pool.
      *
      * @param array $itemList String list.
      *
@@ -52,7 +52,7 @@ trait AllowedTrait
     }
 
     /**
-     * Add an allowed item to the whitelist pool.
+     * Add an item to the whitelist pool.
      *
      * @param string|array $value The value of the data.
      * @param string       $key   The key of the data.
@@ -70,13 +70,23 @@ trait AllowedTrait
     }
 
     /**
-     * Get IP addresses from the whitelist pool.
+     * Get items from the whitelist pool.
      *
      * @return array
      */
     public function getAllowedItems(): array
     {
         return $this->allowedList;
+    }
+
+    /**
+     * Get an item from the whitelist pool.
+     *
+     * @return string|array
+     */
+    public function getAllowedItem(string $key)
+    {
+        return $this->allowedList[$key] ?? '';
     }
 
     /**

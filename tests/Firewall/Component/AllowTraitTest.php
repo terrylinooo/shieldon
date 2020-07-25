@@ -118,6 +118,20 @@ class AllowTraitTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($allowedList, $truestedBotList);
     }
 
+    public function testGetAllowedItem()
+    {
+        $trustedbot = new \Shieldon\Firewall\Component\TrustedBot();
+   
+        $allowedList = $trustedbot->getAllowedItem('facebook');
+
+        $truestedBotList = [
+            'userAgent' => 'facebook',
+            'rdns'      => '.fbsv.net',
+        ];
+
+        $this->assertEquals($allowedList, $truestedBotList);
+    }
+
     public function testRemoveAllowedItem()
     {
         $trustedbot = new \Shieldon\Firewall\Component\TrustedBot();
@@ -315,5 +329,11 @@ class AllowTraitTest extends \PHPUnit\Framework\TestCase
         $allowedList = $trustedbot->getAllowedItems();
 
         $this->assertEquals($allowedList, $truestedBotList);
+    }
+
+    public function testIsAllowed()
+    {
+        $trustedbot = new \Shieldon\Firewall\Component\TrustedBot();
+        $this->assertFalse($trustedbot->isAllowed());
     }
 }

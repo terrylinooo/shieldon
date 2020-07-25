@@ -36,6 +36,17 @@ class DenyTraitTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($deniedList, $rdnsList);
     }
 
+    public function testGetDeniedItem()
+    {
+        $rdns = new \Shieldon\Firewall\Component\Rdns();
+   
+        $deniedList = $rdns->getDeniedItem('unknown_1');
+
+        $rdnsList = '.webcrawler.link';
+
+        $this->assertEquals($deniedList, $rdnsList);
+    }
+
     public function testRemoveDeniedItem()
     {
         $rdns = new \Shieldon\Firewall\Component\Rdns();

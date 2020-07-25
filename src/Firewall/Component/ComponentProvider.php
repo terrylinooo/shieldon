@@ -95,9 +95,9 @@ abstract class ComponentProvider implements ComponentInterface
      * 
      * @param string $key The key of a data item.
      *
-     * @return string
+     * @return string|array
      */
-    public function getDeniedItem(string $key): string
+    public function getDeniedItem(string $key)
     {
         return $this->deniedList[$key] ?? '';
     }
