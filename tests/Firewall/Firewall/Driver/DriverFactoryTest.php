@@ -20,14 +20,14 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Tests\Firewall;
+namespace Shieldon\Firewall\Tests\Firewall\Driver;
 
-class ItemFileDriverTest extends \PHPUnit\Framework\TestCase
+class DriverFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    public function testGet()
+    public function testGetInstance()
     {
-        $instance = new \Shieldon\Firewall\Firewall\Driver\ItemFileDriver();
-        $fileDriver = $instance::get(['directory_path' => '/']);
+        $instance = new \Shieldon\Firewall\Firewall\Driver\DriverFactory();
+        $fileDriver = $instance::getInstance('file', ['directory_path' => '/']);
 
         if ($fileDriver instanceof \Shieldon\Firewall\Driver\FileDriver) {
             $this->assertTrue(true);

