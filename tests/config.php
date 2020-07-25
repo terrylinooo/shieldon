@@ -188,8 +188,9 @@ return [
 
         // Trusted-bot component.
         'trusted_bot' => [
-            'enable'      => true,
-            'strict_mode' => true,
+            'enable'       => true,
+            'strict_mode'  => true,
+            'allowed_list' => [],
         ],
 
         // Header filter.

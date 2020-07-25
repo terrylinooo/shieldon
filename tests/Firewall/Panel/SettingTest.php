@@ -36,12 +36,21 @@ class SettingTest extends \PHPUnit\Framework\TestCase
 
     public function testSettingsBasicSaveConfig()
     {
+        $_POST = \Shieldon\FirewallTest\Mock\MockSaveConfig::get();
+        $_POST['tab'] = 'daemon';
+        reload_request();
+
+        /*
+        $this->getRouteResponse(
+            'firewall/panel/setting/basic'
+        );
+        */
+
         $this->assertPageOutputContainsString(
             'firewall/panel/setting/basic',
-            'Basic Setting'
+            'Settings saved'
         );
     }
-
 
     public function testSettingsExclusion()
     {

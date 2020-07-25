@@ -302,6 +302,7 @@ class BaseController
         }
 
         $postParams = (array) get_request()->getParsedBody();
+
         $configFilePath = $this->directory . '/' . $this->filename;
 
         foreach ($this->csrfField as $csrfInfo) {

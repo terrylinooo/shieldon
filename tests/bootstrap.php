@@ -32,7 +32,7 @@ use Shieldon\Firewall\Helpers;
 include __DIR__ . '/../autoload.php';
 include __DIR__ . '/../vendor/autoload.php';
 include __DIR__ . '/../vendor/shieldon/messenger/autoload.php';
-include __DIR__ . '/Mock/MockMessenger.php';
+include __DIR__ . '/Firewall/Mock/MockMessenger.php';
 
 /**
  * Create a writable directrory for unit testing.
