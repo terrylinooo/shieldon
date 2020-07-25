@@ -27,6 +27,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
     public function testUserAgent()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'moz.com';
+        reload_request();
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->add(new \Shieldon\Firewall\Middleware\UserAgent());

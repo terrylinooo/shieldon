@@ -31,4 +31,20 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $response = $firewall->run();
         $this->assertSame($response->getStatusCode(), 406);
     }
+
+    public function testHeaderAllow()
+    {
+        $_SERVER['HTTP_ACCEPT'] = 'text/html,application/xhtml+xml,application/xml;q=0.9';
+        $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US,en;q=0.9,zh-TW;q=0.8,zh;q=0.7';
+        $_SERVER['HTTP_ACCEPT_ENCODING'] = 'gzip';
+        reload_request();
+
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->getKernel()->driver->rebuild();
+        $firewall->getKernel()->setIp('131.132.87.12');
+        $firewall->add(new \Shieldon\Firewall\Middleware\Header());
+        $response = $firewall->run();
+        $this->assertSame($response->getStatusCode(), 200);
+    }
 }

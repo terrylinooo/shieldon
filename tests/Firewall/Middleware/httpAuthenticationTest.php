@@ -27,6 +27,7 @@ class httpAuthenticationTest extends \PHPUnit\Framework\TestCase
     public function testHeaderDeny()
     {
         $_SERVER['REQUEST_URI'] = '/wp-amdin';
+        reload_request();
         
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->add(new \Shieldon\Firewall\Middleware\HttpAuthentication());
