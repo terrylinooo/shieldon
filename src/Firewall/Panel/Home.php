@@ -173,8 +173,6 @@ class Home extends BaseController
                         )
                     );
                     break;
-
-                default:
             }
         }
     }

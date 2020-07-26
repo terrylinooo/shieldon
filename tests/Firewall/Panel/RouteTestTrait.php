@@ -83,7 +83,13 @@ trait RouteTestTrait
         $basePath = 'firewall/panel';
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
-        $firewall->getKernel()->component = [];
+        $firewall->getKernel()->disableFilters();
+        $firewall->getKernel()->disableComponents();
+        $firewall->getKernel()->setLogger(
+            new \Shieldon\Firewall\Log\ActionLogger(
+                BOOTSTRAP_DIR . '/../tmp/shieldon/action_logs'
+            )
+        );
 
         if (!empty($this->ip)) {
             $firewall->getKernel()->setIp($this->ip);

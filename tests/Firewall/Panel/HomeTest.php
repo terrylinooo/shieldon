@@ -33,4 +33,31 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'Overview'
         );
     }
+
+    public function testOverviewFormPostResetDataCircle()
+    {
+        $_POST['action_type'] = 'reset_data_circle';
+        reload_request();
+
+        $this->assertPageOutputContainsString(
+            'firewall/panel/home/overview',
+            'Data circle tables have been reset.'
+        );
+    }
+
+    public function testOverviewFormPostResetActionLogs()
+    {
+        $_POST['action_type'] = 'reset_action_logs';
+        reload_request();
+
+        $this->assertPageOutputContainsString(
+            'firewall/panel/home/overview',
+            'Action logs have been removed.'
+        );
+    }
+
+    public function overviewTemplateVarsOfActionLogger()
+    {
+
+    }
 }

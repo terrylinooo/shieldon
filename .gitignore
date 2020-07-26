@@ -11,3 +11,4 @@ tests/report
 tmp
 clover.xml
 .phpunit.result.cache
+bin/*.log
