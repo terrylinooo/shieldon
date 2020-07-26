@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Driver;
 
-class RedisDriverTest extends \PHPUnit\Framework\TestCase
+class RedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
     {

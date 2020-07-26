@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Captcha;
 
-class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
+class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
     {
@@ -75,7 +75,7 @@ class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
     {
         $_SESSION['shieldon_image_captcha_hash'] = '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.';
         $_POST['shieldon_image_captcha'] = '';
-        reload_request();
+        $this->refreshRequest();
 
         $captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha();
         $result = $captchaInstance->response();
@@ -83,7 +83,7 @@ class ImageCaptchaTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($result);
 
         $_POST['shieldon_image_captcha'] = 'IA63BXxo';
-        reload_request();
+        $this->refreshRequest();
 
         $result = $captchaInstance->response();
         $this->assertTrue($result);

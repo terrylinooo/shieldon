@@ -20,9 +20,9 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Tests;
+namespace Shieldon\FirewallTest;
 
-class PanelTest extends \PHPUnit\Framework\TestCase
+class PanelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testPanelLoginPage()
     {

@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Component;
 
-class UserAgentTest extends \PHPUnit\Framework\TestCase
+class UserAgentTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testSetStrict()
     {
@@ -100,7 +100,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
     public function testIsDenied()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; AhrefsBot/6.1; +http://ahrefs.com/robot/)';
-        reload_request();
+        $this->refreshRequest();
 
         $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
 
@@ -108,7 +108,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($result);
 
         $_SERVER['HTTP_USER_AGENT'] = '';
-        reload_request();
+        $this->refreshRequest();
 
         $userAgentComponent = new \Shieldon\Firewall\Component\UserAgent();
         $userAgentComponent->setStrict(true);

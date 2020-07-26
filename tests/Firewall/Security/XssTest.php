@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Security;
 
-class XssTest extends \PHPUnit\Framework\TestCase
+class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testClean()
     {
@@ -57,7 +57,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
         $originStrArr = [];
         $filiteredStrArr = [];
 
-        print_cli_msg('XSS Bypass string test', 'notice', true);
+        $this->console('XSS Bypass string test', 'notice', true);
 
         foreach ($bypassList as $num => $string) {
             $originStrArr[$num] = $string;
@@ -78,7 +78,7 @@ class XssTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame($file['Software'], '"><script>alert(123)</script><"');
 
-        print_cli_msg('XSS Bypass image test', 'notice', true);
+        $this->console('XSS Bypass image test', 'notice', true);
 
         $xssInstance = new \Shieldon\Security\Xss();
         $fileFiltered = $xssInstance->clean($file, true);

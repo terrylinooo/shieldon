@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Panel;
 
-class IptablesTest extends \PHPUnit\Framework\TestCase
+class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     use RouteTestTrait;
 

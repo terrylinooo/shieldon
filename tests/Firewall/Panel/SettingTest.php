@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Panel;
 
-class SettingTest extends \PHPUnit\Framework\TestCase
+class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     use RouteTestTrait;
 
@@ -38,7 +38,7 @@ class SettingTest extends \PHPUnit\Framework\TestCase
     {
         $_POST = \Shieldon\FirewallTest\Mock\MockSaveConfig::get();
         $_POST['tab'] = 'daemon';
-        reload_request();
+        $this->refreshRequest();
 
         /*
         $this->getRouteResponse(

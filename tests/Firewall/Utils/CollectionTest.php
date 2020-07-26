@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Utils;
 
-class CollectionTest extends \PHPUnit\Framework\TestCase
+class CollectionTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testAll()
     {

@@ -22,12 +22,12 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Middleware;
 
-class UserAgentTest extends \PHPUnit\Framework\TestCase
+class UserAgentTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testUserAgent()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'moz.com';
-        reload_request();
+        $this->refreshRequest();
 
         $deniedList = [
             'Ahrefs', 
@@ -50,7 +50,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
     public function testUserAgentEmptyValue()
     {
         $_SERVER['HTTP_USER_AGENT'] = '';
-        reload_request();
+        $this->refreshRequest();
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->add(new \Shieldon\Firewall\Middleware\UserAgent());
@@ -61,7 +61,7 @@ class UserAgentTest extends \PHPUnit\Framework\TestCase
     public function testUserAgentPass()
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)';
-        reload_request();
+        $this->refreshRequest();
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');

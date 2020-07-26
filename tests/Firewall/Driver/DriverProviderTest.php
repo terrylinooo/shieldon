@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Driver;
 
-class DriverProviderTest extends \PHPUnit\Framework\TestCase
+class DriverProviderTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testSetChannel()
     {

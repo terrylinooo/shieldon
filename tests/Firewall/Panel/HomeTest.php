@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Panel;
 
-class HomeTest extends \PHPUnit\Framework\TestCase
+class HomeTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     use RouteTestTrait;
 
@@ -37,7 +37,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     public function testOverviewFormPostResetDataCircle()
     {
         $_POST['action_type'] = 'reset_data_circle';
-        reload_request();
+        $this->refreshRequest();
 
         $this->assertPageOutputContainsString(
             'firewall/panel/home/overview',
@@ -48,7 +48,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     public function testOverviewFormPostResetActionLogs()
     {
         $_POST['action_type'] = 'reset_action_logs';
-        reload_request();
+        $this->refreshRequest();
 
         $this->assertPageOutputContainsString(
             'firewall/panel/home/overview',

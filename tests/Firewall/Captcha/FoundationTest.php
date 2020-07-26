@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Captcha;
 
-class FoundationTest extends \PHPUnit\Framework\TestCase
+class FoundationTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testResponse()
     {
@@ -32,7 +32,7 @@ class FoundationTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($result);
 
         $_POST['shieldon_captcha'] = 'ok';
-        reload_request();
+        $this->refreshRequest();
 
         $result = $captchaInstance->response();
         $this->assertTrue($result);

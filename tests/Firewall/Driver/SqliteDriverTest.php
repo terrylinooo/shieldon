@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Driver;
 
-class SqliteDriverTest extends \PHPUnit\Framework\TestCase
+class SqliteDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
     {
@@ -41,7 +41,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testInstallSql()
     {
-        $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
+        $dbLocation = $this->getWritableTestFilePath('shieldon_unittest.sqlite3');
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $db = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
 
@@ -58,7 +58,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
 
     public function testCheckTableExists()
     {
-        $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
+        $dbLocation = $this->getWritableTestFilePath('shieldon_unittest.sqlite3');
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $db = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
 

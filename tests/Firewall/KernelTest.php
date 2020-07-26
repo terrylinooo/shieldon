@@ -20,11 +20,11 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Tests;
+namespace Shieldon\FirewallTest;
 
 use function Shieldon\Firewall\get_session;
 
-class KernelTest extends \PHPUnit\Framework\TestCase
+class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
     {
@@ -57,7 +57,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testDetectByFilterFrequency($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
 
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
@@ -106,7 +106,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testDetectByFilterSession($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
         $kernel->setIp('141.112.175.2');
 
@@ -141,7 +141,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testDetectByFilterReferer($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
 
         $kernel->setFilters([
@@ -169,7 +169,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testDetectByFilterCookie($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
 
         $kernel->setFilter('session', false);
@@ -192,7 +192,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         $kernel->setProperty('cookie_name', 'unittest');
         $_COOKIE['unittest'] = 1;
-        reload_request();
+        $this->refreshRequest();
 
         for ($i =  0; $i < 10; $i++) {
             $kernel->setIp('140.112.175.10');
@@ -200,7 +200,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
             if ($i >= 5) {
                 $_COOKIE['unittest'] = 2;
-                reload_request();
+                $this->refreshRequest();
             }
         }
 
@@ -218,7 +218,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testResetFilterFlagChecks($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
 
         $kernel->setFilters([
             'session'   => false,
@@ -247,7 +247,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     {
         // Test 1. Check temporaily denying.
 
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
 
         $kernel->setLogger(new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon'));
 
@@ -283,7 +283,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testNoComponentAndFilters()
     {
-        $kernel = get_testing_shieldon_instance();
+        $kernel = $this->getKernelInstance();
         $kernel->setChannel('test_shieldon_detect');
         $kernel->setIp('39.27.1.1');
         $kernel->disableFilters();
@@ -311,7 +311,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testSessionHandler($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
 
         $kernel->setChannel('test_shieldon_session');
 
@@ -447,7 +447,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     public function testSetDriver()
     {
         $kernel = new \Shieldon\Firewall\Kernel();
-        $dbLocation = save_testing_file('shieldon_unittest.sqlite3');
+        $dbLocation = $this->getWritableTestFilePath('shieldon_unittest.sqlite3');
 
         $pdoInstance = new \PDO('sqlite:' . $dbLocation);
         $driver = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
@@ -487,7 +487,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testSetChannel($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
 
         $kernel->setChannel('unittest');
 
@@ -530,12 +530,12 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         $kernel = new \Shieldon\Firewall\Kernel();
         $_POST['shieldon_captcha'] = 'ok';
-        reload_request();
+        $this->refreshRequest();
 
         $result = $kernel->captchaResponse();
         $this->assertTrue($result);
 
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
 
         $kernel->limitSession(1000, 9999);
         $reflection = new \ReflectionObject($kernel);
@@ -544,7 +544,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $methodSetSessionId->invokeArgs($kernel, [md5(date('YmdHis') . mt_rand(2001, 3000))]);
         $result = $kernel->run();
         $_POST['shieldon_captcha'] = 'ok';
-        reload_request();
+        $this->refreshRequest();
 
         $result = $kernel->captchaResponse();
         $this->assertTrue($result);
@@ -565,7 +565,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testBan($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
 
         $kernel->ban();
@@ -578,7 +578,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testUnBan($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
         $kernel->setIp('33.33.33.33');
 
@@ -592,9 +592,9 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     public function testRespond($driver = 'sqlite')
     {
         $_SERVER['REQUEST_URI'] = '/';
-        reload_request();
+        $this->refreshRequest();
 
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->setProperty('display_lineup_info', true);
         $kernel->setProperty('display_user_info', true);
         $kernel->setProperty('display_online_info', true);
@@ -679,7 +679,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     {
         $kernel = new \Shieldon\Firewall\Kernel();
         
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
 
         $kernel->setComponent(new \Shieldon\Firewall\Component\Ip());
@@ -714,7 +714,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testSetStrictTrue()
     {
-        $kernel = get_testing_shieldon_instance();
+        $kernel = $this->getKernelInstance();
         $kernel->driver->rebuild();
         $kernel->setStrict(true);
 
@@ -739,7 +739,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     {
         $kernel = new \Shieldon\Firewall\Kernel();
 
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
 
         $headerComponent = new \Shieldon\Firewall\Component\Header();
@@ -773,9 +773,9 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         // BING
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)';
-        reload_request();
+        $this->refreshRequest();
 
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('40.77.169.1', true);
    
@@ -788,9 +788,9 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         // GOOGLE
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
-        reload_request();
+        $this->refreshRequest();
 
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('66.249.66.1', true);
         $result = $kernel->run();
@@ -802,9 +802,9 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         // YAHOO
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)';
-        reload_request();
+        $this->refreshRequest();
 
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('8.12.144.1', true);
         $result = $kernel->run();
@@ -816,9 +816,9 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
         // OTHER
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)';
-        reload_request();
+        $this->refreshRequest();
 
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('100.43.90.1', true);
         $result = $kernel->run();
@@ -828,7 +828,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $result = $kernel->run();
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
 
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->disableFilters();
         $result = $kernel->run();
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
@@ -836,7 +836,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testGetSessionCount($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
 
         $reflection = new \ReflectionObject($kernel);
@@ -886,7 +886,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testIPv6($driver = 'sqlite')
     {
-        $kernel = get_testing_shieldon_instance($driver);
+        $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
         $kernel->setIp('0:0:0:0:0:ffff:c0a8:5f01');
         $result = $kernel->run();
@@ -1098,9 +1098,9 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     public function testIgnoreExcludedUrls()
     {
         $_SERVER['REQUEST_URI'] = '/ignore-this-url/index.html';
-        reload_request();
+        $this->refreshRequest();
 
-        $kernel = get_testing_shieldon_instance();
+        $kernel = $this->getKernelInstance();
         $kernel->disableFilters();
         
         $kernel->setExcludedUrls([
@@ -1134,7 +1134,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
 
     public function testDenyAttempts()
     {
-        $kernel = get_testing_shieldon_instance('file');
+        $kernel = $this->getKernelInstance('file');
 
         //$_SERVER['HTTP_USER_AGENT'] = 'google';
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
@@ -1142,10 +1142,8 @@ class KernelTest extends \PHPUnit\Framework\TestCase
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setComponent(new \Shieldon\Firewall\Component\Ip());
         $kernel->setComponent(new \Shieldon\Firewall\Component\UserAgent());
-        
         $kernel->setComponent(new \Shieldon\Firewall\Component\Rdns());
-
-        $kernel->setMessenger(new \MockMessenger());
+        $kernel->setMessenger(new \Shieldon\FirewallTest\Mock\MockMessenger());
 
         $kernel->setChannel('test_shieldon_deny_attempt');
         $kernel->driver->rebuild();
@@ -1234,7 +1232,7 @@ class KernelTest extends \PHPUnit\Framework\TestCase
     {
         $_SERVER['HTTP_USER_AGENT'] = 'google';
 
-        $kernel = get_testing_shieldon_instance();
+        $kernel = $this->getKernelInstance();
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->disableFilters();
         $result = $kernel->run();

@@ -20,9 +20,9 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Tests;
+namespace Shieldon\FirewallTest;
 
-class HttpResolverTest extends \PHPUnit\Framework\TestCase
+class HttpResolverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testHttpResolver()
     {
@@ -47,7 +47,7 @@ class HttpResolverTest extends \PHPUnit\Framework\TestCase
                 'Set-Cookie: name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0', xdebug_get_headers()
             );
         } else {
-            print_cli_msg('function "xdebug_get_headers()" is needed to test the header output.', 'notice');
+            $this->console('function "xdebug_get_headers()" is needed to test the header output.', 'notice');
         }
 
         $this->assertStringContainsString('test', $output);   

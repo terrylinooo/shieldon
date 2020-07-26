@@ -20,7 +20,7 @@
 
 namespace Shieldon\FirewallTest\Log;
 
-class ActionLogParserTest extends \PHPUnit\Framework\TestCase
+class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
     {

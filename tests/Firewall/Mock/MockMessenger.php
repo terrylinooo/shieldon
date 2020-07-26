@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-use Shieldon\Messenger\Messenger\MessengerInterface;
+namespace Shieldon\FirewallTest\Mock;
 
 /**
  * For unit-testing purpose.
@@ -18,7 +18,7 @@ use Shieldon\Messenger\Messenger\MessengerInterface;
  * @author Terry L. <contact@terryl.in>
  * @since 1.0.0
  */
-class MockMessenger implements MessengerInterface
+class MockMessenger implements \Shieldon\Messenger\Messenger\MessengerInterface
 {
     /**
      * Constructor.

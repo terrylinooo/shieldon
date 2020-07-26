@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Panel;
 
-class DemoModeTraitTest extends \PHPUnit\Framework\TestCase
+class DemoModeTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testAll()
     {

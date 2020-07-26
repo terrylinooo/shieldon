@@ -22,12 +22,12 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Middleware;
 
-class HttpAuthenticationTest extends \PHPUnit\Framework\TestCase
+class HttpAuthenticationTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testRequestHttpAuthentication()
     {
         $_SERVER['REQUEST_URI'] = '/wp-amdin';
-        reload_request();
+        $this->refreshRequest();
         
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->add(new \Shieldon\Firewall\Middleware\HttpAuthentication());
@@ -40,7 +40,7 @@ class HttpAuthenticationTest extends \PHPUnit\Framework\TestCase
         $_SERVER['PHP_AUTH_USER'] = 'not-exist-user';
         $_SERVER['PHP_AUTH_PW'] = 'wrong-password';
         $_SERVER['REQUEST_URI'] = '/wp-amdin';
-        reload_request();
+        $this->refreshRequest();
         
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->add(new \Shieldon\Firewall\Middleware\HttpAuthentication());
@@ -53,7 +53,7 @@ class HttpAuthenticationTest extends \PHPUnit\Framework\TestCase
         $_SERVER['PHP_AUTH_USER'] = 'wp_shieldon_admin';
         $_SERVER['PHP_AUTH_PW'] = '$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq';
         $_SERVER['REQUEST_URI'] = '/admin/';
-        reload_request();
+        $this->refreshRequest();
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');

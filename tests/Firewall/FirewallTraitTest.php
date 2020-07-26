@@ -20,9 +20,9 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Tests;
+namespace Shieldon\FirewallTest;
 
-class FirewallTraitTest extends \PHPUnit\Framework\TestCase
+class FirewallTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testConfig()
     {

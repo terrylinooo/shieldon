@@ -20,9 +20,9 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Tests;
+namespace Shieldon\FirewallTest;
 
-class BashScriptTest extends \PHPUnit\Framework\TestCase
+class BashScriptTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     protected $iptablesWatchingFolder = '';
 

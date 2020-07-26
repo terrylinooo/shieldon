@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Captcha;
 
-class CsrfTest extends \PHPUnit\Framework\TestCase
+class CsrfTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
     {

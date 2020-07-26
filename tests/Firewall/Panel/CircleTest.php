@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Panel;
 
-class CircleTest extends \PHPUnit\Framework\TestCase
+class CircleTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     use RouteTestTrait;
 
@@ -38,7 +38,7 @@ class CircleTest extends \PHPUnit\Framework\TestCase
     {
         $_POST['ip'] = '127.0.0.127';
         $_POST['action'] = 'permanently_ban';
-        reload_request();
+        $this->refreshRequest();
 
         $this->assertPageOutputContainsString(
             'firewall/panel/circle/rule',
@@ -52,7 +52,7 @@ class CircleTest extends \PHPUnit\Framework\TestCase
 
         $_POST['ip'] = '127.0.0.127';
         $_POST['action'] = 'remove';
-        reload_request();
+        $this->refreshRequest();
 
         $this->assertPageOutputContainsString(
             'firewall/panel/circle/rule',

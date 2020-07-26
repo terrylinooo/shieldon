@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Component;
 
-class TrustedBotTest extends \PHPUnit\Framework\TestCase
+class TrustedBotTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testSetStrict()
     {
@@ -64,7 +64,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
 
-        reload_request();
+        $this->refreshRequest();
 
         $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $result = $trustedBotComponent->isAllowed();
@@ -203,7 +203,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
 
-        reload_request();
+        $this->refreshRequest();
     
         $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setIp('111.111.111.111', false);
@@ -225,7 +225,7 @@ class TrustedBotTest extends \PHPUnit\Framework\TestCase
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
 
-        reload_request();
+        $this->refreshRequest();
     
         $trustedBotComponent = new \Shieldon\Firewall\Component\TrustedBot();
         $trustedBotComponent->setIp('127.0.0.1', false);

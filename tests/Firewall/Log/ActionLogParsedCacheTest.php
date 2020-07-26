@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Log;
 
-class ActionLogParsedCacheTest extends \PHPUnit\Framework\TestCase
+class ActionLogParsedCacheTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
     {

@@ -26,7 +26,7 @@ if (!defined('SHIELDON_PANEL_BASE')) {
     define('SHIELDON_PANEL_BASE', '/firewall/panel');
 }
 
-class BaseControllerTest extends \PHPUnit\Framework\TestCase
+class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testInitialWithoutImplementFirewall()
     {

@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Tests\Firewall\Driver;
 
-class ItemRedisDriverTest extends \PHPUnit\Framework\TestCase
+class ItemRedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testGet()
     {

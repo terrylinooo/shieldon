@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Tests\Firewall\Driver;
 
-class ItemSqliteDriverTest extends \PHPUnit\Framework\TestCase
+class ItemSqliteDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testGet()
     {

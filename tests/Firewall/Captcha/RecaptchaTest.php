@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Captcha;
 
-class ReCaptchaTest extends \PHPUnit\Framework\TestCase
+class ReCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
     {
@@ -59,7 +59,7 @@ class ReCaptchaTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($result);
 
         $_POST['g-recaptcha-response'] = 'test';
-        reload_request();
+        $this->refreshRequest();
 
         $result = $captchaInstance->response();
 

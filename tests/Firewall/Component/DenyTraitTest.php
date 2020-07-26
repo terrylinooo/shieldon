@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Component;
 
-class DenyTraitTest extends \PHPUnit\Framework\TestCase
+class DenyTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testGetDeniedItems()
     {

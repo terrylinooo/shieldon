@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Driver;
 
-class MysqlDriverTest extends \PHPUnit\Framework\TestCase
+class MysqlDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function  test__construct()
     {

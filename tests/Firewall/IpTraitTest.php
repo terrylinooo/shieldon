@@ -20,9 +20,9 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Tests;
+namespace Shieldon\FirewallTest;
 
-class IpTraitTest extends \PHPUnit\Framework\TestCase
+class IpTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testSetIp()
     {

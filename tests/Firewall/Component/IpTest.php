@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Component;
 
-class IpTest extends \PHPUnit\Framework\TestCase
+class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testSetStrict()
     {

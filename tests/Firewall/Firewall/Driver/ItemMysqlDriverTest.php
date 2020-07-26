@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Tests\Firewall\Driver;
 
-class ItemMysqlDriverTest extends \PHPUnit\Framework\TestCase
+class ItemMysqlDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testGet()
     {
@@ -49,6 +49,8 @@ class ItemMysqlDriverTest extends \PHPUnit\Framework\TestCase
         $setting['charset'] = 'utf8';
         $setting['user'] = 'user_not_exist';
         $setting['pass'] = 'taiwan';
+
+        $this->console('Test invalid MySQL database settings.', 'info');
 
         $instance = new \Shieldon\Firewall\Firewall\Driver\ItemMysqlDriver();
         $mysqlDriver = $instance::get($setting);

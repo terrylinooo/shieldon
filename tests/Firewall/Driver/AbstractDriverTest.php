@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Driver;
 
-class AbstractDriverTest extends \PHPUnit\Framework\TestCase
+class AbstractDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testHas()
     {

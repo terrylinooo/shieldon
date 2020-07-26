@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Middleware;
 
-class HeaderTest extends \PHPUnit\Framework\TestCase
+class HeaderTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testHeaderDeny()
     {
@@ -41,7 +41,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/html,application/xhtml+xml,application/xml;q=0.9';
         $_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'en-US,en;q=0.9,zh-TW;q=0.8,zh;q=0.7';
         $_SERVER['HTTP_ACCEPT_ENCODING'] = 'gzip';
-        reload_request();
+        $this->refreshRequest();
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
