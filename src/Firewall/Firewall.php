@@ -171,7 +171,7 @@ class Firewall
             $response = $requestHandler->handle($response);
 
             // Something is detected by Middlewares, return.
-            if ($response->getStatusCode() !== 200) {
+            if ($response->getStatusCode() !== $this->kernel::HTTP_STATUS_OK) {
                 return $response;
             }
 
@@ -183,7 +183,7 @@ class Firewall
                     $this->kernel->unban();
 
                     $response = $response->withHeader('Location', $this->kernel->getCurrentUrl());
-                    $response = $response->withStatus(303);
+                    $response = $response->withStatus($this->kernel::HTTP_STATUS_SEE_OTHER);
 
                     return $response;
                 }
