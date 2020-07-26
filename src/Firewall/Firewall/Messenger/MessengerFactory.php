@@ -70,7 +70,7 @@ class MessengerFactory
      */
     public static function getCamelCase(string $string = '')
     {
-        $str = explode('-', $string);
+        $str = explode('_', $string);
         $str = implode(
             '',
             array_map(

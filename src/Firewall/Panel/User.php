@@ -153,7 +153,7 @@ class User extends BaseController
             $setting = $this->getConfig('captcha_modules.' . $captcha);
 
             if (is_array($setting)) {
-                if (CaptchaFactory::check($captcha, $setting)) {
+                if (CaptchaFactory::check($setting)) {
                     $this->captcha[] = CaptchaFactory::getInstance($captcha, $setting);
                 }
             }

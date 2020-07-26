@@ -30,7 +30,7 @@ use function str_replace;
 /**
  * The sandbox for PHP native mail.
  */
-class PhpNativeMail
+class NativePhpMail
 {
     /**
      * Invoker.

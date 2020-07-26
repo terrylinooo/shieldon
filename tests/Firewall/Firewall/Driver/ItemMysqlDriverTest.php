@@ -45,10 +45,10 @@ class ItemMysqlDriverTest extends \PHPUnit\Framework\TestCase
     public function testGetWithInvalidSetting()
     {
         $setting['host'] = 'localhost';
-        $setting['dbname'] = 'shieldon_unittest2';
+        $setting['dbname'] = 'shieldon_unittest';
         $setting['charset'] = 'utf8';
-        $setting['user'] = 'shieldon2';
-        $setting['pass'] = 'taiwan2';
+        $setting['user'] = 'user_not_exist';
+        $setting['pass'] = 'taiwan';
 
         $instance = new \Shieldon\Firewall\Firewall\Driver\ItemMysqlDriver();
         $mysqlDriver = $instance::get($setting);

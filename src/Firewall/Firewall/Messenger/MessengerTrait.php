@@ -65,7 +65,7 @@ trait MessengerTrait
                 // Initialize messenger instances from the factory/
                 if (MessengerFactory::check($setting)) {
     
-                    $this->kernel->addMessenger(
+                    $this->kernel->setMessenger(
                         MessengerFactory::getInstance(
                             // The ID of the messenger module in the configuration.
                             $messenger, 

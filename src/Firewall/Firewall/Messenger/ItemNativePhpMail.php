@@ -29,7 +29,7 @@ use function Shieldon\Firewall\__;
 /**
  * The get for PHP native mail.
  */
-class ItemPhpNativeMail
+class ItemNativePhpMail
 {
     /**
      * Initialize and get the instance.
