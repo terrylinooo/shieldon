@@ -230,4 +230,14 @@ class ShieldonTestCase extends TestCase
     
         print "\n";
     }
+
+    /**
+     * Get random IP address.
+     *
+     * @return string
+     */
+    function getRandomIpAddress():string
+    {
+        return rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255);
+    }
 }

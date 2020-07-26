@@ -221,19 +221,19 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $firewall->setConfig('driver_type', 'sqlite');
         $firewall->setConfig('drivers.sqlite.directory_path', BOOTSTRAP_DIR . '/../tmp/shieldon');
         
-        $firewall->getKernel()->setIp(rand_ip());
+        $firewall->getKernel()->setIp($this->getRandomIpAddress());
         $firewall->setup();
         $firewall->run();
         
         // Redis
         $firewall->setConfig('driver_type', 'redis');
-        $firewall->getKernel()->setIp(rand_ip());
+        $firewall->getKernel()->setIp($this->getRandomIpAddress());
         $firewall->setup();
         $firewall->run();
          
         // MySQL
         $firewall->setConfig('driver_type', 'mysql');
-        $firewall->getKernel()->setIp(rand_ip());
+        $firewall->getKernel()->setIp($this->getRandomIpAddress());
         $firewall->setup();
         $firewall->run();
     }

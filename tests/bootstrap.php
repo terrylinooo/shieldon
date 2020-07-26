@@ -60,10 +60,5 @@ if (! isset($_SERVER['HTTP_HOST'])) {
     $_SERVER['HTTP_HOST'] = 'shieldon.io';
 }
 
-function rand_ip()
-{
-    return rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255);
-}
-
 new Helpers();
 

@@ -49,6 +49,8 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testBypassList()
     {
+        $this->console('Test the XSS Bypass string list.', 'info');
+
         $xssInstance = new \Shieldon\Security\Xss();
 
         // You can add as many bybass string as you want for testing.
@@ -56,8 +58,6 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $originStrArr = [];
         $filiteredStrArr = [];
-
-        $this->console('XSS Bypass string test', 'notice', true);
 
         foreach ($bypassList as $num => $string) {
             $originStrArr[$num] = $string;
@@ -74,11 +74,11 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testImage()
     {
+        $this->console('Test the XSS Bypass string list for image.', 'info');
+
         $file = exif_read_data(__DIR__ . '/../../XssBypass/test_sample.jpg');
 
         $this->assertSame($file['Software'], '"><script>alert(123)</script><"');
-
-        $this->console('XSS Bypass image test', 'notice', true);
 
         $xssInstance = new \Shieldon\Security\Xss();
         $fileFiltered = $xssInstance->clean($file, true);
