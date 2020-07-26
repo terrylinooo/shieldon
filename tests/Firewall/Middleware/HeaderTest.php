@@ -47,6 +47,8 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
         $firewall->getKernel()->driver->rebuild();
         $firewall->getKernel()->setIp('131.132.87.12');
+        $firewall->getKernel()->disableFilters();
+        $firewall->getKernel()->disableComponents();
         $firewall->add(new \Shieldon\Firewall\Middleware\Header());
         $response = $firewall->run();
         $this->assertSame($response->getStatusCode(), 200);

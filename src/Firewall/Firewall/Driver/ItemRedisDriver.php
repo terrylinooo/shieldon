@@ -24,7 +24,7 @@ namespace Shieldon\Firewall\Firewall\Driver;
 
 use Shieldon\Firewall\Driver\RedisDriver;
 use Redis;
-use RedisException;
+use Exception;
 
 /**
  * Get Redis driver.
@@ -70,8 +70,8 @@ class ItemRedisDriver
 
             // @codeCoverageIgnoreStart
 
-        } catch(RedisException $e) {
-            echo $e->getMessage();
+        } catch (Exception $e) {
+            // echo $e->getMessage();
         }
 
         // @codeCoverageIgnoreEnd

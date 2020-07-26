@@ -82,6 +82,10 @@ class Firewall
 
         $this->setChannel();
 
+        $this->setFilters();
+
+        $this->setComponents();
+
         $this->setIpSource();
 
         $this->setLogger();

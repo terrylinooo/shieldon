@@ -31,7 +31,7 @@ class RedisDriverTest extends \PHPUnit\Framework\TestCase
 
         try {
             $redis = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertTrue(false);
         }
 

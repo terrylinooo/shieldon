@@ -47,20 +47,14 @@ class MessengerFactory
     /**
      * Check whether a messenger is available or not.
      *
-     * @param string $messenger The messenger's ID string.
      * @param array  $setting   The configuration of that messanger.
      *
      * @return bool
      */
-    public static function check(string $messenger, array $setting): bool
+    public static function check(array $setting): bool
     {
         // If the settings is not set correctly.
         if (empty($setting['enable']) || empty($setting['confirm_test'])) {
-            return false;
-        }
-
-        // If the class doesn't exist.
-        if (!file_exists(__DIR__ . '/' . self::getCamelCase($messenger) . '.php')) {
             return false;
         }
 

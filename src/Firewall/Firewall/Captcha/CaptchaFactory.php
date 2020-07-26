@@ -47,19 +47,13 @@ class CaptchaFactory
     /**
      * Check whether a messenger is available or not.
      *
-     * @param string $type    The messenger's ID string.
      * @param array  $setting The configuration of that messanger.
      *
      * @return bool
      */
-    public static function check(string $type, array $setting): bool
+    public static function check(array $setting): bool
     {
         if (empty($setting['enable'])) {
-            return false;
-        }
-
-        // If the class doesn't exist.
-        if (!file_exists(__DIR__ . '/' . self::getCamelCase($type) . '.php')) {
             return false;
         }
 

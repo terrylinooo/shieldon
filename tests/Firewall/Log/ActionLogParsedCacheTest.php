@@ -28,7 +28,7 @@ class ActionLogParsedCacheTest extends \PHPUnit\Framework\TestCase
     {
         try {
             $logger = new \Shieldon\Firewall\Log\ActionLogParsedCache(BOOTSTRAP_DIR . '/../tmp/shieldon');
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertTrue(false);
         }
     }

@@ -33,7 +33,7 @@ class ActionLoggerTest extends \PHPUnit\Framework\TestCase
 
             $this->assertIsArray($info);
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertTrue(false);
         }
 

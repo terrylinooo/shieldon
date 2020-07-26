@@ -60,7 +60,7 @@ class ItemMysqlDriver
 
             // @codeCoverageIgnoreStart
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             echo $e->getMessage();
         }
 

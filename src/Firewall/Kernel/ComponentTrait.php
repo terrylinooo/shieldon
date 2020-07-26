@@ -66,6 +66,16 @@ trait ComponentTrait
         return $this->component[$name];
     }
 
+    /**
+     * Disable components.
+     *
+     * @return void
+     */
+    public function disableComponents(): void
+    {
+        $this->component = [];
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Stage in Kernel

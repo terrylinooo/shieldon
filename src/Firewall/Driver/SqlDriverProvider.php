@@ -333,7 +333,7 @@ class SqlDriverProvider extends DriverProvider
 
             // @codeCoverageIgnoreStart
         
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
@@ -392,7 +392,7 @@ class SqlDriverProvider extends DriverProvider
 
             // @codeCoverageIgnoreStart
 
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
@@ -445,7 +445,7 @@ class SqlDriverProvider extends DriverProvider
 
             // @codeCoverageIgnoreStart
 
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 

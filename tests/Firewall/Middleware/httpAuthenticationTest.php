@@ -54,16 +54,17 @@ class HttpAuthenticationTest extends \PHPUnit\Framework\TestCase
         $_SERVER['PHP_AUTH_PW'] = '$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq';
         $_SERVER['REQUEST_URI'] = '/admin/';
         reload_request();
-        
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
         $firewall->getKernel()->driver->rebuild();
         $firewall->getKernel()->setIp('131.132.87.12');
+        $firewall->getKernel()->disableFilters();
+        $firewall->getKernel()->disableComponents();
         $firewall->add(new \Shieldon\Firewall\Middleware\HttpAuthentication());
         $response = $firewall->run();
         $this->assertSame($response->getStatusCode(), 200);
     }
-
 
     public function testSetHttpAuthentication()
     {

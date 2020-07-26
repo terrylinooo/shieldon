@@ -161,7 +161,7 @@ function get_testing_shieldon_instance($driver = 'sqlite')
             try {
                 $pdoInstance = new \PDO('sqlite:' . $dbLocation);
                 $kernel->setDriver(new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance));
-            } catch(\PDOException $e) {
+            } catch (\PDOException $e) {
                 throw $e->getMessage();
             }
   

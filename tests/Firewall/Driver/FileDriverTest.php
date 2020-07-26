@@ -28,7 +28,7 @@ class FileDriverTest extends \PHPUnit\Framework\TestCase
     {
         try {
             $file = new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon');
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertTrue(false);
         }
 

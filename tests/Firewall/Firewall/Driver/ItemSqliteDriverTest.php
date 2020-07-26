@@ -22,21 +22,29 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Tests\Firewall\Driver;
 
-class ItemFileDriverTest extends \PHPUnit\Framework\TestCase
+class ItemSqliteDriverTest extends \PHPUnit\Framework\TestCase
 {
     public function testGet()
     {
-        $instance = new \Shieldon\Firewall\Firewall\Driver\ItemFileDriver();
-        $fileDriver = $instance::get(
+        $instance = new \Shieldon\Firewall\Firewall\Driver\ItemSqliteDriver();
+        $sqliteDriver = $instance::get(
             [
                 'directory_path' => BOOTSTRAP_DIR . '/../tmp'
             ]
         );
 
-        if ($fileDriver instanceof \Shieldon\Firewall\Driver\FileDriver) {
+        if ($sqliteDriver instanceof \Shieldon\Firewall\Driver\SqliteDriver) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);
         }
+    }
+
+    public function testGetWithInvalidSetting()
+    {
+        $instance = new \Shieldon\Firewall\Firewall\Driver\ItemSqliteDriver();
+        $sqliteDriver = $instance::get(['directory_path' => '']);
+
+        $this->assertEquals($sqliteDriver, null);
     }
 }

@@ -29,7 +29,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
         try {
             $pdoInstance = new \PDO('sqlite::memory:');
             $db = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             $this->assertTrue(false);
         }
 
@@ -51,7 +51,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
             $method->setAccessible(true);
             $method->invoke($db);
             $this->assertTrue(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertTrue(false);
         }
     }
@@ -68,7 +68,7 @@ class SqliteDriverTest extends \PHPUnit\Framework\TestCase
             $method->setAccessible(true);
             $result = $method->invoke($db);
             $this->assertTrue($result);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertTrue(false);
         }
     }

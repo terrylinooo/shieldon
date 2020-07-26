@@ -253,7 +253,7 @@ trait ConfigMethodsTrait
                     (string) $db['user'],
                     (string) $db['pass']
                 );
-            } catch(PDOException $e) {
+            } catch (PDOException $e) {
 
                 $result = false;
 
@@ -314,7 +314,7 @@ trait ConfigMethodsTrait
             try {
                 new PDO('sqlite:' . $sqliteFilePath);
 
-            } catch(PDOException $e) { 
+            } catch (PDOException $e) { 
                 $this->pushMessage('error', $e->getMessage());
                 $result = false;
             }
@@ -367,7 +367,7 @@ trait ConfigMethodsTrait
                 );
                 unset($redis);
 
-            } catch(RedisException $e) {
+            } catch (RedisException $e) {
                 $this->pushMessage('error', $e->getMessage());
                 $result = false;
             }

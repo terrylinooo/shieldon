@@ -71,6 +71,11 @@ class Kernel
     use RuleTrait;
     use SessionTrait;
 
+    // HTTP status code
+    const HTTP_STATUS_BAD_REQUEST = 400;
+    const HTTP_STATUS_FORBIDDEN = 403;
+    const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
+
     // Reason codes (allow)
     const REASON_IS_SEARCH_ENGINE = 100;
     const REASON_IS_GOOGLE = 101;
@@ -287,17 +292,17 @@ class Kernel
         $httpStatusCodes = [
             self::RESPONSE_TEMPORARILY_DENY => [
                 'type' => 'captcha',
-                'code' => 403, // Forbidden.
+                'code' => self::HTTP_STATUS_FORBIDDEN,
             ],
 
             self::RESPONSE_LIMIT_SESSION => [
                 'type' => 'session_limitation',
-                'code' => 429, // Too Many Requests.
+                'code' => self::HTTP_STATUS_TOO_MANY_REQUESTS,
             ],
 
             self::RESPONSE_DENY => [
                 'type' => 'rejection',
-                'code' => 400, // Bad request.
+                'code' => self::HTTP_STATUS_BAD_REQUEST,
             ],
         ];
 

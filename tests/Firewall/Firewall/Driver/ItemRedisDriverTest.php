@@ -22,21 +22,28 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Tests\Firewall\Driver;
 
-class ItemFileDriverTest extends \PHPUnit\Framework\TestCase
+class ItemRedisDriverTest extends \PHPUnit\Framework\TestCase
 {
     public function testGet()
     {
-        $instance = new \Shieldon\Firewall\Firewall\Driver\ItemFileDriver();
-        $fileDriver = $instance::get(
-            [
-                'directory_path' => BOOTSTRAP_DIR . '/../tmp'
-            ]
-        );
+        $instance = new \Shieldon\Firewall\Firewall\Driver\ItemRedisDriver();
+        $redisDriver = $instance::get([]);
 
-        if ($fileDriver instanceof \Shieldon\Firewall\Driver\FileDriver) {
+        if ($redisDriver instanceof \Shieldon\Firewall\Driver\RedisDriver) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);
         }
+    }
+
+    public function testGetWithInvalidSetting()
+    {
+        $setting['host'] = '127.0.0.1';
+        $setting['port'] = 8888;
+
+        $instance = new \Shieldon\Firewall\Firewall\Driver\ItemRedisDriver();
+        $redisDriver = $instance::get($setting);
+
+        $this->assertEquals($redisDriver, null);
     }
 }

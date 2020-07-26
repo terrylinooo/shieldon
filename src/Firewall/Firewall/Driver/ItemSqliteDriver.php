@@ -43,7 +43,7 @@ class ItemSqliteDriver
         $instance = null;
 
         if (empty($setting['directory_path'])) {
-            return $instance;
+            return null;
         }
 
         try { 
@@ -54,7 +54,7 @@ class ItemSqliteDriver
 
             // @codeCoverageIgnoreStart
 
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             echo $e->getMessage();
         }
 

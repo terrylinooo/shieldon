@@ -116,7 +116,6 @@ trait MainTrait
             'session',
             'cookie',
             'referer',
-            'frequency',
         ];
 
         foreach ($filters as $filter) {
@@ -129,8 +128,8 @@ trait MainTrait
             unset($setting);
         }
 
-        // filiterLimit property does not have this field.
-        unset($filterLimit['frequency']);
+        $settings['frequency'] = $this->getOption('frequency', 'filters');
+        $filterConfig['frequency'] = $settings['frequency']['enable'];
 
         $this->kernel->setFilters($filterConfig);
 
@@ -200,14 +199,16 @@ trait MainTrait
 
             if ($config['enable']) {
                 $componentInstance = new $class();
-                $componentInstance->setStrict($config['strict_mode']);
 
                 if ($className === 'Ip') {
+                    $this->kernel->setComponent($componentInstance);
+
                     // Need Ip component to be loaded before calling this method.
                     $this->applyComponentIpManager();
+                } else {
+                    $componentInstance->setStrict($config['strict_mode']);
+                    $this->kernel->setComponent($componentInstance);
                 }
-
-                $this->kernel->setComponent($componentInstance);
             }
         }
     }
@@ -231,7 +232,7 @@ trait MainTrait
             $setting = (array) $this->getOption($captcha, 'captcha_modules');
 
             // Initialize messenger instances from the factory/
-            if (CaptchaFactory::check($captcha, $setting)) {
+            if (CaptchaFactory::check($setting)) {
 
                 $this->kernel->setCaptcha(
                     CaptchaFactory::getInstance(
