@@ -39,4 +39,12 @@ class ItemFileDriverTest extends \PHPUnit\Framework\TestCase
             $this->assertTrue(false);
         }
     }
+
+    public function testGetWithInvalidSetting()
+    {
+        $instance = new \Shieldon\Firewall\Firewall\Driver\ItemFileDriver();
+        $fileDriver = $instance::get(['directory_path' => '']);
+
+        $this->assertEquals($fileDriver, null);
+    }
 }

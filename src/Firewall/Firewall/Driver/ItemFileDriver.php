@@ -41,7 +41,7 @@ class ItemFileDriver
         $instance = null;
 
         if (empty($setting['directory_path'])) {
-            return $instance;
+            return null;
         }
 
         $instance = new FileDriver($setting['directory_path']);
