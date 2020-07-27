@@ -25,6 +25,7 @@ namespace Shieldon\Firewall\Panel\Sandbox;
 use Shieldon\Messenger\Mail as MailTest;
 use function explode;
 use function filter_var;
+use function function_exists;
 use function str_replace;
 
 /**
@@ -76,7 +77,7 @@ class NativePhpMail
 
             $messenger->setSubject($message['title']);
 
-            if ($messenger->send($message['body'])) {
+            if (function_exists('mail') && $messenger->send($message['body'])) {
                 // @codeCoverageIgnoreStart
                 return true;
                 // @codeCoverageIgnoreEnd
