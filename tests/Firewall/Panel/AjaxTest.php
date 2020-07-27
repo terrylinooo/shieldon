@@ -113,7 +113,7 @@ class AjaxTest extends \Shieldon\FirewallTest\ShieldonTestCase
         );
     }
 
-    private function getMessengerModulesTestExpectedString($module)
+    private function getMessengerModulesTestExpectedString($module, $settings = [])
     {
         $messenger['telegram'] = [
             'apiKey',
@@ -189,6 +189,12 @@ class AjaxTest extends \Shieldon\FirewallTest\ShieldonTestCase
             }
         }
 
+        if (!empty($settings)) {
+            foreach ($settings as $k => $setting) {
+                $_GET[$k] = $setting;
+            }
+        }
+
         $this->refreshRequest();
 
         $expectedString = '{"status":"error","result":{"moduleName":"' . $module . '","postKey":"messengers__' . $module . '__confirm_test"}}';
@@ -196,5 +202,22 @@ class AjaxTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->route();
 
         return $expectedString;
+    }
+
+    public function testTryMessengersSmtpInvalidSetting()
+    {
+        $settings = [
+            'type' => 'ssl',
+            'host' => 'localhost local', // invalid host - for code coverage.
+            'port' => '80',
+            'user' => 'test',
+            'pass' => '1234',
+            'sender' => 'test@gmail.com',
+            'recipients' => 'test@gmail.com',
+        ];
+
+        $this->expectOutputString(
+            $this->getMessengerModulesTestExpectedString('smtp', $settings)
+        );
     }
 }

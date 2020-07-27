@@ -132,7 +132,7 @@ class Smtp
     {
         if (
             !filter_var($host, FILTER_VALIDATE_IP) && 
-            !filter_var($host, FILTER_VALIDATE_DOMAIN)
+            !filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
         ) {
             return false;
         }
