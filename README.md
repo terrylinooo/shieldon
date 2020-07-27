@@ -1,12 +1,21 @@
 ![Shieldon - Web Application Firewall for PHP](https://i.imgur.com/G4xpugB.png)
 
-[![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=master)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://img.shields.io/codecov/c/github/terrylinooo/shieldon.svg)](https://codecov.io/gh/terrylinooo/shieldon) ![PHP from Packagist](https://img.shields.io/packagist/php-v/terrylinooo/shieldon.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=master)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://img.shields.io/codecov/c/github/terrylinooo/shieldon.svg)](https://codecov.io/gh/terrylinooo/shieldon) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minutes only, PHP expert developers will understand how to implement Shiedon Firewall on their Web applications. The goal of this library is to make the PHP community more secure and being extremely easy-to-use.
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
 - WordPress plugin: [https://wordpress.org/plugins/wp-shieldon/](https://wordpress.org/plugins/wp-shieldon/)
+
+
+## Shieldon 2
+
+Shielodn 2 implements PSR-7 that better supports the middleware pattern of the modern frameworks.
+
+https://github.com/terrylinooo/shieldon/tree/2.x
+
+The documentation and the first release will be ready soon.
 
 ## Concepts
 
@@ -161,7 +170,6 @@ Welcome to contribute your idea to this project. Before sending your pull reques
     ```bash
     composer update
     ```
-
 2. Create a writable folder `tmp`. (same level with `src` folder.) for temporary testing files.
     ```bash
     mkdir tmp
@@ -179,11 +187,14 @@ Welcome to contribute your idea to this project. Before sending your pull reques
     ```bash
     mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
     ```
-
-#### Run test
-```bash
-composer test
-```
+6. Install PHP Xdebug.
+    ```
+    apt-get install php7.2-xdebug
+    ```
+7.  Run test
+    ```bash
+    composer test
+    ```
 
 ### Help with Transation
 
