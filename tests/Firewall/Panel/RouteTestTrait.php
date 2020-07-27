@@ -90,6 +90,9 @@ trait RouteTestTrait
                 BOOTSTRAP_DIR . '/../tmp/shieldon/action_logs'
             )
         );
+        $firewall->getKernel()->setMessenger(
+            new \Shieldon\Messenger\Telegram('mock-key', 'mock-channel-id')
+        );
 
         if (!empty($this->ip)) {
             $firewall->getKernel()->setIp($this->ip);

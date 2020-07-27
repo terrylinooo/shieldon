@@ -56,8 +56,33 @@ class HomeTest extends \Shieldon\FirewallTest\ShieldonTestCase
         );
     }
 
-    public function overviewTemplateVarsOfActionLogger()
+    public function testOverviewTemplateVarsOfActionLogger()
     {
+        if (!defined('SHIELDON_PANEL_BASE')) {
+            define('SHIELDON_PANEL_BASE', 'firewall/panel');
+        }
 
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->getKernel()->disableFilters();
+        $firewall->getKernel()->disableComponents();
+        $firewall->getKernel()->setLogger(
+            new \Shieldon\Firewall\Log\ActionLogger(
+                BOOTSTRAP_DIR . '/samples/action_logs'
+            )
+        );
+
+        $resolver = new \Shieldon\Firewall\HttpResolver();
+
+        $controllerClass = new \Shieldon\Firewall\Panel\Home();
+        
+        ob_start();
+        $resolver(call_user_func([$controllerClass, 'overview'])); 
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertStringContainsString('<li><span>since</span> <strong>2020-02-03</strong></li>', $output);
+        $this->assertStringContainsString('<li><span>days</span> <strong>16</strong></li>', $output);
+        $this->assertStringContainsString('<li><span>size</span> <strong>0.41663 MB</strong></li>', $output);
     }
 }
