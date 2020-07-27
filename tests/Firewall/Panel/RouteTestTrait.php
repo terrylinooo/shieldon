@@ -78,25 +78,37 @@ trait RouteTestTrait
     /**
      * Test routes.
      */
-    public function route($output = true)
+    public function route($output = true, $disableProtection = true)
     {
         $basePath = 'firewall/panel';
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        
         $firewall->setConfig('messengers.telegram.enable', true);
         $firewall->setConfig('messengers.telegram.confirm_test', true);
-        $firewall->getKernel()->disableFilters();
-        $firewall->getKernel()->disableComponents();
+        $firewall->setConfig('messengers.components.ip.enable', false);
+        $firewall->setConfig('messengers.components.rdns.enable', false);
+        $firewall->setConfig('messengers.components.header.enable', false);
+        $firewall->setConfig('messengers.components.user_agent.enable', false);
+        $firewall->setConfig('messengers.components.trusted_bot.enable', false);
+        $firewall->setConfig('messengers.filters.fequency.enable', false);
+        $firewall->setConfig('messengers.filters.referer.enable', false);
+        $firewall->setConfig('messengers.filters.cookie.enable', false);
+        $firewall->setConfig('messengers.filters.cookie.enable', false);
+        $firewall->setup();
+
         $firewall->getKernel()->setLogger(
             new \Shieldon\Firewall\Log\ActionLogger(
                 BOOTSTRAP_DIR . '/../tmp/shieldon/action_logs'
             )
         );
+
         $firewall->getKernel()->setMessenger(
             new \Shieldon\Messenger\Telegram('mock-key', 'mock-channel-id')
         );
 
-        $firewall->setup();
+        $firewall->getKernel()->disableFilters();
+        $firewall->getKernel()->disableComponents();
 
         if (!empty($this->ip)) {
             $firewall->getKernel()->setIp($this->ip);

@@ -52,4 +52,12 @@ class MockMessenger implements \Shieldon\Messenger\Messenger\MessengerInterface
     {
         return '';
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function setTimeout(int $timeout = 0): void
+    {
+
+    }
 }
