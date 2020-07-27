@@ -54,15 +54,20 @@ class Home extends BaseController
         parent::__construct();
     }
 
+    // @codeCoverageIgnoreStart
+
     /**
      * Default entry
-     *
+     * 
      * @return ResponseInterface
      */
     public function index(): ResponseInterface
     {
+        
         return $this->overview();
     }
+
+    // @codeCoverageIgnoreEnd
 
     /**
      * Overview

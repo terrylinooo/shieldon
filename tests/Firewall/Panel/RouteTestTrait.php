@@ -83,6 +83,8 @@ trait RouteTestTrait
         $basePath = 'firewall/panel';
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->setConfig('messengers.telegram.enable', true);
+        $firewall->setConfig('messengers.telegram.confirm_test', true);
         $firewall->getKernel()->disableFilters();
         $firewall->getKernel()->disableComponents();
         $firewall->getKernel()->setLogger(
@@ -93,6 +95,8 @@ trait RouteTestTrait
         $firewall->getKernel()->setMessenger(
             new \Shieldon\Messenger\Telegram('mock-key', 'mock-channel-id')
         );
+
+        $firewall->setup();
 
         if (!empty($this->ip)) {
             $firewall->getKernel()->setIp($this->ip);

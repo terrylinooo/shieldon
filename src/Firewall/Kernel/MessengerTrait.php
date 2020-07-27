@@ -55,7 +55,7 @@ trait MessengerTrait
     public function setMessenger(MessengerInterface $instance): void
     {
         $class = $this->getClassName($instance);
-        $this->messengers[$class] = $instance;
+        $this->messenger[$class] = $instance;
     }
 
     /**
