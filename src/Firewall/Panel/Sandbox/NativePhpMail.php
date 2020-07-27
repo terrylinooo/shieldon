@@ -77,7 +77,7 @@ class NativePhpMail
 
             $messenger->setSubject($message['title']);
 
-            if (function_exists('mail') && $messenger->send($message['body'])) {
+            if (!defined('PHP_UNIT_TEST') && $messenger->send($message['body'])) {
                 // @codeCoverageIgnoreStart
                 return true;
                 // @codeCoverageIgnoreEnd
