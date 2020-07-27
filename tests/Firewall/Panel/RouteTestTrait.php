@@ -78,7 +78,7 @@ trait RouteTestTrait
     /**
      * Test routes.
      */
-    public function route($output = true, $disableProtection = true)
+    public function route($output = true)
     {
         $basePath = 'firewall/panel';
         $firewall = new \Shieldon\Firewall\Firewall();

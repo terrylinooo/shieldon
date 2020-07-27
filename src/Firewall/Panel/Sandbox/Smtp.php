@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel\Sandbox;
 
+use Exception;
 use Shieldon\Messenger\Smtp as SmtpTest;
 use function explode;
 use function filter_var;
@@ -77,7 +78,9 @@ class Smtp
             ${$param} = $getParams[$param] ?? '';
 
             if (empty(${$param})) {
+                // @codeCoverageIgnoreStart
                 return false;
+                // @codeCoverageIgnoreEnd
             }
         }
 
@@ -107,10 +110,14 @@ class Smtp
 
         $messenger->setSubject($message['title']);
 
-        if ($messenger->send($message['body'])) {
-            return true;
-        }
-        
+        // @codeCoverageIgnoreStart
+        try {
+            if ($messenger->send($message['body'])) {
+                return true;
+            }
+        } catch (Exception $e) {}
+        // @codeCoverageIgnoreEnd
+
         return false;
     }
 

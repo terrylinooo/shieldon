@@ -16,7 +16,7 @@ class MockSaveConfig
 {
     public static function get() 
     {
-        $json = file_get_contents(__DIR__ . '/post.json');
+        $json = file_get_contents(__DIR__ . '/save_config_form_test.json');
 
         return json_decode($json, true);
     }

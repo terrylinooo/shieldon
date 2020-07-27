@@ -57,7 +57,9 @@ class SlackWebhook
             $messenger = new SlackWebhookTest($webhookUrl);
 
             if ($messenger->send($message['body'])) {
+                // @codeCoverageIgnoreStart
                 return true;
+                // @codeCoverageIgnoreEnd
             }
         }
         return false;

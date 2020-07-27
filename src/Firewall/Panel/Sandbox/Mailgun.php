@@ -79,7 +79,9 @@ class Mailgun
             $messenger->setSubject($message['title']);
 
             if ($messenger->send($message['body'])) {
+                // @codeCoverageIgnoreStart
                 return true;
+                // @codeCoverageIgnoreEnd
             }
         }
         return false;

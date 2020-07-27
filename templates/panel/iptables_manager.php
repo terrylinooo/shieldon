@@ -98,9 +98,9 @@ use function Shieldon\Firewall\mask_string;
                     <input name="port_custom" type="text" value="" class="d-none" id="ip-address" style="width: 60px">
                 </div>
                 <div class="d-inline-block align-top">
-                    <label for="action" style="padding-left: 20px"><?php _e('panel', 'iptables_label_protocol', 'Protocol'); ?></label><br />
+                    <label for="protocol" style="padding-left: 20px"><?php _e('panel', 'iptables_label_protocol', 'Protocol'); ?></label><br />
                     <span class="seperate">(<span>
-                    <select name="protocol" class="regular" id="action">
+                    <select name="protocol" class="regular" id="protocol">
                         <option value="all"><?php _e('panel', 'iptables_label_protocol_all', 'All'); ?></option>
                         <option value="tcp"><?php _e('panel', 'iptables_label_protocol_tcp', 'TCP'); ?></option>
                         <option value="udp"><?php _e('panel', 'iptables_label_protocol_udp', 'UDP'); ?></option>

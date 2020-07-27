@@ -77,9 +77,14 @@ class NativePhpMail
             $messenger->setSubject($message['title']);
 
             if ($messenger->send($message['body'])) {
+                // @codeCoverageIgnoreStart
                 return true;
+                // @codeCoverageIgnoreEnd
             }
         }
+
+        // @codeCoverageIgnoreStart
         return false;
+        // @codeCoverageIgnoreEnd
     }
 }

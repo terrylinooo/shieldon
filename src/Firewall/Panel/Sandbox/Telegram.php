@@ -58,7 +58,9 @@ class Telegram
             $messenger = new TelegramTest($apiKey, $channel);
 
             if ($messenger->send($message['body'])) {
+                // @codeCoverageIgnoreStart
                 return true;
+                // @codeCoverageIgnoreEnd
             }
         }
         return false;

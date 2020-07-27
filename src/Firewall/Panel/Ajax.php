@@ -125,19 +125,18 @@ class Ajax extends BaseController
             )
         );
 
-        // Call testing method if exists.
-        if ($this->{$method}($getParams, $message)) {
-            $data['status'] = 'success';
-        }
-
         $postParams = $request->getParsedBody();
         $postKey = 'messengers__' . $moduleName . '__confirm_test';
 
-        if ('success' === $data['status']) {
+        // Call testing method if exists.
+        $status = $this->{$method}($getParams, $message);
+
+        if ( $status) {
+            $data['status'] = 'success';
             $postParams[$postKey] = 'on';
             $this->saveConfig();
-
-        } elseif ('error' === $data['status']) {
+        } else {
+            $data['status'] = 'error';
             $postParams[$postKey] = 'off';
             $this->saveConfig();
         }

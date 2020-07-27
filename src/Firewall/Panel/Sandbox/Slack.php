@@ -58,7 +58,9 @@ class Slack
             $messenger = new SlackTest($botToken, $channel);
 
             if ($messenger->send($message['body'])) {
+                // @codeCoverageIgnoreStart
                 return true;
+                // @codeCoverageIgnoreEnd
             }
         }
         return false;

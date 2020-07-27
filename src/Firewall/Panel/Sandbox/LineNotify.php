@@ -57,7 +57,9 @@ class LineNotify
             $messenger = new LineNotifyTest($accessToken);
 
             if ($messenger->send($message['body'])) {
+                // @codeCoverageIgnoreStart
                 return true;
+                // @codeCoverageIgnoreEnd
             }
         }
         return false;

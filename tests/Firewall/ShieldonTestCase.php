@@ -60,7 +60,7 @@ class ShieldonTestCase extends TestCase
      */
     function getWritableTestFilePath($filename, $dir = ''): string
     {
-        if ($dir === '') {
+        if ($dir !== '') {
             $dir = BOOTSTRAP_DIR . '/../tmp/' . $dir;
         } else {
             $dir = BOOTSTRAP_DIR . '/../tmp';
