@@ -12,3 +12,4 @@ tmp
 clover.xml
 .phpunit.result.cache
 bin/*.log
+test.sh

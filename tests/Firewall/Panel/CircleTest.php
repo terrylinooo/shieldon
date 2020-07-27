@@ -45,10 +45,9 @@ class CircleTest extends \Shieldon\FirewallTest\ShieldonTestCase
             'Data Circle - Rule Table'
         );
 
-        $this->setIp('127.0.0.127');
         $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
         $response = $firewall->run();
-        $this->assertSame($response->getStatusCode(), 400);
+        $this->assertSame(400, $response->getStatusCode());
 
         $_POST['ip'] = '127.0.0.127';
         $_POST['action'] = 'remove';
@@ -59,7 +58,6 @@ class CircleTest extends \Shieldon\FirewallTest\ShieldonTestCase
             'Data Circle - Rule Table'
         );
 
-        $this->setIp('127.0.0.127');
         $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
         $response = $firewall->run();
         $this->assertSame($response->getStatusCode(), 200);

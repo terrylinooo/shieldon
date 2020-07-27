@@ -80,6 +80,7 @@ trait RouteTestTrait
      */
     public function route($output = true)
     {
+
         $basePath = 'firewall/panel';
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
@@ -103,16 +104,16 @@ trait RouteTestTrait
             )
         );
 
+        $firewall->getKernel()->setDriver(
+            new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon')
+        );
+
         $firewall->getKernel()->setMessenger(
             new \Shieldon\Messenger\Telegram('mock-key', 'mock-channel-id')
         );
 
         $firewall->getKernel()->disableFilters();
         $firewall->getKernel()->disableComponents();
-
-        if (!empty($this->ip)) {
-            $firewall->getKernel()->setIp($this->ip);
-        }
 
         new Helpers();
 
