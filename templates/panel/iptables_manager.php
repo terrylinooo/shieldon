@@ -164,14 +164,14 @@ use function Shieldon\Firewall\mask_string;
                 <tr>
                     <td>
                         <?php if ($this->mode === 'demo') : ?>
-                        <?php $ipInfo[2] = mask_string($ipInfo[2]); ?>
+                        <?php $ipInfo[2] = mask_string($ipInfo[2]); // ip ?>
                         <?php endif; ?>
 
                         <?php echo $ipInfo[2] . $subnet; ?>
                     </td>
-                    <td><?php echo strtoupper($ipInfo[4]); ?></td>
-                    <td><?php echo strtoupper($ipInfo[5]); ?></td>
-                    <td><?php echo strtoupper($ipInfo[6]); ?></td>
+                    <td><?php echo strtoupper($ipInfo[4]); // port ?></td>
+                    <td><?php echo strtoupper($ipInfo[5]); // protocol ?></td>
+                    <td><?php echo strtoupper($ipInfo[6]); // action ?></td>
                     <td>
                         <button type="button" class="button btn-remove-ip" 
                             data-ip="<?php echo $ipInfo[2]; ?>" 

@@ -87,7 +87,7 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $firewall = new \Shieldon\Firewall\Firewall();
         $panel = new \Shieldon\Firewall\Panel();
-        $panel->csrf('test', '1234');
+        $panel->csrf(['test' => '1234']);
 
         ob_start();
         $panel->fieldCsrf();

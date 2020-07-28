@@ -52,8 +52,6 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         );
     }
 
-
-
     private function getMockPostData($type = 1)
     {
         /*
@@ -225,6 +223,11 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $firewall->setup();
         $firewall->getKernel()->disableFilters();
         $firewall->getKernel()->disableComponents();
+
+        $firewall->getKernel()->setProperty(
+            'iptables_watching_folder',
+            BOOTSTRAP_DIR . '/../tmp/shieldon/iptables'
+        );
 
         // Start testing...
 

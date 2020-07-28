@@ -128,9 +128,9 @@ class Iptables extends BaseController
                 $line = trim($file->fgets());
                 $ipInfo = explode(',', $line);
 
-                // If the column amount is at least 4 maning that the data is 
+                // If the column amount is at least 6 maning that the data is 
                 // existed so that we can use it.
-                if (!empty($ipInfo[4])) {
+                if (!empty($ipInfo[6])) {
                     $ipCommand[] = $ipInfo;
                 }
             }

@@ -34,11 +34,54 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         );
     }
 
+    public function testWebAuthenticationPostForm()
+    {
+  
+        $this->assertPageOutputContainsString(
+            'firewall/panel/security/authentication',
+            'Web Page Authentication'
+        );
+    }
+
     public function testXssProtection()
     {
         $this->assertPageOutputContainsString(
             'firewall/panel/security/xssProtection',
             'XSS Protection'
+        );
+    }
+
+    public function testXssProtectionPostForm()
+    {
+        $_POST['type'] = 'post';
+        $_POST['variable'] = 'test_variable_name';
+        $_POST['action'] = 'add';
+        $_POST['order'] = '';
+        $_POST['xss'] = 'page';
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
+        $this->assertPageOutputContainsString(
+            'firewall/panel/security/xssProtection',
+            'test_variable_name' // This setting has been added successfully.
+        );
+    }
+
+    public function testXssProtectionPostForm2()
+    {
+        $_POST['type'] = 'post';
+        $_POST['variable'] = 'test_variable_name';
+        $_POST['action'] = 'remove';
+        $_POST['order'] = '4';
+        $_POST['xss'] = 'page';
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
+        $this->assertPageOutputContainsString(
+            'firewall/panel/security/xssProtection',
+            'test_variable_name' // This setting has been added successfully.
         );
     }
 }

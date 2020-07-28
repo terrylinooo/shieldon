@@ -114,38 +114,29 @@ class Security extends BaseController
         if (isset($postParams['xss'])) {
             unset_superglobal('xss', 'post');
 
-            $type = $postParams['type'] ?? '';
+            $type     = $postParams['type']     ?? '';
             $variable = $postParams['variable'] ?? '';
-            $action = $postParams['action'] ?? '';
+            $action   = $postParams['action']   ?? '';
+
+            // The index number in the $xssProtectedList, see below.
             $order = (int) $postParams['order'];
 
             // Check variable name. Should be mixed with a-zA-Z and underscore.
             if (!ctype_alnum(str_replace('_', '', $variable))) {
 
+                // @codeCoverageIgnoreStart
                 // Ignore the `add` process.
                 $action = 'undefined';
+                // @codeCoverageIgnoreEnd
             }
 
-            $xssProtectedList = $this->getConfig('xss_protected_list');
-
-            if (empty($xssProtectedList)) {
-                $xssProtectedList = [];
-            }
+            $xssProtectedList = (array) $this->getConfig('xss_protected_list');
 
             if ('add' === $action) {
-
-                switch ($type) {
-                    case 'post':
-                    case 'get':
-                    case 'cookie':
-                        array_push($xssProtectedList, ['type' => $type, 'variable' => $variable]);
-                        break;
-
-                    default:
-                    // endswitch.
+                if (in_array($type, ['get', 'post', 'cookie'])) {
+                    array_push($xssProtectedList, ['type' => $type, 'variable' => $variable]);
                 }
-
-            } elseif ('remove' === $xssProtectedList) {
+            } elseif ('remove' === $action) {
                 unset($xssProtectedList[$order]);
                 $xssProtectedList = array_values($xssProtectedList);
             }

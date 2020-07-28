@@ -96,6 +96,10 @@ trait RouteTestTrait
         $firewall->setConfig('messengers.filters.referer.enable', false);
         $firewall->setConfig('messengers.filters.cookie.enable', false);
         $firewall->setConfig('messengers.filters.cookie.enable', false);
+        $firewall->setConfig('iptables.enable', true);
+        $firewall->setConfig('iptables.config.watching_folder', BOOTSTRAP_DIR . '/../tmp/shieldon/iptables');
+        $firewall->setConfig('ip6tables.enable', true);
+        $firewall->setConfig('ip6tables.config.watching_folder', BOOTSTRAP_DIR . '/../tmp/shieldon/iptables');
         $firewall->setup();
 
         $firewall->getKernel()->setProperty(

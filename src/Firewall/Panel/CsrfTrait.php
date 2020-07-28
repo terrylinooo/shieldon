@@ -47,31 +47,14 @@ trait CsrfTrait
      */
     public function csrf(...$csrfparams): void
     {
-        $count = count($csrfparams);
-        $csrfKey = '';
-        $csrfValue = '';
-
-        if (1 === $count) {
-            foreach ($csrfparams as $key => $value) {
-                $csrfKey = $key;
-                $csrfValue = $value;
-            }
-
-        } elseif (2 === $count) {
-
-            if (!empty($csrfparams[0]) && is_string($csrfparams[0])) {
-                $csrfKey = $csrfparams[0];
-            }
-    
-            if (!empty($csrfparams[1]) && is_string($csrfparams[1])) {
-                $csrfValue = $csrfparams[1];
+        foreach ($csrfparams as $value) {
+            foreach ($value as $k => $v) {
+                $this->csrfField[] = [
+                    'name'  => $k,
+                    'value' => $v,
+                ];
             }
         }
-
-        $this->csrfField[] = [
-            'name' => $csrfKey,
-            'value' => $csrfValue,
-        ];
     }
 
     /**
