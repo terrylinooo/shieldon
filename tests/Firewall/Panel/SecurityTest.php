@@ -34,12 +34,37 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         );
     }
 
-    public function testWebAuthenticationPostForm()
+    public function testWebAuthenticationPostFormAddItem()
     {
-  
+        $_POST['url'] = '/just-for-test';
+        $_POST['user'] = 'terry';
+        $_POST['pass'] = '1234';
+        $_POST['order'] = '';
+        $_POST['action'] = 'add';
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
         $this->assertPageOutputContainsString(
             'firewall/panel/security/authentication',
-            'Web Page Authentication'
+            '/just-for-test' // This setting has been added successfully.
+        );
+    }
+
+    public function testWebAuthenticationPostFormRemoveItem()
+    {
+        $_POST['url'] = '/just-for-test';
+        $_POST['user'] = 'terry';
+        $_POST['pass'] = '1234';
+        $_POST['order'] = '1';
+        $_POST['action'] = 'remove';
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
+        $this->assertPageOutputNotContainsString(
+            'firewall/panel/security/authentication',
+            '/just-for-test'
         );
     }
 
@@ -51,7 +76,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         );
     }
 
-    public function testXssProtectionPostForm()
+    public function testXssProtectionPostFormAddItem()
     {
         $_POST['type'] = 'post';
         $_POST['variable'] = 'test_variable_name';
@@ -68,20 +93,20 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         );
     }
 
-    public function testXssProtectionPostForm2()
+    public function testXssProtectionPostFormRemoveItem()
     {
         $_POST['type'] = 'post';
         $_POST['variable'] = 'test_variable_name';
         $_POST['action'] = 'remove';
-        $_POST['order'] = '4';
+        $_POST['order'] = '3';
         $_POST['xss'] = 'page';
 
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertPageOutputNotContainsString(
             'firewall/panel/security/xssProtection',
-            'test_variable_name' // This setting has been added successfully.
+            'test_variable_name'
         );
     }
 }

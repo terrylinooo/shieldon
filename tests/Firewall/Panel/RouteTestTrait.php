@@ -96,6 +96,8 @@ trait RouteTestTrait
         $firewall->setConfig('messengers.filters.referer.enable', false);
         $firewall->setConfig('messengers.filters.cookie.enable', false);
         $firewall->setConfig('messengers.filters.cookie.enable', false);
+        $firewall->setConfig('captcha_modules.recaptcha.enable', false);
+        $firewall->setConfig('captcha_modules.image.enable', false);
         $firewall->setConfig('iptables.enable', true);
         $firewall->setConfig('iptables.config.watching_folder', BOOTSTRAP_DIR . '/../tmp/shieldon/iptables');
         $firewall->setConfig('ip6tables.enable', true);
@@ -123,6 +125,7 @@ trait RouteTestTrait
 
         $firewall->getKernel()->disableFilters();
         $firewall->getKernel()->disableComponents();
+        $firewall->getKernel()->disableCaptcha();
 
         new Helpers();
 
@@ -185,6 +188,26 @@ trait RouteTestTrait
         ob_end_clean();
 
         $this->assertStringContainsString($string, $output);
+    }
+
+    /**
+     * Check whether the page "NOT" contains a string.
+     *
+     * @param string $uri    The page's URI path.
+     * @param string $string Usually the page title.
+     *
+     * @return void
+     */
+    public function assertPageOutputNotContainsString(string $uri, string $string)
+    {
+        $response = $this->getRouteResponse($uri);
+        $stream = $response->getBody();
+
+        if (strpos($stream->getContents(), $string) === false) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
     }
 
     /**

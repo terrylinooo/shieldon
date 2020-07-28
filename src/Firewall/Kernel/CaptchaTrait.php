@@ -74,4 +74,14 @@ trait CaptchaTrait
 
         return true;
     }
+
+    /**
+     * Mostly be used in unit testing purpose.
+     *
+     * @return void
+     */
+    public function disableCaptcha(): void
+    {
+        $this->captcha = [];
+    }
 }

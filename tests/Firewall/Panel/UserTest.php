@@ -22,7 +22,134 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Panel;
 
+use function Shieldon\Firewall\get_session;
+
 class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
+    use RouteTestTrait;
 
+    public function testLogin()
+    {
+        $this->assertPageOutputContainsString(
+            'firewall/panel/user/login',
+            'Login to Shieldon firewall panel'
+        );
+    }
+
+    public function testLoginAsAdminWithCaptcha()
+    {
+        $_POST['s_user'] = 'shieldon_user';
+        $_POST['s_pass'] = 'shieldon_pass';
+        $_SERVER['REQUEST_URI'] = '/firewall/panel/user/login';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
+        $this->assertPageOutputContainsString(
+            'firewall/panel/user/login',
+            'Invalid Captcha'
+        );
+    }
+
+    public function testLoginAsAdmiPassCaptcha()
+    {
+        $_POST['s_user'] = 'shieldon_user';
+        $_POST['s_pass'] = 'shieldon_pass';
+        $_POST['shieldon_captcha'] = 'ok';
+        $_SERVER['REQUEST_URI'] = '/firewall/panel/user/login';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
+        $this->getRouteResponse('firewall/panel/user/login');
+        $loginStatus = get_session()->get('shieldon_user_login');
+
+        $this->assertTrue($loginStatus);
+    }
+
+    public function testLoginAsAdmiPassCaptchaWrongPassword()
+    {
+        $_POST['s_user'] = 'shieldon_user';
+        $_POST['s_pass'] = '11111111111111111111111';
+        $_POST['shieldon_captcha'] = 'ok';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
+        $this->assertPageOutputContainsString(
+            'firewall/panel/user/login',
+            'Invalid username or password.'
+        );
+    }
+
+    public function testLogout()
+    {
+        $this->getRouteResponse('firewall/panel/user/logout');
+        $loginStatus = get_session()->get('shieldon_user_login');
+
+        $this->assertSame($loginStatus, '');
+    }
+
+    public function testLoginAsDemo()
+    {
+        $_SERVER['REQUEST_URI'] = '/firewall/panel/user/login';
+        $this->refreshRequest();
+
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $panel = new \Shieldon\Firewall\Panel();
+        $panel->demo();
+
+        ob_start();
+        $panel->entry('firewall/panel');
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertStringContainsString('Login to Shieldon firewall panel (DEMO)', $output);
+    }
+
+    public function testLoginAsDemoPostFormWithCaptcha()
+    {
+        $_POST['s_user'] = 'demo';
+        $_POST['s_pass'] = 'demo';
+        $_SERVER['REQUEST_URI'] = '/firewall/panel/user/login';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $panel = new \Shieldon\Firewall\Panel();
+        $panel->demo();
+
+        ob_start();
+        $panel->entry('firewall/panel');
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertStringContainsString('Invalid Captcha', $output);
+    }
+
+    public function testLoginAsDemoPostFormPassCaptcha()
+    {
+        $_POST['s_user'] = 'demo';
+        $_POST['s_pass'] = 'demo';
+        $_POST['shieldon_captcha'] = 'ok';
+        $_SERVER['REQUEST_URI'] = '/firewall/panel/user/login';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->getKernel()->disableCaptcha();
+        $firewall->setConfig('captcha_modules.recaptcha.enable', false);
+        $firewall->setConfig('captcha_modules.image.enable', false);
+        $panel = new \Shieldon\Firewall\Panel();
+        $panel->demo();
+
+        ob_start();
+        $panel->entry('firewall/panel');
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        $loginStatus = get_session()->get('shieldon_user_login');
+
+        $this->assertTrue($loginStatus);
+    }
 }

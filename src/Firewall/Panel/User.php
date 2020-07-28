@@ -54,17 +54,15 @@ class User extends BaseController
      *
      * @return ResponseInterface
      */
-    public function login($mode = ''): ResponseInterface
+    public function login(): ResponseInterface
     {
         $this->applyCaptchaForms();
-        $this->mode = $mode;
 
         $postParams = get_request()->getParsedBody();
 
         $login = false;
         $data['error'] = '';
         $addonTitle = $this->markAsDemo;
-
 
         if (isset($postParams['s_user']) && isset($postParams['s_pass'])) {
 
@@ -87,7 +85,9 @@ class User extends BaseController
         }
 
         // Start to prompt a login form is not logged.
-        define('SHIELDON_VIEW', true);
+        if (!defined('SHIELDON_VIEW')) {
+            define('SHIELDON_VIEW', true);
+        }
 
         // `$ui` will be used in `css-default.php`. Do not remove it.
         $ui = [
@@ -208,7 +208,9 @@ class User extends BaseController
             $admin['user'] === $username && 
             $admin['pass'] === $password
         ) {
+            // @codeCoverageIgnoreStart
             $login = true;
+            // @codeCoverageIgnoreEnd
 
         } elseif (
             // User has already changed password, encrypted.
