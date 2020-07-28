@@ -26,7 +26,45 @@ class ReportTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     use RouteTestTrait;
 
+    private function prepareSampleLogs()
+    {
+        $dir = BOOTSTRAP_DIR . '/../tmp/shieldon/action_logs';
+
+        $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+
+        foreach ($files as $file) {
+            if ($file->isDir()) {
+                rmdir($file->getRealPath());
+            } else {
+                unlink($file->getRealPath());
+            }
+        }
+
+        // Copy sample files.
+        $dir2 = BOOTSTRAP_DIR . '/../tests/samples';
+
+        $it = new \RecursiveDirectoryIterator($dir2, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+
+        foreach ($files as $file) {
+            if (!$file->isDir()) {
+                copy($file->getRealPath(), $dir . '/' . $file->getFilename());
+            }
+        }
+    }
+
     public function testActionLog()
+    {
+        $this->prepareSampleLogs();
+
+        $this->assertPageOutputContainsString(
+            'firewall/panel/report/actionLog',
+            'Action Logs'
+        );
+    }
+
+    public function testActionLogWithCachedData()
     {
         $this->assertPageOutputContainsString(
             'firewall/panel/report/actionLog',

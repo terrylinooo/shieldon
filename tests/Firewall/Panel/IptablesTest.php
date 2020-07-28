@@ -177,12 +177,20 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
             unlink($queueFilePath);
         }
 
-        if (file_exists($statusIp4FilePath)) {
+        if (file_exists($logIp4FilePath)) {
             unlink($logIp4FilePath);
         }
 
         if (file_exists($statusIp6FilePath)) {
-            unlink($statusIp6FilePath);
+            unlink($$statusIp6FilePath);
+        }
+
+        if (file_exists($statusIp4FilePath)) {
+            unlink($$statusIp4FilePath);
+        }
+
+        if (file_exists($statusIp6FilePath)) {
+            unlink($$statusIp6FilePath);
         }
 
         $queueFilePath = $this->getWritableTestFilePath('iptables_queue.log', 'shieldon/iptables');
@@ -193,8 +201,8 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         file_put_contents($logIp4FilePath, 'add,4,33.33.33.33,16,8080,tcp,allow' . "\n" . 'add,4,33.34.34.34,16,8080,tcp,allow');
         file_put_contents($logIp6FilePath, 'add,2607:f0d0:1002:51::4,8080,tcp,allow');
-        file_put_contents($statusIp4FilePath, '');
-        file_put_contents($statusIp6FilePath, '');
+        file_put_contents($statusIp4FilePath, 'test');
+        file_put_contents($statusIp6FilePath, 'test');
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');

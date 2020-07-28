@@ -115,7 +115,9 @@ class Report extends BaseController
         ];
 
         if (!in_array($type, $validTabs)) {
+            // @codeCoverageIgnoreStart
             $type = 'today';
+            // @codeCoverageIgnoreEnd
         }
 
         $data['ip_details'] = [];
@@ -252,11 +254,13 @@ class Report extends BaseController
         $counter = $this->getCounterDefault();
         $info = $this->getInfoDefault();
 
+        // @codeCoverageIgnoreStart
         foreach ($ruleList as $ruleInfo) {
             $reason = $ruleInfo['reason']; 
             $counter[$reason]++;
             $info[$reason][] = $ruleInfo;
         }
+        // @codeCoverageIgnoreEnd
 
         $a = $counter[$this->kernel::REASON_DENY_IP];
         $b = $counter[$this->kernel::REASON_COMPONENT_IP];
