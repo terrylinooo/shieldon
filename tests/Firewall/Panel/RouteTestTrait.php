@@ -98,6 +98,11 @@ trait RouteTestTrait
         $firewall->setConfig('messengers.filters.cookie.enable', false);
         $firewall->setup();
 
+        $firewall->getKernel()->setProperty(
+            'iptables_watching_folder',
+            BOOTSTRAP_DIR . '/../tmp/shieldon/iptables'
+        );
+
         $firewall->getKernel()->setLogger(
             new \Shieldon\Firewall\Log\ActionLogger(
                 BOOTSTRAP_DIR . '/../tmp/shieldon/action_logs'

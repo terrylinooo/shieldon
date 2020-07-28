@@ -182,15 +182,15 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         }
 
         if (file_exists($statusIp6FilePath)) {
-            unlink($$statusIp6FilePath);
+            unlink($statusIp6FilePath);
         }
 
         if (file_exists($statusIp4FilePath)) {
-            unlink($$statusIp4FilePath);
+            unlink($statusIp4FilePath);
         }
 
         if (file_exists($statusIp6FilePath)) {
-            unlink($$statusIp6FilePath);
+            unlink($statusIp6FilePath);
         }
 
         $queueFilePath = $this->getWritableTestFilePath('iptables_queue.log', 'shieldon/iptables');
