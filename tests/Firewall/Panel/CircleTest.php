@@ -36,31 +36,23 @@ class CircleTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testRuleTableFormSubmit()
     {
-        $_POST['ip'] = '127.0.0.127';
+        $_POST['ip'] = '127.0.1.127';
         $_POST['action'] = 'permanently_ban';
         $this->refreshRequest();
 
         $this->assertPageOutputContainsString(
             'firewall/panel/circle/rule',
-            'Data Circle - Rule Table'
+            '127.0.1.127'
         );
 
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
-        $response = $firewall->run();
-        $this->assertSame(400, $response->getStatusCode());
-
-        $_POST['ip'] = '127.0.0.127';
+        $_POST['ip'] = '127.0.1.127';
         $_POST['action'] = 'remove';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertPageOutputNotContainsString(
             'firewall/panel/circle/rule',
-            'Data Circle - Rule Table'
+            '127.0.1.127'
         );
-
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
-        $response = $firewall->run();
-        $this->assertSame($response->getStatusCode(), 200);
     }
 
     public function testSessionTable()
