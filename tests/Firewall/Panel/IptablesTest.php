@@ -93,8 +93,70 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
                 $_POST['port_custom'] = '8080';
                 $_POST['remove'] = 'yes';
                 break;
+            case 3:
+                $_POST['ip'] = ''; // testCheckFieldIp
+                $_POST['port'] = 'custom';
+                $_POST['subnet'] = '16';
+                $_POST['protocol'] = 'tcp';
+                $_POST['action'] = 'allow';
+                $_POST['port_custom'] = '8080';
+                $_POST['remove'] = 'no';
+                break;
+            case 4:
+                $_POST['ip'] = '33.33.33.33';
+                $_POST['port'] = '';
+                $_POST['subnet'] = '16';
+                $_POST['protocol'] = 'tcp';
+                $_POST['action'] = 'allow';
+                $_POST['port_custom'] = '8080';
+                $_POST['remove'] = 'no';
+                break;
+            case 5:
+                $_POST['ip'] = '33.33.33.33';
+                $_POST['port'] = 'custom';
+                $_POST['subnet'] = '';
+                $_POST['protocol'] = 'tcp';
+                $_POST['action'] = 'allow';
+                $_POST['port_custom'] = '8080';
+                $_POST['remove'] = 'no';
+                break;
+            case 6:
+                $_POST['ip'] = '33.33.33.33';
+                $_POST['port'] = 'custom';
+                $_POST['subnet'] = '16';
+                $_POST['protocol'] = '';
+                $_POST['action'] = 'allow';
+                $_POST['port_custom'] = '8080';
+                $_POST['remove'] = 'no';
+                break;
+            case 7:
+                $_POST['ip'] = '33.33.33.33';
+                $_POST['port'] = 'custom';
+                $_POST['subnet'] = '16';
+                $_POST['protocol'] = 'tcp';
+                $_POST['action'] = '';
+                $_POST['port_custom'] = '8080';
+                $_POST['remove'] = 'no';
+                break;
+            case 8:
+                $_POST['ip'] = '33.33.33.33';
+                $_POST['port'] = 'custom';
+                $_POST['subnet'] = '16';
+                $_POST['protocol'] = 'tcp';
+                $_POST['action'] = 'allow';
+                $_POST['port_custom'] = '';
+                $_POST['remove'] = 'no';
+                break;
+            case 8:
+                $_POST['ip'] = '33.33.33.33';
+                $_POST['port'] = 'custom';
+                $_POST['subnet'] = '16';
+                $_POST['protocol'] = 'tcp';
+                $_POST['action'] = 'allow';
+                $_POST['port_custom'] = '8080';
+                $_POST['remove'] = '';
+                break;
         }
-
 
         return $_POST;
     }
@@ -108,25 +170,31 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $queueFilePath = $this->getWritableTestFilePath('iptables_queue.log', 'shieldon/iptables');
         $logIp4FilePath = $this->getWritableTestFilePath('ipv4_command.log', 'shieldon/iptables');
         $logIp6FilePath = $this->getWritableTestFilePath('ipv6_command.log', 'shieldon/iptables');
+        $statusIp4FilePath = $this->getWritableTestFilePath('ipv4_status.log', 'shieldon/iptables');
+        $statusIp6FilePath = $this->getWritableTestFilePath('ipv6_status.log', 'shieldon/iptables');
  
         if (file_exists($queueFilePath)) {
             unlink($queueFilePath);
         }
 
-        if (file_exists($logIp4FilePath)) {
+        if (file_exists($statusIp4FilePath)) {
             unlink($logIp4FilePath);
         }
 
-        if (file_exists($logIp6FilePath)) {
-            unlink($logIp6FilePath);
+        if (file_exists($statusIp6FilePath)) {
+            unlink($statusIp6FilePath);
         }
 
         $queueFilePath = $this->getWritableTestFilePath('iptables_queue.log', 'shieldon/iptables');
         $logIp4FilePath = $this->getWritableTestFilePath('ipv4_command.log', 'shieldon/iptables');
         $logIp6FilePath = $this->getWritableTestFilePath('ipv6_command.log', 'shieldon/iptables');
+        $statusIp4FilePath = $this->getWritableTestFilePath('ipv4_status.log', 'shieldon/iptables');
+        $statusIp6FilePath = $this->getWritableTestFilePath('ipv6_status.log', 'shieldon/iptables');
 
-        file_put_contents($logIp4FilePath, '');
-        file_put_contents($logIp6FilePath, '');
+        file_put_contents($logIp4FilePath, 'add,4,33.33.33.33,16,8080,tcp,allow' . "\n" . 'add,4,33.34.34.34,16,8080,tcp,allow');
+        file_put_contents($logIp6FilePath, 'add,2607:f0d0:1002:51::4,8080,tcp,allow');
+        file_put_contents($statusIp4FilePath, '');
+        file_put_contents($statusIp6FilePath, '');
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
@@ -185,26 +253,61 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testCheckFieldIp()
     {
+        $_POST = $this->getMockPostData(3);
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
 
+        $this->assertPageOutputContainsString(
+            'firewall/panel/iptables/ip4',
+            'Iptables Manager (IPv4)'
+        );
     }
 
     public function testCheckFieldPort()
     {
+        $_POST = $this->getMockPostData(4);
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
 
+        $this->assertPageOutputContainsString(
+            'firewall/panel/iptables/ip4',
+            'Iptables Manager (IPv4)'
+        );
     }
 
     public function testCheckFieldSubnet()
     {
+        $_POST = $this->getMockPostData(5);
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
 
+        $this->assertPageOutputContainsString(
+            'firewall/panel/iptables/ip4',
+            'Iptables Manager (IPv4)'
+        );
     }
 
     public function testCheckFieldProtocol()
     {
+        $_POST = $this->getMockPostData(6);
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
 
+        $this->assertPageOutputContainsString(
+            'firewall/panel/iptables/ip4',
+            'Iptables Manager (IPv4)'
+        );
     }
 
     public function testCheckFieldAction()
     {
+        $_POST = $this->getMockPostData(7);
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
 
+        $this->assertPageOutputContainsString(
+            'firewall/panel/iptables/ip4',
+            'Iptables Manager (IPv4)'
+        );
     }
 }

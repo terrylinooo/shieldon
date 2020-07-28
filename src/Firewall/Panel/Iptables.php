@@ -128,6 +128,8 @@ class Iptables extends BaseController
                 $line = trim($file->fgets());
                 $ipInfo = explode(',', $line);
 
+                // If the column amount is at least 4 maning that the data is 
+                // existed so that we can use it.
                 if (!empty($ipInfo[4])) {
                     $ipCommand[] = $ipInfo;
                 }
@@ -234,6 +236,8 @@ class Iptables extends BaseController
     
             if (is_array($fileArr)) {
                 $keyFound = array_search(trim($originCommandString), $fileArr);
+
+                // Remove the row from the file content.
                 unset($fileArr[$keyFound]);
     
                 $t = [];
@@ -242,12 +246,18 @@ class Iptables extends BaseController
                     $t[$i] = trim($f);
                     $i++;
                 }
+
+                // Save the filtered content.
                 file_put_contents($commandLogFile, implode(PHP_EOL, $t));
             }
     
+            // Pass the command to the Iptables bridge file to remove the rule
+            // which is in the Iptable rule list.
             $applyCommand = "delete,$ipv,$ip,$subnet,$port,$protocol,$action";
             file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);
             sleep(1);
+
+            // Finish this action, return.
             return;
         }
 
