@@ -293,7 +293,7 @@ use function Shieldon\Firewall\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'messenger_label_sender', 'Sender'); ?></td>
             <td class="r2">
-                <input id="smtp-sender" type="text" name="messengers__sendgrid__config__sender" class="form-control form-control-sm col-sm-6" value="<?php $this->_('messengers.sendgrid.config.sender'); ?>"><br />
+                <input id="smtp-sender" type="text" name="messengers__smtp__config__sender" class="form-control form-control-sm col-sm-6" value="<?php $this->_('messengers.smtp.config.sender'); ?>"><br />
             </td>
         </tr>
     </table>
@@ -303,7 +303,7 @@ use function Shieldon\Firewall\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'messenger_label_recipients', 'Recipients'); ?></td>
             <td class="r2">
-                <textarea id="smtp-recipients" rows="5" name="messengers__sendgrid__config__recipients" class="form-control form-control-sm col-sm-6"><?php $this->_('messengers.sendgrid.config.recipients'); ?></textarea><br />
+                <textarea id="smtp-recipients" rows="5" name="messengers__smtp__config__recipients" class="form-control form-control-sm col-sm-6"><?php $this->_('messengers.smtp.config.recipients'); ?></textarea><br />
                 <p><?php _e('panel', 'messenger_desc_recipients', 'Per email address per line.'); ?></p>
             </td>
         </tr>

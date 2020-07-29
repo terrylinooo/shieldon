@@ -284,7 +284,7 @@ trait ConfigMethodsTrait
 
         return $result;
 
-        // @ccodeCoverageIgnoreEnd
+        // @codeCoverageIgnoreEnd
     }
 
     /**
