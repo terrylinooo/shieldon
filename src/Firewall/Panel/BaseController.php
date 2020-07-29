@@ -306,9 +306,11 @@ class BaseController
         $configFilePath = $this->directory . '/' . $this->filename;
 
         foreach ($this->csrfField as $csrfInfo) {
+            // @codeCoverageIgnoreStart
             if (!empty($csrfInfo['name'])) {
                 unset_superglobal($csrfInfo['name'], 'post');
             }
+            // @codeCoverageIgnoreEnd
         }
 
         $this->saveConfigPrepareSettings($postParams);
@@ -389,9 +391,8 @@ class BaseController
         }
 
         echo '';
-
-        // @codeCoverageIgnoreEnd
     }
+    // @codeCoverageIgnoreEnd
 
     /**
      * Use on HTML checkbox and radio elements.

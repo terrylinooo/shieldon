@@ -215,7 +215,7 @@ use function Shieldon\Firewall\_e;
     <div class="toggle-container toggle-sm">
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__smtp__enable" value="off" />
-            <input type="checkbox" name="messengers__smtp__enable" class="toggle-block" value="on" data-target="messenger-smtp-section" <?php $this->checked('messengers.sendgrid.enable', true); ?> />
+            <input type="checkbox" name="messengers__smtp__enable" class="toggle-block" value="on" data-target="messenger-smtp-section" <?php $this->checked('messengers.smtp.enable', true); ?> />
             <span class="switch-left">ON</span>
             <span class="switch-right">OFF</span>
         </label>

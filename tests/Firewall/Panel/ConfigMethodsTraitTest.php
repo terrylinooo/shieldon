@@ -41,6 +41,20 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertFalse($result);
     }
 
+    public function testSaveConfigCheckActionLoggerFalseIsDisable()
+    {
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $baseController = new \Shieldon\Firewall\Panel\BaseController();
+        $baseController->setConfig('loggers.action.enable', false);
+
+        $reflection = new \ReflectionObject($baseController);
+        $method = $reflection->getMethod('saveConfigCheckActionLogger');
+        $method->setAccessible(true);
+        $result = $method->invokeArgs($baseController, [true]);
+
+        $this->assertTrue($result);
+    }
+
     public function testSaveConfigCheckIptablesFalse()
     {
         $firewall = new \Shieldon\Firewall\Firewall();
@@ -52,6 +66,20 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $result = $method->invokeArgs($baseController, [false]);
 
         $this->assertFalse($result);
+    }
+
+    public function testSaveConfigCheckIptablesIsDisable()
+    {
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $baseController = new \Shieldon\Firewall\Panel\BaseController();
+        $baseController->setConfig('iptables.enable', false);
+
+        $reflection = new \ReflectionObject($baseController);
+        $method = $reflection->getMethod('saveConfigCheckIptables');
+        $method->setAccessible(true);
+        $result = $method->invokeArgs($baseController, [true]);
+
+        $this->assertTrue($result);
     }
 
     public function testSaveConfigCheckDataDriverFalse()

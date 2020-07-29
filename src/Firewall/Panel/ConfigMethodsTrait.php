@@ -79,9 +79,12 @@ trait ConfigMethodsTrait
                         $this->setConfig('admin.pass', password_hash($postData, PASSWORD_BCRYPT));
                     }
 
-                } else if ($postKey === 'messengers__sendgrid__config__recipients') {
+                } else if (strpos($postKey, 'config__recipients') !== false) {
+                    // For example: 
+                    // messengers__sendgrid__config__recipients
+                    // => messengers.sendgrid.config.recipients
                     $this->setConfig(
-                        'messengers.sendgrid.config.recipients',
+                        str_replace('__', '.', $postKey),
                         preg_split(
                             '/\r\n|[\r\n]/',
                             $postData
@@ -113,6 +116,7 @@ trait ConfigMethodsTrait
 
         // Check Action Logger settings.
         $enableActionLogger = $this->getConfig('loggers.action.enable');
+
         $actionLogDir = rtrim($this->getConfig('loggers.action.config.directory_path'), '\\/ ');
 
         if ($enableActionLogger) {
@@ -163,15 +167,19 @@ trait ConfigMethodsTrait
 
         if ($enableIptables) {
             if (empty($iptablesWatchingFolder)) {
+                // @codeCoverageIgnoreStart
                 $iptablesWatchingFolder = $this->directory . '/iptables';
+                // @codeCoverageIgnoreEnd
             }
 
             $this->setConfig('iptables.config.watching_folder', $iptablesWatchingFolder);
 
             if (!is_dir($iptablesWatchingFolder)) {
+                // @codeCoverageIgnoreStart
                 $originalUmask = umask(0);
                 mkdir($iptablesWatchingFolder, 0777, true);
                 umask($originalUmask);
+                // @codeCoverageIgnoreEnd
             }
     
             // Create default log files.
@@ -185,6 +193,7 @@ trait ConfigMethodsTrait
                 return $result;
             }
 
+            // @codeCoverageIgnoreStart
             $result = false;
 
             $this->pushMessage(
@@ -195,6 +204,7 @@ trait ConfigMethodsTrait
                     'iptables watching folder requires the storage directory writable.'
                 )
             );
+            // @codeCoverageIgnoreEnd
         }
 
         return $result;
@@ -298,19 +308,14 @@ trait ConfigMethodsTrait
     {
         $sqliteDir = rtrim($this->getConfig('drivers.sqlite.directory_path'), '\\/ ');
 
-        if (empty($sqliteDir)) {
-            $sqliteDir = $this->directory . '/data_driver_sqlite';
-        }
-
+        $sqliteDir = $sqliteDir ?? $this->directory . '/data_driver_sqlite';
         $sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
         $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
         
-        if (!file_exists($sqliteFilePath)) {
-            if (!is_dir($sqliteDir)) {
-                $originalUmask = umask(0);
-                mkdir($sqliteDir, 0777, true);
-                umask($originalUmask);
-            }
+        if (!file_exists($sqliteFilePath) && !is_dir($sqliteDir)) {
+            $originalUmask = umask(0);
+            mkdir($sqliteDir, 0777, true);
+            umask($originalUmask);
         }
 
         if (class_exists('PDO')) {
@@ -318,12 +323,17 @@ trait ConfigMethodsTrait
             try {
                 new PDO('sqlite:' . $sqliteFilePath);
 
+                // @codeCoverageIgnoreStart
             } catch (PDOException $e) { 
                 $this->pushMessage('error', $e->getMessage());
                 $result = false;
             }
 
+            // @codeCoverageIgnoreEnd
+
             if (!is_writable($sqliteFilePath)) {
+
+                // @codeCoverageIgnoreStart
                 $this->pushMessage(
                     'error',
                     __(
@@ -333,10 +343,13 @@ trait ConfigMethodsTrait
                     )
                 );
                 $result = false;
+                // @codeCoverageIgnoreEnd
             }
 
             return $result;
-        } 
+        }
+
+        // @codeCoverageIgnoreStart
 
         $result = false;
 
@@ -350,6 +363,8 @@ trait ConfigMethodsTrait
         );
 
         return $result;
+
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -379,6 +394,8 @@ trait ConfigMethodsTrait
             return $result;
         }
 
+        // @codeCoverageIgnoreStart
+
         $result = false;
 
         $this->pushMessage(
@@ -391,6 +408,8 @@ trait ConfigMethodsTrait
         );
 
         return $result;
+
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -412,12 +431,15 @@ trait ConfigMethodsTrait
         $this->setConfig('drivers.file.directory_path', $fileDir);
 
         if (!is_dir($fileDir)) {
+            // @codeCoverageIgnoreStart
             $originalUmask = umask(0);
             mkdir($fileDir, 0777, true);
             umask($originalUmask);
+            // @codeCoverageIgnoreEnd
         }
 
         if (!is_writable($fileDir)) {
+            // @codeCoverageIgnoreStart
             $result = false;
             $this->pushMessage(
                 'error',
@@ -427,6 +449,7 @@ trait ConfigMethodsTrait
                     'File data driver requires the storage directory writable.'
                 )
             );
+            // @codeCoverageIgnoreEnd
         }
 
         return $result;

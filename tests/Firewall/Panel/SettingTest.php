@@ -176,6 +176,11 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testSettingsMessengerSaveConfig()
     {
         $_POST['tab'] = 'messenger-setting';
+        $_POST['messengers__sendgrid__enable'] = 'off';
+        $_POST['messengers__sendgrid__config__api_key'] = 'no key lala';
+        $_POST['messengers__sendgrid__config__sender'] = 'test@gmail.com';
+        $_POST['messengers__sendgrid__config__recipients'] = 'test@gmail.com' . "\n" . 'test2@gmail.com';
+
         $this->refreshRequest();
 
         $this->assertOutputContainsString(
