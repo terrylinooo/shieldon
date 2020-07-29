@@ -127,12 +127,15 @@ trait ConfigMethodsTrait
             $this->setConfig('loggers.action.config.directory_path', $actionLogDir);
 
             if (!is_dir($actionLogDir)) {
+                // @codeCoverageIgnoreStart
                 $originalUmask = umask(0);
                 mkdir($actionLogDir, 0777, true);
                 umask($originalUmask);
+                // @codeCoverageIgnoreEnd
             }
 
             if (!is_writable($actionLogDir)) {
+                // @codeCoverageIgnoreStart
                 $result = false;
                 $this->pushMessage(
                     'error',
@@ -142,6 +145,7 @@ trait ConfigMethodsTrait
                         'Action Logger requires the storage directory writable.'
                     )
                 );
+                // @codeCoverageIgnoreEnd
             }
         }
 
@@ -313,9 +317,11 @@ trait ConfigMethodsTrait
         $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
         
         if (!file_exists($sqliteFilePath) && !is_dir($sqliteDir)) {
+            // @codeCoverageIgnoreStart
             $originalUmask = umask(0);
             mkdir($sqliteDir, 0777, true);
             umask($originalUmask);
+            // @codeCoverageIgnoreEnd
         }
 
         if (class_exists('PDO')) {
