@@ -28,6 +28,32 @@ if (!defined('SHIELDON_PANEL_BASE')) {
 
 class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
+    public function testSaveConfigCheckActionLoggerFalse()
+    {
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $baseController = new \Shieldon\Firewall\Panel\BaseController();
+
+        $reflection = new \ReflectionObject($baseController);
+        $method = $reflection->getMethod('saveConfigCheckActionLogger');
+        $method->setAccessible(true);
+        $result = $method->invokeArgs($baseController, [false]);
+
+        $this->assertFalse($result);
+    }
+
+    public function testSaveConfigCheckIptablesFalse()
+    {
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $baseController = new \Shieldon\Firewall\Panel\BaseController();
+
+        $reflection = new \ReflectionObject($baseController);
+        $method = $reflection->getMethod('saveConfigCheckIptables');
+        $method->setAccessible(true);
+        $result = $method->invokeArgs($baseController, [false]);
+
+        $this->assertFalse($result);
+    }
+
     public function testSaveConfigCheckDataDriverFalse()
     {
         $firewall = new \Shieldon\Firewall\Firewall();
