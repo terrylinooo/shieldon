@@ -13,11 +13,13 @@ Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and usefu
 
 ### 2.x
 
+**`2.x` will be released soon.**
+
 ```php
-composer require shieldon/shieldon ^2
+composer require shieldon/shieldon:2.0.0-rc2
 ```
 
-Shieldon `2.x` implements PSR-7 so that it could be compatible with modern frameworks such as Laravel, Symfony, Slim, Yii, etc. Using Shieldon `2.x` as a PSR-15 middleware is best practice in this case.
+Shieldon `2.x` implements PSR-7 so that it could be compatible with modern frameworks such as Laravel, Symfony, Slim, Yii, etc. Using Shieldon `2.x` as a PSR-15 middleware is the best practice in this case.
 
 ### 1.x
 
@@ -27,9 +29,11 @@ composer require shieldon/shieldon ^1
 
 Shieldon `1.x` directly accesses the superglobals, if you are using old frameworks (for instance, Codeigniter 3) or just pure PHP, and PSR-7 is not used, choosing this approach will be better.
 
+
 ## Guide
 
 The examples here is for Shieldon 2.
+For Shieldon 1, check out https://shieldon.io/
 
 ### How to Use
 
