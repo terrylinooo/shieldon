@@ -28,7 +28,7 @@ class HomeTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testOverview()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/home/overview',
             'Overview'
         );
@@ -39,7 +39,7 @@ class HomeTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_POST['action_type'] = 'reset_data_circle';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/home/overview',
             'Data circle tables have been reset.'
         );
@@ -50,7 +50,7 @@ class HomeTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_POST['action_type'] = 'reset_action_logs';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/home/overview',
             'Action logs have been removed.'
         );

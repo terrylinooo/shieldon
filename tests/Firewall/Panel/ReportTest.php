@@ -58,7 +58,7 @@ class ReportTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $this->prepareSampleLogs();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/report/actionLog',
             'Action Logs'
         );
@@ -66,7 +66,7 @@ class ReportTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testActionLogWithCachedData()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/report/actionLog',
             'Action Logs'
         );
@@ -74,7 +74,7 @@ class ReportTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testOperationStatus()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/report/operation',
             'Operation Status'
         );

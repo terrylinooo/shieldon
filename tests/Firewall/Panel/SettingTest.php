@@ -28,7 +28,7 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSettingsBasic()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/setting/basic',
             'Basic Setting'
         );
@@ -40,13 +40,7 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_POST['tab'] = 'daemon';
         $this->refreshRequest();
 
-        /*
-        $this->getRouteResponse(
-            'firewall/panel/setting/basic'
-        );
-        */
-
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/setting/basic',
             'Settings saved'
         );
@@ -54,25 +48,139 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSettingsExclusion()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/setting/exclusion',
             'Exclusion'
+        );
+
+        $this->assertOutputNotContainsString(
+            'firewall/panel/setting/exclusion',
+            '/wp-content'
+        );
+    }
+
+    public function testSettingsExclusionPostFormAddItem()
+    {
+        $_POST['url'] = '/wp-content';
+        $_POST['action'] = 'add';
+        $_POST['order'] = '';
+
+        $this->refreshRequest();
+
+        $this->assertOutputContainsString(
+            'firewall/panel/setting/exclusion',
+            '/wp-content'
+        );
+    }
+
+    public function testSettingsExclusionPostFormRemoveItem()
+    {
+        $_POST['url'] = '/wp-content';
+        $_POST['action'] = 'remove';
+        $_POST['order'] = '1';
+
+        $this->refreshRequest();
+
+        $this->assertOutputNotContainsString(
+            'firewall/panel/setting/exclusion',
+            '/wp-content'
         );
     }
 
     public function testSettingsIpManager()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/setting/ipManager',
             'IP Manager'
         );
     }
 
+    public function testSettingsIpManagerPostFormAddItem()
+    {
+        $_POST['ip'] = '19.86.6.4';
+        $_POST['action'] = 'deny';
+        $_POST['url'] = '/just-test-deny';
+        $_POST['order'] = '0';
+
+        $this->refreshRequest();
+
+        $this->assertOutputContainsString(
+            'firewall/panel/setting/ipManager',
+            '/just-test-deny'
+        );
+    }
+
+    public function testSettingsIpManagerPostFormAddItem2()
+    {
+        $_POST['ip'] = '19.86.6.5';
+        $_POST['action'] = 'allow';
+        $_POST['url'] = '/just-test-allow';
+        $_POST['order'] = '0';
+
+        $this->refreshRequest();
+
+        $this->assertOutputContainsString(
+            'firewall/panel/setting/ipManager',
+            '/just-test-allow'
+        );
+    }
+
+    public function testSettingsIpManagerPostFormRemoveItem()
+    {
+        $_POST['ip'] = '19.86.6.4';
+        $_POST['action'] = 'remove';
+        $_POST['url'] = '/just-test-deny';
+        $_POST['order'] = '2';
+
+        $this->refreshRequest();
+
+        $this->assertOutputContainsString(
+            'firewall/panel/setting/ipManager',
+            '/just-test-allow'
+        );
+
+        $this->assertOutputNotContainsString(
+            'firewall/panel/setting/ipManager',
+            '/just-test-deny'
+        );
+    }
+
+    public function testSettingsIpManagerPostFormRemoveItem2()
+    {
+        $_POST['ip'] = '19.86.6.4';
+        $_POST['action'] = 'remove';
+        $_POST['url'] = '/just-test-allow';
+        $_POST['order'] = '0';
+
+        $this->refreshRequest();
+
+        $this->assertOutputNotContainsString(
+            'firewall/panel/setting/ipManager',
+            '/just-test-allow'
+        );
+    }
+
     public function testSettingsMessenger()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/setting/messenger',
             'Messenger'
+        );
+
+        $this->assertOutputNotContainsString(
+            'firewall/panel/setting/messenger',
+            'Settings saved'
+        );
+    }
+
+    public function testSettingsMessengerSaveConfig()
+    {
+        $_POST['tab'] = 'messenger-setting';
+        $this->refreshRequest();
+
+        $this->assertOutputContainsString(
+            'firewall/panel/setting/messenger',
+            'Settings saved'
         );
     }
 
@@ -94,6 +202,50 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $flashMessage = $session->get('flash_messages');
 
         $this->assertSame($flashMessage[0]['text'], 'JSON file imported successfully.');
+        $this->assertStringContainsString('firewall/panel/setting/basic', $response->getHeaderLine('Location'));
+    }
+
+    public function testSettingsImportInvalidFormatJsonFile()
+    {
+        $_FILES = [
+            'json_file' => [
+                'name' => 'invalid_json_format.json',
+                'type' => 'text/plain',
+                // The content is missing a } in the end. That's invalid JSON format.
+                'tmp_name' => BOOTSTRAP_DIR . '/samples/json_files/invalid_json_format.json',
+                'error' => 0,
+                'size' => 100000,
+            ]
+        ];
+
+        $response = $this->getRouteResponse('firewall/panel/setting/import');
+
+        $session = \Shieldon\Firewall\Utils\Container::get('session');
+        $flashMessage = $session->get('flash_messages');
+
+        $this->assertSame($flashMessage[0]['text'], 'Invalid JSON file.');
+        $this->assertStringContainsString('firewall/panel/setting/basic', $response->getHeaderLine('Location'));
+    }
+
+    public function testSettingsImportInvalidSpecJsonFile()
+    {
+        $_FILES = [
+            'json_file' => [
+                'name' => 'invalid_spec.json',
+                'type' => 'text/plain',
+                // The content does n;t contain Shieldon formatted configuration fields.
+                'tmp_name' => BOOTSTRAP_DIR . '/samples/json_files/invalid_spec.json',
+                'error' => 0,
+                'size' => 100000,
+            ]
+        ];
+
+        $response = $this->getRouteResponse('firewall/panel/setting/import');
+
+        $session = \Shieldon\Firewall\Utils\Container::get('session');
+        $flashMessage = $session->get('flash_messages');
+
+        $this->assertSame($flashMessage[0]['text'], 'Invalid Shieldon configuration file.');
         $this->assertStringContainsString('firewall/panel/setting/basic', $response->getHeaderLine('Location'));
     }
 

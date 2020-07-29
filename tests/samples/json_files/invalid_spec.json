@@ -1,0 +1,323 @@
+
+{
+    "daemon": false,
+    "admin": {
+        "user": "shieldon_user",
+        "pass": "shieldon_pass",
+        "last_modified": "2020-02-05"
+    },
+    "channel_id": "",
+    "driver_type": "file",
+    "drivers": {
+        "file": {
+            "directory_path": ""
+        },
+        "sqlite": {
+            "directory_path": ""
+        },
+        "redis": {
+            "port": 6379,
+            "host": "127.0.0.1",
+            "auth": ""
+        },
+        "mysql": {
+            "host": "127.0.0.1",
+            "dbname": "shieldon_db",
+            "user": "shieldon_user",
+            "pass": "1234",
+            "charset": "utf8"
+        }
+    },
+    "loggers": {
+        "action": {
+            "enable": false,
+            "config": {
+                "directory_path": ""
+            }
+        }
+    },
+    "filters": {
+        "frequency": {
+            "enable": true,
+            "config": {
+                "quota_s": 2,
+                "quota_m": 10,
+                "quota_h": 30,
+                "quota_d": 60
+            }
+        },
+        "cookie": {
+            "enable": false,
+            "config": {
+                "cookie_name": "ssjd",
+                "cookie_domain": "",
+                "cookie_value": "1",
+                "quota": 5
+            }
+        },
+        "session": {
+            "enable": false,
+            "config": {
+                "quota": 5,
+                "time_buffer": 5
+            }
+        },
+        "referer": {
+            "enable": false,
+            "config": {
+                "quota": 5,
+                "time_buffer": 5
+            }
+        }
+    },
+    "components": {
+        "ip": {
+            "enable": true
+        },
+        "trusted_bot": {
+            "enable": true,
+            "strict_mode": false,
+            "allowed_list": []
+        },
+        "header": {
+            "enable": true,
+            "strict_mode": false
+        },
+        "user_agent": {
+            "enable": true,
+            "strict_mode": false
+        },
+        "rdns": {
+            "enable": true,
+            "strict_mode": false
+        }
+    },
+    "captcha_modules": {
+        "recaptcha": {
+            "enable": false,
+            "config": {
+                "site_key": null,
+                "secret_key": null,
+                "version": "v2",
+                "lang": "en-US"
+            }
+        },
+        "image": {
+            "enable": false,
+            "config": {
+                "type": "alnum",
+                "length": 4
+            }
+        }
+    },
+    "ip_variable_source": {
+        "REMOTE_ADDR": true,
+        "HTTP_CF_CONNECTING_IP": false,
+        "HTTP_X_FORWARDED_FOR": false,
+        "HTTP_X_FORWARDED_HOST": false
+    },
+    "online_session_limit": {
+        "enable": false,
+        "config": {
+            "count": 100,
+            "period": 300
+        }
+    },
+    "xss_protection": {
+        "post": false,
+        "get": false,
+        "cookie": false
+    },
+    "xss_protected_list": [
+        {
+            "type": "get",
+            "variable": "_test"
+        },
+        {
+            "type": "post",
+            "variable": "_test"
+        },
+        {
+            "type": "cookie",
+            "variable": "_test"
+        }
+    ],
+    "ddos_protection": {
+        "enable": false,
+        "config": {
+            "count": 5
+        }
+    },
+    "csrf_protection": {
+        "enable": false,
+        "config": {
+            "expire": 7200,
+            "excluded_urls": [
+                {
+                    "url": "/ajax/"
+                }
+            ]
+        }
+    },
+    "cronjob": {
+        "reset_circle": {
+            "enable": false,
+            "config": {
+                "period": 86400,
+                "last_update": "2019-01-01 00:00:00"
+            }
+        }
+    },
+    "excluded_urls": [
+        {
+            "url": "/tests/"
+        }
+    ],
+    "ip_manager": [
+        {
+            "url": "/",
+            "rule": "allow",
+            "ip": "127.0.0.1"
+        }
+    ],
+    "www_authenticate": [
+        {
+            "url": "/admin/",
+            "user": "wp_shieldon_admin",
+            "pass": "$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq"
+        }
+    ],
+    "dialog_ui": {
+        "background_image": "",
+        "bg_color": "#ffffff",
+        "header_bg_color": "#212531",
+        "header_color": "#ffffff",
+        "shadow_opacity": "0.2",
+        "lang": "en"
+    },
+    "events": {
+        "failed_attempts_in_a_row": {
+            "data_circle": {
+                "enable": true,
+                "messenger": true,
+                "buffer": 10
+            },
+            "system_firewall": {
+                "enable": false,
+                "messenger": false,
+                "buffer": 10
+            }
+        }
+    },
+    "record_attempt": {
+        "detection_period": 5,
+        "time_to_reset": 1800
+    },
+    "check_last_failed_attempt_time": 5,
+    "messengers": {
+        "telegram": {
+            "enable": false,
+            "config": {
+                "api_key": "your_api_key",
+                "channel": "@your_channel"
+            },
+            "confirm_test": false
+        },
+        "line_notify": {
+            "enable": false,
+            "config": {
+                "access_token": "your_access_token"
+            },
+            "confirm_test": false
+        },
+        "slack": {
+            "enable": false,
+            "config": {
+                "bot_token": "your_bot_token",
+                "channel": "your_channel"
+            },
+            "confirm_test": false
+        },
+        "slack_webhook": {
+            "enable": false,
+            "config": {
+                "webhook_url": "your_webhook_url"
+            },
+            "confirm_test": false
+        },
+        "rocket_chat": {
+            "enable": false,
+            "config": {
+                "server_url": "your_server_url",
+                "user_id": "your_rocketchat_user_id",
+                "access_token": "your_accress_token",
+                "channel": "your_channel"
+            },
+            "confirm_test": false
+        },
+        "sendgrid": {
+            "enable": false,
+            "config": {
+                "api_key": "your_api_key",
+                "sender": "your@email.com",
+                "recipients": [
+                    "user1@email.com",
+                    "user2@email.com"
+                ]
+            },
+            "confirm_test": false
+        },
+        "mailgun": {
+            "enable": false,
+            "config": {
+                "api_key": "your_api_key",
+                "domain_name": "your_domain.com",
+                "sender": "your@email.com",
+                "recipients": [
+                    "user1@email.com",
+                    "user2@email.com"
+                ]
+            },
+            "confirm_test": false
+        },
+        "native_php_mail": {
+            "enable": false,
+            "config": {
+                "sender": "your@email.com",
+                "recipients": [
+                    "user1@email.com",
+                    "user2@email.com"
+                ]
+            },
+            "confirm_test": false
+        },
+        "smtp": {
+            "enable": false,
+            "config": {
+                "host": "127.0.0.1",
+                "port": 25,
+                "type": "",
+                "user": "",
+                "pass": "",
+                "sender": "your@email.com",
+                "recipients": [
+                    "user1@email.com",
+                    "user2@email.com"
+                ]
+            },
+            "confirm_test": false
+        }
+    },
+    "iptables": {
+        "enable": false,
+        "config": {
+            "watching_folder": ""
+        }
+    },
+    "ip6tables": {
+        "enable": false,
+        "config": {
+            "watching_folder": ""
+        }
+    }
+}

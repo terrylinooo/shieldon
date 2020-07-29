@@ -382,13 +382,15 @@ class BaseController
         if (in_array($fieldtype, ['integer', 'string', 'double'])) {
             echo (!empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
             return;
-
+            // @codeCoverageIgnoreStart
         } elseif (in_array($fieldtype, ['array'])) {
             echo implode("\n", $this->getConfig($field));
             return;
         }
 
         echo '';
+
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -436,22 +438,5 @@ class BaseController
             '<i class="fas fa-exclamation"></i>';
 
         echo $echo[$echoType];
-    }
-
-    /**
-     * Use on HTML select elemets.
-     *
-     * @param string $value        The value.
-     * @param mixed  $valueChecked The value to confirm.
-     *
-     * @return void
-     */
-    protected function selected(string $value, $valueChecked): void
-    {
-        if ($this->getConfig($value) === $valueChecked) {
-            echo 'selected';
-        } else {
-            echo '';
-        }
     }
 }

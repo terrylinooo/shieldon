@@ -27,7 +27,7 @@ use function Shieldon\Firewall\__;
 use PDO;
 use PDOException;
 use Redis;
-use RedisException;
+use Exception;
 use function class_exists;
 use function file_exists;
 use function is_numeric;
@@ -213,17 +213,17 @@ trait ConfigMethodsTrait
             return false;
         }
 
-        $type = $this->configuration['driver_type'];
+        $type = $this->getConfig('driver_type');
 
         $methods = [
-            'mysql' => 'saveCofigCheckDataDriverMySql',
+            'mysql'  => 'saveCofigCheckDataDriverMySql',
             'sqlite' => 'saveCofigCheckDataDriverSqlLite',
-            'redis' => 'saveCofigCheckDataDriverRedis',
-            'file' => 'saveCofigCheckDataDriverFile',
+            'redis'  => 'saveCofigCheckDataDriverRedis',
+            'file'   => 'saveCofigCheckDataDriverFile',
         ];
 
         $method = $methods[$type];
-        $result = $result = $this->{$method}($result);
+        $result = $this->{$method}($result);
 
         return $result;
     }
@@ -267,7 +267,9 @@ trait ConfigMethodsTrait
                 );
             }
             return $result;
-        } 
+        }
+
+        // @codeCoverageIgnoreStart
 
         $result = false;
 
@@ -281,6 +283,8 @@ trait ConfigMethodsTrait
         );
 
         return $result;
+
+        // @ccodeCoverageIgnoreEnd
     }
 
     /**
@@ -367,7 +371,7 @@ trait ConfigMethodsTrait
                 );
                 unset($redis);
 
-            } catch (RedisException $e) {
+            } catch (Exception $e) {
                 $this->pushMessage('error', $e->getMessage());
                 $result = false;
             }

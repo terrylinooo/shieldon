@@ -108,4 +108,41 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $method->setAccessible(true);
         $method->invokeArgs($baseController, []);
     }
+
+    public function testdUnderscoreDemoModeForHiddenField()
+    {
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $baseController = new \Shieldon\Firewall\Panel\BaseController();
+        $baseController->demo();
+
+        $reflection = new \ReflectionObject($baseController);
+        $method = $reflection->getMethod('_');
+        $method->setAccessible(true);
+        $method->invokeArgs($baseController, ['ip6tables.config.watching_folder']);
+
+        $this->expectOutputString('Cannot view this field in demo mode.');
+    }
+
+    public function testSpecialMethodUnderscoreDemoMode()
+    {
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $baseController = new \Shieldon\Firewall\Panel\BaseController();
+        $baseController->demo();
+
+        $reflection = new \ReflectionObject($baseController);
+        $method = $reflection->getMethod('_');
+        $method->setAccessible(true);
+        $method->invokeArgs($baseController, ['this.is.okay']);
+    }
+
+    public function testSpecialMethodUnderscore()
+    {
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $baseController = new \Shieldon\Firewall\Panel\BaseController();
+
+        $reflection = new \ReflectionObject($baseController);
+        $method = $reflection->getMethod('_');
+        $method->setAccessible(true);
+        $method->invokeArgs($baseController, ['messengers.sendgrid.config.recipients']);
+    }
 }

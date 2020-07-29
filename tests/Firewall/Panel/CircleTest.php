@@ -28,7 +28,7 @@ class CircleTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testFilterTable()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/circle/filter',
             'Data Circle - Filter Table'
         );
@@ -40,7 +40,7 @@ class CircleTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_POST['action'] = 'permanently_ban';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/circle/rule',
             '127.0.1.127'
         );
@@ -49,7 +49,7 @@ class CircleTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_POST['action'] = 'remove';
         $this->refreshRequest();
 
-        $this->assertPageOutputNotContainsString(
+        $this->assertOutputNotContainsString(
             'firewall/panel/circle/rule',
             '127.0.1.127'
         );
@@ -57,7 +57,7 @@ class CircleTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSessionTable()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/circle/session',
             'Data Circle - Session Table'
         );

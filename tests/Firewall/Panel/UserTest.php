@@ -30,7 +30,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testLogin()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/user/login',
             'Login to Shieldon firewall panel'
         );
@@ -44,7 +44,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/user/login',
             'Invalid Captcha'
         );
@@ -73,7 +73,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/user/login',
             'Invalid username or password.'
         );
@@ -115,6 +115,8 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->setConfig('captcha_modules.image.enable', true);
+        $firewall->setup();
         $panel = new \Shieldon\Firewall\Panel();
         $panel->demo();
 

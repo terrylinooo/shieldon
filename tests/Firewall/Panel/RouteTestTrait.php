@@ -178,7 +178,7 @@ trait RouteTestTrait
      *
      * @return void
      */
-    public function assertPageOutputContainsString(string $uri, string $string)
+    public function assertOutputContainsString(string $uri, string $string)
     {
         $_SERVER['REQUEST_URI'] = '/' . trim($uri, '/');
 
@@ -198,7 +198,7 @@ trait RouteTestTrait
      *
      * @return void
      */
-    public function assertPageOutputNotContainsString(string $uri, string $string)
+    public function assertOutputNotContainsString(string $uri, string $string)
     {
         $response = $this->getRouteResponse($uri);
         $stream = $response->getBody();

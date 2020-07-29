@@ -123,29 +123,13 @@ class Setting extends BaseController
             if ('allow' === $rule || 'deny' === $rule) {
 
                 $newIpList = [];
+                $newIpList[$order]['url'] = $url;
+                $newIpList[$order]['ip'] = $ip;
+                $newIpList[$order]['rule'] = $rule;
 
-                if (!empty($ipList)) {
-                    foreach ($ipList as $i => $ipInfo) {
-                        $key = $i + 1;
-                        if ($order === $i) {
-                            $newIpList[$key] = $ipInfo;
+                array_splice($ipList, $order, 0, $newIpList);
 
-                            $newIpList[$i]['url'] = $url;
-                            $newIpList[$i]['ip'] = $ip;
-                            $newIpList[$i]['rule'] = $rule;
-                        } else {
-                            $newIpList[$key] = $ipInfo;
-                        }
-                    }
-                } else {
-                    $newIpList[0]['url'] = $url;
-                    $newIpList[0]['ip'] = $ip;
-                    $newIpList[0]['rule'] = $rule;
-                }
-
-                $newIpList = array_values($newIpList);
-
-                $this->setConfig('ip_manager', $newIpList);
+                $this->setConfig('ip_manager', $ipList);
 
             } elseif ('remove' === $rule) {
                 unset($ipList[$order]);
@@ -179,8 +163,8 @@ class Setting extends BaseController
 
         if (isset($postParams['url'])) {
 
-            $url = $postParams['url'] ?? '';
-            $action = $postParams['action'] ?? '';
+            $url = $postParams['url'];
+            $action = $postParams['action'];
             $order = (int) $postParams['order'];
 
             $excludedUrls = $this->getConfig('excluded_urls');

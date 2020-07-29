@@ -28,12 +28,12 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testIptablesManager()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
             'Iptables Manager (IPv4)'
         );
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/iptables/ip6',
             'Iptables Manager (IPv6)'
         );
@@ -41,12 +41,12 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testIptablesStatus()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4status',
             'Iptables Status (IPv4)'
         );
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/iptables/ip6status',
             'Iptables Status (IPv6)'
         );
@@ -268,7 +268,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
             'Iptables Manager (IPv4)'
         );
@@ -280,7 +280,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
             'Iptables Manager (IPv4)'
         );
@@ -292,7 +292,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
             'Iptables Manager (IPv4)'
         );
@@ -304,7 +304,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
             'Iptables Manager (IPv4)'
         );
@@ -316,7 +316,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
             'Iptables Manager (IPv4)'
         );

@@ -31,6 +31,7 @@ class DemoModeTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $panel = new \Shieldon\Firewall\Panel();
         $panel->demo('hello', 'world');
+        $panel->csrf(['test' => '1234']);
 
         $reflection = new \ReflectionObject($panel);
         $t = $reflection->getProperty('demoUser');

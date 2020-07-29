@@ -28,7 +28,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testWebAuthentication()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/security/authentication',
             'Web Page Authentication'
         );
@@ -45,7 +45,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/security/authentication',
             '/just-for-test' // This setting has been added successfully.
         );
@@ -62,7 +62,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputNotContainsString(
+        $this->assertOutputNotContainsString(
             'firewall/panel/security/authentication',
             '/just-for-test'
         );
@@ -70,7 +70,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testXssProtection()
     {
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/security/xssProtection',
             'XSS Protection'
         );
@@ -87,7 +87,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputContainsString(
+        $this->assertOutputContainsString(
             'firewall/panel/security/xssProtection',
             'test_variable_name' // This setting has been added successfully.
         );
@@ -104,7 +104,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
 
-        $this->assertPageOutputNotContainsString(
+        $this->assertOutputNotContainsString(
             'firewall/panel/security/xssProtection',
             'test_variable_name'
         );
