@@ -66,11 +66,11 @@ class FirewallMiddleware
 }
 ```
 
-#### Add Firewall Middleware in Your Application
+#### Add the Firewall Middleware in Your Application
 
 For example, if you are using Slim 4 framework, the code should like this.
 ```php
-$app->add(new ExampleMiddleware());
+$app->add(new FirewallMiddleware());
 ```
 
 #### Create a Route for Control Panel
@@ -92,7 +92,9 @@ $app->any('/firewall/panel[/{params:.*}]', function (Request $request, Response 
 });
 ```
 
-The HTTP method `POST` and `GET` both should be applied to your website.
+Note:
+- The HTTP method `POST` and `GET` both should be applied to your website. 
+- `POST` method is needed for solving CAPTCHA by users who were temporarily blocked.
 
 
 ## Concepts
