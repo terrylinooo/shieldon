@@ -378,7 +378,7 @@ class Kernel
             $showUserInformation
         );
 
-        $stream = $response->getBody();
+        $stream = HttpFactory::createStream();
         $stream->write($output);
         $stream->rewind();
 

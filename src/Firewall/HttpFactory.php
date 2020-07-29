@@ -26,8 +26,10 @@ use Shieldon\Firewall\Utils\Collection;
 use Shieldon\Firewall\Utils\Session;
 use Shieldon\Psr17\ResponseFactory;
 use Shieldon\Psr17\ServerRequestFactory;
+use Shieldon\Psr17\StreamFactory;
 use Shieldon\Psr7\Response;
 use Shieldon\Psr7\ServerRequest;
+use Shieldon\Psr7\Stream;
 
 /**
  * An object-oriented layer for the HTTP specification.
@@ -52,6 +54,16 @@ class HttpFactory
     public static function createResponse(): Response
     {
         return ResponseFactory::fromNew();
+    }
+
+    /**
+     * Create a server-side response
+     *
+     * @return Stream
+     */
+    public static function createStream(): Stream
+    {
+        return StreamFactory::fromNew();
     }
 
     /**

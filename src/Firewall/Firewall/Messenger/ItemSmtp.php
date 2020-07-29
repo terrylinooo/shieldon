@@ -45,7 +45,7 @@ class ItemSmtp
         $host       = $setting['config']['host']       ?? '';
         $user       = $setting['config']['user']       ?? '';
         $pass       = $setting['config']['pass']       ?? '';
-        $port       = $setting['config']['port'] ?? '';
+        $port       = $setting['config']['port']       ?? '';
 
         $instance = new Smtp($user, $pass, $host, (int) $port);
         $instance->setSubject(__('core', 'messenger_text_mail_subject'));

@@ -2,13 +2,98 @@
 
 [![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=2.x)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://codecov.io/gh/terrylinooo/shieldon/branch/2.x/graph/badge.svg)](https://codecov.io/gh/terrylinooo/shieldon) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/terrylinooo/shieldon/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/terrylinooo/shieldon/?branch=2.x) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-## Shieldon 2 is still under development. Please don't use.
-
-Shieldon is a Web Application Firewall (WAF) for PHP. Taking less than 10 minutes only, PHP expert developers will understand how to implement Shiedon Firewall on their Web applications. The goal of this library is to make the PHP community more secure and being extremely easy-to-use.
+Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and useful control panel that helps you easily manage the firewall rules and security settings.
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
 - WordPress plugin: [https://wordpress.org/plugins/wp-shieldon/](https://wordpress.org/plugins/wp-shieldon/)
+
+
+## Installation
+
+### 2.x
+
+```php
+composer require shieldon/shieldon ^2
+```
+
+Shieldon `2.x` implements PSR-7 so that it could be compatible with modern frameworks such as Laravel, Symfony, Slim, Yii, etc. Using Shieldon `2.x` as a PSR-15 middleware is best practice in this case.
+
+### 1.x
+
+```php
+composer require shieldon/shieldon ^1
+```
+
+Shieldon `1.x` directly accesses the superglobals, if you are using old frameworks (for instance, Codeigniter 3) or just pure PHP, and PSR-7 is not used, choosing this approach will be better.
+
+## Guide
+
+The examples here is for Shieldon 2.
+
+### How to Use
+
+#### Create a Firewall Middleware
+
+```php
+class FirewallMiddleware
+{
+    /**
+     * Example middleware invokable class
+     *
+     * @param ServerRequest  $request PSR-7 request
+     * @param RequestHandler $handler PSR-15 request handler
+     *
+     * @return Response
+     */
+    public function __invoke(Request $request, RequestHandler $handler): Response
+    {
+        $response = $handler->handle($request);
+
+        $firewall = new \Shieldon\Firewall\Firewall($request, $response);
+
+        // The directory in where Shieldon Firewall will place its files.
+        $firewall->configure(__DIR__ . '/../cache/shieldon_firewall');
+        $response = $firewall->run();
+
+        if ($response->getStatusCode() !== 200) {
+            $httpResolver = new \Shieldon\Firewall\HttpResolver();
+            $httpResolver($response);
+        }
+
+        return $response;
+    }
+}
+```
+
+#### Add Firewall Middleware in Your Application
+
+For example, if you are using Slim 4 framework, the code should like this.
+```php
+$app->add(new ExampleMiddleware());
+```
+
+#### Create a Route for Control Panel
+
+For example, if you are using Slim 4 framework, the code should like this. Then you can access the URL `https://yourwebsite.com//firewall/panel` to login to control panel.
+
+```php
+$app->any('/firewall/panel[/{params:.*}]', function (Request $request, Response $response, $args) {
+    $firewall = new \Shieldon\Firewall\Firewall($request, $response);
+
+    // The directory in where Shieldon Firewall will place its files.
+    // Must be the same as firewallMiddleware.
+    $firewall->configure(__DIR__ . '/../cache/shieldon_firewall');
+
+    $panel = new \Shieldon\Firewall\Panel();
+
+    // The base url for the control panel.
+    $panel->entry('/firewall/panel/');
+});
+```
+
+The HTTP method `POST` and `GET` both should be applied to your website.
+
 
 ## Concepts
 
@@ -26,7 +111,7 @@ This is basic concepts about how Shieldon works.
 
 ## Features
 
-- SEO friendly
+- SEO friendly, no impacts for SERP.
 - Http-type DDOS mitigation.
 - Anti-scraping.
 - Online session control.
@@ -47,18 +132,7 @@ This is basic concepts about how Shieldon works.
     - SMTP
 - Web UI for System firewall - iptables and ip6tables.
 
-## Installation
 
-Use PHP Composer:
-
-```php
-composer require shieldon/shieldon
-```
-
-Or, download it and include the Shieldon autoloader.
-```php
-include 'Shieldon/autoload.php';
-```
 
 ## Implementing
 

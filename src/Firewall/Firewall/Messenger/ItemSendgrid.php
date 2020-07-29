@@ -40,8 +40,8 @@ class ItemSendgrid
      */
     public static function get(array $setting): MessengerInterface
     {
-        $apiKey = $setting['config']['api_key'] ?? '';
-        $sender = $setting['config']['sender'] ?? '';
+        $apiKey     = $setting['config']['api_key']    ?? '';
+        $sender     = $setting['config']['sender']     ?? '';
         $recipients = $setting['config']['recipients'] ?? [];
 
         $instance = new Sendgrid($apiKey);

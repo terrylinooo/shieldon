@@ -68,7 +68,7 @@ class MessengerFactory
      *
      * @return string
      */
-    public static function getCamelCase(string $string = '')
+    public static function getCamelCase(string $string = ''): string
     {
         $str = explode('_', $string);
         $str = implode(
