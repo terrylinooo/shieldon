@@ -131,7 +131,7 @@ class Panel
             $controller = __CLASS__ . '\\' . ucfirst($controller);
 
             $controllerClass = new $controller();
-           // $controllerClass->csrf($this->csrfField);
+            $controllerClass->setCsrfField($this->getCsrfField());
 
             if ('demo' === $this->mode) {
 
@@ -179,6 +179,7 @@ class Panel
 
         if (empty($check)) {
             $user = new User();
+            $user->setCsrfField($this->getCsrfField());
 
             if ($this->mode === 'demo') {
                 $user->demo(

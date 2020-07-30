@@ -60,14 +60,38 @@ trait CsrfTrait
     /**
      * Output HTML input element with CSRF token.
      *
-     * @return void
+     * @return string
      */
-    public function fieldCsrf(): void
+    public function fieldCsrf(): string
     {
+        $string = '';
         if (!empty($this->csrfField)) {
             foreach ($this->csrfField as $value) {
-                echo '<input type="hidden" name="' . $value['name'] . '" value="' . $value['value'] . '" id="csrf-field">';
+                $string .= '<input type="hidden" name="' . $value['name'] . '" value="' . $value['value'] . '" id="csrf-field">';
             }
         }
+        return $string;
+    }
+
+    /**
+     * Get CSRF input fields.
+     *
+     * @return array
+     */
+    public function getCsrfField(): array
+    {
+        return $this->csrfField;
+    }
+
+    /**
+     * Set CSRF input fields.
+     *
+     * @param array $csrfParams
+     *
+     * @return void
+     */
+    public function setCsrfField(array $csrfParams): void
+    {
+        $this->csrfField = $csrfParams;
     }
 }

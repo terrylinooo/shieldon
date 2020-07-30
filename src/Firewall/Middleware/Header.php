@@ -61,7 +61,7 @@ class Header implements MiddlewareInterface
     public function __construct(array $fieldList = [])
     {
         if (!empty($fieldList)) {
-            $this->fieldList = $fieldList;
+            $this->fieldList =$fieldList;
         }
     }
 

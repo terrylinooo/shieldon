@@ -75,7 +75,7 @@ class UserAgent implements MiddlewareInterface
     public function __construct(array $deniedList = [])
     {
         if (!empty($deniedList)) {
-            $this->deniedList = $deniedList;
+            $this->deniedList =$deniedList;
         }
     }
 

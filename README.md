@@ -16,7 +16,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and usefu
 **`2.x` will be released soon.**
 
 ```php
-composer require shieldon/shieldon:2.0.0-rc2
+composer require shieldon/shieldon:2.0.0-rc3
 ```
 
 Shieldon `2.x` implements PSR-7 so that it could be compatible with modern frameworks such as Laravel, Symfony, Slim, Yii, etc. Using Shieldon `2.x` as a PSR-15 middleware is the best practice in this case.
@@ -33,11 +33,22 @@ Shieldon `1.x` directly accesses the superglobals, if you are using old framewor
 ## Guide
 
 The examples here is for Shieldon 2.
+
 For Shieldon 1, check out https://shieldon.io/
 
-### How to Use
+There are three ways you can choose to use Shieldon on your application.
 
-#### Create a Firewall Middleware
+- Implement Shieldon as a PSR-15 middleware.
+- Implement Shieldon in the bootstrap stage of your application.
+- Implement Shieldon in the parent controller extended by the other controllers.
+
+### PSR-15 Middleware
+
+In this example, I will give you some tips on how to implement Shieldon as a PSR-15 middleware.
+
+I use Slim 4 framwork for demonstration. This way can be used on any framework supporting PSR-15 too, just with a bit modification.
+
+#### (1) Create a firewall middleware.
 
 ```php
 class FirewallMiddleware
@@ -70,16 +81,17 @@ class FirewallMiddleware
 }
 ```
 
-#### Add the Firewall Middleware in Your Application
+#### (2) Add the firewall middleware in your application.
 
-For example, if you are using Slim 4 framework, the code should like this.
+For example, if you are using Slim 4 framework, the code should look like this.
+
 ```php
 $app->add(new FirewallMiddleware());
 ```
 
-#### Create a Route for Control Panel
+#### (3) Create a route for control panel.
 
-For example, if you are using Slim 4 framework, the code should like this. Then you can access the URL `https://yourwebsite.com//firewall/panel` to login to control panel.
+For example, if you are using Slim 4 framework, the code should look like this. Then you can access the URL `https://yourwebsite.com/firewall/panel` to login to control panel.
 
 ```php
 $app->any('/firewall/panel[/{params:.*}]', function (Request $request, Response $response, $args) {
@@ -99,6 +111,142 @@ $app->any('/firewall/panel[/{params:.*}]', function (Request $request, Response 
 Note:
 - The HTTP method `POST` and `GET` both should be applied to your website. 
 - `POST` method is needed for solving CAPTCHA by users who were temporarily blocked.
+
+### Bootstrap Stage
+
+Initialize Shieldon in the bootstrap stage of your application, mostly in just right after composer autoloader has been included.
+
+In this example, I use Laravel 6 for demonstration.
+
+#### (1) Before Initializing the $app
+
+In your `bootstrap/app.php`, after `<?php`, add the following code.
+
+```php
+/*
+|--------------------------------------------------------------------------
+| Run The Shieldon Firewall
+|--------------------------------------------------------------------------
+|
+| Shieldon Firewall will watch all HTTP requests coming to your website.
+| Running Shieldon Firewall before initializing Laravel will avoid possible
+| conflicts with Laravel's built-in functions.
+*/
+if (isset($_SERVER['REQUEST_URI'])) {
+
+    // This directory must be writable.
+    // We put it in the `storage/shieldon_firewall` directory.
+    $storage =  __DIR__ . '/../storage/shieldon_firewall';
+
+    $firewall = new \Shieldon\Firewall\Firewall();
+    $firewall->configure($storage);
+    $response = $firewall->run();
+
+    if ($response->getStatusCode() !== 200) {
+        $httpResolver = new \Shieldon\Firewall\HttpResolver();
+        $httpResolver($response);
+    }
+}
+```
+
+#### (2) Define a route for firewall panel.
+
+```php
+Route::any('/firewall/panel/{path}', function() {
+
+    $panel = new \Shieldon\Firewall\Panel();
+    $panel->csrf(['_token' => csrf_token()]);
+
+    // The entry point must be the same as the route defined.
+    $panel->entry('/firewall/panel/');
+
+})->where('path', '(.*)');
+```
+
+### Parent Controller
+
+If you are using a MVC framework, implementing Shieldon in a parent controller is also a good idea. In this example, I use CodeIgniter 3 for demonstration.
+
+#### 1. Create a parent controller.
+
+Let's create a `MY_Controller.php` in the `core` folder.
+
+```php
+class MY_Controller extends CI_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
+}
+```
+
+#### 2.  Initialize Firewall instance
+
+Put the initial code in the constructor so that any controller extends `MY_Controller` will have Shieldon Firewall initialized and `$this->firewall()` method ready.
+
+```php
+class MY_Controller extends CI_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+
+        // Composer autoloader
+        require_once APPPATH . '../vendor/autoload.php';
+
+        // This directory must be writable.
+        $storage = APPPATH . 'cache/shieldon_firewall';
+
+        $firewall = new \Shieldon\Firewall\Firewall();
+        $firewall->configure($storage);
+        $response = $firewall->run();
+
+        if ($response->getStatusCode() !== 200) {
+            $httpResolver = new \Shieldon\Firewall\HttpResolver();
+            $httpResolver($response);
+        }
+    }
+
+    /**
+     * Shieldon Firewall protection.
+     */
+    public function firewall()
+    {
+        $firewall = \Shieldon\Container::get('firewall');
+        $firewall->run();
+    }
+}
+```
+
+#### 3.  Defind a controller for controll panel.
+
+We need a controller to get into Shieldon firewall controll panel, in this example, we defind a controller named `Firewall`.
+
+```php
+class Firewall extends MY_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * This is the entry of our Firewall Panel.
+     */
+    public function panel()
+    {
+        $panel = new \Shieldon\Firewall\Panel();
+        $panel->entry('/firewall/panel/');
+    }
+}
+```
+
+Finally, no matter which way you choose, entering `https://yoursite.com/firewall/panel/` is suppose to be shown on your screen.
+
+![](https://i.imgur.com/GFKzNYh.png)
+
+The default user and password is `shieldon_user` and `shieldon_pass`. The first thing to do is to change the login and password after you login to control panel.
 
 
 ## Concepts
