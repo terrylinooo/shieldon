@@ -30,7 +30,7 @@ composer require shieldon/shieldon ^1
 Shieldon `1.x` directly accesses the superglobals, if you are using old frameworks (for instance, Codeigniter 3) or just pure PHP, and PSR-7 is not used, choosing this approach will be better.
 
 
-## Guide
+## How to Use
 
 The examples here is for Shieldon 2.
 
@@ -42,7 +42,10 @@ There are three ways you can choose to use Shieldon on your application.
 - Implement Shieldon in the bootstrap stage of your application.
 - Implement Shieldon in the parent controller extended by the other controllers.
 
-### PSR-15 Middleware
+---
+
+### PSR-15 Middleware 
+#### `Example: Slim 4 framework`
 
 In this example, I will give you some tips on how to implement Shieldon as a PSR-15 middleware.
 
@@ -112,7 +115,11 @@ Note:
 - The HTTP method `POST` and `GET` both should be applied to your website. 
 - `POST` method is needed for solving CAPTCHA by users who were temporarily blocked.
 
+---
+
 ### Bootstrap Stage
+
+#### `Example: Laravel 6 framework`
 
 Initialize Shieldon in the bootstrap stage of your application, mostly in just right after composer autoloader has been included.
 
@@ -152,7 +159,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
 #### (2) Define a route for firewall panel.
 
 ```php
-Route::any('/firewall/panel/{path}', function() {
+Route::any('/firewall/panel/{path?}', function() {
 
     $panel = new \Shieldon\Firewall\Panel();
     $panel->csrf(['_token' => csrf_token()]);
@@ -163,7 +170,11 @@ Route::any('/firewall/panel/{path}', function() {
 })->where('path', '(.*)');
 ```
 
+---
+
 ### Parent Controller
+
+#### `Example: CodeIgniter 3 framework`
 
 If you are using a MVC framework, implementing Shieldon in a parent controller is also a good idea. In this example, I use CodeIgniter 3 for demonstration.
 
@@ -241,6 +252,7 @@ class Firewall extends MY_Controller
     }
 }
 ```
+
 
 Finally, no matter which way you choose, entering `https://yoursite.com/firewall/panel/` is suppose to be shown on your screen.
 
