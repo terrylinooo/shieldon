@@ -54,7 +54,7 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $xssInstance = new \Shieldon\Security\Xss();
 
         // You can add as many bybass string as you want for testing.
-        $bypassList = file(__DIR__ . '/../../XssBypass/test_list.txt');
+        $bypassList = file(__DIR__ . '/../../samples/xss_bypass_list/test_list.txt');
 
         $originStrArr = [];
         $filiteredStrArr = [];
@@ -76,7 +76,7 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $this->console('Test the XSS Bypass string list for image.', 'info');
 
-        $file = exif_read_data(__DIR__ . '/../../XssBypass/test_sample.jpg');
+        $file = exif_read_data(__DIR__ . '/../../samples/xss_bypass_list/test_sample.jpg');
 
         $this->assertSame($file['Software'], '"><script>alert(123)</script><"');
 
@@ -85,7 +85,7 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertSame($fileFiltered['Software'], '">[removed]alert&#40;123&#41;[removed]<"');
 
-        $file2 = exif_read_data(__DIR__ . '/../../XssBypass/test_sample_2.jpg');
+        $file2 = exif_read_data(__DIR__ . '/../../samples/xss_bypass_list/test_sample_2.jpg');
     
         $this->assertSame($file2['Software'], '<?php php_info(); ?>');
 
@@ -98,17 +98,17 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $xssInstance = new \Shieldon\Security\Xss();
 
-        $image = __DIR__ . '/../../XssBypass/test_sample_3.jpg';
+        $image = __DIR__ . '/../../samples/xss_bypass_list/test_sample_3.jpg';
         $result = $xssInstance->checkImage($image);
 
         $this->assertTrue($result);
 
-        $image = __DIR__ . '/../../XssBypass/test_sample_2.jpg';
+        $image = __DIR__ . '/../../samples/xss_bypass_list/test_sample_2.jpg';
         $result = $xssInstance->checkImage($image);
 
         $this->assertFalse($result);
 
-        $image = __DIR__ . '/../../XssBypass/test_sample.jpg';
+        $image = __DIR__ . '/../../samples/xss_bypass_list/test_sample.jpg';
         $result = $xssInstance->checkImage($image);
 
         $this->assertFalse($result);
