@@ -1,10 +1,12 @@
-# Web Application Firewall :fire: `PHP`
+#  Web Application Firewall :zap: `PHP` 
+
+Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and useful control panel that helps you easily manage the firewall rules and security settings.
 
 ![Shieldon - Web Application Firewall for PHP](https://i.imgur.com/G4xpugB.png)
 
 [![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=2.x)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://codecov.io/gh/terrylinooo/shieldon/branch/2.x/graph/badge.svg)](https://codecov.io/gh/terrylinooo/shieldon) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/terrylinooo/shieldon/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/terrylinooo/shieldon/?branch=2.x) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and useful control panel that helps you easily manage the firewall rules and security settings.
+
 
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
