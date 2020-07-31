@@ -67,7 +67,7 @@ trait ComponentTrait
     }
 
     /**
-     * Disable components.
+     * Disable all components.
      *
      * @return void
      */

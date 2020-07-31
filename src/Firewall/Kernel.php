@@ -62,23 +62,116 @@ use function time;
  */
 class Kernel
 {
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   ban                  | Ban an IP.
+     *   getCurrentUrl        | Get current user's browsing path.
+     *   getJavascript        | Print a JavaScript snippet in the pages.
+     *   managedBy            | Used on testing purpose.
+     *   respond              | Respond the result.
+     *   run                  | Run the checking process.
+     *   setClosure           | Set a closure function.
+     *   setDialog            | Customize the dialog UI.
+     *   setExcludedUrls      | Set the URLs you want them excluded them from protection.
+     *   setLogger            | Set the action log logger.
+     *   setProperties        | Set the property settings.
+     *   setProperty          | Set a property setting.
+     *   setStrict            | Strict mode apply to all components.
+     *   setTemplateDirectory | Set the frontend template directory.
+     *   unban                | Unban an IP.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setIp                | Ban an IP.
+     *   getIp                | Get current user's browsing path.
+     *   setRdns              | Print a JavaScript snippet in the pages.
+     *   getRdns              | Used on testing purpose.
+     *  ----------------------|---------------------------------------------
+     */
     use CaptchaTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setComponent         | Set a commponent.
+     *   getComponent         | Get a component instance from component's container.
+     *   disableComponents    | Disable all components.
+     *  ----------------------|---------------------------------------------
+     */
     use ComponentTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setDriver            | Set a data driver.
+     *   setChannel           | Set a data channel.
+     *   createDatabase       | For creating data tables automatically.
+     *  ----------------------|---------------------------------------------
+     */
     use DriverTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setFilters           | Set the filters.
+     *   setFilter            | Set a filter.
+     *   disableFilters       | Disable all filters.
+     *  ----------------------|---------------------------------------------
+     */
     use FilterTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setIp                | Set an IP address.
+     *   getIp                | Get current set IP.
+     *   setRdns              | Set a RDNS record for the check.
+     *   getRdns              | Get IP resolved hostname.
+     *  ----------------------|---------------------------------------------
+     */
     use IpTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setMessenger         | Set a messenger
+     *  ----------------------|---------------------------------------------
+     */
     use MessengerTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *                        |  
+     *  ----------------------|---------------------------------------------
+     */
     use RuleTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   limitSession         | Limit the amount of the online users.
+     *   getSessionCount      | Get the amount of the sessions.
+     *  ----------------------|---------------------------------------------
+     */
     use SessionTrait;
 
-    // HTTP Status Codes
+    /**
+     * HTTP Status Codes
+     */
     const HTTP_STATUS_OK                 = 200;
     const HTTP_STATUS_SEE_OTHER          = 303;
     const HTTP_STATUS_BAD_REQUEST        = 400;
     const HTTP_STATUS_FORBIDDEN          = 403;
     const HTTP_STATUS_TOO_MANY_REQUESTS  = 429;
 
-    // Reason Codes (ALLOW)
+    /**
+     * Reason Codes (ALLOW)
+     */
     const REASON_IS_SEARCH_ENGINE        = 100;
     const REASON_IS_GOOGLE               = 101;
     const REASON_IS_BING                 = 102;
@@ -87,7 +180,9 @@ class Kernel
     const REASON_IS_FACEBOOK             = 111;
     const REASON_IS_TWITTER              = 112;
 
-    // Reason Codes (DENY)
+    /**
+     * Reason Codes (DENY)
+     */
     const REASON_TOO_MANY_SESSIONS       = 1;
     const REASON_TOO_MANY_ACCESSES       = 2; // (not used)
     const REASON_EMPTY_JS_COOKIE         = 3;
@@ -106,19 +201,25 @@ class Kernel
     const REASON_COMPONENT_TRUSTED_ROBOT = 85;
     const REASON_MANUAL_BAN              = 99;
 
-    // Action Codes
+    /**
+     * Action Codes
+     */
     const ACTION_DENY                    = 0;
     const ACTION_ALLOW                   = 1;
     const ACTION_TEMPORARILY_DENY        = 2;
     const ACTION_UNBAN                   = 9;
 
-    // Result Codes
+    /**
+     * Result Codes
+     */
     const RESPONSE_DENY                  = 0;
     const RESPONSE_ALLOW                 = 1;
     const RESPONSE_TEMPORARILY_DENY      = 2;
     const RESPONSE_LIMIT_SESSION         = 3;
 
-    // Logger Codes
+    /**
+     * Logger Codes
+     */
     const LOG_LIMIT                      = 3;
     const LOG_PAGEVIEW                   = 11;
     const LOG_BLACKLIST                  = 98;
@@ -476,7 +577,7 @@ class Kernel
     }
 
     /**
-     * Set a action log logger.
+     * Set an action log logger.
      *
      * @param ActionLogger $logger Record action logs for users.
      *
@@ -488,7 +589,7 @@ class Kernel
     }
 
     /**
-     * Set the URLs you want them to be excluded them from protection.
+     * Set the URLs you want them excluded them from protection.
      *
      * @param array $urls The list of URL want to be excluded.
      *
@@ -542,7 +643,7 @@ class Kernel
     }
 
     /**
-     * Print a JavasSript snippet in your webpages.
+     * Print a JavaScript snippet in your webpages.
      * 
      * This snippet generate cookie on client's browser,then we check the 
      * cookie to identify the client is a rebot or not.

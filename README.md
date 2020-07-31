@@ -6,39 +6,19 @@ Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and usefu
 
 [![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=2.x)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://codecov.io/gh/terrylinooo/shieldon/branch/2.x/graph/badge.svg)](https://codecov.io/gh/terrylinooo/shieldon) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/terrylinooo/shieldon/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/terrylinooo/shieldon/?branch=2.x) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-
-
 - Website: [https://shieldon.io](https://shieldon.io/)
 - GitHub repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
 - WordPress plugin: [https://wordpress.org/plugins/wp-shieldon/](https://wordpress.org/plugins/wp-shieldon/)
 
-
 ## Installation
 
-### 2.x
-
-**`2.x` will be released soon.**
-
 ```php
-composer require shieldon/shieldon:2.0.0-rc3
+composer require shieldon/shieldon ^2
 ```
-
-Shieldon `2.x` implements PSR-7 so that it could be compatible with modern frameworks such as Laravel, Symfony, Slim, Yii, etc. Using Shieldon `2.x` as a PSR-15 middleware is the best practice in this case.
-
-### 1.x
-
-```php
-composer require shieldon/shieldon ^1
-```
-
-Shieldon `1.x` directly accesses the superglobals, if you are using old frameworks (for instance, Codeigniter 3) or just pure PHP, and PSR-7 is not used, choosing this approach will be better.
-
 
 ## How to Use
 
-The examples here is for Shieldon 2.
-
-For Shieldon 1, check out https://shieldon.io/
+The examples here is for Shieldon 2, for Shieldon 1, check out [here](https://shieldon-io.github.io/v1/)
 
 There are three ways you can choose to use Shieldon on your application.
 
@@ -46,9 +26,12 @@ There are three ways you can choose to use Shieldon on your application.
 - Implement Shieldon in the bootstrap stage of your application.
 - Implement Shieldon in the parent controller extended by the other controllers.
 
+Shieldon `2.x` implements PSR-7 so that it could be compatible with modern frameworks such as Laravel, Symfony, Slim, Yii, etc. Using Shieldon `2.x` as a PSR-15 middleware is the best practice in this case.
+
 ---
 
-### PSR-15 Middleware 
+### PSR-15 Middleware
+
 #### `Example: Slim 4 framework`
 
 In this example, I will give you some tips on how to implement Shieldon as a PSR-15 middleware.
@@ -258,7 +241,7 @@ class Firewall extends MY_Controller
 ```
 
 
-Finally, no matter which way you choose, entering `https://yoursite.com/firewall/panel/` is suppose to be shown on your screen.
+Finally, no matter which way you choose, entering `https://yoursite.com/firewall/panel/`, the login page is suppose to be shown on your screen.
 
 ![](https://i.imgur.com/GFKzNYh.png)
 
@@ -281,32 +264,22 @@ This is basic concepts about how Shieldon works.
 
 ## Features
 
-- SEO friendly, no impacts for SERP.
+- SEO friendly, no impacts to SERP.
 - Http-type DDOS mitigation.
 - Anti-scraping.
-- Online session control.
+- Limit the amount of online users.
 - Cross-site scripting (XSS) protection.
 - Interrupting vulnerability scanning.
 - Eradicating brute force attacks.
 - IP manager.
 - Protecting pages via WWW-Authenticate.
 - Detailed statistics and charts.
-- Send notifications when specific events occurred. Supported modules:
-    - Telegram
-    - Line Notify
-    - Rocket Chat
-    - Slack
-    - SendGrid
-    - Mailgun
-    - Mail (Using Native PHP mail function.)
-    - SMTP
-- Web UI for System firewall - iptables and ip6tables.
-
-
+- Sending notifications to third-party services.
+- A Web UI for management of iptables, the system firewall.
 
 ## Implementing
 
-Here are the guides of integrating with the popular PHP frameworks.
+Here are the guides to integrating with the popular PHP frameworks.
 
 - [Laravel](https://shieldon.io/en/guide/laravel.html)
 - [Symfony](https://shieldon.io/en/guide/symfony.html)
@@ -321,7 +294,7 @@ Here are the guides of integrating with the popular PHP frameworks.
 
 ## Firewall Panel
 
-Shieldon provides a Firewall Instance, and it's visualization UI called Firewall Panel. By using Shieldon Firewall, you can easily implement it on your Web application.
+Shieldon provides a Firewall Instance, and it's visualization UI called Firewall Panel. By using Shieldon Firewall, you can easily implement it on your web application.
 
 ![Firewall Panel](https://i.imgur.com/MELx6Vl.png)
 
