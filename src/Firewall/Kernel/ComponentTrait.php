@@ -144,7 +144,7 @@ trait ComponentTrait
                     );
                 }
                 // Allowed robots not join to our traffic handler.
-                $this->result = self::RESPONSE_ALLOW;
+                $this->result = code('RESPONSE_ALLOW');
                 return true;
             }
         }
@@ -162,10 +162,10 @@ trait ComponentTrait
         if ($this->getComponent('TrustedBot')) {
             if ($this->getComponent('TrustedBot')->isFakeRobot()) {
                 $this->action(
-                    self::ACTION_DENY,
+                    code('ACTION_DENY'),
                     self::REASON_COMPONENT_TRUSTED_ROBOT
                 );
-                $this->result = self::RESPONSE_DENY;
+                $this->result = code('RESPONSE_DENY');
                 return true;
             }
         }
@@ -183,7 +183,7 @@ trait ComponentTrait
 
             $result = $this->getComponent('Ip')->check($this->ip);
 
-            $actionCode = self::ACTION_DENY;
+            $actionCode = code('ACTION_DENY');
 
             if (!empty($result)) {
 
@@ -195,7 +195,7 @@ trait ComponentTrait
                         break;
     
                     case 'deny':
-                        $actionCode = self::ACTION_DENY;
+                        $actionCode = code('ACTION_DENY');
                         $reasonCode = $result['code']; 
                         break;
                 }
@@ -222,11 +222,11 @@ trait ComponentTrait
             if ($component->isDenied()) {
 
                 $this->action(
-                    self::ACTION_DENY,
+                    code('ACTION_DENY'),
                     $component->getDenyStatusCode()
                 );
 
-                $this->result = self::RESPONSE_DENY;
+                $this->result = code('RESPONSE_DENY');
                 return true;
             }
         }

@@ -211,9 +211,8 @@ function mask_string($str): string
         $tmp[0] = '*';
         $tmp[1] = '*';
         $masked = implode('.', $tmp);
-
     } else {
-        $masked =  str_repeat('*', strlen($str) - 6) . substr(str, -6);
+        $masked =  str_repeat('*', strlen($str) - 6) . substr($str, -6);
     }
 
     return $masked;
@@ -548,4 +547,83 @@ function unset_superglobal($name, string $type): void
 
     $method = '\Shieldon\Firewall\unset_global_' . $type;
     $method($name, $type);
+}
+
+/**
+ * The constant code used on whole project.
+ *
+ * @param string $name The constant code name.
+ *
+ * @return int
+ */
+function code(string $name): int
+{
+    $code = [
+        /**
+         * HTTP Status Codes
+         */
+        'HTTP_STATUS_OK'                 => 200,
+        'HTTP_STATUS_SEE_OTHER'          => 303,
+        'HTTP_STATUS_BAD_REQUEST'        => 400,
+        'HTTP_STATUS_FORBIDDEN'          => 403,
+        'HTTP_STATUS_TOO_MANY_REQUESTS'  => 429,
+
+        /**
+         * Reason Codes (ALLOW)
+         */
+        'REASON_IS_SEARCH_ENGINE'        => 100,
+        'REASON_IS_GOOGLE'               => 101,
+        'REASON_IS_BING'                 => 102,
+        'REASON_IS_YAHOO'                => 103,
+        'REASON_IS_SOCIAL_NETWORK'       => 110,
+        'REASON_IS_FACEBOOK'             => 111,
+        'REASON_IS_TWITTER'              => 112,
+
+        /**
+         * Reason Codes (DENY)
+         */
+        'REASON_TOO_MANY_SESSIONS'       => 1,
+        'REASON_TOO_MANY_ACCESSES'       => 2, // (not used)
+        'REASON_EMPTY_JS_COOKIE'         => 3,
+        'REASON_EMPTY_REFERER'           => 4,
+        'REASON_REACHED_LIMIT_DAY'       => 11,
+        'REASON_REACHED_LIMIT_HOUR'      => 12,
+        'REASON_REACHED_LIMIT_MINUTE'    => 13,
+        'REASON_REACHED_LIMIT_SECOND'    => 14,
+        'REASON_INVALID_IP'              => 40,
+        'REASON_DENY_IP'                 => 41,
+        'REASON_ALLOW_IP'                => 42,
+        'REASON_COMPONENT_IP'            => 81,
+        'REASON_COMPONENT_RDNS'          => 82,
+        'REASON_COMPONENT_HEADER'        => 83,
+        'REASON_COMPONENT_USERAGENT'     => 84,
+        'REASON_COMPONENT_TRUSTED_ROBOT' => 85,
+        'REASON_MANUAL_BAN'              => 99,
+
+        /**
+         * Action Codes
+         */
+        'ACTION_DENY'                    => 0,
+        'ACTION_ALLOW'                   => 1,
+        'ACTION_TEMPORARILY_DENY'        => 2,
+        'ACTION_UNBAN'                   => 9,
+
+        /**
+         * Result Codes
+         */
+        'RESPONSE_DENY'                  => 0,
+        'RESPONSE_ALLOW'                 => 1,
+        'RESPONSE_TEMPORARILY_DENY'      => 2,
+        'RESPONSE_LIMIT_SESSION'         => 3,
+
+        /**
+         * Logger Codes
+         */
+        'LOG_LIMIT'                      => 3,
+        'LOG_PAGEVIEW'                   => 11,
+        'LOG_BLACKLIST'                  => 98,
+        'LOG_CAPTCHA'                    => 99,
+    ];
+
+    return $code[$name];
 }

@@ -105,13 +105,13 @@ trait SessionTrait
      */
     protected function sessionHandler($statusCode): int
     {
-        if (self::RESPONSE_ALLOW !== $statusCode) {
+        if (code('RESPONSE_ALLOW') !== $statusCode) {
             return $statusCode;
         }
 
         // If you don't enable `limit traffic`, ignore the following steps.
         if (empty($this->sessionLimit['count'])) {
-            return self::RESPONSE_ALLOW;
+            return code('RESPONSE_ALLOW');
 
         } else {
 
@@ -171,11 +171,11 @@ trait SessionTrait
 
             // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
             if ($sessionOrder >= $limit) {
-                return self::RESPONSE_LIMIT_SESSION;
+                return code('RESPONSE_LIMIT_SESSION');
             }
         }
 
-        return self::RESPONSE_ALLOW;
+        return code('RESPONSE_ALLOW');
     }
 
     // @codeCoverageIgnoreStart

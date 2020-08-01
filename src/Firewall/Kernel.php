@@ -160,71 +160,6 @@ class Kernel
      */
     use SessionTrait;
 
-    /**
-     * HTTP Status Codes
-     */
-    const HTTP_STATUS_OK                 = 200;
-    const HTTP_STATUS_SEE_OTHER          = 303;
-    const HTTP_STATUS_BAD_REQUEST        = 400;
-    const HTTP_STATUS_FORBIDDEN          = 403;
-    const HTTP_STATUS_TOO_MANY_REQUESTS  = 429;
-
-    /**
-     * Reason Codes (ALLOW)
-     */
-    const REASON_IS_SEARCH_ENGINE        = 100;
-    const REASON_IS_GOOGLE               = 101;
-    const REASON_IS_BING                 = 102;
-    const REASON_IS_YAHOO                = 103;
-    const REASON_IS_SOCIAL_NETWORK       = 110;
-    const REASON_IS_FACEBOOK             = 111;
-    const REASON_IS_TWITTER              = 112;
-
-    /**
-     * Reason Codes (DENY)
-     */
-    const REASON_TOO_MANY_SESSIONS       = 1;
-    const REASON_TOO_MANY_ACCESSES       = 2; // (not used)
-    const REASON_EMPTY_JS_COOKIE         = 3;
-    const REASON_EMPTY_REFERER           = 4;
-    const REASON_REACHED_LIMIT_DAY       = 11;
-    const REASON_REACHED_LIMIT_HOUR      = 12;
-    const REASON_REACHED_LIMIT_MINUTE    = 13;
-    const REASON_REACHED_LIMIT_SECOND    = 14;
-    const REASON_INVALID_IP              = 40;
-    const REASON_DENY_IP                 = 41;
-    const REASON_ALLOW_IP                = 42;
-    const REASON_COMPONENT_IP            = 81;
-    const REASON_COMPONENT_RDNS          = 82;
-    const REASON_COMPONENT_HEADER        = 83;
-    const REASON_COMPONENT_USERAGENT     = 84;
-    const REASON_COMPONENT_TRUSTED_ROBOT = 85;
-    const REASON_MANUAL_BAN              = 99;
-
-    /**
-     * Action Codes
-     */
-    const ACTION_DENY                    = 0;
-    const ACTION_ALLOW                   = 1;
-    const ACTION_TEMPORARILY_DENY        = 2;
-    const ACTION_UNBAN                   = 9;
-
-    /**
-     * Result Codes
-     */
-    const RESPONSE_DENY                  = 0;
-    const RESPONSE_ALLOW                 = 1;
-    const RESPONSE_TEMPORARILY_DENY      = 2;
-    const RESPONSE_LIMIT_SESSION         = 3;
-
-    /**
-     * Logger Codes
-     */
-    const LOG_LIMIT                      = 3;
-    const LOG_PAGEVIEW                   = 11;
-    const LOG_BLACKLIST                  = 98;
-    const LOG_CAPTCHA                    = 99;
-
     const KERNEL_DIR = __DIR__;
 
     /**
@@ -338,7 +273,7 @@ class Kernel
         // Ignore the excluded urls.
         foreach ($this->excludedUrls as $url) {
             if (strpos($this->getCurrentUrl(), $url) === 0) {
-                return $this->result = self::RESPONSE_ALLOW;
+                return $this->result = code('RESPONSE_ALLOW');
             }
         }
 
@@ -349,7 +284,7 @@ class Kernel
 
         $result = $this->process();
 
-        if ($result !== self::RESPONSE_ALLOW) {
+        if ($result !== code('RESPONSE_ALLOW')) {
 
             // Current session did not pass the CAPTCHA, it is still stuck in 
             // CAPTCHA page.
@@ -358,12 +293,12 @@ class Kernel
             // If current session's respone code is RESPONSE_DENY, record it as 
             // `blacklist_count` in our logs.
             // It is stuck in warning page, not CAPTCHA.
-            if ($result === self::RESPONSE_DENY) {
-                $actionCode = self::LOG_BLACKLIST;
+            if ($result === code('RESPONSE_DENY')) {
+                $actionCode = code('LOG_BLACKLIST');
             }
 
-            if ($result === self::RESPONSE_LIMIT_SESSION) {
-                $actionCode = self::LOG_LIMIT;
+            if ($result === code('RESPONSE_LIMIT_SESSION')) {
+                $actionCode = code('LOG_LIMIT');
             }
 
             $this->log($actionCode);
@@ -392,17 +327,17 @@ class Kernel
         $httpStatusCodes = [
             self::RESPONSE_TEMPORARILY_DENY => [
                 'type' => 'captcha',
-                'code' => self::HTTP_STATUS_FORBIDDEN,
+                'code' => code('HTTP_STATUS_FORBIDDEN'),
             ],
 
-            self::RESPONSE_LIMIT_SESSION => [
+            code('RESPONSE_LIMIT_SESSION') => [
                 'type' => 'session_limitation',
-                'code' => self::HTTP_STATUS_TOO_MANY_REQUESTS,
+                'code' => code('HTTP_STATUS_TOO_MANY_REQUESTS'),
             ],
 
-            self::RESPONSE_DENY => [
+            code('RESPONSE_DENY') => [
                 'type' => 'rejection',
-                'code' => self::HTTP_STATUS_BAD_REQUEST,
+                'code' => code('HTTP_STATUS_BAD_REQUEST'),
             ],
         ];
 
@@ -503,8 +438,8 @@ class Kernel
         }
  
         $this->action(
-            self::ACTION_DENY,
-            self::REASON_MANUAL_BAN,
+            code('ACTION_DENY'),
+            code('REASON_MANUAL_BAN'),
             $ip
         );
     }
@@ -523,13 +458,13 @@ class Kernel
         }
 
         $this->action(
-            self::ACTION_UNBAN,
-            self::REASON_MANUAL_BAN,
+            code('ACTION_UNBAN'),
+            code('REASON_MANUAL_BAN'),
             $ip
         );
-        $this->log(self::ACTION_UNBAN);
+        $this->log(code('ACTION_UNBAN'));
 
-        $this->result = self::RESPONSE_ALLOW;
+        $this->result = code('RESPONSE_ALLOW');
     }
 
     /**
@@ -738,7 +673,7 @@ class Kernel
         }
 
         // Stage 7 - Go into session limit check.
-        return $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
+        return $this->result = $this->sessionHandler(code('RESPONSE_ALLOW'));
     }
 
     /**
@@ -766,7 +701,7 @@ class Kernel
             $rdns = gethostbyaddr($ip);
         }
 
-        if ($actionCode === self::ACTION_UNBAN) {
+        if ($actionCode === code('ACTION_UNBAN')) {
             $this->driver->delete($ip, 'rule');
         } else {
             $logData['log_ip']     = $ip;
@@ -844,7 +779,7 @@ class Kernel
      *
      * @param object $instance Class
      * 
-     * @return void
+     * @return string
      */
     protected function getClassName($instance): string
     {

@@ -30,6 +30,24 @@ use Shieldon\Firewall\Captcha\CaptchaInterface;
 trait CaptchaTrait
 {
     /**
+     * Get a class name without namespace string.
+     *
+     * @param object $instance Class
+     * 
+     * @return string
+     */
+    abstract protected function getClassName($instance): string;
+
+    /**
+     * Deal with online sessions.
+     *
+     * @param int $statusCode The response code.
+     *
+     * @return int The response code.
+     */
+    abstract protected function sessionHandler($statusCode): int;
+
+    /**
      * Container for captcha addons.
      * The collection of \Shieldon\Firewall\Captcha\CaptchaInterface
      *
@@ -69,7 +87,7 @@ trait CaptchaTrait
          * sessionHandler() @ SessionTrait
          */
         if (!empty($this->sessionLimit['count'])) {
-            $this->result = $this->sessionHandler(self::RESPONSE_ALLOW);
+            $this->result = $this->sessionHandler(code('RESPONSE_ALLOW'));
         }
 
         return true;
