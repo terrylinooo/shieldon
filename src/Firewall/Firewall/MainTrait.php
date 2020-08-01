@@ -88,7 +88,7 @@ trait MainTrait
      *
      * @return bool
      */
-    abstract function hasCheckpoint(): bool;
+    abstract protected function hasCheckpoint(): bool;
 
     /**
      * Are database tables created?
@@ -97,7 +97,7 @@ trait MainTrait
      *
      * @return void
      */
-    abstract function setCheckpoint(bool $create = true): void;
+    abstract protected function setCheckpoint(bool $create = true): void;
 
     /**
      * Set a data driver for the use of Shiedon Firewall.

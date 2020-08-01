@@ -154,8 +154,26 @@ class FileDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testCreateDirectory()
     {
         if (file_exists(BOOTSTRAP_DIR . '/../tmp/test_file_driver')) {
-            rmdir(BOOTSTRAP_DIR . '/../tmp/test_file_driver');
+            $dir = BOOTSTRAP_DIR . '/../tmp/test_file_driver';
+            if (is_dir($dir)) {
+                $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+                $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
+    
+                foreach ($files as $file) {
+                    if ($file->isDir()) {
+                        rmdir($file->getRealPath());
+                    } else {
+                        unlink($file->getRealPath());
+                    }
+                }
+                unset($it, $files);
+
+                if (is_dir($dir)) {
+                    rmdir($dir);
+                }
+            }
         }
+
         $fileDriver = new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/test_file_driver');
 
         $reflection = new \ReflectionObject($fileDriver);

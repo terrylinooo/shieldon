@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Component;
 
 use Shieldon\Firewall\Component\ComponentProvider;
+use Shieldon\Firewall\Component\DeniedTrait;
 use Shieldon\Firewall\IpTrait;
 use function Shieldon\Firewall\get_request;
 
@@ -35,6 +36,7 @@ use function preg_match;
 class UserAgent extends ComponentProvider
 {
     use IpTrait;
+    use DeniedTrait;
 
     const STATUS_CODE = 84;
 

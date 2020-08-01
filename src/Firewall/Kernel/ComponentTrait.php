@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Kernel;
-use Shieldon\Firewall\Component\ComponentInterface;
 use Shieldon\Firewall\Component\ComponentProvider;
 
 /*
@@ -85,7 +84,7 @@ trait ComponentTrait
      *
      * @param string $name The component's class name.
      *
-     * @return ComponentInterface|null
+     * @return ComponentProvider|null
      */
     public function getComponent(string $name)
     {

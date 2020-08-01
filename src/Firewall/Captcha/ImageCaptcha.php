@@ -446,7 +446,7 @@ class ImageCaptcha extends CaptchaProvider
     /**
      * Get image resource.
      *
-     * @return resouce
+     * @return resource
      */
     private function getImageResource()
     {

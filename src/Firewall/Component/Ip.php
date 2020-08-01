@@ -24,6 +24,7 @@ namespace Shieldon\Firewall\Component;
 
 use Shieldon\Firewall\Component\ComponentProvider;
 use Shieldon\Firewall\Component\AllowedTrait;
+use Shieldon\Firewall\Component\DeniedTrait;
 use Shieldon\Firewall\IpTrait;
 
 use function array_keys;
@@ -45,6 +46,7 @@ class Ip extends ComponentProvider
 {
     use IpTrait;
     use AllowedTrait;
+    use DeniedTrait;
 
     const STATUS_CODE = 81;
 
