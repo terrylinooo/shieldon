@@ -154,7 +154,7 @@ class FileDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testCreateDirectory()
     {
         if (file_exists(BOOTSTRAP_DIR . '/../tmp/test_file_driver')) {
-            unlink(BOOTSTRAP_DIR . '/../tmp/test_file_driver');
+            rmdir(BOOTSTRAP_DIR . '/../tmp/test_file_driver');
         }
         $fileDriver = new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/test_file_driver');
 

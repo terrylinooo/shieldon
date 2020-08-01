@@ -511,7 +511,7 @@ final class ActionLogParser
             $this->ipDetail[$t][$ip]['captcha_failure_count']++;
         }
 
-        if ($logActionCode === code('LOG_BLACKLIST')) {
+        if ($logActionCode === self::LOG_BLACKLIST) {
             $this->periodDetail[$t][$k]['blacklist_count']++;
             $this->ipDetail[$t][$ip]['blacklist_count']++;
         }
@@ -521,7 +521,7 @@ final class ActionLogParser
             $this->ipDetail[$t][$ip]['pageview_count']++;
         }
 
-        if ($logActionCode === code('LOG_LIMIT')) {
+        if ($logActionCode === self::LOG_LIMIT) {
             $this->periodDetail[$t][$k]['session_limit_count']++;
             $this->ipDetail[$t][$ip]['session_limit_count']++;
         }

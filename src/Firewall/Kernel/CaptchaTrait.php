@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Kernel;
 
+use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Captcha\CaptchaInterface;
 
 /*
@@ -87,7 +88,7 @@ trait CaptchaTrait
          * sessionHandler() @ SessionTrait
          */
         if (!empty($this->sessionLimit['count'])) {
-            $this->result = $this->sessionHandler(code('RESPONSE_ALLOW'));
+            $this->result = $this->sessionHandler(Kernel::RESPONSE_ALLOW);
         }
 
         return true;

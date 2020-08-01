@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Kernel;
 
+use Shieldon\Firewall\Kernel;
 use function Shieldon\Firewall\get_session;
 use function microtime;
 use function str_replace;
@@ -105,13 +106,13 @@ trait SessionTrait
      */
     protected function sessionHandler($statusCode): int
     {
-        if (code('RESPONSE_ALLOW') !== $statusCode) {
+        if (Kernel::RESPONSE_ALLOW !== $statusCode) {
             return $statusCode;
         }
 
         // If you don't enable `limit traffic`, ignore the following steps.
         if (empty($this->sessionLimit['count'])) {
-            return code('RESPONSE_ALLOW');
+            return Kernel::RESPONSE_ALLOW;
 
         } else {
 
@@ -171,11 +172,11 @@ trait SessionTrait
 
             // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
             if ($sessionOrder >= $limit) {
-                return code('RESPONSE_LIMIT_SESSION');
+                return Kernel::RESPONSE_LIMIT_SESSION;
             }
         }
 
-        return code('RESPONSE_ALLOW');
+        return Kernel::RESPONSE_ALLOW;
     }
 
     // @codeCoverageIgnoreStart
