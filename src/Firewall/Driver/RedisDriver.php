@@ -98,12 +98,9 @@ class RedisDriver extends DriverProvider
 
         $this->assertInvalidDataTable($type);
 
-        /** @scrutinizer ignore-call */ 
         $keys = $this->redis->keys($this->getNamespace($type) . ':*');
 
         foreach ($keys as $key) {
-
-            /** @scrutinizer ignore-call */ 
             $content = $this->redis->get($key);
             $content = json_decode($content, true);
 
@@ -143,8 +140,6 @@ class RedisDriver extends DriverProvider
             case 'rule':
                 // no break
             case 'session':
-
-                /** @scrutinizer ignore-call */ 
                 $content = $this->redis->get($this->getKeyName($ip, $type));
                 $resultData = json_decode($content, true);
 
@@ -153,8 +148,6 @@ class RedisDriver extends DriverProvider
                 }
                 break;
             case 'filter':
-
-                /** @scrutinizer ignore-call */ 
                 $content = $this->redis->get($this->getKeyName($ip, $type));
                 $resultData = json_decode($content, true);
 
@@ -177,7 +170,6 @@ class RedisDriver extends DriverProvider
      */
     protected function checkExist(string $ip, string $type = 'filter'): bool
     {
-        /** @scrutinizer ignore-call */ 
         $isExist = $this->redis->exists($this->getKeyName($ip, $type));
 
         // This function took a single argument and returned TRUE or FALSE in phpredis versions < 4.0.0.
@@ -225,12 +217,13 @@ class RedisDriver extends DriverProvider
         }
 
         if ($expire > 0) {
-
-            /** @scrutinizer ignore-call */ 
-            return $this->redis->setex($this->getKeyName($ip, $type), $expire, json_encode($logData));
+            return $this->redis->setex(
+                $this->getKeyName($ip, $type),
+                $expire,
+                json_encode($logData)
+            );
         }
 
-        /** @scrutinizer ignore-call */ 
         return $this->redis->set(
             $this->getKeyName($ip, $type),
             json_encode($logData)
@@ -248,8 +241,6 @@ class RedisDriver extends DriverProvider
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
         if (in_array($type, ['rule', 'filter', 'session'])) {
-
-            /** @scrutinizer ignore-call */ 
             return $this->redis->del($this->getKeyName($ip, $type)) >= 0;
         }
         return false;
@@ -265,14 +256,10 @@ class RedisDriver extends DriverProvider
     protected function doRebuild(): bool
     {
         foreach (['rule', 'filter', 'session'] as $type) {
-
-            /** @scrutinizer ignore-call */ 
             $keys = $this->redis->keys($this->getNamespace($type) . ':*');
 
             if (!empty($keys)) {
                 foreach ($keys as $key) {
-
-                    /** @scrutinizer ignore-call */ 
                     $this->redis->del($key);
                 }
             }
