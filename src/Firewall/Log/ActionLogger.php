@@ -131,7 +131,7 @@ final class ActionLogger
         $results = [];
 
         if ('' === $toYmd) {
-            $results = $this->getDataFromSingleDate($fromYmd, $toYmd);
+            $results = $this->getDataFromSingleDate($fromYmd);
         } else {
             $results = $this->getDataFromRange($fromYmd, $toYmd);
         }
@@ -150,7 +150,7 @@ final class ActionLogger
 
         if (!is_dir($this->directory)) {
             $originalUmask = umask(0);
-            $result = @mkdir($this->directory, 0777, true);
+            $result = mkdir($this->directory, 0777, true);
             umask($originalUmask);
         }
 
@@ -234,11 +234,10 @@ final class ActionLogger
      * Get data from log file.
      *
      * @param string $fromYmd The string in Ymd Date format.
-     * @param string $toYmd   The end date.
      *
      * @return array
      */
-    private function getDataFromSingleDate(string $fromYmd = '', string $toYmd = ''): array
+    private function getDataFromSingleDate(string $fromYmd = ''): array
     {
         $results = [];
 
@@ -298,8 +297,6 @@ final class ActionLogger
 
         $interval = new DateInterval('P1D');
         $daterange = new DatePeriod($begin, $interval, $end);
-
-        $logFile = '';
 
         foreach ($daterange as $date) {
 

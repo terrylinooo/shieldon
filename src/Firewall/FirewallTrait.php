@@ -217,7 +217,7 @@ trait FirewallTrait
                 // @codeCoverageIgnoreStart
         
                 $originalUmask = umask(0);
-                @mkdir($this->directory, 0777, true);
+                mkdir($this->directory, 0777, true);
                 umask($originalUmask);
 
                 // @codeCoverageIgnoreEnd

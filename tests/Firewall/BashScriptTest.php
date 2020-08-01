@@ -32,7 +32,7 @@ class BashScriptTest extends \Shieldon\FirewallTest\ShieldonTestCase
      
         if (! is_dir($this->iptablesWatchingFolder)) {
             $originalUmask = umask(0);
-            @mkdir($this->iptablesWatchingFolder, 0777, true);
+            mkdir($this->iptablesWatchingFolder, 0777, true);
             umask($originalUmask);
 
             // Create default log files.

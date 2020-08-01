@@ -231,13 +231,6 @@ class TrustedBotTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $trustedBotComponent->setIp('127.0.0.1', false);
         $trustedBotComponent->setRdns('localhost');
 
-        $reflection = new \ReflectionObject($trustedBotComponent);
-        $t = $reflection->getProperty('checkFakeRdns');
-        $t->setAccessible(true);
-
-        // Disable checking fake RDNS.
-        $t->setValue($trustedBotComponent, false);
-
         $result = $trustedBotComponent->isAllowed();
 
         $this->assertFalse($result);

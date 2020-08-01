@@ -142,7 +142,7 @@ class BaseController
         $flashMessage = get_session()->get('flash_messages');
 
         // Flash message, use it when redirecting page.
-        if (!empty($flashMessage)) {
+        if (!empty($flashMessage) && is_array($flashMessage)) {
             $this->messages = $flashMessage;
             get_session()->remove('flash_messages');
         }

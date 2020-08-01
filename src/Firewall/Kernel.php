@@ -387,7 +387,6 @@ class Kernel
     public function respond(): ResponseInterface
     {
         $response = get_response();
-        $type = '';
 
         $httpStatusCodes = [
             self::RESPONSE_TEMPORARILY_DENY => [

@@ -68,7 +68,7 @@ class ShieldonTestCase extends TestCase
 
         if (! is_dir($dir)) {
             $originalUmask = umask(0);
-            $result = @mkdir($dir, 0777, true);
+            $result = mkdir($dir, 0777, true);
             umask($originalUmask);
         }
         return $dir . '/' . $filename;

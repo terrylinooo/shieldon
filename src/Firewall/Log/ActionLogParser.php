@@ -304,7 +304,7 @@ final class ActionLogParser
     {
         $this->type = $type;
 
-        $this->parsePeriodData($this->type);
+        $this->parsePeriodData();
     }
 
     /**

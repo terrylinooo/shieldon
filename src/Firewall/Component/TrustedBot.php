@@ -55,14 +55,6 @@ class TrustedBot extends ComponentProvider
     private $userAgent = '';
 
     /**
-     * Of course this option is always true. 
-     * But it can be false to ignore the check when executing the unit tests.
-     *
-     * @var bool
-     */
-    private $checkFakeRdns = true;
-
-    /**
      * Is the current access a fake robot?
      *
      * @var bool
