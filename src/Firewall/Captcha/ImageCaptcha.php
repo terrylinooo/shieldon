@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Captcha;
 
+use RuntimeException;
 use Shieldon\Firewall\Captcha\CaptchaProvider;
 
 use function Shieldon\Firewall\get_request;
@@ -78,8 +79,9 @@ class ImageCaptcha extends CaptchaProvider
 
     /**
      * Image resource.
+     * Throw exception the the value is not resource.
      *
-     * @var resource|null
+     * @var resource|null|bool
      */
     private $im;
 
@@ -222,7 +224,12 @@ class ImageCaptcha extends CaptchaProvider
         $colors = [];
 
         foreach ($this->properties['colors'] as $k => $v) {
-            // Create image resources for each color.
+
+            /**
+             * Create color identifier for each color.
+             *
+             * @var int
+             */
             $colors[$k] = imagecolorallocate($this->im, $v[0], $v[1], $v[2]);
         }
 
@@ -305,28 +312,32 @@ class ImageCaptcha extends CaptchaProvider
     /**
      * Create the background.
      * 
-     * @param int      $imgWidth  The width of the image.
-     * @param int      $imgHeight The height of the image.
-     * @param resource $bgColor   The RGB color for the background of the image.
+     * @param int $imgWidth  The width of the image.
+     * @param int $imgHeight The height of the image.
+     * @param int $bgColor   The RGB color for the background of the image.
      *
      * @return void
      */
     private function createBackground(int $imgWidth, int $imgHeight, $bgColor)
     {
+        $this->checkImType();
+
         imagefilledrectangle($this->im, 0, 0, $imgWidth, $imgHeight, $bgColor);
     }
 
     /**
      * Create a spiral patten.
      *
-     * @param int      $imgWidth  The width of the image.
-     * @param int      $imgHeight The height of the image.
-     * @param resource $gridColor The RGB color for the gri of the image.
+     * @param int $imgWidth  The width of the image.
+     * @param int $imgHeight The height of the image.
+     * @param int $gridColor The RGB color for the gri of the image.
      *
      * @return void
      */
     private function createSpiralPattern(int $imgWidth, int $imgHeight, $gridColor)
     {
+        $this->checkImType();
+
         // Determine angle and position.
         $angle = ($this->length >= 6) ? mt_rand(-($this->length - 6), ($this->length - 6)) : 0;
         $xAxis = mt_rand(6, (360 / $this->length) - 16);
@@ -360,17 +371,19 @@ class ImageCaptcha extends CaptchaProvider
     /**
      * Write the text into the image canvas.
      *
-     * @param int      $imgWidth  The width of the image.
-     * @param int      $imgHeight The height of the image.
-     * @param resource $textColor The RGB color for the grid of the image.
+     * @param int $imgWidth  The width of the image.
+     * @param int $imgHeight The height of the image.
+     * @param int $textColor The RGB color for the grid of the image.
      *
      * @return void
      */
     private function writeText(int $imgWidth, int $imgHeight, $textColor)
     {
+        $this->checkImType();
+
         $z = (int) ($imgWidth / ($this->length / 3));
         $x = mt_rand(0, $z);
-        $y = 0;
+        // $y = 0;
 
         for ($i = 0; $i < $this->length; $i++) {
             $y = mt_rand(0, $imgHeight / 2);
@@ -382,14 +395,16 @@ class ImageCaptcha extends CaptchaProvider
     /**
      * Write the text into the image canvas.
      *
-     * @param int      $imgWidth    The width of the image.
-     * @param int      $imgHeight   The height of the image.
-     * @param resource $borderColor The RGB color for the border of the image.
+     * @param int $imgWidth    The width of the image.
+     * @param int $imgHeight   The height of the image.
+     * @param int $borderColor The RGB color for the border of the image.
      *
      * @return void
      */
     private function createBorder(int $imgWidth, int $imgHeight, $borderColor): void
     {
+        $this->checkImType();
+
         // Create the border.
         imagerectangle($this->im, 0, 0, $imgWidth - 1, $imgHeight - 1, $borderColor);
     }
@@ -401,6 +416,8 @@ class ImageCaptcha extends CaptchaProvider
      */
     private function getImageBase64Content(): string
     {
+        $this->checkImType();
+
         // Generate image in base64 string.
         ob_start();
 
@@ -424,5 +441,21 @@ class ImageCaptcha extends CaptchaProvider
         imagedestroy($this->im);
 
         return base64_encode($imageContent);
+    }
+
+    /**
+     * Throw exception if the image can not be created.
+     *
+     * @return void
+     */
+    private function checkImType(): void
+    {
+        if (!is_resource($this->im)) {
+            // @codeCoverageIgnoreStart
+            throw new RuntimeException(
+                'Cannot create image resource.'
+            );
+            // @codeCoverageIgnoreEnd
+        }
     }
 }
