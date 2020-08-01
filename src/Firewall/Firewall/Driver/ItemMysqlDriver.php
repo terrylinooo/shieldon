@@ -36,7 +36,7 @@ class ItemMysqlDriver
      *
      * @param array $setting The configuration of that driver.
      *
-     * @return RedisDriver|null
+     * @return MysqlDriver|null
      */
     public static function get(array $setting)
     {

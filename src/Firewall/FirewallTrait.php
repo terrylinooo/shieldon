@@ -45,13 +45,6 @@ trait FirewallTrait
     protected $configuration = [];
 
     /**
-     * If status is false and then Sheldon will stop working.
-     *
-     * @var bool
-     */
-    protected $status = true;
-    
-    /**
      * The configuation file's path.
      *
      * @var string

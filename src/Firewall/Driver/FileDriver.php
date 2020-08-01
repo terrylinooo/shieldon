@@ -60,14 +60,6 @@ class FileDriver extends DriverProvider
      */
     protected $extension = 'json';
 
-
-    /**
-     * A file that confirms the required dictories have been created.
-     *
-     * @var string
-     */
-    private $checkPoint = 'shieldon_check_exist.txt';
-
     /**
      * Constructor.
      *

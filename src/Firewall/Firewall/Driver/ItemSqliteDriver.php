@@ -36,7 +36,7 @@ class ItemSqliteDriver
      *
      * @param array $setting The configuration of that driver.
      *
-     * @return RedisDriver|null
+     * @return SqliteDriver|null
      */
     public static function get(array $setting)
     {

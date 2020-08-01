@@ -30,6 +30,7 @@ use function curl_error;
 use function curl_exec;
 use function curl_init;
 use function curl_setopt;
+use function is_string;
 use function json_decode;
 
 /**
@@ -114,6 +115,11 @@ class ReCaptcha extends CaptchaProvider
         ];
 
         $ch = curl_init();
+
+        if (!is_resource($ch)) {
+            return false;
+        }
+
         curl_setopt($ch, CURLOPT_URL, $this->googleServiceUrl);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
         curl_setopt($ch, CURLOPT_POST, 2);
@@ -130,7 +136,7 @@ class ReCaptcha extends CaptchaProvider
         }
         // @codeCoverageIgnoreEnd
 
-        if (isset($ret) && $ret != false) {
+        if (isset($ret) && is_string($ret)) {
             $tmp = json_decode($ret);
             if ($tmp->success == true) {
                 $flag = true;

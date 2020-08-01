@@ -40,6 +40,13 @@ use function time;
 trait MainTrait
 {
     /**
+     * If status is false and then Sheldon will stop working.
+     *
+     * @var bool
+     */
+    protected $status = true;
+
+    /**
      * Get options from the configuration file.
      * This method is same as `$this->getConfig()` but returning value from array directly.
      *
