@@ -346,6 +346,8 @@ final class ActionLogParser
             return [];
         }
 
+        $results = [];
+
         $results['captcha_chart_string']  = '';     // string
         $results['pageview_chart_string'] = '';     // string
         $results['captcha_success_count'] = 0;      // integer
@@ -400,6 +402,8 @@ final class ActionLogParser
     public function getParsedPeriodData(): array
     {
         $periodData = $this->getPeriodData();
+
+        $results = [];
 
         $results['captcha_chart_string']  = '';     // string
         $results['pageview_chart_string'] = '';     // string

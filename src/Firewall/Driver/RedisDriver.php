@@ -146,7 +146,7 @@ class RedisDriver extends DriverProvider
                 if (is_array($resultData)) {
                     $results = $resultData;
                 }
-
+                break;
             case 'filter':
                 $content = $this->redis->get($this->getKeyName($ip, $type));
                 $resultData = json_decode($content, true);
@@ -154,6 +154,7 @@ class RedisDriver extends DriverProvider
                 if (!empty($resultData['log_data'])) {
                     $results = $resultData['log_data']; 
                 }
+                break;
         }
 
         return $results;

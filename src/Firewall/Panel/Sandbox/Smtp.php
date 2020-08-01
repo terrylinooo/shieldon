@@ -115,7 +115,9 @@ class Smtp
             if ($messenger->send($message['body'])) {
                 return true;
             }
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+            return false;
+        }
         // @codeCoverageIgnoreEnd
 
         return false;
