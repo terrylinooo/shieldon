@@ -87,9 +87,8 @@ class Header extends ComponentProvider
         if ($this->strictMode) {
 
             foreach ($this->commonHeaderFileds as $fieldName) {
-
                 // If strict mode is on, this value must be found.
-                if (!isset($this->headers[$fieldName])) {
+                if (!isset($this->headers[$fieldName]) && empty($this->headers['referer'])) {
                     return true;
                 }
             }
