@@ -25,6 +25,7 @@ namespace Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Component\ComponentProvider;
 use Shieldon\Firewall\Component\TrustedBot;
+use Shieldon\Firewall\Component\Ip;
 
 /*
  * @since 1.0.0
@@ -59,6 +60,16 @@ trait ComponentTrait
      * @return int The response code.
      */
     abstract protected function sessionHandler($statusCode): int;
+
+    /**
+     * Save and return the result identifier.
+     * This method is for passing value from traits.
+     *
+     * @param int $resultCode The result identifier.
+     *
+     * @return int
+     */
+    abstract protected function setResultCode(int $resultCode): int;
 
     /**
      * Container for Shieldon components.
@@ -176,7 +187,7 @@ trait ComponentTrait
                     );
                 }
                 // Allowed robots not join to our traffic handler.
-                $this->result = Kernel::RESPONSE_ALLOW;
+                $this->setResultCode(Kernel::RESPONSE_ALLOW);
                 return true;
             }
         }
@@ -199,7 +210,7 @@ trait ComponentTrait
                     Kernel::ACTION_DENY,
                     Kernel::REASON_COMPONENT_TRUSTED_ROBOT
                 );
-                $this->result = Kernel::RESPONSE_DENY;
+                $this->setResultCode(Kernel::RESPONSE_DENY);
                 return true;
             }
         }
@@ -213,9 +224,11 @@ trait ComponentTrait
      */
     protected function isIpComponent(): bool
     {
-        if ($this->getComponent('Ip')) {
+        $ipComponent = $this->getComponent('Ip');
 
-            $result = $this->getComponent('Ip')->check($this->ip);
+        if ($ipComponent instanceof Ip) {
+
+            $result = $ipComponent->check($this->ip);
 
             $actionCode = Kernel::ACTION_DENY;
 
@@ -237,7 +250,7 @@ trait ComponentTrait
                 $this->action($actionCode, $reasonCode);
 
                 // $resultCode = $actionCode
-                $this->result = $this->sessionHandler($actionCode);
+                $this->setResultCode($this->sessionHandler($actionCode));
                 return true;
             }
         }
@@ -260,7 +273,7 @@ trait ComponentTrait
                     $component->getDenyStatusCode()
                 );
 
-                $this->result = Kernel::RESPONSE_DENY;
+                $this->setResultCode(Kernel::RESPONSE_DENY);
                 return true;
             }
         }

@@ -213,7 +213,7 @@ function mask_string($str): string
         $masked = implode('.', $tmp);
 
     } else {
-        $masked =  str_repeat('*', strlen($str) - 6) . substr(str, -6);
+        $masked =  str_repeat('*', strlen($str) - 6) . substr($str, -6);
     }
 
     return $masked;

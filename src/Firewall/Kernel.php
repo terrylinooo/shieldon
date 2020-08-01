@@ -851,4 +851,17 @@ class Kernel
         $class = get_class($instance);
         return substr($class, strrpos($class, '\\') + 1); 
     }
+
+    /**
+     * Save and return the result identifier.
+     * This method is for passing value from traits.
+     *
+     * @param int $resultCode The result identifier.
+     *
+     * @return int
+     */
+    protected function setResultCode(int $resultCode): int
+    {
+        return $this->result = $resultCode;
+    }
 }

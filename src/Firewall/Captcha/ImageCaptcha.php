@@ -220,6 +220,8 @@ class ImageCaptcha extends CaptchaProvider
 
         $this->createCanvas($imgWidth, $imgHeight);
 
+        $im = $this->getImageResource();
+
         // Assign colors. 
         $colors = [];
 
@@ -230,7 +232,7 @@ class ImageCaptcha extends CaptchaProvider
              *
              * @var int
              */
-            $colors[$k] = imagecolorallocate($this->im, $v[0], $v[1], $v[2]);
+            $colors[$k] = imagecolorallocate($im, $v[0], $v[1], $v[2]);
         }
 
         $this->createRandomWords();

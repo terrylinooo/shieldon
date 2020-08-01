@@ -49,6 +49,16 @@ trait CaptchaTrait
     abstract protected function sessionHandler($statusCode): int;
 
     /**
+     * Save and return the result identifier.
+     * This method is for passing value from traits.
+     *
+     * @param int $resultCode The result identifier.
+     *
+     * @return int
+     */
+    abstract protected function setResultCode(int $resultCode): int;
+
+    /**
      * Container for captcha addons.
      * The collection of \Shieldon\Firewall\Captcha\CaptchaInterface
      *
@@ -88,7 +98,9 @@ trait CaptchaTrait
          * sessionHandler() @ SessionTrait
          */
         if (!empty($this->sessionLimit['count'])) {
-            $this->result = $this->sessionHandler(Kernel::RESPONSE_ALLOW);
+            return (bool) $this->setResultCode(
+                $this->sessionHandler(Kernel::RESPONSE_ALLOW)
+            );
         }
 
         return true;

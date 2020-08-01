@@ -61,6 +61,16 @@ trait RuleTrait
     abstract protected function setMessageBody(string $message = ''): void;
 
     /**
+     * Save and return the result identifier.
+     * This method is for passing value from traits.
+     *
+     * @param int $resultCode The result identifier.
+     *
+     * @return int
+     */
+    abstract protected function setResultCode(int $resultCode): int;
+
+    /**
      * Look up the rule table.
      *
      * If a specific IP address doesn't exist, return false. 
@@ -79,7 +89,7 @@ trait RuleTrait
         $ruleType = (int) $ipRule['type'];
 
         // Apply the status code.
-        $this->result = $ruleType;
+        $this->setResultCode($ruleType);
 
         if ($ruleType === kernel::ACTION_ALLOW) {
             return true;
