@@ -227,11 +227,7 @@ class RedisDriver extends DriverProvider
         if ($expire > 0) {
 
             /** @scrutinizer ignore-call */ 
-            return $this->redis->setex(
-                $this->getKeyName($ip, $type),
-                $expire,
-                json_encode($logData)
-            );
+            return $this->redis->setex($this->getKeyName($ip, $type), $expire, json_encode($logData));
         }
 
         /** @scrutinizer ignore-call */ 

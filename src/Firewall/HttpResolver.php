@@ -73,6 +73,7 @@ class HttpResolver
         if ($finally && !defined('PHP_UNIT_TEST')) {
 
             // @codeCoverageIgnoreStart
+            /** @scrutinizer ignore-call */ 
             exit;
             // @codeCoverageIgnoreEnd
         }
