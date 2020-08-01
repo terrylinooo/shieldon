@@ -295,12 +295,6 @@ class FileDriver extends DriverProvider
             }
         }
 
-        $checkingFile = $this->directory . '/' . $this->channel . '_' . $this->checkPoint;
-
-        if (file_exists($checkingFile)) {
-            unlink($checkingFile);
-        }
-
         $conA = !is_dir($this->getDirectory('filter'));
         $conB = !is_dir($this->getDirectory('rule'));
         $conC = !is_dir($this->getDirectory('session'));
