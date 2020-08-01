@@ -325,7 +325,10 @@ trait MainTrait
             }
         }
 
+        /** @scrutinizer ignore-call */ 
         $this->kernel->component['Ip']->setAllowedItems($allowedList);
+
+        /** @scrutinizer ignore-call */ 
         $this->kernel->component['Ip']->setDeniedItems($deniedList);
     }
 
@@ -471,6 +474,7 @@ trait MainTrait
                 $this->updateConfig();
 
                 // Remove all logs.
+                /** @scrutinizer ignore-call */ 
                 $this->kernel->driver->rebuild();
             }
         }

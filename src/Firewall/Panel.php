@@ -146,10 +146,15 @@ class Panel
                 );
             }
 
-            $this->resolver(call_user_func([$controllerClass, $method]));
+
+            $this->
+            /** @scrutinizer ignore-call */ 
+            resolver(call_user_func([$controllerClass, $method]));
         }
        
-        $this->resolver($response->withStatus(404));
+        $this->
+        /** @scrutinizer ignore-call */ 
+        resolver($response->withStatus(404));
     }
 
     /**
@@ -188,7 +193,9 @@ class Panel
                 );
             }
             
-            $this->resolver($user->login());
+            $this->
+            /** @scrutinizer ignore-call */ 
+            resolver($user->login());
         }
     }
 
