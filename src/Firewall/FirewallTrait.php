@@ -135,23 +135,18 @@ trait FirewallTrait
         switch ($c) {
             case 1:
                 return $this->configuration[$v[0]] ?? '';
-                break;
 
             case 2:
                 return $this->configuration[$v[0]][$v[1]] ?? '';
-                break;
 
             case 3:
                 return $this->configuration[$v[0]][$v[1]][$v[2]] ?? '';
-                break;
 
             case 4:
                 return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]] ?? '';
-                break;
 
             case 5:
                 return $this->configuration[$v[0]][$v[1]][$v[2]][$v[3]][$v[4]] ?? '';
-                break;
         }
         return '';
     }
@@ -246,7 +241,7 @@ trait FirewallTrait
      */
     protected function getCheckpoint(): string
     {
-        $driverType = $this->getOption('driver_type');
+        $driverType = (string) $this->getOption('driver_type');
 
         return $this->directory . '/' . $this->channel .  '_' . $driverType . '_' . $this->checkpoint;
     }

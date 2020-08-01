@@ -48,14 +48,14 @@ trait MainTrait
      *
      * @return mixed
      */
-    abstract function getOption(string $option, string $section = '');
+    abstract protected function getOption(string $option, string $section = '');
 
     /**
      * Update configuration file.
      *
      * @return void
      */
-    abstract function updateConfig(): void;
+    abstract protected function updateConfig(): void;
 
     /**
      * Set a variable to the configuration.
@@ -65,7 +65,7 @@ trait MainTrait
      *
      * @return void
      */
-    abstract function setConfig(string $field, $value): void;
+    abstract public function setConfig(string $field, $value): void;
 
     /**
      * Add middlewares and use them before going into Shieldon kernal.
@@ -74,7 +74,7 @@ trait MainTrait
      *
      * @return void
      */
-    abstract function add(MiddlewareInterface $middleware): void;
+    abstract public function add(MiddlewareInterface $middleware): void;
 
     /**
      * Are database tables created? 
