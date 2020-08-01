@@ -158,6 +158,8 @@ trait SessionTrait
             if (!in_array(get_session()->get('id'), $sessionPools)) {
                 $this->sessionStatus['count']++;
 
+                $data = [];
+
                 // New session, record this data.
                 $data['id'] = get_session()->get('id');
                 $data['ip'] = $this->ip;

@@ -241,7 +241,9 @@ trait ComponentTrait
                         $reasonCode = $result['code'];
                         break;
     
+                    
                     case 'deny':
+                    default:
                         $actionCode = Kernel::ACTION_DENY;
                         $reasonCode = $result['code']; 
                         break;

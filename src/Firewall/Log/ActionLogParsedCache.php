@@ -119,6 +119,7 @@ final class ActionLogParsedCache
 
                 case 'past_seven_hours':
                 case 'today':
+                default:
 
                     // Update cache file hourly.
                     $endTime = strtotime(date('Y-m-d H:00:00', time()));

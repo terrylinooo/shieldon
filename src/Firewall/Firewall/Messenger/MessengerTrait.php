@@ -36,7 +36,7 @@ trait MessengerTrait
      *
      * @return mixed
      */
-    abstract function getOption(string $option, string $section = '');
+    abstract protected function getOption(string $option, string $section = '');
 
     /**
      * Set the messenger modules.

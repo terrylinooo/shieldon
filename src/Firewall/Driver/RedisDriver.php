@@ -202,6 +202,7 @@ class RedisDriver extends DriverProvider
                 break;
 
             case 'filter':
+                $logData = [];
                 $logData['log_ip'] = $ip;
                 $logData['log_data'] = $data;
                 break;
@@ -209,6 +210,9 @@ class RedisDriver extends DriverProvider
             case 'session':
                 $logData = $data;
                 break;
+
+            default:
+                return false;
         }
 
         if ($expire > 0) {

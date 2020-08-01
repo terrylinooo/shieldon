@@ -424,6 +424,8 @@ class Kernel
         // Show online session count. It is used on views.
         if (!empty($this->properties['display_online_info'])) {
             $showOnlineInformation = true;
+            $onlineinfo = [];
+
             $onlineinfo['queue'] = $this->sessionStatus['queue'];
             $onlineinfo['count'] = $this->sessionStatus['count'];
             $onlineinfo['period'] = $this->sessionLimit['period'];
@@ -432,6 +434,8 @@ class Kernel
         // Show user information such as IP, user-agent, device name.
         if (!empty($this->properties['display_user_info'])) {
             $showUserInformation = true;
+            $dialoguserinfo = [];
+
             $dialoguserinfo['ip'] = $this->ip;
             $dialoguserinfo['rdns'] = $this->rdns;
             $dialoguserinfo['user_agent'] = get_request()->getHeaderLine('user-agent');
@@ -472,7 +476,6 @@ class Kernel
             $ui,
             $form,
             $captchas,
-            $csrf,
             $langCode,
             $showOnlineInformation,
             $showUserInformation

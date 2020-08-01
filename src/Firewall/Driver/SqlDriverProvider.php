@@ -199,23 +199,36 @@ class SqlDriverProvider extends DriverProvider
 
             case 'rule':
                 $tableName = $this->tableRuleList;
+
+                $logWhere = [];
                 $logWhere['log_ip'] = $ip;
+
                 $logData = $data;
                 $logData['log_ip'] = $ip;
                 break;
 
             case 'filter':
                 $tableName = $this->tableFilterLogs;
+
+                $logWhere = [];
                 $logWhere['log_ip'] = $ip;
+
+                $logData = [];
                 $logData['log_ip'] = $ip;
                 $logData['log_data'] = json_encode($data);
                 break;
 
             case 'session':
                 $tableName = $this->tableSessions;
+
+                $logWhere = [];
                 $logWhere['id'] = $data['id'];
+
                 $logData = $data;
                 break;
+
+            default:
+                return false;
         }
 
         if ($this->checkExist($ip, $type)) {

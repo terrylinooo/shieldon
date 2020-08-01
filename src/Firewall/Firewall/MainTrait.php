@@ -150,11 +150,13 @@ trait MainTrait
         foreach ($filters as $filter) {
             $setting = $this->getOption($filter, 'filters');
 
-            $settings[$filter] = $setting;
-            $filterConfig[$filter] = $setting['enable'];
-            $filterLimit[$filter] = $setting['config']['quota']; // default: 5
-
-            unset($setting);
+            if (!empty($setting)) {
+                $settings[$filter] = $setting;
+                $filterConfig[$filter] = $setting['enable'];
+                $filterLimit[$filter] = $setting['config']['quota']; // default: 5
+    
+                unset($setting);
+            }
         }
 
         $settings['frequency'] = $this->getOption('frequency', 'filters');

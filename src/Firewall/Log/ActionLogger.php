@@ -110,6 +110,8 @@ final class ActionLogger
             $record['session_id'] = substr($record['session_id'], 0, 4);
         }
 
+        $data = [];
+
         $data[0] = $record['ip']          ?? 'null';
         $data[1] = $record['session_id']  ?? 'null';
         $data[2] = $record['action_code'] ?? 'null';
