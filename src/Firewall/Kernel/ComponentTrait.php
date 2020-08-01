@@ -24,6 +24,7 @@ namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Component\ComponentProvider;
+use Shieldon\Firewall\Component\TrustedBot;
 
 /*
  * @since 1.0.0
@@ -137,27 +138,29 @@ trait ComponentTrait
      */
     protected function isTrustedBot()
     {
-        if ($this->getComponent('TrustedBot')) {
+        $trustedBot = $this->getComponent('TrustedBot');
+
+        if ($trustedBot instanceof TrustedBot) {
 
             // We want to put all the allowed robot into the rule list, so that the checking of IP's resolved hostname 
             // is no more needed for that IP.
-            if ($this->getComponent('TrustedBot')->isAllowed()) {
+            if ($trustedBot->isAllowed()) {
 
-                if ($this->getComponent('TrustedBot')->isGoogle()) {
+                if ($trustedBot->isGoogle()) {
                     // Add current IP into allowed list, because it is from real Google domain.
                     $this->action(
                         Kernel::ACTION_ALLOW,
                         Kernel::REASON_IS_GOOGLE
                     );
 
-                } elseif ($this->getComponent('TrustedBot')->isBing()) {
+                } elseif ($trustedBot->isBing()) {
                     // Add current IP into allowed list, because it is from real Bing domain.
                     $this->action(
                         Kernel::ACTION_ALLOW,
                         Kernel::REASON_IS_BING
                     );
 
-                } elseif ($this->getComponent('TrustedBot')->isYahoo()) {
+                } elseif ($trustedBot->isYahoo()) {
                     // Add current IP into allowed list, because it is from real Yahoo domain.
                     $this->action(
                         Kernel::ACTION_ALLOW,
@@ -188,8 +191,10 @@ trait ComponentTrait
      */
     protected function isFakeRobot(): bool
     {
-        if ($this->getComponent('TrustedBot')) {
-            if ($this->getComponent('TrustedBot')->isFakeRobot()) {
+        $trustedBot = $this->getComponent('TrustedBot');
+
+        if ($trustedBot instanceof TrustedBot) {
+            if ($trustedBot->isFakeRobot()) {
                 $this->action(
                     Kernel::ACTION_DENY,
                     Kernel::REASON_COMPONENT_TRUSTED_ROBOT
