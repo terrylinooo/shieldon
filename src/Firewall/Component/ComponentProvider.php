@@ -51,5 +51,5 @@ abstract class ComponentProvider
      *
      * @return int
      */
-    abstract function getDenyStatusCode(): int;
+    abstract public function getDenyStatusCode(): int;
 }

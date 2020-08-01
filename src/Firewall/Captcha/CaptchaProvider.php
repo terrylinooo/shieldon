@@ -40,12 +40,12 @@ abstract class CaptchaProvider implements CaptchaInterface
      *
      * @return bool
      */
-    abstract function response(): bool;
+    abstract public function response(): bool;
 
     /**
      * Unique deny status code.
      *
      * @return string
      */
-    abstract function form(): string;
+    abstract public function form(): string;
 }

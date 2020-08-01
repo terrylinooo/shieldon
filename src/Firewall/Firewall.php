@@ -204,4 +204,19 @@ class Firewall
     {
         $this->middlewares[] = $middleware;
     }
+
+    /**
+     * Set the channel ID.
+     *
+     * @return void
+     */
+    protected function setChannel(): void
+    {
+        $channelId = $this->getOption('channel_id');
+
+        if ($channelId) {
+            $this->kernel->setChannel($channelId);
+            $this->channel = $channelId;
+        }
+    }
 }

@@ -118,7 +118,7 @@ trait AllowedTrait
      *
      * @return bool
      */
-    function hasAllowedItem(string $key): bool
+    public function hasAllowedItem(string $key): bool
     {
         return isset($this->allowedList[$key]);
     }
@@ -130,7 +130,7 @@ trait AllowedTrait
      *
      * @return array
      */
-    function getAllowedItemsWithPrefix(string $key): array
+    public function getAllowedItemsWithPrefix(string $key): array
     {
         $temp = [];
         foreach ($this->allowedList as $keyName => $value) {

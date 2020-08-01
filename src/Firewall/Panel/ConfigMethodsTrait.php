@@ -55,6 +55,16 @@ trait ConfigMethodsTrait
     abstract public function getConfig(string $field);
 
     /**
+     * Set a variable to the configuration.
+     *
+     * @param string $field The field of the configuration.
+     * @param mixed  $value The vale of a field in the configuration.
+     *
+     * @return void
+     */
+    abstract public function setConfig(string $field, $value): void;
+
+    /**
      * Response message to front.
      *
      * @param string $type The message status type. error|success

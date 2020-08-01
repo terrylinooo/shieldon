@@ -844,7 +844,7 @@ class Kernel
      *
      * @param object $instance Class
      * 
-     * @return void
+     * @return string
      */
     protected function getClassName($instance): string
     {

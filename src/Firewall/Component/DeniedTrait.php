@@ -118,7 +118,7 @@ trait DeniedTrait
      *
      * @return bool
      */
-    function hasDeniedItem(string $key): bool
+    public function hasDeniedItem(string $key): bool
     {
         return isset($this->deniedList[$key]);
     }
@@ -130,7 +130,7 @@ trait DeniedTrait
      *
      * @return array
      */
-    function getDeniedItemsWithPrefix(string $key): array
+    public function getDeniedItemsWithPrefix(string $key): array
     {
         $temp = [];
         foreach ($this->deniedList as $keyName => $value) {

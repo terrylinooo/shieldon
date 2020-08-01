@@ -201,6 +201,8 @@ class FileDriver extends DriverProvider
      */
     protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
+        $logData = [];
+
         switch ($type) {
 
             case 'rule':

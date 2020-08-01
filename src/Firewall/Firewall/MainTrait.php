@@ -110,10 +110,6 @@ trait MainTrait
         $driverType = $this->getOption('driver_type');
         $driverSetting = $this->getOption($driverType, 'drivers');
 
-        if ($driverType === 'mysql') {
-            echo '---mysql---';
-        }
-
         if ($this->hasCheckpoint()) {
             $this->kernel->disableDbBuilder();
         } else {
@@ -327,21 +323,6 @@ trait MainTrait
 
         $this->kernel->component['Ip']->setAllowedItems($allowedList);
         $this->kernel->component['Ip']->setDeniedItems($deniedList);
-    }
-
-    /**
-     * Set the channel ID.
-     *
-     * @return void
-     */
-    protected function setChannel(): void
-    {
-        $channelId = $this->getOption('channel_id');
-
-        if ($channelId) {
-            $this->kernel->setChannel($channelId);
-            $this->channel = $channelId;
-        }
     }
 
     /**
