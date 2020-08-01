@@ -153,8 +153,10 @@ class FileDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testCreateDirectory()
     {
-        $fileDriver = new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon');
-        $fileDriver->rebuild();
+        if (file_exists(BOOTSTRAP_DIR . '/../tmp/test_file_driver')) {
+            unlink(BOOTSTRAP_DIR . '/../tmp/test_file_driver');
+        }
+        $fileDriver = new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/test_file_driver');
 
         $reflection = new \ReflectionObject($fileDriver);
         $methodCreateDirectory = $reflection->getMethod('createDirectory');
@@ -163,6 +165,12 @@ class FileDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $result = $methodCreateDirectory->invokeArgs($fileDriver, []);
 
         $this->assertTrue($result);
+
+        $fileDriver->rebuild();
+
+        $result = $methodCreateDirectory->invokeArgs($fileDriver, []);
+
+        $this->assertFalse($result);
     }
 
     public function testCheckDirectory()

@@ -164,7 +164,7 @@ trait FirewallTrait
      *
      * @return void
      */
-    public function setConfig(string $field, $value)
+    public function setConfig(string $field, $value): void
     {
         $v = explode('.', $field);
         $c = count($v);
@@ -219,7 +219,7 @@ trait FirewallTrait
      *
      * @return void
      */
-    protected function updateConfig()
+    protected function updateConfig(): void
     {
         $configFilePath = $this->directory . '/' . $this->filename;
 
@@ -272,7 +272,7 @@ trait FirewallTrait
      *
      * @return void
      */
-    protected function setCheckpoint(bool $create = true)
+    protected function setCheckpoint(bool $create = true): void
     {
         if ($create) {
             file_put_contents($this->getCheckpoint(), date('Y-m-d H:i:s'));

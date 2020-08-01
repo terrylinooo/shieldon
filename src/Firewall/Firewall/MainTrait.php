@@ -55,7 +55,7 @@ trait MainTrait
      *
      * @return void
      */
-    abstract function updateConfig();
+    abstract function updateConfig(): void;
 
     /**
      * Set a variable to the configuration.
@@ -65,7 +65,7 @@ trait MainTrait
      *
      * @return void
      */
-    abstract function setConfig(string $field, $value);
+    abstract function setConfig(string $field, $value): void;
 
     /**
      * Add middlewares and use them before going into Shieldon kernal.
@@ -74,7 +74,23 @@ trait MainTrait
      *
      * @return void
      */
-    abstract function add(MiddlewareInterface $middleware);
+    abstract function add(MiddlewareInterface $middleware): void;
+
+    /**
+     * Are database tables created? 
+     *
+     * @return bool
+     */
+    abstract function hasCheckpoint(): bool;
+
+    /**
+     * Are database tables created?
+     * 
+     * @param bool $create Is create the checkpoint file, or not.
+     *
+     * @return void
+     */
+    abstract function setCheckpoint(bool $create = true): void;
 
     /**
      * Set a data driver for the use of Shiedon Firewall.
@@ -86,6 +102,10 @@ trait MainTrait
     {
         $driverType = $this->getOption('driver_type');
         $driverSetting = $this->getOption($driverType, 'drivers');
+
+        if ($driverType === 'mysql') {
+            echo '---mysql---';
+        }
 
         if ($this->hasCheckpoint()) {
             $this->kernel->disableDbBuilder();

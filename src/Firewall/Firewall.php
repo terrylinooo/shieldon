@@ -121,7 +121,7 @@ class Firewall
      * 
      * @return void
      */
-    public function configure(string $source, string $type = 'json')
+    public function configure(string $source, string $type = 'json'): void
     {
         if ($type === 'json') {
             $this->directory = rtrim($source, '\\/');
@@ -200,7 +200,7 @@ class Firewall
      *
      * @return void
      */
-    public function add(MiddlewareInterface $middleware)
+    public function add(MiddlewareInterface $middleware): void
     {
         $this->middlewares[] = $middleware;
     }
