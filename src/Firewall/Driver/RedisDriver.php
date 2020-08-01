@@ -24,7 +24,6 @@ namespace Shieldon\Firewall\Driver;
 
 use Shieldon\Firewall\Driver\DriverProvider;
 use Redis;
-
 use function is_array;
 use function is_bool;
 use function json_decode;
@@ -68,8 +67,8 @@ class RedisDriver extends DriverProvider
 
         if (!empty($this->channel)) {
             $this->tableFilterLogs = $this->channel . ':shieldon_filter_logs';
-            $this->tableRuleList = $this->channel . ':shieldon_rule_list';
-            $this->tableSessions = $this->channel . ':shieldon_sessions';
+            $this->tableRuleList   = $this->channel . ':shieldon_rule_list';
+            $this->tableSessions   = $this->channel . ':shieldon_sessions';
         }
     }
 
@@ -83,12 +82,6 @@ class RedisDriver extends DriverProvider
      */
     protected function doInitialize(bool $dbCheck = true): void
     {
-        if (!$this->isInitialized) {
-            if (!empty($this->channel)) {
-                $this->setChannel($this->channel);
-            }
-        }
-
         $this->isInitialized = true;
     }
 
@@ -226,7 +219,10 @@ class RedisDriver extends DriverProvider
             );
         }
 
-        return $this->redis->set($this->getKeyName($ip, $type), json_encode($logData));
+        return $this->redis->set(
+            $this->getKeyName($ip, $type),
+            json_encode($logData)
+        );
     }
 
     /**
@@ -239,13 +235,8 @@ class RedisDriver extends DriverProvider
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
-        switch ($type) {
-            case 'rule':
-                // no break
-            case 'filter':
-                // no break
-            case 'session':
-                return $this->redis->del($this->getKeyName($ip, $type)) >= 0;
+        if (in_array($type, ['rule', 'filter', 'session'])) {
+            return $this->redis->del($this->getKeyName($ip, $type)) >= 0;
         }
         return false;
     }
@@ -281,15 +272,13 @@ class RedisDriver extends DriverProvider
      */
     private function getKeyName(string $ip, string $type = 'filter'): string
     {
-        switch ($type) {
-            case 'filter': 
-                return $this->tableFilterLogs . ':' . $ip;
-            case 'session':
-                return $this->tableSessions . ':' . $ip;
-            case 'rule': 
-                return $this->tableRuleList . ':' . $ip;
-        }
-        return '';
+        $table = [
+            'filter'  => $this->tableFilterLogs . ':' . $ip,
+            'session' => $this->tableSessions   . ':' . $ip,
+            'rule'    => $this->tableRuleList   . ':' . $ip,
+        ];
+        
+        return $table[$type] ?? '';
     }
 
     /**
@@ -301,14 +290,12 @@ class RedisDriver extends DriverProvider
      */
     private function getNamespace(string $type = 'filter'): string
     {
-        switch ($type) {
-            case 'filter':
-                return $this->tableFilterLogs;
-            case 'session':
-                return $this->tableSessions;
-            case 'rule':
-                return $this->tableRuleList;
-        }
-        return '';
+        $table = [
+            'filter'  => $this->tableFilterLogs,
+            'session' => $this->tableSessions,
+            'rule'    => $this->tableRuleList,
+        ];
+
+        return $table[$type] ?? '';
     }
 }

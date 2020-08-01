@@ -44,7 +44,7 @@ trait DriverTrait
      *
      * @var bool
      */
-    protected $autoCreateDatabase = true;
+    protected $isCreateDatabase = true;
 
     /**
      * Set a data driver.
@@ -77,17 +77,15 @@ trait DriverTrait
     }
 
     /**
-     * For first time installation only. This is for creating data tables automatically.
-     * Turning it on will check the data tables exist or not at every single pageview, 
-     * it's not good for high traffic websites.
-     *
-     * @param bool $bool The option to enable or disable automatically creating db.
+     * Shieldon creating data tables automatically.
+     * Turning it off when the data tables exist overwise checling 
+     * every pageview.
      * 
      * @return void
      */
-    public function createDatabase(bool $bool): void
+    public function disableDbBuilder(): void
     {
-        $this->autoCreateDatabase = $bool;
+        $this->isCreateDatabase = false;
     }
 
     /**

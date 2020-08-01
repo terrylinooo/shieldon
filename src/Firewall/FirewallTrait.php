@@ -64,7 +64,22 @@ trait FirewallTrait
      * @var string
      */
     protected $filename = 'config.firewall.json';
+
+    /**
+     * A file that confirms the required dictories or database tables 
+     * have been created.
+     *
+     * @var string
+     */
+    protected $checkpoint = 'driver_initialized.txt';
     
+    /**
+     * The prefix of the database tables, or the name of file directory.
+     *
+     * @var string
+     */
+    protected $channel = '';
+
     /**
      * Get the Shieldon instance.
      *
@@ -222,5 +237,45 @@ trait FirewallTrait
         }
 
         file_put_contents($configFilePath, json_encode($this->configuration));
+    }
+
+    /**
+     * Get the filename of the checkpoint file.
+     *
+     * @return string
+     */
+    protected function getCheckpoint(): string
+    {
+        $driverType = $this->getOption('driver_type');
+
+        return $this->directory . '/' . $this->channel .  '_' . $driverType . '_' . $this->checkpoint;
+    }
+
+    /**
+     * Are database tables created? 
+     *
+     * @return bool
+     */
+    protected function hasCheckpoint(): bool
+    {
+        if (file_exists($this->getCheckpoint())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Are database tables created?
+     * 
+     * @param bool $create Is create the checkpoint file, or not.
+     *
+     * @return void
+     */
+    protected function setCheckpoint(bool $create = true)
+    {
+        if ($create) {
+            file_put_contents($this->getCheckpoint(), date('Y-m-d H:i:s'));
+        }
     }
 }

@@ -477,10 +477,10 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testCreateDatabase()
     {
         $kernel = new \Shieldon\Firewall\Kernel();
-        $kernel->createDatabase(false);
+        $kernel->disableDbBuilder();
     
         $reflection = new \ReflectionObject($kernel);
-        $t = $reflection->getProperty('autoCreateDatabase');
+        $t = $reflection->getProperty('isCreateDatabase');
         $t->setAccessible(true);
         $this->assertFalse($t->getValue($kernel));
     }

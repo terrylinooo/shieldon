@@ -109,7 +109,7 @@ class Kernel
      *  ----------------------|---------------------------------------------
      *   setDriver            | Set a data driver.
      *   setChannel           | Set a data channel.
-     *   createDatabase       | For creating data tables automatically.
+     *   disableDbBuilder     | disable creating data tables.
      *  ----------------------|---------------------------------------------
      */
     use DriverTrait;
@@ -714,7 +714,7 @@ class Kernel
      */
     protected function process(): int
     {
-        $this->driver->init($this->autoCreateDatabase);
+        $this->driver->init($this->isCreateDatabase);
 
         $this->initComponents();
 

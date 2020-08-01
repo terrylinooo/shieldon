@@ -42,7 +42,7 @@ class ReportTest extends \Shieldon\FirewallTest\ShieldonTestCase
         }
 
         // Copy sample files.
-        $dir2 = BOOTSTRAP_DIR . '/../tests/samples';
+        $dir2 = BOOTSTRAP_DIR . '/../tests/samples/action_logs';
 
         $it = new \RecursiveDirectoryIterator($dir2, \RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);

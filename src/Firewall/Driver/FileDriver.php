@@ -96,7 +96,9 @@ class FileDriver extends DriverProvider
             }
 
             // Check the directory where data files write into.
-            $this->createDirectory();
+            if ($dbCheck) {
+                $this->createDirectory();
+            }
         }
 
         $this->isInitialized = true;

@@ -79,9 +79,9 @@ class SqlDriverProvider extends DriverProvider
     protected function doInitialize(bool $dbCheck = true): void
     {
         if (!$this->isInitialized) {
-          //  if (!empty($this->channel)) {
-         //       $this->setChannel($this->channel);
-         //   }
+            if (!empty($this->channel)) {
+                $this->setChannel($this->channel);
+            }
 
             if ($dbCheck && !$this->checkTableExists()) {
                 $this->installSql();
@@ -391,11 +391,9 @@ class SqlDriverProvider extends DriverProvider
             return $query->execute();
 
             // @codeCoverageIgnoreStart
-
         } catch (Exception $e) {
             return false;
         }
-
         // @codeCoverageIgnoreEnd
     }
 
@@ -442,13 +440,11 @@ class SqlDriverProvider extends DriverProvider
             }
 
             return $query->execute();
-
             // @codeCoverageIgnoreStart
 
         } catch (Exception $e) {
             return false;
         }
-
         // @codeCoverageIgnoreEnd
     }
 
@@ -498,15 +494,13 @@ class SqlDriverProvider extends DriverProvider
 
             $this->db->query($sql);
 
-            return true;
-
             // @codeCoverageIgnoreStart
-
         } catch (Exception $e) {
             return false;
         }
-
         // @codeCoverageIgnoreEnd
+
+        return true;
     }
 
     /**
@@ -517,27 +511,22 @@ class SqlDriverProvider extends DriverProvider
     protected function rebuildSql(): bool
     {
         try {
-
             $sql = "DROP TABLE IF EXISTS `{$this->tableFilterLogs}`";
             $this->db->query($sql);
-
             $sql = "DROP TABLE IF EXISTS `{$this->tableRuleList}`";
             $this->db->query($sql);
-
             $sql = "DROP TABLE IF EXISTS `{$this->tableSessions}`";
             $this->db->query($sql);
 
             $this->installSql();
 
-            return true;
-
             // @codeCoverageIgnoreStart
-
         } catch (Exception $e) {
             return false;
         }
-
         // @codeCoverageIgnoreEnd
+
+        return true;
     }
 
     /**

@@ -23,9 +23,6 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Driver;
 
 use RuntimeException;
-
-use function file_exists;
-use function file_put_contents;
 use function is_dir;
 use function mkdir;
 use function str_replace;
@@ -45,37 +42,27 @@ trait FileDriverTrait
     {
         $conA = $conB = $conC = false;
 
-        $checkingFile = $this->directory . '/' . $this->channel . '_' . $this->checkPoint;
+        $originalUmask = umask(0);
 
-        // If the check-point file exists, we do not create directory because they may 
-        // already exist.
-        if (!file_exists($checkingFile)) {
-            $originalUmask = umask(0);
-
-            if (!is_dir($this->getDirectory('filter'))) {
-                $conA = mkdir($this->getDirectory('filter'), 0777, true);
-            }
-    
-            if (!is_dir($this->getDirectory('rule'))) {
-                $conB = mkdir($this->getDirectory('rule'), 0777, true);
-            }
-    
-            if (!is_dir($this->getDirectory('session'))) {
-                $conC = mkdir($this->getDirectory('session'), 0777, true);
-            }
-
-            umask($originalUmask);
-
-            if (!($conA && $conB && $conC)) {
-                // @codeCoverageIgnoreStart
-                return false;
-                // @codeCoverageIgnoreEnd
-            }
-
-            file_put_contents($checkingFile, ' ');
+        if (!is_dir($this->getDirectory('filter'))) {
+            $conA = mkdir($this->getDirectory('filter'), 0777, true);
         }
 
-        return true;
+        if (!is_dir($this->getDirectory('rule'))) {
+            $conB = mkdir($this->getDirectory('rule'), 0777, true);
+        }
+
+        if (!is_dir($this->getDirectory('session'))) {
+            $conC = mkdir($this->getDirectory('session'), 0777, true);
+        }
+
+        umask($originalUmask);
+
+        if ($conA && $conB && $conC) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -87,7 +74,10 @@ trait FileDriverTrait
      */
     protected function checkDirectory(): bool
     {
-        if (!is_dir($this->directory) || !is_writable($this->directory)) {
+        if (
+            !is_dir($this->directory) || 
+            !is_writable($this->directory)
+        ) {
             throw new RuntimeException(
                 'The directory defined by File Driver must be writable. (' . $this->directory . ')'
             );
@@ -109,9 +99,9 @@ trait FileDriverTrait
         $ip = str_replace(':', '-', $ip);
         $path = [];
 
-        $path['filter'] = $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
+        $path['filter']  = $this->directory . '/' . $this->tableFilterLogs . '/' . $ip . '.' . $this->extension;
         $path['session'] = $this->directory . '/' . $this->tableSessions   . '/' . $ip . '.' . $this->extension;
-        $path['rule'] = $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
+        $path['rule']    = $this->directory . '/' . $this->tableRuleList   . '/' . $ip . '.' . $this->extension;
 
         return $path[$type] ?? '';
     }
@@ -127,9 +117,9 @@ trait FileDriverTrait
     {
         $path = [];
 
-        $path['filter'] = $this->directory . '/' . $this->tableFilterLogs;
+        $path['filter']  = $this->directory . '/' . $this->tableFilterLogs;
         $path['session'] = $this->directory . '/' . $this->tableSessions;
-        $path['rule'] = $this->directory . '/' . $this->tableRuleList;
+        $path['rule']    = $this->directory . '/' . $this->tableRuleList;
 
         return $path[$type] ?? '';
     }

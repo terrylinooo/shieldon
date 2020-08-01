@@ -87,6 +87,12 @@ trait MainTrait
         $driverType = $this->getOption('driver_type');
         $driverSetting = $this->getOption($driverType, 'drivers');
 
+        if ($this->hasCheckpoint()) {
+            $this->kernel->disableDbBuilder();
+        } else {
+            $this->setCheckpoint();
+        }
+
         if (isset($driverSetting['directory_path'])) {
             $driverSetting['directory_path'] = $driverSetting['directory_path'] ?: $this->directory;
         }
@@ -307,6 +313,7 @@ trait MainTrait
 
         if ($channelId) {
             $this->kernel->setChannel($channelId);
+            $this->channel = $channelId;
         }
     }
 

@@ -93,7 +93,6 @@ class SqliteDriver extends SqlDriverProvider
             return false;
         }
         // @codeCoverageIgnoreEnd
- 
     }
 
     /**
@@ -115,7 +114,6 @@ class SqliteDriver extends SqlDriverProvider
 
             // We got an exception == table not found
             return false;
-            
         }
         // @codeCoverageIgnoreEnd
 
