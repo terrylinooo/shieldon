@@ -120,6 +120,8 @@ class Report extends BaseController
             // @codeCoverageIgnoreEnd
         }
 
+        $data = [];
+
         $data['ip_details'] = [];
         $data['period_data'] = [];
         

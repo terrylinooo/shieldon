@@ -430,6 +430,8 @@ class BaseController
      */
     protected function messengerAjaxStatus(string $moduleName, string $echoType = 'css'): void
     {
+        $echo = [];
+
         $echo['css'] = $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? 
             'success' :
             '';

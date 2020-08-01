@@ -147,16 +147,18 @@ trait MainTrait
             'referer',
         ];
 
+        $settings = [];
+        $filterConfig = [];
+        $filterLimit = [];
+
         foreach ($filters as $filter) {
             $setting = $this->getOption($filter, 'filters');
 
-            if (!empty($setting)) {
-                $settings[$filter] = $setting;
-                $filterConfig[$filter] = $setting['enable'];
-                $filterLimit[$filter] = $setting['config']['quota']; // default: 5
-    
-                unset($setting);
-            }
+            $settings[$filter] = $setting;
+            $filterConfig[$filter] = $setting['enable'];
+            $filterLimit[$filter] = $setting['config']['quota']; // default: 5
+
+            unset($setting);
         }
 
         $settings['frequency'] = $this->getOption('frequency', 'filters');

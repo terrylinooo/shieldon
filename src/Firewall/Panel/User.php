@@ -59,8 +59,9 @@ class User extends BaseController
         $this->applyCaptchaForms();
 
         $postParams = get_request()->getParsedBody();
-
         $login = false;
+        $data = [];
+
         $data['error'] = '';
         $addonTitle = $this->markAsDemo;
 

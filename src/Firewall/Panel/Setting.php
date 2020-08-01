@@ -58,7 +58,7 @@ class Setting extends BaseController
      */
     public function basic(): ResponseInterface
     {
-        $data[] = [];
+        $data = [];
 
         $postParams = get_request()->getParsedBody();
 
@@ -79,7 +79,7 @@ class Setting extends BaseController
      */
     public function messenger(): ResponseInterface
     {
-        $data[] = [];
+        $data = [];
 
         $postParams = get_request()->getParsedBody();
 
@@ -145,6 +145,8 @@ class Setting extends BaseController
             $this->saveConfig();
         }
 
+        $data = [];
+
         $data['ip_list'] = $this->getConfig('ip_manager');
 
         $data['title'] = __('panel', 'title_ip_manager', 'IP Manager');
@@ -191,6 +193,8 @@ class Setting extends BaseController
 
             $this->saveConfig();
         }
+
+        $data = [];
 
         $data['exclusion_list'] = $this->getConfig('excluded_urls');
 

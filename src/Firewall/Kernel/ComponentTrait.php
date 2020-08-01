@@ -230,8 +230,6 @@ trait ComponentTrait
 
             $result = $ipComponent->check($this->ip);
 
-            $actionCode = Kernel::ACTION_DENY;
-
             if (!empty($result)) {
 
                 switch ($result['status']) {

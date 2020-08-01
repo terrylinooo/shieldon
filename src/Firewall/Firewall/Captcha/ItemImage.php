@@ -39,8 +39,10 @@ class ItemImage
      */
     public static function get(array $setting): CaptchaInterface
     {
-        $type = $setting['config']['type'] ?? 'alnum';
+        $type   = $setting['config']['type']   ?? 'alnum';
         $length = $setting['config']['length'] ?? 8;
+
+        $imageCaptchaConfig = [];
 
         switch ($type) {
             case 'numeric':

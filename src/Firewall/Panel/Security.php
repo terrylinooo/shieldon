@@ -95,6 +95,8 @@ class Security extends BaseController
             $this->saveConfig();
         }
 
+        $data = [];
+
         $data['authentication_list'] = $this->getConfig('www_authenticate');
 
         $data['title'] = __('panel', 'title_web_authentication', 'Web Page Authentication');
@@ -150,6 +152,8 @@ class Security extends BaseController
 
             $this->saveConfig();
         }
+
+        $data = [];
 
         $data['xss_protected_list'] = $this->getConfig('xss_protected_list');
 

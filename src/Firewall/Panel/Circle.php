@@ -58,6 +58,8 @@ class Circle extends BaseController
             $ip = $postParams['ip'];
             $action = $postParams['action'];
 
+            $actionCode = [];
+
             $actionCode['temporarily_ban'] = $this->kernel::ACTION_TEMPORARILY_DENY;
             $actionCode['permanently_ban'] = $this->kernel::ACTION_DENY;
             $actionCode['allow'] = $this->kernel::ACTION_ALLOW;
@@ -66,6 +68,8 @@ class Circle extends BaseController
                 case 'temporarily_ban':
                 case 'permanently_ban':
                 case 'allow':
+                    $logData = [];
+
                     $logData['log_ip']     = $ip;
                     $logData['ip_resolve'] = gethostbyaddr($ip);
                     $logData['time']       = time();
@@ -111,6 +115,8 @@ class Circle extends BaseController
             $this->kernel::ACTION_TEMPORARILY_DENY => 'CAPTCHA',
         ];
 
+        $data = [];
+
         $data['rule_list'] = $this->kernel->driver->getAll('rule');
 
         $data['reason_mapping'] = $reasons;
@@ -129,6 +135,8 @@ class Circle extends BaseController
      */
     public function filter(): ResponseInterface
     {
+        $data = [];
+
         $data['ip_log_list'] = $this->kernel->driver->getAll('filter');
 
         $data['title'] = __('panel', 'menu_data_circle', 'Data Circle') . ' - ';
@@ -144,6 +152,8 @@ class Circle extends BaseController
      */
     public function session(): ResponseInterface
     {
+        $data = [];
+
         $data['session_list'] = $this->kernel->driver->getAll('session');
 
         $data['is_session_limit']     = false;
