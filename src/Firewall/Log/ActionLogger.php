@@ -251,24 +251,26 @@ final class ActionLogger
 
             $logFile = fopen($this->filePath, 'r');
 
-            while (!feof($logFile)) {
-                $line = fgets($logFile);
-
-                if (!empty($line)) {
-                    $data = explode(',', trim($line));
-                }
+            if (is_resource($logFile)) {
+                while (!feof($logFile)) {
+                    $line = fgets($logFile);
     
-                if (!empty($data[0])) {
-                    $results[] = [
-                        'ip'          => $data[0],
-                        'session_id'  => $data[1],
-                        'action_code' => $data[2],
-                        'timesamp'    => $data[3],
-                    ];
+                    if (!empty($line)) {
+                        $data = explode(',', trim($line));
+                    }
+        
+                    if (!empty($data[0])) {
+                        $results[] = [
+                            'ip'          => $data[0],
+                            'session_id'  => $data[1],
+                            'action_code' => $data[2],
+                            'timesamp'    => $data[3],
+                        ];
+                    }
+                    unset($line, $data);
                 }
-                unset($line, $data);
+                fclose($logFile);
             }
-            fclose($logFile);
         }
 
         return $results;
@@ -307,24 +309,26 @@ final class ActionLogger
 
                 $logFile = fopen($thisDayLogFile, 'r');
 
-                while (!feof($logFile)) {
-                    $line = fgets($logFile);
-
-                    if (!empty($line)) {
-                        $data = explode(',', trim($line));
+                if (is_resource($logFile)) {
+                    while (!feof($logFile)) {
+                        $line = fgets($logFile);
+    
+                        if (!empty($line)) {
+                            $data = explode(',', trim($line));
+                        }
+    
+                        if (!empty($data[0])) {
+                            $results[] = [
+                                'ip'          => $data[0],
+                                'session_id'  => $data[1],
+                                'action_code' => $data[2],
+                                'timesamp'    => $data[3],
+                            ];
+                        }
+                        unset($line, $data);
                     }
-
-                    if (!empty($data[0])) {
-                        $results[] = [
-                            'ip'          => $data[0],
-                            'session_id'  => $data[1],
-                            'action_code' => $data[2],
-                            'timesamp'    => $data[3],
-                        ];
-                    }
-                    unset($line, $data);
+                    fclose($logFile);
                 }
-                fclose($logFile);
             }
         }
 

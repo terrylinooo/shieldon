@@ -118,7 +118,7 @@ class Setting extends BaseController
                 $order--;
             }
 
-            $ipList = $this->getConfig('ip_manager');
+            $ipList = (array) $this->getConfig('ip_manager');
 
             if ('allow' === $rule || 'deny' === $rule) {
 
@@ -167,7 +167,7 @@ class Setting extends BaseController
             $action = $postParams['action'];
             $order = (int) $postParams['order'];
 
-            $excludedUrls = $this->getConfig('excluded_urls');
+            $excludedUrls = (array) $this->getConfig('excluded_urls');
 
             if ('add' === $action) {
                 array_push(

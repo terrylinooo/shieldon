@@ -31,6 +31,15 @@ use RuntimeException;
 trait MessengerTrait
 {
     /**
+     * Get a class name without namespace string.
+     *
+     * @param object $instance Class
+     * 
+     * @return string
+     */
+    abstract protected function getClassName($instance): string;
+
+    /**
      * The ways Shieldon send a message to when someone has been blocked.
      * The collection of \Shieldon\Messenger\Messenger\MessengerInterface
      *
@@ -48,7 +57,7 @@ trait MessengerTrait
     /**
      * Set a messenger
      *
-     * @param MessengerInterfa $instance The messenger instance.
+     * @param MessengerInterface $instance The messenger instance.
      *
      * @return void
      */

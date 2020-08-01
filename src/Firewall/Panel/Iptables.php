@@ -29,15 +29,15 @@ use function Shieldon\Firewall\get_request;
 
 use SplFileObject;
 use ReflectionObject;
-
-use function filter_var;
-use function is_numeric;
-use function in_array;
-use function file;
-use function file_put_contents;
-use function sleep;
-use function file_exists;
 use function explode;
+use function file;
+use function file_exists;
+use function file_put_contents;
+use function filter_var;
+use function in_array;
+use function is_array;
+use function is_numeric;
+use function sleep;
 use function trim;
 
 /**
@@ -98,7 +98,7 @@ class Iptables extends BaseController
      * 
      * @param string $type The type of IP address.
      *
-     * @return void
+     * @return ResponseInterface
      */
     protected function iptables(string $type = 'IPv4'): ResponseInterface
     {
@@ -197,6 +197,10 @@ class Iptables extends BaseController
     private function iptablesFormPost(string $type, string $commandLogFile, string $iptablesQueueFile): void
     {
         $postParams = get_request()->getParsedBody();
+
+        if (!is_array($postParams)) {
+            return;
+        }
 
         if (!$this->iptablesFormPostVerification($postParams)) {
             return;

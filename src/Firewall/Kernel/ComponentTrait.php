@@ -32,6 +32,35 @@ use Shieldon\Firewall\Component\ComponentProvider;
 trait ComponentTrait
 {
     /**
+     * Get a class name without namespace string.
+     *
+     * @param object $instance Class
+     * 
+     * @return string
+     */
+    abstract protected function getClassName($instance): string;
+
+    /**
+     * Start an action for this IP address, allow or deny, and give a reason for it.
+     *
+     * @param int    $actionCode The action code. - 0: deny, 1: allow, 9: unban.
+     * @param string $reasonCode The response code.
+     * @param string $assignIp   The IP address.
+     *
+     * @return void
+     */
+    abstract protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void;
+
+    /**
+     * Deal with online sessions.
+     *
+     * @param int $statusCode The response code.
+     *
+     * @return int The response code.
+     */
+    abstract protected function sessionHandler($statusCode): int;
+
+    /**
      * Container for Shieldon components.
      *
      * @var array

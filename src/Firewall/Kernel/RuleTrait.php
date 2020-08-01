@@ -52,6 +52,15 @@ trait RuleTrait
     ];
 
     /**
+     * Set the message body.
+     *
+     * @param string $message The message text.
+     *
+     * @return void
+     */
+    abstract protected function setMessageBody(string $message = ''): void;
+
+    /**
      * Look up the rule table.
      *
      * If a specific IP address doesn't exist, return false. 

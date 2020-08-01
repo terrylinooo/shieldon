@@ -67,7 +67,7 @@ class Security extends BaseController
             $action = $postParams['action'] ?? '';
             $order = (int) $postParams['order'];
 
-            $authenticatedList = $this->getConfig('www_authenticate');
+            $authenticatedList = (array) $this->getConfig('www_authenticate');
 
             if ('add' === $action) {
                 array_push(

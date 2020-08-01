@@ -167,9 +167,9 @@ class User extends BaseController
      * @param string $username The username.
      * @param string $password The password.
      *
-     * @return void
+     * @return array
      */
-    private function userLoginAsDemo($username, $password)
+    private function userLoginAsDemo($username, $password): array
     {
         $login = false;
         $errorMsg = '';
@@ -194,9 +194,9 @@ class User extends BaseController
      * @param string $username The username.
      * @param string $password The password.
      *
-     * @return void
+     * @return array
      */
-    private function userLoginAsAdmin($username, $password)
+    private function userLoginAsAdmin($username, $password): array
     {
         $admin = $this->getConfig('admin');
 

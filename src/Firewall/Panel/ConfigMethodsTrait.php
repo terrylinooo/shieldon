@@ -46,6 +46,25 @@ use function umask;
 trait ConfigMethodsTrait
 {
     /**
+     * Get a variable from configuration.
+     *
+     * @param string $field The field of the configuration.
+     *
+     * @return mixed
+     */
+    abstract public function getConfig(string $field);
+
+    /**
+     * Response message to front.
+     *
+     * @param string $type The message status type. error|success
+     * @param string $text The message body.
+     *
+     * @return void
+     */
+    abstract protected function pushMessage(string $type, string $text): void;
+
+    /**
      * Parse the POST fields and set them into configuration data structure.
      * Used for saveConfig method only.
      *

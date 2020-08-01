@@ -43,7 +43,7 @@ class Header implements MiddlewareInterface
     /**
      *  Very common requests from normal users.
      * 
-     * @var string
+     * @var array
      */
     protected $fieldList = [
         'Accept',

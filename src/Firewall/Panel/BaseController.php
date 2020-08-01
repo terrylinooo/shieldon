@@ -97,7 +97,7 @@ class BaseController
     /**
      * Captcha modules.
      *
-     * @var Interface
+     * @var array
      */
     protected $captcha = [];
 

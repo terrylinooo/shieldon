@@ -130,7 +130,7 @@ class HttpAuthentication implements MiddlewareInterface
     /**
      * Set up the URL list that you want to protect.
      * 
-     * @param $list The URL list want to be protected.
+     * @param array $list The URL list want to be protected.
      *
      * @return void
      */

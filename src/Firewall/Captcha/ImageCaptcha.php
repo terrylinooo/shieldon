@@ -320,9 +320,9 @@ class ImageCaptcha extends CaptchaProvider
      */
     private function createBackground(int $imgWidth, int $imgHeight, $bgColor)
     {
-        $this->checkImType();
+        $im = $this->getImageResource();
 
-        imagefilledrectangle($this->im, 0, 0, $imgWidth, $imgHeight, $bgColor);
+        imagefilledrectangle($im, 0, 0, $imgWidth, $imgHeight, $bgColor);
     }
 
     /**
@@ -336,7 +336,7 @@ class ImageCaptcha extends CaptchaProvider
      */
     private function createSpiralPattern(int $imgWidth, int $imgHeight, $gridColor)
     {
-        $this->checkImType();
+        $im = $this->getImageResource();
 
         // Determine angle and position.
         $angle = ($this->length >= 6) ? mt_rand(-($this->length - 6), ($this->length - 6)) : 0;
@@ -363,7 +363,7 @@ class ImageCaptcha extends CaptchaProvider
             $x1 = (int) (($rad1 * cos($theta)) + $xAxis);
             $y1 = (int) (($rad1 * sin($theta)) + $yAxis);
 
-            imageline($this->im, $x, $y, $x1, $y1, $gridColor);
+            imageline($im, $x, $y, $x1, $y1, $gridColor);
             $theta -= $thetac;
         }  
     }
@@ -379,7 +379,7 @@ class ImageCaptcha extends CaptchaProvider
      */
     private function writeText(int $imgWidth, int $imgHeight, $textColor)
     {
-        $this->checkImType();
+        $im = $this->getImageResource();
 
         $z = (int) ($imgWidth / ($this->length / 3));
         $x = mt_rand(0, $z);
@@ -387,7 +387,7 @@ class ImageCaptcha extends CaptchaProvider
 
         for ($i = 0; $i < $this->length; $i++) {
             $y = mt_rand(0, $imgHeight / 2);
-            imagestring($this->im, 5, $x, $y, $this->word[$i], $textColor);
+            imagestring($im, 5, $x, $y, $this->word[$i], $textColor);
             $x += ($this->properties['font_spacing'] * 2);
         }
     }
@@ -403,10 +403,10 @@ class ImageCaptcha extends CaptchaProvider
      */
     private function createBorder(int $imgWidth, int $imgHeight, $borderColor): void
     {
-        $this->checkImType();
+        $im = $this->getImageResource();
 
         // Create the border.
-        imagerectangle($this->im, 0, 0, $imgWidth - 1, $imgHeight - 1, $borderColor);
+        imagerectangle($im, 0, 0, $imgWidth - 1, $imgHeight - 1, $borderColor);
     }
 
     /**
@@ -416,20 +416,20 @@ class ImageCaptcha extends CaptchaProvider
      */
     private function getImageBase64Content(): string
     {
-        $this->checkImType();
+        $im = $this->getImageResource();
 
         // Generate image in base64 string.
         ob_start();
 
         if (function_exists('imagejpeg')) {
             $this->imageType = 'jpeg';
-            imagejpeg($this->im);
+            imagejpeg($im);
 
             // @codeCoverageIgnoreStart
 
         } elseif (function_exists('imagepng')) {
             $this->imageType = 'png';
-            imagepng($this->im);
+            imagepng($im);
         } else {
             echo '';
         }
@@ -438,24 +438,27 @@ class ImageCaptcha extends CaptchaProvider
 
         $imageContent = ob_get_contents();
         ob_end_clean();
-        imagedestroy($this->im);
+        imagedestroy($im);
 
         return base64_encode($imageContent);
     }
 
     /**
-     * Throw exception if the image can not be created.
+     * Get image resource.
      *
-     * @return void
+     * @return resouce
      */
-    private function checkImType(): void
+    private function getImageResource()
     {
         if (!is_resource($this->im)) {
+
             // @codeCoverageIgnoreStart
             throw new RuntimeException(
                 'Cannot create image resource.'
             );
             // @codeCoverageIgnoreEnd
         }
+
+        return $this->im;
     }
 }
