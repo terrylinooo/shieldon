@@ -157,6 +157,8 @@ trait DeniedTrait
         }
     }
 
+    // @codeCoverageIgnoreStart
+
     /**
      * Is denied?
      * This method should adjust in extended class if need.
@@ -167,4 +169,6 @@ trait DeniedTrait
     {
         return false;
     }
+
+    // @codeCoverageIgnoreEnd
 }

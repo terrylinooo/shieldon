@@ -119,8 +119,6 @@ class Smtp
             return false;
         }
         // @codeCoverageIgnoreEnd
-
-        return false;
     }
 
     /**

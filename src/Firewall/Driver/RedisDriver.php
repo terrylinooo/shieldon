@@ -212,8 +212,10 @@ class RedisDriver extends DriverProvider
                 $logData = $data;
                 break;
 
+            // @codeCoverageIgnoreStart
             default:
                 return false;
+            // @codeCoverageIgnoreEnd
         }
 
         if ($expire > 0) {

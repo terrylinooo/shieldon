@@ -227,8 +227,10 @@ class SqlDriverProvider extends DriverProvider
                 $logData = $data;
                 break;
 
+            // @codeCoverageIgnoreStart
             default:
                 return false;
+            // @codeCoverageIgnoreEnd
         }
 
         if ($this->checkExist($ip, $type)) {

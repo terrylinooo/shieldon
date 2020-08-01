@@ -199,7 +199,9 @@ class Iptables extends BaseController
         $postParams = get_request()->getParsedBody();
 
         if (!is_array($postParams)) {
+            // @codeCoverageIgnoreStart
             return;
+            // @codeCoverageIgnoreEnd
         }
 
         if (!$this->iptablesFormPostVerification($postParams)) {

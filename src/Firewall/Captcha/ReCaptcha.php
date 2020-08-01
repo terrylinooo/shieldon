@@ -117,7 +117,9 @@ class ReCaptcha extends CaptchaProvider
         $ch = curl_init();
 
         if (!is_resource($ch)) {
+            // @codeCoverageIgnoreStart
             return false;
+            // @codeCoverageIgnoreEnd
         }
 
         curl_setopt($ch, CURLOPT_URL, $this->googleServiceUrl);
