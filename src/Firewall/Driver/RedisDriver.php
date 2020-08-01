@@ -98,6 +98,7 @@ class RedisDriver extends DriverProvider
 
         $this->assertInvalidDataTable($type);
 
+        /** @scrutinizer ignore-call */ 
         $keys = $this->redis->keys($this->getNamespace($type) . ':*');
 
         foreach ($keys as $key) {

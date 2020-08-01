@@ -69,7 +69,7 @@ trait DriverTrait
      */
     public function setChannel(string $channel): void
     {
-        if (!$this->driver instanceof DriverProvider) {
+        if (!$this->driver) {
             throw new LogicException('setChannel method requires setDriver set first.');
         } else {
             $this->driver->setChannel($channel);
