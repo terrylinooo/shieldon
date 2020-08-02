@@ -1,0 +1,61 @@
+.modal-lightbox {
+
+    border-radius: 0;
+
+    .icon-wrapper {
+        text-align: center;
+        display: block;
+        width: 100%;
+    }
+    .icon-box {
+        color: #fff;
+        width: 95px;
+        height: 95px;
+        display: inline-block;
+        border-radius: 50%;
+        z-index: 9;
+        border: 5px solid #fff;
+        padding: 15px;
+        text-align: center;
+
+        i {
+            font-size: 58px;
+            margin: -2px 0 0 -2px;
+        }
+    }
+
+
+    .modal-content {
+        border: 0;
+        border-radius: 0;
+    }
+
+    .modal-header {
+        border-bottom: none; 
+        border-radius: 0;
+        padding: 35px;
+
+        &.success {
+            background: #358a4e;
+        }
+
+        &.danger {
+            background: #a73232
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    }
+}
+
+.modal-dialog {
+    justify-content: center;
+
+    .modal-content {
+        width: 100%;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+}

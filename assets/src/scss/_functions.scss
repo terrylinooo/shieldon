@@ -1,0 +1,13 @@
+// Base functions to get safe web font
+
+@function get-base-font($key: "en") {
+	@return map-get($font-family-base, $key);
+}
+
+@function get-title-font($key: "en") {
+	@return map-get($font-family-title, $key);
+}
+
+@function get-heading-font($key: "en") {
+	@return map-get($font-family-heading, $key);
+}

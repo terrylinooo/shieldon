@@ -12,19 +12,29 @@ Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and usefu
 
 ## Installation
 
+`2.x` will be released at **15, Augest**
+
 ```php
 composer require shieldon/shieldon ^2
 ```
 
+`1.x`
+
+```php
+composer require shieldon/shieldon ^1
+```
+
+Guide: [Shieldon 1.x documentation](https://shieldon-io.github.io/v1/)
+
 ## How to Use
 
-The examples here is for Shieldon 2, for Shieldon 1, check out [here](https://shieldon-io.github.io/v1/)
+The examples here are for **Shieldon 2**.
 
 There are three ways you can choose to use Shieldon on your application.
 
-- Implement Shieldon as a PSR-15 middleware.
-- Implement Shieldon in the bootstrap stage of your application.
-- Implement Shieldon in the parent controller extended by the other controllers.
+- Implement Shieldon as a *`PSR-15 middleware`*.
+- Implement Shieldon in the *`bootstrap stage`* of your application.
+- Implement Shieldon in the *`parent controller`* extended by the other controllers.
 
 Shieldon `2.x` implements PSR-7 so that it could be compatible with modern frameworks such as Laravel, Symfony, Slim, Yii, etc. Using Shieldon `2.x` as a PSR-15 middleware is the best practice in this case.
 

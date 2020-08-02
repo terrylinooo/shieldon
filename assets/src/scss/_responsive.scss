@@ -1,0 +1,220 @@
+/* > 1200px */
+@include media-breakpoint-up(xl) {
+
+}
+
+/* < 1200px */
+@include media-breakpoint-down(lg) {
+
+}
+
+/* > 992px */
+@include media-breakpoint-up(lg) {
+
+}
+
+/* 992px - 1199.98px */
+@include media-breakpoint-between(lg, lg) {
+
+}
+
+/* < 992px */
+@include media-breakpoint-down(md) {
+    .parent-menu > li > a > span {
+        display: none;
+    }
+
+    .child-menu > li > a > span {
+        display: none;
+    }
+
+    .child-menu {
+        li {
+            &.active {
+
+                a {
+                    color: #ffffff;
+                    position: relative;
+
+                    i {
+                        color: rgb(143, 203, 211);
+                    }
+        
+                    &:before {
+                        content: '';
+                        display: block;
+                        position: absolute;
+                        right: 100px !important;
+                        top: 21px;
+                        width: 0;
+                        height: 0;
+                        border-top: 7px solid transparent;
+                        border-bottom: 7px solid transparent;
+                        border-right: 7px solid #f1f1f1;
+                    }
+                }
+            }
+        }
+    }
+
+    .so-sidebar-menu {
+        position: absolute !important;
+        left: 0;
+        top: 60px;
+        height: 100vh;
+        flex: 1 !important;
+        max-width: 60px !important;
+        width: 60px !important;
+        z-index: 3;
+    }
+
+    .so-content {
+        width: 100% !important;
+        display: block !important;
+        flex: 1 !important;
+        max-width: 100% !important;
+        padding-left: 60px !important;
+        z-index: 2;
+        border: 0px;
+    }
+
+    .so-tab {
+        .tab {
+            border: 0px #389a77 solid !important;
+        }
+    }
+
+    .tab-section {
+        border: 0 !important;
+    }
+
+    body {
+        background-color: #333333 !important;
+    }
+
+    .so-datatable-heading {
+        overflow: hidden;
+    }
+
+    .heading-right {
+        display: block;
+        margin: 10px 0;
+        width: 100%;
+
+        ul {
+            display: block;
+            margin-bottom: 15px;
+            padding: 0;
+            
+            li {
+                overflow: hidden;
+                padding: 3px !important;
+                margin: 0 !important;
+                width: 100%;
+                
+
+                span {
+                    width: 150px;
+                    display: inline-block;
+                }
+            }
+        }
+    }
+}
+
+/* 768px - 991.98px */
+@include media-breakpoint-between(md, md) {
+
+}
+
+/* < 768px */
+@include media-breakpoint-down(sm) {
+    .so-sidebar-menu { 
+        min-height: 100px;
+    }
+
+
+    table.setting-table {
+        display: block;
+        
+        tr {
+            display: block;
+        }
+    
+        td {
+            &.r1,
+            &.r2 {
+                display: block;
+                width: 100% !important;
+            }
+        }
+    }
+
+
+    .so-tab label {
+        font-size: 13px !important;
+    }
+
+    .nav-item {
+        min-height: 32px;
+        line-height: 32px;
+    }
+
+    .navbar-collapse {
+        background-color: #333;
+        font-size: 15px;
+        padding-left: 60px;
+
+        li, a.nav-link {
+            color: #fff !important;
+        }
+
+        .nav-item {
+            border-bottom: 1px #222 solid;
+            border-top: 1px #444 solid;
+            margin: 0;
+            padding: 8px 15px;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        strong {
+            color: #c4fff4;
+        }
+    }
+
+    .navbar-dark .navbar-toggler {
+        color: #333;
+        background-color: #666;
+        border: 1px #666 solid;
+        margin-right: 10px;
+    }
+
+    .so-flex  {
+        display: block;
+    }
+    .so-board {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+}
+
+/* 576px - 767.98px */
+@include media-breakpoint-between(sm, sm) {
+
+}
+
+/* < 576px */
+@include media-breakpoint-down(mx) {
+
+}
+
+/* 360px - 575.98px */
+@include media-breakpoint-between(mx, mx) {
+
+}
+
+/* < 360px */
+@include media-breakpoint-down(xs) {
+
+}

@@ -13,3 +13,7 @@ clover.xml
 .phpunit.result.cache
 bin/*.log
 test.sh
+assets/node_modules
+assets/package-lock.json
+assets/v8-compile-cache-0
+assets/npm*

@@ -1,0 +1,44 @@
+.footer {
+    background-color: #ccc;
+    color: #fff;
+    text-align: center;
+
+    .col-md-2 {
+        background-color: rgba(0, 0, 0, 0.7);
+        height: 30px;
+        line-height: 30px;
+        color: #eeeeee;
+
+        a {
+            color: #eeeeee;
+            font-size: 20px;
+            padding: 0 5px;
+            vertical-align: bottom;
+        }
+    }
+
+    .col-md-10 {
+        background-color: rgba(0, 0, 0, 0.03);
+        color: #333;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        font-size: 12px;
+
+        a {
+            color: #000;
+            font-weight: 500;
+        }
+    }
+
+    @include media-breakpoint-down(md) {
+        .col-md-2 {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #333;
+
+            a {
+                color: #333;
+            }
+        }
+    }
+}

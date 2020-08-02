@@ -1,0 +1,64 @@
+// Font settings
+
+$font-family-base-en:    "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", sans-serif !default;
+$font-family-title-en:   "Roboto", "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", sans-serif !default;
+$font-family-heading-en: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", sans-serif !default;
+
+// Font settings - for Mandarin Chinese
+
+$font-family-base-zh:    "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "微軟正黑體", "Microsoft JhengHei", "SimHei", "Microsoft YaHei", "文泉驛正黑", "WenQuanYi Zen Hei", "儷黑 Pro", "LiHei Pro", "標楷體", "DFKai-SB" !default;
+$font-family-title-zh:   "Roboto", "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "文泉驛正黑", "WenQuanYi Zen Hei", "儷黑 Pro", "LiHei Pro", "微軟正黑體", "Microsoft JhengHei", "SimHei", "Microsoft YaHei", "標楷體", "DFKai-SB" !default;
+$font-family-heading-zh: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "文泉驛正黑", "WenQuanYi Zen Hei", "儷黑 Pro", "LiHei Pro", "微軟正黑體", "Microsoft JhengHei", "SimHei", "Microsoft YaHei", "標楷體", "DFKai-SB" !default;
+
+// Font settings - for Japenese
+
+$font-family-base-ja:    "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "MS PGothic" !default;
+$font-family-title-ja:   "Roboto", "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "MS PGothic" !default;
+$font-family-heading-ja: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "Osaka", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "MS PGothic" !default;
+
+// Font settings - for Korean
+
+$font-family-base-ko:    "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Dotum", "Gulim" !default;
+$font-family-title-ko:   "Roboto", "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Dotum", "Gulim" !default;
+$font-family-heading-ko: "-apple-system", "BlinkMacSystemFont", "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Dotum", "Gulim" !default;
+
+$supported-languages: (
+	"en",
+	"zh",
+	"ja",
+	"ko"
+) !default;
+
+$font-family-base: () !default;
+$font-family-base: map-merge((
+	"en": $font-family-base-en,
+	"zh": $font-family-base-zh,
+	"ja": $font-family-base-ja,
+	"ko": $font-family-base-ko
+), $font-family-base);
+
+$font-family-title: () !default;
+$font-family-title: map-merge((
+	"en": $font-family-title-en,
+	"zh": $font-family-title-zh,
+	"ja": $font-family-title-ja,
+	"ko": $font-family-title-ko
+), $font-family-title);
+
+$font-family-heading: () !default;
+$font-family-heading: map-merge((
+	"en": $font-family-heading-en,
+	"zh": $font-family-heading-zh,
+	"ja": $font-family-heading-ja,
+	"ko": $font-family-heading-ko
+), $font-family-heading);
+
+$grid-breakpoints: (
+	xs: 0,
+	mx: 360px,
+	sm: 576px,
+	md: 768px,
+	lg: 992px,
+	xl: 1200px,
+	xxl: 1920px
+) !default;

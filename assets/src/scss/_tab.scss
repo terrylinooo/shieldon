@@ -1,0 +1,82 @@
+.so-tab {
+
+	section {
+		display: none;
+		padding: 20px 0 0;
+		border-top: 1px solid #ddd;
+	}
+
+	input.tab {
+		display: none;
+	}
+
+	label.tab {
+		display: inline-block;
+		margin: 0 0 -1px;
+		padding: 10px 18px;
+		font-weight: 600;
+		text-align: center;
+		color: #999;
+		border: 1px solid transparent;
+
+		i {
+			background-color: #555;
+			color: #fff;
+			width: 24px;
+			height: 24px;
+			line-height: 22px;
+			text-align: center;
+			font-size: 16px;
+			margin-right: 15px;
+			border-top: 1px solid #ddd;
+			border-right: 1px solid #ddd;
+			border-left: 1px solid #fff;
+			border-bottom: 1px solid #fff;
+		}
+	}
+
+	label.tab:hover {
+		color: #888;
+		cursor: pointer;
+	}
+
+	input.tab:checked + label {
+		color: #555;
+		border: 1px solid #ddd;
+		border-top: 2px solid #1ABB9C;
+		border-bottom: 1px solid #f1f1f1;
+
+		i {
+			border-top: 1px solid #46a593;
+			border-right: 1px solid #46a593;
+			background-color: #1ABB9C;
+		}
+	}
+
+	#tab1:checked ~ #content1,
+	#tab2:checked ~ #content2,
+	#tab3:checked ~ #content3,
+	#tab4:checked ~ #content4,
+	#tab5:checked ~ #content5,
+	#tab6:checked ~ #content6,
+	#tab7:checked ~ #content7 {
+	
+		display: block;
+	}
+
+	@media screen and (max-width: 650px) {
+		label {
+			font-size: 0;
+		}
+		i {
+			margin: 0;
+			font-size: 18px;
+		}
+	}
+
+	@media screen and (max-width: 400px) {
+		label {
+			padding: 15px;
+		}
+	}
+}

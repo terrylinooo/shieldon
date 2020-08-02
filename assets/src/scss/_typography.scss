@@ -1,0 +1,16 @@
+@each $lang-code in $supported-languages {
+    :lang(#{$lang-code}) {
+
+        body {
+            font-family: get-base-font($lang-code);
+        }
+    
+        h1, h2, h3, h4, h5, h6 {
+            font-family: get-heading-font($lang-code);
+        }
+    
+        .section-intro, #post-title, .site-info {
+            font-family: get-title-font($lang-code);
+        }
+    }
+}
