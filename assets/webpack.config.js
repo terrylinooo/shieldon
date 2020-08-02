@@ -23,13 +23,29 @@ const eventHooksPlugin = require('event-hooks-webpack-plugin');
 */
 
 var mustRequiredModules = [
-    "./src/scss/firewall-ui.scss",
-    // "./plugins/jquery/jquery.min.js",
+    'bootstrap/dist/css/bootstrap.min.css',
+    'bootstrap/dist/js/bootstrap.bundle.min.js',
+    'apexcharts',
+    'datatables.net',
+    'datatables.net-responsive',
+    'fontawesome/index.js',
+    './src/scss/firewall-ui.scss',
 ];
 
 // Our default theme, maybe more themes in the furture...
 var defaultTheme = mustRequiredModules.slice();
 // defaultTheme.push("./themes/default/scss/main.scss");
+
+
+/*
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import 'bootstrap';
+require('apexcharts');
+require('datatables.net');
+require('datatables.net-responsive/dataTables.responsive.min.js');
+import 'fontawesome/index.js';
+*/
 
 /*
 |--------------------------------------------------------------------------
@@ -38,17 +54,21 @@ var defaultTheme = mustRequiredModules.slice();
 */
 
 module.exports = (env, argv) => ({
-
+    resolve: {
+        alias: {
+            jquery: "jquery/src/jquery"
+        }
+    },
     externals: {
-        //"jquery": "jQuery"
+      //  "jquery": "jQuery"
     },
     entry: {
         // Theme
-        "default": defaultTheme,
+        "firewall-ui": defaultTheme,
     },
     output: {
         //path: path.resolve(__dirname, "./../public/js"),
-        filename: "./dist/[name].packed.js"
+        filename: "[name].js"
     },
     module: {
         rules: [
@@ -89,7 +109,7 @@ module.exports = (env, argv) => ({
     },
     plugins: [
         new miniCssExtractPlugin({
-            filename: "./dist/[name].packed.css" 
+            filename: "[name].css" 
         }),
         new eventHooksPlugin({
             done: () => {

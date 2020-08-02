@@ -23,6 +23,8 @@ declare(strict_types=1);
 defined('SHIELDON_VIEW') || die('Illegal access');
 
 use function Shieldon\Firewall\_e;
+use function Shieldon\Firewall\load_css;
+use function Shieldon\Firewall\load_js;
 
 // A 32x32 favicon for firewall panel.
 $favicon = <<<EOF
@@ -117,14 +119,12 @@ if (
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <script src="<?php echo $staticSrc; ?>/third-party/jquery/jquery.min.js"></script>
-        <script src="<?php echo $staticSrc; ?>/third-party/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="<?php echo $staticSrc; ?>/third-party/datatables/datatables.min.js"></script>
-        <script src="<?php echo $staticSrc; ?>/third-party/apexcharts/apexcharts.min.js"></script>
-        <link rel="stylesheet" href="<?php echo $staticSrc; ?>/third-party/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="<?php echo $staticSrc; ?>/third-party/datatables/datatables.min.css">
-        <link rel="stylesheet" href="<?php echo $staticSrc; ?>/third-party/fontawesome/css/all.css">
-        <link rel="stylesheet" href="<?php echo $staticSrc; ?>/css/firewall-ui.css?v=<?php echo date('Ymd'); ?>">
+        <script>
+            <?php load_js(); ?>
+        </script>
+        <style>
+            <?php load_css(); ?>
+        </style>
         <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,<?php echo $favicon; ?>">
         <title><?php echo $title; ?></title>
     </head>
