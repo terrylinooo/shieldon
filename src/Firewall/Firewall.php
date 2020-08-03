@@ -28,7 +28,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\FirewallTrait;
-use Shieldon\Firewall\Firewall\MainTrait;
+use Shieldon\Firewall\Firewall\SetupTrait;
 use Shieldon\Firewall\Firewall\Messenger\MessengerTrait;
 use Shieldon\Firewall\Firewall\XssProtectionTrait;
 use Shieldon\Psr15\RequestHandler;
@@ -45,7 +45,7 @@ use function rtrim;
 class Firewall
 {
     use FirewallTrait;
-    use MainTrait;
+    use SetupTrait;
     use XssProtectionTrait;
     use MessengerTrait;
 
@@ -78,39 +78,39 @@ class Firewall
     {
         $this->status = $this->getOption('daemon');
 
-        $this->setDriver();
+        $this->setupDriver();
 
-        $this->setChannel();
+        $this->setupChannel();
 
-        $this->setFilters();
+        $this->setupFilters();
 
-        $this->setComponents();
+        $this->setupComponents();
 
-        $this->setIpSource();
+        $this->setupIpSource();
 
-        $this->setLogger();
+        $this->setupLogger();
 
-        $this->setSessionLimit();
+        $this->setupLimitSession();
 
-        $this->setCronJob();
+        $this->setupCronJob();
 
-        $this->setExcludedUrls();
+        $this->setupExcludedUrls();
 
-        $this->setXssProtection();
+        $this->setupXssProtection();
 
-        $this->setPageAuthentication();
+        $this->setupPageAuthentication();
 
-        $this->setDialogUserInterface();
+        $this->setupDialogUserInterface();
 
-        $this->setMessengers();
+        $this->setupMessengers();
 
-        $this->setCaptchas();
+        $this->setupCaptchas();
 
-        $this->setMessageEvents();
+        $this->setupMessageEvents();
 
-        $this->setDenyTooManyAttempts();
+        $this->setupDenyTooManyAttempts();
 
-        $this->setIptablesBridgeDirectory();
+        $this->setupIptablesBridgeDirectory();
     }
 
     /**
@@ -210,7 +210,7 @@ class Firewall
      *
      * @return void
      */
-    protected function setChannel(): void
+    protected function setupChannel(): void
     {
         $channelId = $this->getOption('channel_id');
 

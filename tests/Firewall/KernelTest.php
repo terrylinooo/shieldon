@@ -1088,11 +1088,11 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->setDialog([]);
     }
 
-    public function testSetExcludedUrls()
+    public function testsetExcludedList()
     {
         $kernel = new \Shieldon\Firewall\Kernel();
 
-        $kernel->setExcludedUrls([]);
+        $kernel->setExcludedList([]);
     }
 
     public function testIgnoreExcludedUrls()
@@ -1103,7 +1103,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel = $this->getKernelInstance();
         $kernel->disableFilters();
         
-        $kernel->setExcludedUrls([
+        $kernel->setExcludedList([
             '/ignore-this-url/index.html'
         ]);
 

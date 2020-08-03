@@ -45,10 +45,12 @@ use function Shieldon\Firewall\get_session;
 use Closure;
 use InvalidArgumentException;
 use RuntimeException;
+use function array_push;
 use function file_exists;
 use function get_class;
 use function gethostbyaddr;
 use function is_dir;
+use function ltrim;
 use function ob_end_clean;
 use function ob_get_contents;
 use function ob_start;
@@ -73,7 +75,8 @@ class Kernel
      *   run                  | Run the checking process.
      *   setClosure           | Set a closure function.
      *   setDialog            | Customize the dialog UI.
-     *   setExcludedUrls      | Set the URLs you want them excluded them from protection.
+     *   exclude              | Set a URL you want them excluded them from protection.
+     *   setExcludedList      | Set the URLs you want them excluded them from protection.
      *   setLogger            | Set the action log logger.
      *   setProperties        | Set the property settings.
      *   setProperty          | Set a property setting.
@@ -591,13 +594,27 @@ class Kernel
     }
 
     /**
+     * Add a path into the excluded list.
+     *
+     * @param string $uriPath The path component of a URI.
+     * 
+     * @return void
+     */
+    public function exclude(string $uriPath): void
+    {
+        $uriPath = '/' . ltrim($uriPath, '/');
+
+        array_push($this->excludedUrls, $uriPath);
+    }
+
+    /**
      * Set the URLs you want them excluded them from protection.
      *
      * @param array $urls The list of URL want to be excluded.
      *
      * @return void
      */
-    public function setExcludedUrls(array $urls = []): void
+    public function setExcludedList(array $urls = []): void
     {
         $this->excludedUrls = $urls;
     }
