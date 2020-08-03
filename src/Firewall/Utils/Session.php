@@ -43,7 +43,7 @@ class Session
      *
      * @var string
      */
-    public $id;
+    public $id = '_php_cli_';
 
     /**
      * Constructor.
@@ -62,8 +62,6 @@ class Session
      */
     public function createFromGlobal(): Collection
     {
-        $this->id = '_php_cli_';
-
         if ((php_sapi_name() !== 'cli')) {
 
             // @codeCoverageIgnoreStart

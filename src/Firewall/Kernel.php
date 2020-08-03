@@ -804,7 +804,8 @@ class Kernel
         }
 
         $logData = [];
-        $logData['ip'] = $ip ?? $this->getIp();
+ 
+        $logData['ip'] = $ip ?: $this->getIp();
         $logData['session_id'] = get_session()->get('id');
         $logData['action_code'] = $actionCode;
         $logData['timesamp'] = time();
