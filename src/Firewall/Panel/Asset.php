@@ -96,7 +96,7 @@ class Asset extends BaseController
         );
     }
 
-/**
+    /**
      * Load CSS content.
      *
      * @return string

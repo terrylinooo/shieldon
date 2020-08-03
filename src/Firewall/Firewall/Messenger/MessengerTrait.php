@@ -43,7 +43,7 @@ trait MessengerTrait
      *
      * @return void
      */
-    protected function setMessengers(): void
+    protected function setupMessengers(): void
     {
         $messengerList = [
             'telegram',
@@ -85,7 +85,7 @@ trait MessengerTrait
      *
      * @return void
      */
-    protected function setMessageEvents(): void
+    protected function setupMessageEvents(): void
     {
         $setting = $this->getOption('failed_attempts_in_a_row', 'events');
 

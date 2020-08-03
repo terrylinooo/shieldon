@@ -43,11 +43,11 @@ trait XssProtectionTrait
     abstract protected function getOption(string $option, string $section = '');
 
     /**
-     * Set XSS protection.
+     * Set up the XSS protection.
      *
      * @return void
      */
-    protected function setXssProtection(): void
+    protected function setupXssProtection(): void
     {
         $enable = $this->getOption('xss_protection');
         $protectedList = $this->getOption('xss_protected_list');

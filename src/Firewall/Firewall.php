@@ -78,39 +78,31 @@ class Firewall
     {
         $this->status = $this->getOption('daemon');
 
-        $this->setupDriver();
+        $setupFunctions = [
+            'Driver',
+            'Channel',
+            'Filters',
+            'Components',
+            'IpSource',
+            'Logger',
+            'LimitSession',
+            'CronJob',
+            'ExcludedUrls',
+            'XssProtection',
+            'PageAuthentication',
+            'DialogUserInterface',
+            'Messengers',
+            'Captchas',
+            'MessageEvents',
+            'DenyTooManyAttempts',
+            'IptablesBridgeDirectory',
+        ];
 
-        $this->setupChannel();
+        foreach ($setupFunctions as $func) {
+            $function = 'setup' . $func;
 
-        $this->setupFilters();
-
-        $this->setupComponents();
-
-        $this->setupIpSource();
-
-        $this->setupLogger();
-
-        $this->setupLimitSession();
-
-        $this->setupCronJob();
-
-        $this->setupExcludedUrls();
-
-        $this->setupXssProtection();
-
-        $this->setupPageAuthentication();
-
-        $this->setupDialogUserInterface();
-
-        $this->setupMessengers();
-
-        $this->setupCaptchas();
-
-        $this->setupMessageEvents();
-
-        $this->setupDenyTooManyAttempts();
-
-        $this->setupIptablesBridgeDirectory();
+            $this->{$function}();
+        }
     }
 
     /**
