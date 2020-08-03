@@ -51,14 +51,10 @@ class Asset extends BaseController
      */
     public function css(): ResponseInterface
     {
-        $response = get_response();
-        $response = $response->withHeader('Content-Type', 'text/css; charset=UTF-8');
-        $stream = HttpFactory::createStream();
-        $stream->write($this->loadCss());
-        $stream->rewind();
-        $response = $response->withBody($stream);
-
-        return $this->withCacheHeader($response);
+        return $this->getResponseWithContentType(
+            'text/css; charset=UTF-8',
+            $this->loadCss()
+        );
     }
 
     /**
@@ -68,14 +64,10 @@ class Asset extends BaseController
      */
     public function js(): ResponseInterface
     {
-        $response = get_response();
-        $response = $response->withHeader('Content-Type', 'text/javascript; charset=UTF-8');
-        $stream = HttpFactory::createStream();
-        $stream->write($this->loadJs());
-        $stream->rewind();
-        $response = $response->withBody($stream);
-
-        return $this->withCacheHeader($response);
+        return $this->getResponseWithContentType(
+            'text/javascript; charset=UTF-8',
+            $this->loadJs()
+        );
     }
 
     /**
@@ -85,14 +77,10 @@ class Asset extends BaseController
      */
     public function favicon(): ResponseInterface
     {
-        $response = get_response();
-        $response = $response->withHeader('Content-Type', 'image/x-icon');
-        $stream = HttpFactory::createStream();
-        $stream->write($this->loadFavicon());
-        $stream->rewind();
-        $response = $response->withBody($stream);
-
-        return $this->withCacheHeader($response);
+        return $this->getResponseWithContentType(
+            'image/x-icon',
+            $this->loadFavicon()
+        );
     }
 
     /**
@@ -102,10 +90,86 @@ class Asset extends BaseController
      */
     public function logo(): ResponseInterface
     {
+        return $this->getResponseWithContentType(
+            'image/png',
+            $this->loadLogo()
+        );
+    }
+
+/**
+     * Load CSS content.
+     *
+     * @return string
+     */
+    protected function loadJs(): string
+    {
+        ob_start();
+        echo file_get_contents(self::PANEL_ASSET_DIR . '/dist/app-packed.js');
+        $output = ob_get_contents();
+        ob_end_clean();
+    
+        return $this->filterString($output);
+    }
+
+    /**
+     * Load CSS content.
+     *
+     * @return string
+     */
+    protected function loadCss(): string
+    {
+        ob_start();
+        echo file_get_contents(self::PANEL_ASSET_DIR . '/dist/app-packed.css');
+        $output = ob_get_contents();
+        ob_end_clean();
+    
+        return $this->filterString($output);
+    }
+
+    /**
+     * Load Shieldon's favicon.
+     *
+     * @return string
+     */
+    protected function loadFavicon(): string
+    {
+        ob_start();
+        echo file_get_contents(self::PANEL_ASSET_DIR . '/src/images/favicon.ico');
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        return $output;
+    }
+
+    /**
+     * Load Shieldon's logo.
+     *
+     * @return string
+     */
+    protected function loadLogo(): string
+    {
+        ob_start();
+        echo file_get_contents(self::PANEL_ASSET_DIR . '/src/images/logo.png');
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        return $output;
+    }
+
+    /**
+     * Get server response with content.
+     *
+     * @param string $contentType The content type.
+     * @param string $body        The data sring.
+     *
+     * @return ResponseInterface
+     */
+    private function getResponseWithContentType(string $contentType, string $body): ResponseInterface
+    {
         $response = get_response();
-        $response = $response->withHeader('Content-Type', 'image/png');
+        $response = $response->withHeader('Content-Type', $contentType);
         $stream = HttpFactory::createStream();
-        $stream->write($this->loadLogo());
+        $stream->write($body);
         $stream->rewind();
         $response = $response->withBody($stream);
 
@@ -130,73 +194,13 @@ class Asset extends BaseController
     }
 
     /**
-     * Load CSS content.
-     *
-     * @return string
-     */
-    private function loadJs(): string
-    {
-        ob_start();
-        echo file_get_contents(self::PANEL_ASSET_DIR . '/dist/app-packed.js');
-        $output = ob_get_contents();
-        ob_end_clean();
-    
-        return $this->filterString($output);
-    }
-
-    /**
-     * Load CSS content.
-     *
-     * @return string
-     */
-    private function loadCss(): string
-    {
-        ob_start();
-        echo file_get_contents(self::PANEL_ASSET_DIR . '/dist/app-packed.css');
-        $output = ob_get_contents();
-        ob_end_clean();
-    
-        return $this->filterString($output);
-    }
-
-    /**
-     * Load Shieldon's favicon.
-     *
-     * @return string
-     */
-    private function loadFavicon(): string
-    {
-        ob_start();
-        echo file_get_contents(self::PANEL_ASSET_DIR . '/src/images/favicon.ico');
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        return $output;
-    }
-
-    /**
-     * Load Shieldon's logo.
-     *
-     * @return string
-     */
-    private function loadLogo(): string
-    {
-        ob_start();
-        echo file_get_contents(self::PANEL_ASSET_DIR . '/src/images/logo.png');
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        return $output;
-    }
-
-    /**
      * Remove the PHP syntax, prevent the possible security issues.
      *
-     * @param sring $string
+     * @param string $string
      *
      * @return string
      */
-    private function filterString($string): string
+    private function filterString(string $string): string
     {
         return str_replace(['<?php', '<?', '?>'], '', $string);
     }
