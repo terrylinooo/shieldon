@@ -24,6 +24,7 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
+use Shieldon\Firewall\HttpFactory;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
@@ -163,7 +164,7 @@ class Ajax extends BaseController
     {
         $response = get_response();
 
-        $stream = $response->getBody();
+        $stream = HttpFactory::createStream();
         $stream->write($output);
         $stream->rewind();
 

@@ -47,9 +47,7 @@ class HttpResolver
         if (!headers_sent()) {
 
             foreach ($response->getHeaders() as $key => $values) {
-
                 $replace = stripos($key, 'Set-Cookie') === 0 ? false : true;
-
                 foreach ($values as $value) {
                     header(sprintf('%s: %s', $key, $value), $replace);
                     $replace = false;

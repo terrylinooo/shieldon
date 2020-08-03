@@ -62,9 +62,6 @@ body::-webkit-scrollbar-thumb
 .navbar-brand {
 	padding: 0;
 }
-.logo-image {
-	height: 60px;
-}
 
 .status-field {
 	background-color: rgba(0, 0, 0, 0.05);
@@ -318,7 +315,8 @@ code.tips {
 }
 
 .logo-image {
-	height: 60px;
+	height: 35px;
+	margin: 5px;
 }
 .navbar-brand {
 	padding: 0;

@@ -94,6 +94,10 @@ class Panel
             'setting/messenger',
             'user/login',
             'user/logout',
+            'asset/css',
+            'asset/js',
+            'asset/favicon',
+            'asset/logo',
         ];
 
         $this->resolver = new HttpResolver();

@@ -53,11 +53,6 @@ use const PHP_OS;
 define('SHIELDON_FIREWALL_VERSION', '2.0');
 
 /**
- * The directory in where the static assets of the firewall panel are placed.
- */
-define('SHIELDON_PANEL_ASSET_DIR', __DIR__ . '/../../assets/dist');
-
-/**
  * Just use PSR-4 autoloader to load those helper functions.
  */
 class Helpers
@@ -553,24 +548,4 @@ function unset_superglobal($name, string $type): void
 
     $method = '\Shieldon\Firewall\unset_global_' . $type;
     $method($name, $type);
-}
-
-/**
- * Load CSS.
- *
- * @return void
- */
-function load_css(): void
-{
-    include SHIELDON_PANEL_ASSET_DIR . '/app-packed.css';
-}
-
-/**
- * Load JS.
- *
- * @return void
- */
-function load_js(): void
-{
-    include SHIELDON_PANEL_ASSET_DIR . '/app-packed.js';
 }

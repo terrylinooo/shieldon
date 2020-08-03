@@ -199,14 +199,19 @@ class BaseController
             $channelName = 'default';
         }
 
+        $body['title'] = $data['title'] ?? '';
+        $body['title'] .= ' - ' . __('panel', 'title_site_wide', 'Shieldon Firewall');
+        $body['title'] .= ' v' . SHIELDON_FIREWALL_VERSION;
+
         $body['channel_name'] = $channelName;
         $body['mode_name'] = $this->mode;
         $body['page_url'] = $this->url();
         $body['content'] = $this->loadView($page, $data);
-        $body['title'] = $data['title'] ?? '';
 
-        $body['title'] .= ' - ' . __('panel', 'title_site_wide', 'Shieldon Firewall');
-        $body['title'] .= ' v' . SHIELDON_FIREWALL_VERSION;
+        $body['js_url'] = $this->url('asset/js');
+        $body['css_url'] = $this->url('asset/css');
+        $body['favicon_url'] = $this->url('asset/favicon');
+        $body['logo_url'] = $this->url('asset/logo');
 
         $page = $this->loadView('panel/template', $body);
 
