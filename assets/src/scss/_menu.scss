@@ -7,11 +7,12 @@
 	overflow: hidden;
 	padding: 0;
 
-	i {
+	.category-icon {
 		background-color: #ffffff;
 		color: #00b38a;
 		width: 26px;
 		height: 26px;
+		display: inline-block;
 		line-height: 26px;
 		text-align: center;
 		border-radius: 50%;
@@ -54,9 +55,17 @@
 
 			position: relative;
 
-			i {
+			.subcategory-icon {
 				background-color: transparent;
 				color: #666;
+				width: 18px;
+				height: 18px;
+				display: inline-block;
+				line-height: 18px;
+				text-align: center;
+				border-radius: 50%;
+				font-size: 15px;
+				margin-right: 12px;
 			}
 
 			&:hover {
@@ -73,12 +82,16 @@
 					color: #ffffff;
 					position: relative;
 
+					.subcategory-icon {
+						color: #ffffff;
+					}
+
 					&:before {
 						content: '';
 						display: block;
 						position: absolute;
 						right: 10px;
-						top: 21px;
+						top: 16px;
 						width: 0; 
 						height: 0; 
 						border-top: 7px solid transparent;

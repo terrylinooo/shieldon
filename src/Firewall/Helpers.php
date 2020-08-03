@@ -562,7 +562,7 @@ function unset_superglobal($name, string $type): void
  */
 function load_css(): void
 {
-    include SHIELDON_PANEL_ASSET_DIR . '/firewall-ui.css';
+    include SHIELDON_PANEL_ASSET_DIR . '/app-packed.css';
 }
 
 /**
@@ -572,5 +572,5 @@ function load_css(): void
  */
 function load_js(): void
 {
-    include SHIELDON_PANEL_ASSET_DIR . '/firewall-ui.js';
+    include SHIELDON_PANEL_ASSET_DIR . '/app-packed.js';
 }

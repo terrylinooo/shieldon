@@ -162,18 +162,18 @@ if (
                     <ul class="nav flex-column parent-menu">
                         <li>
                             <a href="#">
-                                <i class="fas fa-cog"></i>
+                                <span class="category-icon"><i class="fas fa-cog"></i></span>
                                 <span><?php _e('panel', 'menu_status', 'Status'); ?></span>
                             </a>
                             <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $this->url('home/overview'); ?>">
-                                        <i class="fas fa-tachometer-alt"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-tachometer-alt"></i></span>
                                         <span><?php _e('panel', 'menu_overview', 'Overview'); ?></span>
                                     </a>
                                     <li>
                                     <a href="<?php echo $this->url('report/operation'); ?>">
-                                        <i class="fas fa-fan"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-fan"></i></span>
                                         <span><?php _e('panel', 'menu_operation_status', 'Operation'); ?></span>
                                     </a>
                                 </li>
@@ -182,25 +182,25 @@ if (
                         </li>
                         <li>
                             <a href="#">
-                                <i class="fas fa-table"></i>
+                                <span class="category-icon"><i class="fas fa-table"></i></span>
                                 <span><?php _e('panel', 'menu_data_circle', 'Data Circle'); ?></span>
                             </a>
                             <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $this->url('circle/filter'); ?>">
-                                        <i class="fas fa-chart-area"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-chart-area"></i></span>
                                         <span><?php _e('panel', 'menu_ip_filter_logs', 'Filter Logs'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('circle/rule'); ?>">
-                                        <i class="fas fa-fire-alt"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-fire-alt"></i></span>
                                         <span><?php _e('panel', 'menu_ip_rules', 'IP Rules'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('circle/session'); ?>">
-                                        <i class="fas fa-user-clock"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-user-clock"></i></span>
                                         <span><?php _e('panel', 'menu_sessions', 'Sessions'); ?>
                                     </a>
                                 </li>
@@ -210,19 +210,19 @@ if (
                         <?php if ($this->getConfig('iptables.enable') === true) : ?>
                         <li>
                             <a href="#">
-                                <i class="fas fa-shield-alt"></i>
+                                <span class="category-icon"><i class="fas fa-shield-alt"></i></span>
                                 <span><?php _e('panel', 'menu_iptables_ipv4', 'IPv4 iptables'); ?></span>
                             </a>
                             <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $this->url('iptables/ip4'); ?>">
-                                        <i class="fas fa-dice-d20"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-dice-d20"></i></span>
                                         <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('iptables/ip4status'); ?>">
-                                        <i class="far fa-question-circle"></i>
+                                        <span class="subcategory-icon"><i class="far fa-question-circle"></i></span>
                                         <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
                                     </a>
                                 </li>
@@ -230,19 +230,19 @@ if (
                         </li>
                         <li>
                             <a href="#">
-                                <i class="fas fa-shield-alt"></i>
+                                <span class="category-icon"><i class="fas fa-shield-alt"></i></span>
                                 <span><?php _e('panel', 'menu_iptables_ipv6', 'IPv6 iptables'); ?></span>
                             </a>
                             <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $this->url('iptables/ip6'); ?>">
-                                     <i class="fas fa-dice-d20"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-dice-d20"></i></span>
                                         <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('iptables/ip6status'); ?>">
-                                        <i class="far fa-question-circle"></i>
+                                        <span class="subcategory-icon"><i class="far fa-question-circle"></i></span>
                                         <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
                                     </a>
                                 </li>
@@ -252,37 +252,37 @@ if (
                         <?php if ($this->getConfig('loggers.action.enable') === true) : ?>
                         <li>
                             <a href="#">
-                                <i class="fas fa-chart-area"></i>
+                                <span class="category-icon"><i class="fas fa-chart-area"></i></span>
                                 <span><?php _e('panel', 'menu_action_logs', 'Logs'); ?></span>
                             </a>
                             <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $this->url('report/actionLog'); ?>?tab=today">
-                                        <i class="far fa-calendar-check"></i>
+                                        <span class="subcategory-icon"><i class="far fa-calendar-check"></i></span>
                                         <span><?php _e('panel', 'menu_today', 'Today'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('report/actionLog'); ?>?tab=yesterday">
-                                        <i class="fas fa-calendar-day"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-calendar-day"></i></span>
                                         <span><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('report/actionLog'); ?>?tab=past_seven_days">
-                                        <i class="fas fa-calendar-week"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-calendar-week"></i></span>
                                         <span><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('report/actionLog'); ?>?tab=this_month">
-                                        <i class="far fa-calendar-alt"></i>
+                                        <span class="subcategory-icon"><i class="far fa-calendar-alt"></i></span>
                                         <span><?php _e('panel', 'menu_this_month', 'This month'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('report/actionLog'); ?>?tab=last_month">
-                                        <i class="fas fa-calendar-alt"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-calendar-alt"></i></span>
                                         <span><?php _e('panel', 'menu_last_month', 'Last month'); ?></span>
                                     </a>
                                 </li>
@@ -291,43 +291,43 @@ if (
                         <?php endif; ?>
                         <li>
                             <a href="#">
-                                <i class="fas fa-fire-alt"></i>
+                                <span class="category-icon"><i class="fas fa-fire-alt"></i></span>
                                 <span><?php _e('panel', 'menu_firewall', 'Firewall'); ?></span>
                             </a>
                             <ul class="nav child-menu">
                                 <li>
                                     <a href="<?php echo $this->url('setting/basic'); ?>">
-                                        <i class="fas fa-cogs"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-cogs"></i></span>
                                         <span><?php _e('panel', 'menu_settings', 'Settings'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('setting/ipManager'); ?>">
-                                        <i class="fas fa-globe"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-globe"></i></span>
                                         <span><?php _e('panel', 'menu_ip_manager', 'IP Manager'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('security/xssProtection'); ?>">
-                                        <i class="fas fa-umbrella"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-umbrella"></i></span>
                                         <span><?php _e('panel', 'menu_xss_protection', 'XSS Protection'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('security/authentication'); ?>">
-                                        <i class="fas fa-user-lock"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-user-lock"></i></span>
                                         <span><?php _e('panel', 'menu_authentication', 'Authentication'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('setting/exclusion'); ?>">
-                                        <i class="fas fa-eye-slash"></i>
+                                        <span class="subcategory-icon"><i class="fas fa-eye-slash"></i></span>
                                         <span><?php _e('panel', 'menu_exclusion', 'Exclusion'); ?></span>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('setting/messenger'); ?>">
-                                        <i class="fab fa-facebook-messenger"></i>
+                                        <span class="subcategory-icon"><i class="fab fa-facebook-messenger"></i></span>
                                         <span><?php _e('panel', 'menu_messenger', 'Messenger'); ?></span>
                                     </a>
                                 </li>   
@@ -357,7 +357,9 @@ if (
                             </div>
                             <?php else: ?>
                                 <div class="icon-box">
-                                    <i class="fas fa-exclamation-circle"></i>
+                                    <span class="message-icon">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                </span>
                                 </div>
                             <?php endif; ?>
                         </div>

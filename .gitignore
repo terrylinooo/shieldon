@@ -17,3 +17,5 @@ assets/node_modules
 assets/package-lock.json
 assets/v8-compile-cache-0
 assets/npm*
+assets/mix-manifest.json
+assets/_webpack.config.js
