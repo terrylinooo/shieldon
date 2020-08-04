@@ -43,9 +43,7 @@ use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session;
 
 use Closure;
-use RuntimeException;
 use function array_push;
-use function file_exists;
 use function get_class;
 use function gethostbyaddr;
 use function ltrim;

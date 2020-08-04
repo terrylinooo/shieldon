@@ -38,6 +38,8 @@ use function is_dir;
 use function ob_end_clean;
 use function ob_get_contents;
 use function ob_start;
+use function file_exists;
+use function sprintf;
 
 /*
  * The template-related functions.
