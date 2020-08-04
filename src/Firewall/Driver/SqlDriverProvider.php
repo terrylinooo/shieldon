@@ -29,6 +29,8 @@ use PDO;
 
 use function is_bool;
 use function is_null;
+use function gettype;
+use function strtolower;
 
 /**
  * SQL Driver provider.
@@ -315,31 +317,35 @@ class SqlDriverProvider extends DriverProvider
         $wherePlaceholder = implode(' AND ', $placeholder);
 
         try {
+
+            $paramTypeCheck = [
+                'integer' => $this->db::PARAM_INT,
+                'boolean' => $this->db::PARAM_BOOL,
+                'NULL'    => $this->db::PARAM_NULL,
+                'string'  => $this->db::PARAM_STR,
+            ];
+
+
             $sql = 'UPDATE ' . $table . ' SET ' . $dataPlaceholder . ' WHERE ' . $wherePlaceholder;
             $query = $this->db->prepare($sql);
 
             $bind = array_merge($data, $where);
-    
+
             foreach ($bind as $k => $v) {
 
-                // @codeCoverageIgnoreStart
+                // Default.
+                $pdoParam = $paramTypeCheck['string'];
 
-                if (is_numeric($v)) {
-                    $pdoParam = $this->db::PARAM_INT;
+                $type = gettype($v);
 
-                    // Solve problem with bigint.
-                    if ($v >= 2147483647) {
-                        $pdoParam = $this->db::PARAM_STR;
-                    } 
-                } elseif (is_bool($v)) {
-                    $pdoParam = $this->db::PARAM_BOOL;
-                } elseif (is_null($v)) {
-                    $pdoParam = $this->db::PARAM_NULL;
-                } else {
-                    $pdoParam = $this->db::PARAM_STR;
+                if (isset($paramTypeCheck[$type])) {
+                    $pdoParam = $paramTypeCheck[$type];
                 }
 
-                // @codeCoverageIgnoreEnd
+                // Solve problem with bigint.
+                if ($v >= 2147483647) {
+                    $pdoParam = $this->db::PARAM_STR;
+                }
 
                 $query->bindValue(":$k", $bind[$k], $pdoParam);
             }
@@ -376,29 +382,32 @@ class SqlDriverProvider extends DriverProvider
         $dataPlaceholderValue = implode(', ', $placeholderValue);
 
         try {
+
+            $paramTypeCheck = [
+                'integer' => $this->db::PARAM_INT,
+                'boolean' => $this->db::PARAM_BOOL,
+                'NULL'    => $this->db::PARAM_NULL,
+                'string'  => $this->db::PARAM_STR,
+            ];
+
             $sql = 'INSERT INTO ' . $table . ' (' . $dataPlaceholderField . ') VALUES (' . $dataPlaceholderValue . ')';
             $query = $this->db->prepare($sql);
 
             foreach ($data as $k => $v) {
 
-                // @codeCoverageIgnoreStart
+                // Default.
+                $pdoParam = $paramTypeCheck['string'];
 
-                if (is_numeric($v)) {
-                    $pdoParam = $this->db::PARAM_INT;
+                $type = gettype($v);
 
-                    // Solve problem with bigint.
-                    if ($v >= 2147483647) {
-                        $pdoParam = $this->db::PARAM_STR;
-                    }
-                } elseif (is_bool($v)) {
-                    $pdoParam = $this->db::PARAM_BOOL;
-                } elseif (is_null($v)) {
-                    $pdoParam = $this->db::PARAM_NULL;
-                } else {
-                    $pdoParam = $this->db::PARAM_STR;
+                if (isset($paramTypeCheck[$type])) {
+                    $pdoParam = $paramTypeCheck[$type];
                 }
 
-                // @codeCoverageIgnoreEnd
+                // Solve problem with bigint.
+                if ($v >= 2147483647) {
+                    $pdoParam = $this->db::PARAM_STR;
+                }
 
                 $query->bindValue(":$k", $data[$k], $pdoParam);
             }
@@ -432,24 +441,26 @@ class SqlDriverProvider extends DriverProvider
 
         try {
 
+            $paramTypeCheck = [
+                'integer' => $this->db::PARAM_INT,
+                'boolean' => $this->db::PARAM_BOOL,
+                'NULL'    => $this->db::PARAM_NULL,
+                'string'  => $this->db::PARAM_STR,
+            ];
+
             $sql = 'DELETE FROM ' . $table . ' WHERE ' . $dataPlaceholder;
             $query = $this->db->prepare($sql);
 
             foreach ($where as $k => $v) {
 
-                // @codeCoverageIgnoreStart
+                // Default.
+                $pdoParam = $paramTypeCheck['string'];
 
-                if (is_numeric($v)) {
-                    $pdoParam = $this->db::PARAM_INT;
-                } elseif (is_bool($v)) {
-                    $pdoParam = $this->db::PARAM_BOOL;
-                } elseif (is_null($v)) {
-                    $pdoParam = $this->db::PARAM_NULL;
-                } else {
-                    $pdoParam = $this->db::PARAM_STR;
+                $type = gettype($v);
+
+                if (isset($paramTypeCheck[$type])) {
+                    $pdoParam = $paramTypeCheck[$type];
                 }
-
-                // @codeCoverageIgnoreEnd
 
                 $query->bindValue(":$k", $v, $pdoParam);
             }
