@@ -117,12 +117,18 @@ class Security extends BaseController
     {
         $postParams = get_request()->getParsedBody();
 
-        if ($this->checkPostParamsExist('xss')) {
-            unset_superglobal('xss', 'post');
+        if ($this->checkPostParamsExist('xss_form_1')) {
+            unset_superglobal('xss_form_1', 'post');
+            unset_superglobal('order', 'post');
+            unset_superglobal('submit', 'post');
 
-            $type     = $postParams['type']     ?? '';
-            $variable = $postParams['variable'] ?? '';
-            $action   = $postParams['action']   ?? '';
+            $this->saveConfig();
+
+        } elseif ($this->checkPostParamsExist('xss_form_2', 'type', 'action')) {
+
+            $type     = $postParams['type'];
+            $variable = $postParams['variable'];
+            $action   = $postParams['action'];
 
             // The index number in the $xssProtectedList, see below.
             $order = (int) $postParams['order'];
@@ -139,9 +145,14 @@ class Security extends BaseController
             $xssProtectedList = (array) $this->getConfig('xss_protected_list');
 
             if ('add' === $action) {
-                if (in_array($type, ['get', 'post', 'cookie'])) {
-                    array_push($xssProtectedList, ['type' => $type, 'variable' => $variable]);
-                }
+                array_push(
+                    $xssProtectedList, 
+                    [
+                        'type'     => $type,
+                        'variable' => $variable
+                    ]
+                );
+                
             } elseif ('remove' === $action) {
                 unset($xssProtectedList[$order]);
                 $xssProtectedList = array_values($xssProtectedList);
@@ -149,10 +160,12 @@ class Security extends BaseController
 
             $this->setConfig('xss_protected_list', $xssProtectedList);
 
+            unset_superglobal('xss_form_2', 'post');
             unset_superglobal('type', 'post');
             unset_superglobal('variable', 'post');
             unset_superglobal('action', 'post');
             unset_superglobal('order', 'post');
+            unset_superglobal('submit', 'post');
 
             $this->saveConfig();
         }

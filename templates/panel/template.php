@@ -254,18 +254,20 @@ use function Shieldon\Firewall\_e;
                         <div class="icon-wrapper">
                             <?php if (count($this->messages) == 1) : ?>
                                 <div class="icon-box">
-                                <?php if ($this->messages[0]['type'] === 'success') : ?>
-                                    <i class="fas fa-check-circle"></i>
-                                <?php endif; ?>
-                                <?php if ($this->messages[0]['type'] === 'error') : ?>
-                                    <i class="fas fa-times-circle"></i>
-                                <?php endif; ?>
-                            </div>
+                                    <span class="message-icon">
+                                        <?php if ($this->messages[0]['type'] === 'success') : ?>
+                                            <i class="fas fa-check-circle"></i>
+                                        <?php endif; ?>
+                                        <?php if ($this->messages[0]['type'] === 'error') : ?>
+                                            <i class="fas fa-times-circle"></i>
+                                        <?php endif; ?>
+                                     </span>
+                                </div>
                             <?php else: ?>
                                 <div class="icon-box">
                                     <span class="message-icon">
                                         <i class="fas fa-exclamation-circle"></i>
-                                </span>
+                                    </span>
                                 </div>
                             <?php endif; ?>
                         </div>
