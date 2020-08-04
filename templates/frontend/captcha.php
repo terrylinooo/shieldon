@@ -60,7 +60,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-secruity_96x96.png';
                             <p><input type="submit" value="<?php _e('core', 'stop_submit', 'Submit') ?>" /></p>
                         </form>
                     </div>
-                    <?php if (! empty($dialoguserinfo)) : ?>
+                    <?php if (!empty($ui['is_display_user_info'])) : ?>
                         <div class="status-user-info">
                             <?php foreach ($dialoguserinfo as $key => $userinfo) : ?>
                                 <div class="row">

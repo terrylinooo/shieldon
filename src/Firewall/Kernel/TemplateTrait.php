@@ -44,13 +44,40 @@ use function ob_start;
 trait TemplateTrait
 {
     /**
+     * Custom dialog UI settings.
+     *
+     * @var array
+     */
+    protected $dialog = [];
+
+    /**
      *   Public methods       | Desctiotion
      *  ----------------------|---------------------------------------------
+     *   setDialog            | Customize the dialog UI.
      *   respond              | Respond the result.
      *   setTemplateDirectory | Set the frontend template directory.
      *   getJavascript        | Print a JavaScript snippet in the pages.
      *  ----------------------|---------------------------------------------
      */
+
+    /**
+     * Get current visior's path.
+     *
+     * @return string
+     */
+    abstract public function getCurrentUrl(): string;
+
+    /**
+     * Customize the dialog UI.
+     * 
+     * @param array $settings The dialog UI settings.
+     *
+     * @return void
+     */
+    public function setDialog(array $settings): void
+    {
+        $this->dialog = $settings;
+    }
 
     /**
      * Respond the result.
@@ -91,32 +118,53 @@ trait TemplateTrait
         // The language of output UI. It is used on views.
         $langCode = get_session()->get('shieldon_ui_lang') ?? 'en';
 
-        $showOnlineInformation = false;
-        $showUserInformation = false;
-        
-        // Show online session count. It is used on views.
-        if (!empty($this->properties['display_online_info'])) {
-            $showOnlineInformation = true;
-            $onlineinfo = [];
+        $onlineinfo = [];
+        $onlineinfo['queue'] = $this->sessionStatus['queue'];
+        $onlineinfo['count'] = $this->sessionStatus['count'];
+        $onlineinfo['period'] = $this->sessionLimit['period'];
 
-            $onlineinfo['queue'] = $this->sessionStatus['queue'];
-            $onlineinfo['count'] = $this->sessionStatus['count'];
-            $onlineinfo['period'] = $this->sessionLimit['period'];
-        } 
-
-        // Show user information such as IP, user-agent, device name.
-        if (!empty($this->properties['display_user_info'])) {
-            $showUserInformation = true;
-            $dialoguserinfo = [];
-
-            $dialoguserinfo['ip'] = $this->ip;
-            $dialoguserinfo['rdns'] = $this->rdns;
-            $dialoguserinfo['user_agent'] = get_request()->getHeaderLine('user-agent');
-        }
+        $dialoguserinfo = [];
+        $dialoguserinfo['ip'] = $this->ip;
+        $dialoguserinfo['rdns'] = $this->rdns;
+        $dialoguserinfo['user_agent'] = get_request()->getHeaderLine('user-agent');
 
         // Captcha form
         $form = $this->getCurrentUrl();
         $captchas = $this->captcha;
+
+        // Check and confirm the UI settings.
+        $ui = $this->confirmUiSettings();
+
+        $css = include $this->getTemplate('css/default');
+
+        ob_start();
+        include $viewPath;
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        // Remove unused variable notices generated from PHP intelephense.
+        unset($css, $ui, $form, $captchas, $langCode);
+
+        $stream = HttpFactory::createStream();
+        $stream->write($output);
+        $stream->rewind();
+
+        return $response
+            ->withHeader('X-Protected-By', 'shieldon.io')
+            ->withBody($stream)
+            ->withStatus($statusCode);
+    }
+
+    /**
+     * Confirm the UI settings.
+     *
+     * @return array
+     */
+    private function confirmUiSettings(): array
+    {
+        if (!defined('SHIELDON_VIEW')) {
+            define('SHIELDON_VIEW', true);
+        }
 
         $ui = [
             'background_image' => '',
@@ -132,36 +180,20 @@ trait TemplateTrait
             }
         }
 
-        if (!defined('SHIELDON_VIEW')) {
-            define('SHIELDON_VIEW', true);
+        $ui['is_display_online_info'] = false;
+        $ui['is_display_user_info'] = false;
+
+        // Show online session count. It is used on views.
+        if (!empty($this->properties['display_online_info'])) {
+            $ui['is_display_online_info'] = true;
         }
 
-        $css = include $this->getTemplate('css/default');
+        // Show user information such as IP, user-agent, device name.
+        if (!empty($this->properties['display_user_info'])) {
+            $ui['is_display_user_info'] = true;
+        }
 
-        ob_start();
-        include $viewPath;
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        // Remove unused variable notices generated from PHP intelephense.
-        unset(
-            $css,
-            $ui,
-            $form,
-            $captchas,
-            $langCode,
-            $showOnlineInformation,
-            $showUserInformation
-        );
-
-        $stream = HttpFactory::createStream();
-        $stream->write($output);
-        $stream->rewind();
-
-        return $response
-            ->withHeader('X-Protected-By', 'shieldon.io')
-            ->withBody($stream)
-            ->withStatus($statusCode);
+        return $ui;
     }
 
     /**
@@ -201,7 +233,7 @@ trait TemplateTrait
      *
      * @return void
      */
-    public function setTemplateDirectory(string $directory)
+    public function setTemplateDirectory(string $directory): void
     {
         if (!is_dir($directory)) {
             throw new InvalidArgumentException(
@@ -209,5 +241,34 @@ trait TemplateTrait
             );
         }
         $this->templateDirectory = $directory;
+    }
+
+    /**
+     * Get a template PHP file.
+     *
+     * @param string $type The template type.
+     *
+     * @return string
+     */
+    protected function getTemplate(string $type): string
+    {
+        $directory = self::KERNEL_DIR . '/../../templates/frontend';
+
+        if (!empty($this->templateDirectory)) {
+            $directory = $this->templateDirectory;
+        }
+
+        $path = $directory . '/' . $type . '.php';
+
+        if (!file_exists($path)) {
+            throw new RuntimeException(
+                sprintf(
+                    'The templeate file is missing. (%s)',
+                    $path
+                )
+            );
+        }
+
+        return $path;
     }
 }

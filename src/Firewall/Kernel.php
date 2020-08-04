@@ -67,7 +67,6 @@ class Kernel
      *   managedBy            | Used on testing purpose.
      *   run                  | Run the checking process.
      *   setClosure           | Set a closure function.
-     *   setDialog            | Customize the dialog UI.
      *   exclude              | Set a URL you want them excluded them from protection.
      *   setExcludedList      | Set the URLs you want them excluded them from protection.
      *   setLogger            | Set the action log logger.
@@ -270,13 +269,6 @@ class Kernel
      * @var array
      */
     protected $excludedUrls = [];
-
-    /**
-     * Custom dialog UI settings.
-     *
-     * @var array
-     */
-    protected $dialog = [];
 
     /**
      * Strict mode.
@@ -523,18 +515,6 @@ class Kernel
     }
 
     /**
-     * Customize the dialog UI.
-     * 
-     * @param array $settings The dialog UI settings.
-     *
-     * @return void
-     */
-    public function setDialog(array $settings): void
-    {
-        $this->dialog = $settings;
-    }
-
-    /**
      * Get current visior's path.
      *
      * @return string
@@ -671,35 +651,6 @@ class Kernel
         $logData['timesamp'] = time();
 
         $this->logger->add($logData);
-    }
-
-    /**
-     * Get a template PHP file.
-     *
-     * @param string $type The template type.
-     *
-     * @return string
-     */
-    protected function getTemplate(string $type): string
-    {
-        $directory = self::KERNEL_DIR . '/../../templates/frontend';
-
-        if (!empty($this->templateDirectory)) {
-            $directory = $this->templateDirectory;
-        }
-
-        $path = $directory . '/' . $type . '.php';
-
-        if (!file_exists($path)) {
-            throw new RuntimeException(
-                sprintf(
-                    'The templeate file is missing. (%s)',
-                    $path
-                )
-            );
-        }
-
-        return $path;
     }
 
     /**
