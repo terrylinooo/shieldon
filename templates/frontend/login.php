@@ -129,7 +129,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                 <div class="card-body">
                     <form action="<?php echo $form ?>" method="post" autocomplete="off">
                         <div class="main-content">
-                            <?php if (! empty($error)) : ?>
+                            <?php if (!empty($error)) : ?>
                             <div class="error-notice">
                                 <?php echo $error; ?>
                             </div>
@@ -140,7 +140,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                             <div class="input-box">
                                 <input type="password" name="s_pass" placeholder="Password" class="form-input" />
                             </div>
-                            <?php if (! empty($captchas)) : ?>
+                            <?php if (!empty($captchas)) : ?>
                             <div class="input-box">
                                 <?php foreach ($captchas as $captcha) : ?>
                                     <?php echo $captcha->form(); ?>

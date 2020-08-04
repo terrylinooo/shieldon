@@ -87,7 +87,7 @@ $timezone = '';
                 </tr>
             </thead>
             <tbody>
-                <?php if (! empty($exclusion_list)) : ?>
+                <?php if (!empty($exclusion_list)) : ?>
                 <?php foreach ($exclusion_list as $i => $urlInfo) : ?>
                 <tr>
                     <td><?php echo $urlInfo['url']; ?></td>

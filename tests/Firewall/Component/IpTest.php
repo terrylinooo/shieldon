@@ -220,7 +220,7 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $ipComponent->setAllowedItems($s);
         $ipComponent->removeAllowedItem('127.33.33.33');
         $t = $ipComponent->getAllowedItems();
-        if (! in_array('127.33.33.33', $t)) {
+        if (!in_array('127.33.33.33', $t)) {
             $this->assertTrue(true);
         }
         if (in_array('127.33.33.34', $t)) {

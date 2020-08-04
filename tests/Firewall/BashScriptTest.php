@@ -30,7 +30,7 @@ class BashScriptTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $this->iptablesWatchingFolder = BOOTSTRAP_DIR . '/../tmp/iptables';
      
-        if (! is_dir($this->iptablesWatchingFolder)) {
+        if (!is_dir($this->iptablesWatchingFolder)) {
             $originalUmask = umask(0);
             mkdir($this->iptablesWatchingFolder, 0777, true);
             umask($originalUmask);

@@ -77,7 +77,7 @@ $timezone = '';
         </div>
     </div>
     <?php endif; ?>
-    <?php if (! empty($rule_list)) : ?>
+    <?php if (!empty($rule_list)) : ?>
     <div id="so-table-container" class="so-datatables" style="display: none;">
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>
@@ -102,15 +102,15 @@ $timezone = '';
                     <td><?php echo $ipInfo['ip_resolve']; ?></td>
                     <td>
                         <?php 
-                            if (! empty($type_mapping[$ipInfo['type'] ]) ) {
-                                echo $type_mapping[$ipInfo['type'] ];
+                            if (!empty($type_mapping[$ipInfo['type']])) {
+                                echo $type_mapping[$ipInfo['type']];
                             }
                         ?>
                     </td>
                     <td>
                         <?php
-                            if (! empty($reason_mapping[$ipInfo['reason'] ]) ) {
-                                echo $reason_mapping[$ipInfo['reason'] ];
+                            if (!empty($reason_mapping[$ipInfo['reason']])) {
+                                echo $reason_mapping[$ipInfo['reason']];
                             }
                         ?>
                     </td>

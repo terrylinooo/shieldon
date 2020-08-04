@@ -32,31 +32,31 @@ include __DIR__ . '/../vendor/autoload.php';
 include __DIR__ . '/../vendor/shieldon/messenger/autoload.php';
 
 // Mock for PHPUnit.
-if (! isset($_SERVER['REMOTE_ADDR'])) {
+if (!isset($_SERVER['REMOTE_ADDR'])) {
     $_SERVER['REMOTE_ADDR'] = '127.0.0.127';
 }
 
-if (! isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+if (!isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
     $_SERVER['HTTP_CF_CONNECTING_IP'] = '127.0.0.128';
 }
 
-if (! isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+if (!isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
     $_SERVER['HTTP_X_FORWARDED_HOST'] = '127.0.0.129';
 }
 
-if (! isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.130';
 }
 
-if (! isset($_SERVER['HTTPS'])) {
+if (!isset($_SERVER['HTTPS'])) {
     $_SERVER['HTTPS'] = 'on';
 }
 
-if (! isset($_SERVER['REQUEST_URI'])) {
+if (!isset($_SERVER['REQUEST_URI'])) {
     $_SERVER['REQUEST_URI'] = '/';
 }
 
-if (! isset($_SERVER['HTTP_HOST'])) {
+if (!isset($_SERVER['HTTP_HOST'])) {
     $_SERVER['HTTP_HOST'] = 'shieldon.io';
 }
 

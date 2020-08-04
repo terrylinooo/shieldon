@@ -44,11 +44,11 @@ use function Shieldon\Firewall\_e;
     </div>
     <br />
     <div class="so-datatables">
-        <?php if (! empty($last_cached_time)) : ?>
+        <?php if (!empty($last_cached_time)) : ?>
             <?php _e('panel', 'log_label_cache_time', 'Report generated time'); ?>: <strong class="text-info"><?php echo $last_cached_time; ?></strong>
             &nbsp;&nbsp;&nbsp;&nbsp; 
         <?php endif; ?>
-        <?php if (! empty($ipStatus)) : ?>
+        <?php if (!empty($ipStatus)) : ?>
             <pre><?php echo nl2br($ipStatus); ?></pre>
         <?php endif; ?>
     </div>

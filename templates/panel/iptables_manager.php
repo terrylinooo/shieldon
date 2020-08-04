@@ -158,9 +158,9 @@ use function Shieldon\Firewall\mask_string;
                 </tr>
             </thead>
             <tbody>
-                <?php if (! empty($ipCommand)) : ?>
+                <?php if (!empty($ipCommand)) : ?>
                 <?php foreach ($ipCommand as $i => $ipInfo) : ?>
-                <?php $subnet = (! empty($ipInfo[3]) && $ipInfo[3] !== 'null') ? '/' . $ipInfo[3] : '' ?>
+                <?php $subnet = (!empty($ipInfo[3]) && $ipInfo[3] !== 'null') ? '/' . $ipInfo[3] : '' ?>
                 <tr>
                     <td>
                         <?php if ($this->mode === 'demo') : ?>
@@ -190,7 +190,7 @@ use function Shieldon\Firewall\mask_string;
     </div>
 </div>
 
-<?php if (! empty($ipCommand)) : ?>
+<?php if (!empty($ipCommand)) : ?>
 
 <script>
 

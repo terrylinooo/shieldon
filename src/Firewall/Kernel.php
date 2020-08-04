@@ -278,13 +278,6 @@ class Kernel
     protected $strictMode;
 
     /**
-     * The directory in where the frontend template files are placed.
-     *
-     * @var string
-     */
-    protected $templateDirectory = '';
-
-    /**
      * Which type of configuration source that Shieldon firewall managed?
      * value: managed | config | self | demo
      *

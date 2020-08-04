@@ -862,7 +862,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel = new \Shieldon\Firewall\Kernel();
         $js = $kernel->getJavascript();
 
-        if (! empty($js)) {
+        if (!empty($js)) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);

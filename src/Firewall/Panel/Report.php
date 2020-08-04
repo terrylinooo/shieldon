@@ -246,7 +246,7 @@ class Report extends BaseController
         }
 
         foreach ($filters as $v) {
-            $data["filter_$v"]    = 0;
+            $data["filter_$v"] = 0;
             $data['rule_list'][$v] = [];
         }
 

@@ -33,7 +33,7 @@ class MockMessenger implements \Shieldon\Messenger\Messenger\MessengerInterface
      */
     public function send(string $message): bool
     {
-        if (! empty($message)) {
+        if (!empty($message)) {
             echo "\n" . $this->provider() . "\n";;
             echo "\n--- BEGIN - Mock of sending message ---\n\n";
             echo $message;

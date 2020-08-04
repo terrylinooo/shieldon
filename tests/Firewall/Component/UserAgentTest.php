@@ -90,7 +90,7 @@ class UserAgentTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $deniedList = $userAgentComponent->getDeniedItems();
 
-        if (! in_array('Ahrefs', $deniedList)) {
+        if (!in_array('Ahrefs', $deniedList)) {
             $this->assertTrue(true);
         } else {
             $this->assertTrue(false);

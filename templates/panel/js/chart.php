@@ -32,7 +32,7 @@ defined('SHIELDON_VIEW') || die('Illegal access');
     var captchaCount = <?php echo ($period_data['captcha_count'] ?? 0); ?>;
 
     // Today
-    <?php if (! empty($past_seven_hours)) : ?>
+    <?php if (!empty($past_seven_hours)) : ?>
     var pageviewChartString = [<?php echo ($past_seven_hours['pageview_chart_string'] ?? ''); ?>];
     var captchaChartString = [<?php echo ($past_seven_hours['captcha_chart_string'] ?? ''); ?>];
     var labelChartString = [<?php echo ($past_seven_hours['label_chart_string'] ?? ''); ?>];

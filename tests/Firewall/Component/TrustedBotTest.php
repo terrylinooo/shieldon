@@ -150,7 +150,7 @@ class TrustedBotTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $trustedBotComponent->setRdns('UNKNOWN-8-12-144-X.yahoo.com');
 
-        if (! $trustedBotComponent->isGoogle()) {
+        if (!$trustedBotComponent->isGoogle()) {
             $this->assertFalse(false);
         } else {
             $this->assertFalse(true);
@@ -169,7 +169,7 @@ class TrustedBotTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $trustedBotComponent->setRdns('msnbot-40-77-169-1.search.msn.com');
 
-        if (! $trustedBotComponent->isYahoo()) {
+        if (!$trustedBotComponent->isYahoo()) {
             $this->assertFalse(false);
         } else {
             $this->assertFalse(true);
@@ -189,7 +189,7 @@ class TrustedBotTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $trustedBotComponent->setRdns('crawl-66-249-66-1.googlebot.com');
 
-        if (! $trustedBotComponent->isBing()) {
+        if (!$trustedBotComponent->isBing()) {
             $this->assertFalse(false);
         } else {
             $this->assertFalse(true);

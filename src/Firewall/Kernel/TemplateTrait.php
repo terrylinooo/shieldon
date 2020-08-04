@@ -47,6 +47,13 @@ use function sprintf;
 trait TemplateTrait
 {
     /**
+     * The directory in where the frontend template files are placed.
+     *
+     * @var string
+     */
+    protected $templateDirectory = '';
+
+    /**
      * Custom dialog UI settings.
      *
      * @var array

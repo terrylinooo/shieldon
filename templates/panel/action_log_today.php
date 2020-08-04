@@ -28,7 +28,7 @@ use function Shieldon\Firewall\mask_string;
 ?>
 
 <div class="so-dashboard">
-    <?php if (! empty($period_data)) : ?>
+    <?php if (!empty($period_data)) : ?>
     <div class="so-flex">
         <div class="so-board">
             <div class="board-field left">
@@ -98,7 +98,7 @@ use function Shieldon\Firewall\mask_string;
                 </tr>
             </thead>
             <tbody>
-                <?php if (! empty($ip_details)) : ?>
+                <?php if (!empty($ip_details)) : ?>
                 <?php foreach ($ip_details as $ip => $ipInfo) : ?>
                 <tr>
                     <td>
@@ -121,7 +121,7 @@ use function Shieldon\Firewall\mask_string;
         </table>
     </div>
     <div class="so-timezone">
-        <?php if (! empty($last_cached_time)) : ?>
+        <?php if (!empty($last_cached_time)) : ?>
             <?php _e('panel', 'log_label_cache_time', 'Report generated time'); ?>: <strong class="text-info"><?php echo $last_cached_time; ?></strong>
             &nbsp;&nbsp;&nbsp;&nbsp; 
         <?php endif; ?>
@@ -131,7 +131,7 @@ use function Shieldon\Firewall\mask_string;
 
 <?php
 
-    if (! empty($period_data)) {
+    if (!empty($period_data)) {
         $data['period_data'] = $period_data;
         $data['past_seven_hours'] = $past_seven_hours;
         $this->loadViewPart('panel/js/chart', $data);

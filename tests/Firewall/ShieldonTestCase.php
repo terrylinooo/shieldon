@@ -66,7 +66,7 @@ class ShieldonTestCase extends TestCase
             $dir = BOOTSTRAP_DIR . '/../tmp';
         }
 
-        if (! is_dir($dir)) {
+        if (!is_dir($dir)) {
             $originalUmask = umask(0);
             $result = mkdir($dir, 0777, true);
             umask($originalUmask);

@@ -82,7 +82,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_POST['variable'] = 'test_variable_name';
         $_POST['action'] = 'add';
         $_POST['order'] = '';
-        $_POST['xss'] = 'page';
+        $_POST['xss_form_2'] = 'page';
 
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
@@ -99,7 +99,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_POST['variable'] = 'test_variable_name';
         $_POST['action'] = 'remove';
         $_POST['order'] = '3';
-        $_POST['xss'] = 'page';
+        $_POST['xss_form_2'] = 'page';
 
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $this->refreshRequest();
