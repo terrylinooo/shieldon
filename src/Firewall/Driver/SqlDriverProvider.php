@@ -27,10 +27,7 @@ use Shieldon\Firewall\Driver\SqlDriverTrait;
 use Exception;
 use PDO;
 
-use function is_bool;
-use function is_null;
 use function gettype;
-use function strtolower;
 
 /**
  * SQL Driver provider.
@@ -228,11 +225,6 @@ class SqlDriverProvider extends DriverProvider
 
                 $logData = $data;
                 break;
-
-            // @codeCoverageIgnoreStart
-            default:
-                return false;
-            // @codeCoverageIgnoreEnd
         }
 
         if ($this->checkExist($ip, $type)) {
@@ -334,13 +326,13 @@ class SqlDriverProvider extends DriverProvider
             foreach ($bind as $k => $v) {
 
                 // Default.
-                $pdoParam = $paramTypeCheck['string'];
+            //    $pdoParam = $paramTypeCheck['string'];
 
                 $type = gettype($v);
 
-                if (isset($paramTypeCheck[$type])) {
+             //   if (isset($paramTypeCheck[$type])) {
                     $pdoParam = $paramTypeCheck[$type];
-                }
+             //   }
 
                 // Solve problem with bigint.
                 if ($v >= 2147483647) {
@@ -396,13 +388,13 @@ class SqlDriverProvider extends DriverProvider
             foreach ($data as $k => $v) {
 
                 // Default.
-                $pdoParam = $paramTypeCheck['string'];
+                //$pdoParam = $paramTypeCheck['string'];
 
                 $type = gettype($v);
 
-                if (isset($paramTypeCheck[$type])) {
+              //  if (isset($paramTypeCheck[$type])) {
                     $pdoParam = $paramTypeCheck[$type];
-                }
+              //  }
 
                 // Solve problem with bigint.
                 if ($v >= 2147483647) {
