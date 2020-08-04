@@ -30,6 +30,7 @@ use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session;
 
 use InvalidArgumentException;
+use RuntimeException;
 use function array_keys;
 use function define;
 use function defined;
@@ -89,19 +90,19 @@ trait TemplateTrait
         $response = get_response();
 
         $httpStatusCodes = [
-            kernel::RESPONSE_TEMPORARILY_DENY => [
+            Kernel::RESPONSE_TEMPORARILY_DENY => [
                 'type' => 'captcha',
-                'code' => kernel::HTTP_STATUS_FORBIDDEN,
+                'code' => Kernel::HTTP_STATUS_FORBIDDEN,
             ],
 
-            kernel::RESPONSE_LIMIT_SESSION => [
+            Kernel::RESPONSE_LIMIT_SESSION => [
                 'type' => 'session_limitation',
-                'code' => kernel::HTTP_STATUS_TOO_MANY_REQUESTS,
+                'code' => Kernel::HTTP_STATUS_TOO_MANY_REQUESTS,
             ],
 
-            kernel::RESPONSE_DENY => [
+            Kernel::RESPONSE_DENY => [
                 'type' => 'rejection',
-                'code' => kernel::HTTP_STATUS_BAD_REQUEST,
+                'code' => Kernel::HTTP_STATUS_BAD_REQUEST,
             ],
         ];
 
@@ -252,7 +253,7 @@ trait TemplateTrait
      */
     protected function getTemplate(string $type): string
     {
-        $directory = self::KERNEL_DIR . '/../../templates/frontend';
+        $directory = Kernel::KERNEL_DIR . '/../../templates/frontend';
 
         if (!empty($this->templateDirectory)) {
             $directory = $this->templateDirectory;
