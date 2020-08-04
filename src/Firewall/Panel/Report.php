@@ -237,29 +237,18 @@ class Report extends BaseController
     {
         $ruleList = $this->kernel->driver->getAll('rule');
 
-        $data['component_ip']         = 0;
-        $data['component_rdns']       = 0;
-        $data['component_header']     = 0;
-        $data['component_useragent']  = 0;
-        $data['component_trustedbot'] = 0;
+        $components = ['ip', 'rdns', 'header', 'useragent', 'trustedbot'];
+        $filters = ['cookie', 'referer', 'session', 'frequency'];
 
-        $data['filter_cookie']    = 0;
-        $data['filter_referer']   = 0;
-        $data['filter_session']   = 0;
-        $data['filter_frequency'] = 0;
+        foreach ($components as $v) {
+            $data["component_$v"] = 0;
+            $data['rule_list'][$v] = [];
+        }
 
-        // Components.
-        $data['rule_list']['ip']         = [];
-        $data['rule_list']['rdns']       = [];
-        $data['rule_list']['header']     = [];
-        $data['rule_list']['useragent']  = [];
-        $data['rule_list']['trustedbot'] = [];
-
-        // Filters.
-        $data['rule_list']['cookie']    = [];
-        $data['rule_list']['referer']   = [];
-        $data['rule_list']['session']   = [];
-        $data['rule_list']['frequency'] = [];
+        foreach ($filters as $v) {
+            $data["filter_$v"]    = 0;
+            $data['rule_list'][$v] = [];
+        }
 
         $counter = $this->getCounterDefault();
         $info = $this->getInfoDefault();
