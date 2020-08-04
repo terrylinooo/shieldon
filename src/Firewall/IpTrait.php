@@ -31,6 +31,16 @@ use function gethostbyaddr;
 trait IpTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setIp                | Set an IP address.
+     *   getIp                | Get current set IP.
+     *   setRdns              | Set a RDNS record for the check.
+     *   getRdns              | Get IP resolved hostname.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * IP address.
      *
      * @var string

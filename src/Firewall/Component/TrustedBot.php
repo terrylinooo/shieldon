@@ -41,10 +41,54 @@ use function strstr;
  */
 class TrustedBot extends ComponentProvider
 {
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setIp                | Set an IP address.
+     *   getIp                | Get current set IP.
+     *   setRdns              | Set a RDNS record for the check.
+     *   getRdns              | Get IP resolved hostname.
+     *  ----------------------|---------------------------------------------
+     */
     use IpTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setAllowedItems      | Add items to the whitelist pool.
+     *   setAllowedItem       | Add an item to the whitelist pool.
+     *   getAllowedItems      | Get items from the whitelist pool.
+     *   getAllowedItem       | Get an item from the whitelist pool.
+     *   removeAllowedItem    | Remove an allowed item if exists.
+     *   removeAllowedItems   | Remove all allowed items.
+     *   hasAllowedItem       | Check if an allowed item exists.
+     *   getAllowByPrefix     | Check if an allowed item exists have the same prefix.
+     *   removeAllowByPrefix  | Remove allowed items with the same prefix.
+     *   isAllowed            | Check if an item is allowed?
+     *  ----------------------|---------------------------------------------
+     */
     use AllowedTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setDeniedItems       | Add items to the blacklist pool.
+     *   setDeniedItem        | Add an item to the blacklist pool.
+     *   getDeniedItems       | Get items from the blacklist pool.
+     *   getDeniedItem        | Get items from the blacklist pool.
+     *   removeDeniedItem     | Remove a denied item if exists.
+     *   removeDeniedItems    | Remove all denied items.
+     *   hasDeniedItem        | Check if a denied item exists.
+     *   getDenyWithPrefix    | Check if a denied item exists have the same prefix.
+     *   removeDenyWithPrefix | Remove denied items with the same prefix.
+     *   isDenied             | Check if an item is denied?
+     *  ----------------------|---------------------------------------------
+     */
     use DeniedTrait;
 
+    /**
+     * Constant
+     */
     const STATUS_CODE = 85;
 
     /**
@@ -221,6 +265,7 @@ class TrustedBot extends ComponentProvider
         // Here, once a request uses a user-agent that contains search engine information, but it does't pass the RDNS check.
         // We can identify it is fake.
         $this->isFake = true;
+
         return false;
     }
 

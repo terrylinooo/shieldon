@@ -31,6 +31,18 @@ use function explode;
 trait FirewallTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   getKernel            | Get the Shieldon Kernel instance.
+     *   getConfiguration     | Get the configuration data.
+     *   getDirectory         | Get the dictionary where the data is stored.
+     *   getFileName          | Get the path of the configuration file.
+     *   getConfig            | Get the value by identification string.
+     *   setConfig            | Set the value by identification string.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Shieldon instance.
      *
      * @var object

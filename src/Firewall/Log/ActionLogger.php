@@ -81,7 +81,7 @@ final class ActionLogger
      * @param string $directory The dirctory in where the logs were placed.
      * @param string $Ymd       The date string.
      */
-    public function __construct(string $directory = '', $Ymd = '')
+    public function __construct(string $directory = '', string $Ymd = '')
     {
         if ('' !== $directory) {
             $this->directory = $directory;
@@ -258,9 +258,6 @@ final class ActionLogger
     
                     if (!empty($line)) {
                         $data = explode(',', trim($line));
-                    }
-        
-                    if (!empty($data[0])) {
                         $results[] = [
                             'ip'          => $data[0],
                             'session_id'  => $data[1],
@@ -268,6 +265,7 @@ final class ActionLogger
                             'timesamp'    => $data[3],
                         ];
                     }
+
                     unset($line, $data);
                 }
                 fclose($logFile);

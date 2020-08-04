@@ -35,6 +35,15 @@ use function array_keys;
 trait FilterTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setFilters           | Set the filters.
+     *   setFilter            | Set a filter.
+     *   disableFilters       | Disable all filters.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Enable or disable the filters.
      *
      * @var array

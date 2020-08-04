@@ -28,10 +28,26 @@ use function in_array;
 use function strpos;
 
 /*
- * @since 2.0.0
+ * Allowed trait.
  */
 trait AllowedTrait
 {
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setAllowedItems      | Add items to the whitelist pool.
+     *   setAllowedItem       | Add an item to the whitelist pool.
+     *   getAllowedItems      | Get items from the whitelist pool.
+     *   getAllowedItem       | Get an item from the whitelist pool.
+     *   removeAllowedItem    | Remove an allowed item if exists.
+     *   removeAllowedItems   | Remove all allowed items.
+     *   hasAllowedItem       | Check if an allowed item exists.
+     *   getAllowByPrefix     | Check if an allowed item exists have the same prefix.
+     *   removeAllowByPrefix  | Remove allowed items with the same prefix.
+     *   isAllowed            | Check if an item is allowed?
+     *  ----------------------|---------------------------------------------
+     */
+
     /**
      * Data pool for hard whitelist.
      *
@@ -90,7 +106,7 @@ trait AllowedTrait
     }
 
     /**
-     * Return the allowed item if exists.
+     * Remove an allowed item if exists.
      *
      * @param string $key The key of the data.
      *
@@ -112,7 +128,7 @@ trait AllowedTrait
     }
 
     /**
-     * Check if a allowed item exists.
+     * Check if an allowed item exists.
      *
      * @param string $key The key of the data.
      *
@@ -124,13 +140,13 @@ trait AllowedTrait
     }
 
     /**
-     * Check if a allowed item exists have the same prefix.
+     * Check if an allowed item exists have the same prefix.
      *
      * @param string $key The key of the data.
      *
      * @return array
      */
-    public function getAllowedItemsWithPrefix(string $key): array
+    public function getAllowByPrefix(string $key): array
     {
         $temp = [];
         foreach ($this->allowedList as $keyName => $value) {
@@ -148,7 +164,7 @@ trait AllowedTrait
      *
      * @return void
      */
-    public function removeAllowedItemsWithPrefix(string $key): void
+    public function removeAllowByPrefix(string $key): void
     {
         foreach (array_keys($this->allowedList) as $keyName) {
             if (strpos($keyName, $key) === 0) {

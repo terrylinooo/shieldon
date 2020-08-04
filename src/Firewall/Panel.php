@@ -27,6 +27,7 @@ use Shieldon\Firewall\HttpResolver;
 use Shieldon\Firewall\Panel\CsrfTrait;
 use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\User;
+use Shieldon\Firewall\Utils\Container;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 
@@ -130,21 +131,36 @@ class Panel
 
     /**
      * Display pages.
-     * 
-     * @param string $basePath The base URL of the firewall panel.
-     * 
+     *
      * @return void
      */
-    public function entry($basePath): void
+    public function entry(): void
     {
-        $request = get_request();
+        $firewall = Container::get('firewall');
+
+        if (!($firewall instanceof Firewall)) {
+            throw new RuntimeException(
+                'The Firewall instance should be initialized first.'
+            );
+        }
+
         $response = get_response();
 
-        $path = trim($request->getUri()->getPath(), '/');
-        $base = trim($basePath, '/');
-        $urlSegment = trim(str_replace($base, '', $path), '/');
+        // Ex: /firewall/panel/user/login/
+        // => firewall/panel/user/login
+        $path = trim($firewall->getKernel()->getCurrentUrl(), '/');
 
-        if ($urlSegment === $basePath || $urlSegment === '') {
+        // Ex: /firewall/panel/
+        // => firewall/panel
+        $base = trim($firewall->controlPanel(), '/');
+
+        // => /user/login
+        $urlSegment = str_replace($base, '', $path);
+
+        // => user/login
+        $urlSegment = trim($urlSegment, '/');
+
+        if ($urlSegment === $base || $urlSegment === '') {
             $urlSegment = 'home/index';
         }
 

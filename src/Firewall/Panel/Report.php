@@ -149,7 +149,7 @@ class Report extends BaseController
                 $data['period_data'] = $ipDetailsCachedData['period_data'];
                 $lastCachedTime = date('Y-m-d H:i:s', $ipDetailsCachedData['time']);
     
-                if ('today' === $type ) {
+                if ('today' === $type) {
                     $ipDetailsCachedData = $logCacheHandler->get('past_seven_hours');
                     $data['past_seven_hours'] = $ipDetailsCachedData['period_data'];
                 }
@@ -163,7 +163,7 @@ class Report extends BaseController
 
                 $logCacheHandler->save($type, $data);
     
-                if ('today' === $type ) {
+                if ('today' === $type) {
                     $this->parser->prepare('past_seven_hours');
                     $data['past_seven_hours'] = $this->parser->getParsedPeriodData();
 

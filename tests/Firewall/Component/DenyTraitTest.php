@@ -72,11 +72,11 @@ class DenyTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertEquals($deniedList, []);
     }
 
-    public function testGetDeniedItemsWithPrefix()
+    public function testgetDenyWithPrefix()
     {
         $rdns = new \Shieldon\Firewall\Component\Rdns();
 
-        $deniedList = $rdns->getDeniedItemsWithPrefix('unknown');
+        $deniedList = $rdns->getDenyWithPrefix('unknown');
 
         $rdnsList = [
             'unknown_1' => '.webcrawler.link',
@@ -85,13 +85,13 @@ class DenyTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertEquals($deniedList, $rdnsList);
     }
 
-    // removeDeniedItemsWithPrefix
+    // removeDenyWithPrefix
 
-    public function testRemoveDeniedItemsWithPrefix()
+    public function testremoveDenyWithPrefix()
     {
         $rdns = new \Shieldon\Firewall\Component\Rdns();
 
-        $rdns->removeDeniedItemsWithPrefix('unknown');
+        $rdns->removeDenyWithPrefix('unknown');
 
         $rdnsList = [];
 

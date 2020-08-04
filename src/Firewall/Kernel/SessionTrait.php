@@ -34,6 +34,14 @@ use function time;
 trait SessionTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   limitSession         | Limit the amount of the online users.
+     *   getSessionCount      | Get the amount of the sessions.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Are you willing to limit the online session amount?
      *
      * @var array

@@ -31,6 +31,24 @@ use Shieldon\Firewall\Captcha\CaptchaInterface;
 trait CaptchaTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setIp                | Ban an IP.
+     *   getIp                | Get current user's browsing path.
+     *   setRdns              | Print a JavaScript snippet in the pages.
+     *   getRdns              | Used on testing purpose.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
+     * Container for captcha addons.
+     * The collection of \Shieldon\Firewall\Captcha\CaptchaInterface
+     *
+     * @var array
+     */
+    public $captcha = [];
+
+    /**
      * Get a class name without namespace string.
      *
      * @param object $instance Class
@@ -57,14 +75,6 @@ trait CaptchaTrait
      * @return int
      */
     abstract protected function setResultCode(int $resultCode): int;
-
-    /**
-     * Container for captcha addons.
-     * The collection of \Shieldon\Firewall\Captcha\CaptchaInterface
-     *
-     * @var array
-     */
-    public $captcha = [];
 
     /**
      * Set a captcha.

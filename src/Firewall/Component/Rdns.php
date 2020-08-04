@@ -35,9 +35,37 @@ use function preg_match;
  */
 class Rdns extends ComponentProvider
 {
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setIp                | Set an IP address.
+     *   getIp                | Get current set IP.
+     *   setRdns              | Set a RDNS record for the check.
+     *   getRdns              | Get IP resolved hostname.
+     *  ----------------------|---------------------------------------------
+     */
     use IpTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setDeniedItems       | Add items to the blacklist pool.
+     *   setDeniedItem        | Add an item to the blacklist pool.
+     *   getDeniedItems       | Get items from the blacklist pool.
+     *   getDeniedItem        | Get items from the blacklist pool.
+     *   removeDeniedItem     | Remove a denied item if exists.
+     *   removeDeniedItems    | Remove all denied items.
+     *   hasDeniedItem        | Check if a denied item exists.
+     *   getDenyWithPrefix    | Check if a denied item exists have the same prefix.
+     *   removeDenyWithPrefix | Remove denied items with the same prefix.
+     *   isDenied             | Check if an item is denied?
+     *  ----------------------|---------------------------------------------
+     */
     use DeniedTrait;
 
+    /**
+     * Constant
+     */
     const STATUS_CODE = 82;
 
     /**

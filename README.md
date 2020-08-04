@@ -69,6 +69,10 @@ class FirewallMiddleware
 
         // The directory in where Shieldon Firewall will place its files.
         $firewall->configure(__DIR__ . '/../cache/shieldon_firewall');
+
+        // The base url for the control panel.
+        $firewall->controlPanel('/firewall/panel/');
+
         $response = $firewall->run();
 
         if ($response->getStatusCode() !== 200) {
@@ -102,9 +106,7 @@ $app->any('/firewall/panel[/{params:.*}]', function (Request $request, Response 
     $firewall->configure(__DIR__ . '/../cache/shieldon_firewall');
 
     $panel = new \Shieldon\Firewall\Panel();
-
-    // The base url for the control panel.
-    $panel->entry('/firewall/panel/');
+    $panel->entry();
 });
 ```
 
@@ -144,6 +146,9 @@ if (isset($_SERVER['REQUEST_URI'])) {
 
     $firewall = new \Shieldon\Firewall\Firewall();
     $firewall->configure($storage);
+
+    // The base url for the control panel.
+    $firewall->controlPanel('/firewall/panel/');
     $response = $firewall->run();
 
     if ($response->getStatusCode() !== 200) {
@@ -160,9 +165,7 @@ Route::any('/firewall/panel/{path?}', function() {
 
     $panel = new \Shieldon\Firewall\Panel();
     $panel->csrf(['_token' => csrf_token()]);
-
-    // The entry point must be the same as the route defined.
-    $panel->entry('/firewall/panel/');
+    $panel->entry();
 
 })->where('path', '(.*)');
 ```
@@ -208,6 +211,9 @@ class MY_Controller extends CI_Controller
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure($storage);
+
+        // The base url for the control panel.
+        $firewall->controlPanel('/firewall/panel/');
         $response = $firewall->run();
 
         if ($response->getStatusCode() !== 200) {
@@ -245,7 +251,7 @@ class Firewall extends MY_Controller
     public function panel()
     {
         $panel = new \Shieldon\Firewall\Panel();
-        $panel->entry('/firewall/panel/');
+        $panel->entry();
     }
 }
 ```

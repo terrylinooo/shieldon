@@ -235,11 +235,11 @@ class AllowTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertEquals($allowedList, []);
     }
 
-    public function testGetAllowedItemsWithPrefix()
+    public function testgetAllowByPrefix()
     {
         $trustedbot = new \Shieldon\Firewall\Component\TrustedBot();
 
-        $allowedList = $trustedbot->getAllowedItemsWithPrefix('google');
+        $allowedList = $trustedbot->getAllowByPrefix('google');
 
         $truestedBotList = [
 
@@ -258,14 +258,14 @@ class AllowTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertEquals($allowedList, $truestedBotList);
     }
 
-    // removeAllowedItemsWithPrefix
+    // removeAllowByPrefix
 
-    public function testRemoveAllowedItemsWithPrefix()
+    public function testremoveAllowByPrefix()
     {
         $trustedbot = new \Shieldon\Firewall\Component\TrustedBot();
 
-        $trustedbot->removeAllowedItemsWithPrefix('google');
-        $trustedbot->removeAllowedItemsWithPrefix('yandex');
+        $trustedbot->removeAllowByPrefix('google');
+        $trustedbot->removeAllowByPrefix('yandex');
 
         $truestedBotList = [
 

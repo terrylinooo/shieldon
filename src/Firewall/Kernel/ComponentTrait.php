@@ -33,6 +33,15 @@ use Shieldon\Firewall\Component\Ip;
 trait ComponentTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setComponent         | Set a commponent.
+     *   getComponent         | Get a component instance from component's container.
+     *   disableComponents    | Disable all components.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Get a class name without namespace string.
      *
      * @param object $instance Class

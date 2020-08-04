@@ -57,69 +57,32 @@ define('SHIELDON_FIREWALL_VERSION', '2.0');
  */
 class Helpers
 {
-
+    //            ^_______^           //
 }
 
 /**
- * Get user lang.
- * 
- * This method is a part of  __()
- *
- * @return string
+ *   Public methods       | Desctiotion
+ *  ----------------------|---------------------------------------------
+ *   __                   | Get locale message.
+ *   _e                   | Echo string from __()
+ *   get_user_lang        | Get user lang.
+ *   include_i18n_file    | Include i18n file.
+ *  mask_string           | Mask strings with asterisks.
+ *  get_cpu_usage         | Get current CPU usage information.
+ *  get_memory_usage      | Get current RAM usage information. 
+ *  get_default_properties| The default settings of Shieldon core.
+ *  get_request           | Get PSR-7 HTTP server request from container.
+ *  get_response          | Get PSR-7 HTTP response from container.
+ *  get_session           | Get PHP native session from container.
+ *  set_request           | Set PSR-7 HTTP server request to container.
+ *  set_response          | Set PSR-7 HTTP response to container.
+ *  unset_global_cookie   | Unset superglobal COOKIE variable.
+ *  unset_global_post     | Unset superglobal POST variable.
+ *  unset_global_get      | Unset superglobal GET variable.
+ *  unset_global_session  | Unset superglobal SESSION variable.
+ *  unset_superglobal     | Unset superglobal variables.
+ *  ----------------------|---------------------------------------------
  */
-function get_user_lang(): string
-{
-    static $lang;
-
-    if (!$lang) {
-        $lang = 'en';
-
-        // Fetch session variables.
-        $session = get_session();
-        $panelLang = $session->get('shieldon_panel_lang');
-        $uiLang = $session->get('shieldon_ui_lang');
-    
-        if (!empty($panelLang)) {
-            $lang = $panelLang;
-        } elseif (!empty($uiLang)) {
-            $lang = $uiLang;
-        }
-    }
-
-    return $lang;
-}
-
-/**
- * Include i18n file.
- * 
- * This method is a part of  __()
- *
- * @param string $lang     The language code.
- * @param string $filename The i18n language pack file.
- *
- * @return void
- */
-function include_i18n_file(string $lang, string $filename): array
-{
-    $content = [];
-    $lang = str_replace('-', '_', $lang);
-
-    if (stripos($lang, 'zh_') !== false) {
-        if (stripos($lang, 'zh_CN') !== false) {
-            $lang = 'zh_CN';
-        } else {
-            $lang = 'zh';
-        }
-    }
-
-    $file = __DIR__ . '/../../localization/' . $lang . '/' . $filename . '.php';
-    
-    if (file_exists($file)) {
-        $content = include $file;
-    }
-
-    return $content;
-}
 
 /**
  * Get locale message.
@@ -195,6 +158,67 @@ function _e(): void
     $replacement = ($num > 3) ? func_get_arg(3) : [];
 
     echo __($filename, $langcode, $placeholder, $replacement);
+}
+
+/**
+ * Get user lang.
+ * 
+ * This method is a part of  __()
+ *
+ * @return string
+ */
+function get_user_lang(): string
+{
+    static $lang;
+
+    if (!$lang) {
+        $lang = 'en';
+
+        // Fetch session variables.
+        $session = get_session();
+        $panelLang = $session->get('shieldon_panel_lang');
+        $uiLang = $session->get('shieldon_ui_lang');
+    
+        if (!empty($panelLang)) {
+            $lang = $panelLang;
+        } elseif (!empty($uiLang)) {
+            $lang = $uiLang;
+        }
+    }
+
+    return $lang;
+}
+
+/**
+ * Include i18n file.
+ * 
+ * This method is a part of  __()
+ *
+ * @param string $lang     The language code.
+ * @param string $filename The i18n language pack file.
+ *
+ * @return void
+ */
+function include_i18n_file(string $lang, string $filename): array
+{
+    $content = [];
+    $lang = str_replace('-', '_', $lang);
+
+    if (stripos($lang, 'zh_') !== false) {
+        if (stripos($lang, 'zh_CN') !== false) {
+            $lang = 'zh_CN';
+        } else {
+            $lang = 'zh';
+        }
+    }
+
+    $file = __DIR__ . '/../../localization/' . $lang . '/' . $filename . '.php';
+    
+    if (file_exists($file)) {
+        $content = include $file;
+    }
+
+    return $content;
 }
 
 /**

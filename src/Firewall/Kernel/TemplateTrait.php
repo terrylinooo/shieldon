@@ -47,6 +47,15 @@ use function sprintf;
 trait TemplateTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   respond              | Respond the result.
+     *   setTemplateDirectory | Set the frontend template directory.
+     *   getJavascript        | Print a JavaScript snippet in the pages.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * The directory in where the frontend template files are placed.
      *
      * @var string
@@ -59,16 +68,6 @@ trait TemplateTrait
      * @var array
      */
     protected $dialog = [];
-
-    /**
-     *   Public methods       | Desctiotion
-     *  ----------------------|---------------------------------------------
-     *   setDialog            | Customize the dialog UI.
-     *   respond              | Respond the result.
-     *   setTemplateDirectory | Set the frontend template directory.
-     *   getJavascript        | Print a JavaScript snippet in the pages.
-     *  ----------------------|---------------------------------------------
-     */
 
     /**
      * Get current visior's path.

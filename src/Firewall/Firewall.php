@@ -51,6 +51,7 @@ class Firewall
      *   configure            | The absolute path of a dictionary for storing data.
      *   run                  | Execute the firewall.
      *   add                  | Add a PRS-15 middleware used before firewall.
+     *   controlPanel         | Set the base URL of the control panel.
      *  ----------------------|---------------------------------------------
      */
 
@@ -97,6 +98,13 @@ class Firewall
      * @var array
      */
     protected $middlewares = [];
+
+    /**
+     * The URI of the control panel.
+     *
+     * @var string
+     */
+    protected $controlPanelUri = '';
 
     /**
      * Constructor.
@@ -237,6 +245,24 @@ class Firewall
     public function add(MiddlewareInterface $middleware): void
     {
         $this->middlewares[] = $middleware;
+    }
+
+    /**
+     * The base URL for control panel.
+     *
+     * @param string $uri The path component of a URI
+     *
+     * @return string
+     */
+    public function controlPanel(string $uri = ''): string
+    {
+        if (!empty($uri)) {
+            $uri = '/' . trim($uri, '/');
+            $this->controlPanelUri = $uri;
+            $this->getKernel()->exclude($this->controlPanelUri);
+        }
+
+        return $this->controlPanelUri;
     }
 
     /**

@@ -32,6 +32,15 @@ use RuntimeException;
 trait DriverTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setDriver            | Set a data driver.
+     *   setChannel           | Set a data channel.
+     *   disableDbBuilder     | disable creating data tables.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Driver for storing data.
      *
      * @var \Shieldon\Firewall\Driver\DriverProvider

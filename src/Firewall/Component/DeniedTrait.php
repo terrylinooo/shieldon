@@ -28,19 +28,35 @@ use function in_array;
 use function strpos;
 
 /*
- * @since 2.0.0
+ * Denied trait.
  */
 trait DeniedTrait
 {
     /**
-     * Data pool for hard whitelist.
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setDeniedItems       | Add items to the blacklist pool.
+     *   setDeniedItem        | Add an item to the blacklist pool.
+     *   getDeniedItems       | Get items from the blacklist pool.
+     *   getDeniedItem        | Get items from the blacklist pool.
+     *   removeDeniedItem     | Remove a denied item if exists.
+     *   removeDeniedItems    | Remove all denied items.
+     *   hasDeniedItem        | Check if a denied item exists.
+     *   getDenyWithPrefix    | Check if a denied item exists have the same prefix.
+     *   removeDenyWithPrefix | Remove denied items with the same prefix.
+     *   isDenied             | Check if an item is denied?
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
+     * Data pool for hard blacklist.
      *
      * @var array
      */
     protected $deniedList = [];
 
     /**
-     * Add items to the whitelist pool.
+     * Add items to the blacklist pool.
      *
      * @param array $itemList String list.
      *
@@ -52,7 +68,7 @@ trait DeniedTrait
     }
 
     /**
-     * Add an item to the whitelist pool.
+     * Add an item to the blacklist pool.
      *
      * @param string|array $value The value of the data.
      * @param string       $key   The key of the data.
@@ -70,7 +86,7 @@ trait DeniedTrait
     }
 
     /**
-     * Get items from the whitelist pool.
+     * Get items from the blacklist pool.
      *
      * @return array
      */
@@ -80,7 +96,7 @@ trait DeniedTrait
     }
 
     /**
-     * Get an item from the whitelist pool.
+     * Get an item from the blacklist pool.
      *
      * @return string|array
      */
@@ -90,7 +106,7 @@ trait DeniedTrait
     }
 
     /**
-     * Return the denied item if exists.
+     * Remove a denied item if exists.
      *
      * @param string $key The key of the data.
      *
@@ -102,7 +118,7 @@ trait DeniedTrait
     }
 
     /**
-     * Remove all items.
+     * Remove all denied items.
      *
      * @return void
      */
@@ -130,7 +146,7 @@ trait DeniedTrait
      *
      * @return array
      */
-    public function getDeniedItemsWithPrefix(string $key): array
+    public function getDenyWithPrefix(string $key): array
     {
         $temp = [];
         foreach ($this->deniedList as $keyName => $value) {
@@ -148,7 +164,7 @@ trait DeniedTrait
      *
      * @return void
      */
-    public function removeDeniedItemsWithPrefix(string $key): void
+    public function removeDenyWithPrefix(string $key): void
     {
         foreach (array_keys($this->deniedList) as $keyName) {
             if (strpos($keyName, $key) === 0) {

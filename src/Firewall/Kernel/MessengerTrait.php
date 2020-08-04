@@ -31,13 +31,11 @@ use RuntimeException;
 trait MessengerTrait
 {
     /**
-     * Get a class name without namespace string.
-     *
-     * @param object $instance Class
-     * 
-     * @return string
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setMessenger         | Set a messenger
+     *  ----------------------|---------------------------------------------
      */
-    abstract protected function getClassName($instance): string;
 
     /**
      * The ways Shieldon send a message to when someone has been blocked.
@@ -53,6 +51,15 @@ trait MessengerTrait
      * @var string
      */
     protected $msgBody = '';
+
+    /**
+     * Get a class name without namespace string.
+     *
+     * @param object $instance Class
+     * 
+     * @return string
+     */
+    abstract protected function getClassName($instance): string;
 
     /**
      * Set a messenger
