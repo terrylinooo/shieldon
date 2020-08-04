@@ -31,6 +31,8 @@ trait CsrfTrait
      *   Public methods       | Desctiotion
      *  ----------------------|---------------------------------------------
      *   csrf                 | Receive the CSRF name and token from the App.
+     *   setCsrfField         | Set CSRF input fields.
+     *   fieldCsrf            | Output HTML input element with CSRF token.
      *  ----------------------|---------------------------------------------
      */
 
@@ -62,11 +64,23 @@ trait CsrfTrait
     }
 
     /**
+     * Set CSRF input fields.
+     *
+     * @param array $csrfParams
+     *
+     * @return void
+     */
+    public function setCsrfField(array $csrfParams): void
+    {
+        $this->csrfField = $csrfParams;
+    }
+
+    /**
      * Output HTML input element with CSRF token.
      *
      * @return string
      */
-    protected function fieldCsrf(): string
+    public function fieldCsrf(): string
     {
         $string = '';
         if (!empty($this->csrfField)) {
@@ -85,17 +99,5 @@ trait CsrfTrait
     protected function getCsrfField(): array
     {
         return $this->csrfField;
-    }
-
-    /**
-     * Set CSRF input fields.
-     *
-     * @param array $csrfParams
-     *
-     * @return void
-     */
-    protected function setCsrfField(array $csrfParams): void
-    {
-        $this->csrfField = $csrfParams;
     }
 }

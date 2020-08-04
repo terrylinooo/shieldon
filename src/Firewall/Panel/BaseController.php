@@ -76,6 +76,8 @@ class BaseController
      *   Public methods       | Desctiotion
      *  ----------------------|---------------------------------------------
      *   csrf                 | Receive the CSRF name and token from the App.
+     *   setCsrfField         | Set CSRF input fields.
+     *   fieldCsrf            | Output HTML input element with CSRF token.
      *  ----------------------|---------------------------------------------
      */
     use CsrfTrait;
