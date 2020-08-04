@@ -63,16 +63,12 @@ class Security extends BaseController
     {
         $postParams = get_request()->getParsedBody();
 
-        if (
-            isset($postParams['url']) && 
-            isset($postParams['user']) && 
-            isset($postParams['pass'])
-        ) {
+        if ($this->checkPostParamsExist('url', 'user', 'pass', 'action')) {
 
-            $url = $postParams['url'] ?? '';
-            $user = $postParams['user'] ?? '';
-            $pass = $postParams['pass'] ?? '';
-            $action = $postParams['action'] ?? '';
+            $url = $postParams['url'];
+            $user = $postParams['user'];
+            $pass = $postParams['pass'];
+            $action = $postParams['action'];
             $order = (int) $postParams['order'];
 
             $authenticatedList = (array) $this->getConfig('www_authenticate');
@@ -121,7 +117,7 @@ class Security extends BaseController
     {
         $postParams = get_request()->getParsedBody();
 
-        if (isset($postParams['xss'])) {
+        if ($this->checkPostParamsExist('xss')) {
             unset_superglobal('xss', 'post');
 
             $type     = $postParams['type']     ?? '';

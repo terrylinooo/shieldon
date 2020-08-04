@@ -62,7 +62,7 @@ class Circle extends BaseController
     {
         $postParams = get_request()->getParsedBody();
 
-        if (isset($postParams['ip'])) {
+        if ($this->checkPostParamsExist('ip', 'action')) {
 
             $ip = $postParams['ip'];
             $action = $postParams['action'];

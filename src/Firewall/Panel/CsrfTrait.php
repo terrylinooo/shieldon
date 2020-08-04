@@ -47,7 +47,7 @@ trait CsrfTrait
      * Most popular PHP framework has a built-in CSRF protection such as Laravel.
      * We need to pass the CSRF token for our form actions.
      *
-     * @param string|array ...$csrfparams The arguments.
+     * @param array ...$csrfparams The arguments.
      *
      * @return void
      */

@@ -488,4 +488,24 @@ class BaseController
 
         echo $echo[$echoType];
     }
+
+    /**
+     * Check the required fields.
+     *
+     * @param array $fields The fields from POST form.
+     *
+     * @return bool
+     */
+    protected function checkPostParamsExist(...$fields): bool
+    {
+        $postParams = (array) get_request()->getParsedBody();
+
+        foreach ($fields as $field) {
+            if (empty($postParams[$field])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

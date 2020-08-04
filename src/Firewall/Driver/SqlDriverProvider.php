@@ -194,6 +194,10 @@ class SqlDriverProvider extends DriverProvider
     {
         $this->assertInvalidDataTable($type);
 
+        $tableName = '';
+        $logData = [];
+        $logWhere = [];
+
         switch ($type) {
 
             case 'rule':
@@ -324,16 +328,8 @@ class SqlDriverProvider extends DriverProvider
             $bind = array_merge($data, $where);
 
             foreach ($bind as $k => $v) {
-
-                // Default.
-            //    $pdoParam = $paramTypeCheck['string'];
-
-                $type = gettype($v);
-
-             //   if (isset($paramTypeCheck[$type])) {
-                    $pdoParam = $paramTypeCheck[$type];
-             //   }
-
+                $pdoParam = $paramTypeCheck[gettype($v)];
+  
                 // Solve problem with bigint.
                 if ($v >= 2147483647) {
                     $pdoParam = $this->db::PARAM_STR;
@@ -386,15 +382,7 @@ class SqlDriverProvider extends DriverProvider
             $query = $this->db->prepare($sql);
 
             foreach ($data as $k => $v) {
-
-                // Default.
-                //$pdoParam = $paramTypeCheck['string'];
-
-                $type = gettype($v);
-
-              //  if (isset($paramTypeCheck[$type])) {
-                    $pdoParam = $paramTypeCheck[$type];
-              //  }
+                $pdoParam = $paramTypeCheck[gettype($v)];
 
                 // Solve problem with bigint.
                 if ($v >= 2147483647) {
@@ -444,15 +432,7 @@ class SqlDriverProvider extends DriverProvider
             $query = $this->db->prepare($sql);
 
             foreach ($where as $k => $v) {
-
-                // Default.
-                $pdoParam = $paramTypeCheck['string'];
-
-                $type = gettype($v);
-
-                if (isset($paramTypeCheck[$type])) {
-                    $pdoParam = $paramTypeCheck[$type];
-                }
+                $pdoParam = $paramTypeCheck[gettype($v)];
 
                 $query->bindValue(":$k", $v, $pdoParam);
             }
