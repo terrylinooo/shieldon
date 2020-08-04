@@ -28,9 +28,11 @@ use Shieldon\Firewall\Panel\CsrfTrait;
 use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\User;
 use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Firewall;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 
+use RuntimeException;
 use function call_user_func;
 use function explode;
 use function in_array;
@@ -136,28 +138,29 @@ class Panel
      */
     public function entry(): void
     {
-        $firewall = Container::get('firewall');
-
-        if (!($firewall instanceof Firewall)) {
-            throw new RuntimeException(
-                'The Firewall instance should be initialized first.'
-            );
-        }
+        $firewall = $this->getFirewallInstance();
 
         $response = get_response();
 
-        // Ex: /firewall/panel/user/login/
-        // => firewall/panel/user/login
-        $path = trim($firewall->getKernel()->getCurrentUrl(), '/');
+        /**
+         * Ex: /firewall/panel/user/login/
+         *   => firewall/panel/user/login
+         */
+        $path = $firewall->getKernel()->getCurrentUrl();
+        $path = trim($path, '/');
 
-        // Ex: /firewall/panel/
-        // => firewall/panel
-        $base = trim($firewall->controlPanel(), '/');
+        /**
+         * Ex: /firewall/panel/
+         *   => firewall/panel
+         */
+        $base = $firewall->controlPanel();
+        $base = trim($base, '/');
 
-        // => /user/login
+        /**
+         * Ex: /user/login
+         *   => user/login
+         */
         $urlSegment = str_replace($base, '', $path);
-
-        // => user/login
         $urlSegment = trim($urlSegment, '/');
 
         if ($urlSegment === $base || $urlSegment === '') {
@@ -258,4 +261,22 @@ class Panel
         // @codeCoverageIgnoreStart
     }
     // @codeCoverageIgnoreEnd
+
+    /**
+     * Get Firewall instance.
+     *
+     * @return Firewall
+     */
+    private function getFirewallInstance(): Firewall
+    {
+        $firewall = Container::get('firewall');
+
+        if (!($firewall instanceof Firewall)) {
+            throw new RuntimeException(
+                'The Firewall instance should be initialized first.'
+            );
+        }
+
+        return $firewall;
+    }
 }
