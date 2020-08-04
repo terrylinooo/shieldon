@@ -94,11 +94,12 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->controlPanel('firewall/panel');
         $panel = new \Shieldon\Firewall\Panel();
         $panel->demo();
 
         ob_start();
-        $panel->entry('firewall/panel');
+        $panel->entry();
         $output = ob_get_contents();
         ob_end_clean();
 
@@ -115,13 +116,14 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->controlPanel('firewall/panel');
         $firewall->setConfig('captcha_modules.image.enable', true);
         $firewall->setup();
         $panel = new \Shieldon\Firewall\Panel();
         $panel->demo();
 
         ob_start();
-        $panel->entry('firewall/panel');
+        $panel->entry();
         $output = ob_get_contents();
         ob_end_clean();
 
@@ -139,6 +141,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
+        $firewall->controlPanel('firewall/panel');
         $firewall->getKernel()->disableCaptcha();
         $firewall->setConfig('captcha_modules.recaptcha.enable', false);
         $firewall->setConfig('captcha_modules.image.enable', false);
@@ -146,7 +149,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $panel->demo();
 
         ob_start();
-        $panel->entry('firewall/panel');
+        $panel->entry();
         $output = ob_get_contents();
         ob_end_clean();
 
