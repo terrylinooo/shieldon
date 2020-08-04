@@ -47,6 +47,13 @@ use function substr;
 class Home extends BaseController
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   overview             | The overview page.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Constructor
      */
     public function __construct() 

@@ -37,6 +37,15 @@ use function time;
 class Circle extends BaseController
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   rule                 | The page for rule table.
+     *   filter               | The page for filter table.
+     *   session              | The page for session table.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Constructor
      */
     public function __construct() 

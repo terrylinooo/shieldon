@@ -44,9 +44,51 @@ use function rtrim;
  */
 class Firewall
 {
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   setup                | Apply all setup proccesses.
+     *   configure            | The absolute path of a dictionary for storing data.
+     *   run                  | Execute the firewall.
+     *   add                  | Add a PRS-15 middleware used before firewall.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   getKernel            | Get the Shieldon Kernel instance.
+     *   getConfiguration     | Get the configuration data.
+     *   getDirectory         | Get the dictionary where the data is stored.
+     *   getFileName          | Get the path of the configuration file.
+     *   getConfig            | Get the value by identification string.
+     *   setConfig            | Set the value by identification string.
+     *  ----------------------|---------------------------------------------
+     */
     use FirewallTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *                        | No public methods.
+     *  ----------------------|---------------------------------------------
+     */
     use SetupTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *                        | No public methods.
+     *  ----------------------|---------------------------------------------
+     */
     use XssProtectionTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *                        | No public methods.
+     *  ----------------------|---------------------------------------------
+     */
     use MessengerTrait;
 
     /**
@@ -70,7 +112,7 @@ class Firewall
     }
 
     /**
-     * Setup everything we need.
+     * Set up everything we need.
      *
      * @return void
      */

@@ -32,6 +32,16 @@ use function Shieldon\Firewall\get_response;
 class Asset extends BaseController
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   css                  | Output the content contains CSS.
+     *   js                   | Output the content contains JavaScript.
+     *   favicon              | Output the content contains favicon's binary string.
+     *   logo                 | Output the content contains logo's binary string.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * The directory in where the static assets of the firewall panel are placed.
      */
     const PANEL_ASSET_DIR = __DIR__ . '/../../../assets';
@@ -45,7 +55,7 @@ class Asset extends BaseController
     }
 
     /**
-     * The content output to be a CSS file.
+     * Output the content contains CSS to the browser.
      *
      * @return ResponseInterface
      */
@@ -58,7 +68,7 @@ class Asset extends BaseController
     }
 
     /**
-     * The content output to be a JavaScript file.
+     * Output the content contains JavaScript to the browser.
      *
      * @return ResponseInterface
      */
@@ -71,7 +81,7 @@ class Asset extends BaseController
     }
 
     /**
-     * The content output to be a favicon.
+     * Output the content contains image binary string to the browser.
      *
      * @return ResponseInterface
      */
@@ -84,7 +94,7 @@ class Asset extends BaseController
     }
 
     /**
-     * The content output to be a logo image.
+     * Output the content contains logo's binary string to the browser.
      *
      * @return ResponseInterface
      */

@@ -22,14 +22,18 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel;
 
-use function count;
-use function is_string;
-
 /*
- * Tradit for demonstration.
+ * Tradit for handling CSRF function.
  */
 trait CsrfTrait
 {
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   csrf                 | Receive the CSRF name and token from the App.
+     *  ----------------------|---------------------------------------------
+     */
+
     /**
      * See $this->csrf()
      *
@@ -62,7 +66,7 @@ trait CsrfTrait
      *
      * @return string
      */
-    public function fieldCsrf(): string
+    protected function fieldCsrf(): string
     {
         $string = '';
         if (!empty($this->csrfField)) {
@@ -78,7 +82,7 @@ trait CsrfTrait
      *
      * @return array
      */
-    public function getCsrfField(): array
+    protected function getCsrfField(): array
     {
         return $this->csrfField;
     }
@@ -90,7 +94,7 @@ trait CsrfTrait
      *
      * @return void
      */
-    public function setCsrfField(array $csrfParams): void
+    protected function setCsrfField(array $csrfParams): void
     {
         $this->csrfField = $csrfParams;
     }

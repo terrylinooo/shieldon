@@ -40,6 +40,14 @@ use function password_verify;
 class User extends BaseController
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   login                | Display the login form.
+     *   logout               | Remove the login status.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Constructor.
      */
     public function __construct() 

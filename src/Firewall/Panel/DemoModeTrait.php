@@ -30,6 +30,13 @@ use Shieldon\Firewall\Utils\Container;
 trait DemoModeTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   demo                 | Start a demo mode. Setting fields are hidden.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * The mode of the firewall control panel.
      * self: Shieldon | managed: Firewall | demo: Demo
      *

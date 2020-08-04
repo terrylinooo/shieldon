@@ -46,6 +46,13 @@ use function umask;
 trait ConfigMethodsTrait
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *                        | No public methods.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Get a variable from configuration.
      *
      * @param string $field The field of the configuration.

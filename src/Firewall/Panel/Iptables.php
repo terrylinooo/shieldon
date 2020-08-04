@@ -46,6 +46,16 @@ use function trim;
 class Iptables extends BaseController
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   ip4                  | The page for iptables (IPv4) management.
+     *   ip6                  | The page for iptables (IPv6) management.
+     *   ip4status            | The page for dispalying iptables (IPv4) status.
+     *   ip6status            | The page for dispalying iptables (IPv6) status.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Constructor
      */
     public function __construct() 

@@ -44,6 +44,17 @@ use function json_last_error;
 class Setting extends BaseController
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   basic                | The page for managing page authentication.
+     *   ipManager            | The page for managing XSS protection.
+     *   exclusion            | The page for managing excluded list.
+     *   export               | Export the settings as a JSON file.
+     *   import               | Improt the setting by a JSON file.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Constructor
      */
     public function __construct() 

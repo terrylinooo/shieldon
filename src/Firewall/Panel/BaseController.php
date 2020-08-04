@@ -57,9 +57,48 @@ use function trim;
  */
 class BaseController
 {
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *                        | No public methods.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *                        | No public methods.
+     *  ----------------------|---------------------------------------------
+     */
     use ConfigMethodsTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   csrf                 | Receive the CSRF name and token from the App.
+     *  ----------------------|---------------------------------------------
+     */
     use CsrfTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   demo                 | Start a demo mode. Setting fields are hidden.
+     *  ----------------------|---------------------------------------------
+     */
     use DemoModeTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   getKernel            | Get the Shieldon Kernel instance.
+     *   getConfiguration     | Get the configuration data.
+     *   getDirectory         | Get the dictionary where the data is stored.
+     *   getFileName          | Get the path of the configuration file.
+     *   getConfig            | Get the value by identification string.
+     *   setConfig            | Set the value by identification string.
+     *  ----------------------|---------------------------------------------
+     */
     use FirewallTrait;
 
     /**

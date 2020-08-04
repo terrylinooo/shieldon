@@ -43,6 +43,15 @@ use function json_encode;
 class Ajax extends BaseController
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   __call               | The magic method.
+     *   changeLocale         | Change the user's language of the UI.
+     *   tryMessenger         | Test messenger modules.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Constructor.
      */
     public function __construct() 

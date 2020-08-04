@@ -39,6 +39,14 @@ use function str_replace;
 class Security extends BaseController
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   authentication       | The page for managing page authentication.
+     *   actionLog            | The page for managing XSS protection.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * Constructor
      */
     public function __construct() 

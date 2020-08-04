@@ -45,7 +45,28 @@ use function ucfirst;
  */
 class Panel
 {
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   __call               | Magic method. Let property can run as a method.
+     *   entry                | Initialize the entry point of the control panel
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   demo                 | Start a demo mode. Setting fields are hidden.
+     *  ----------------------|---------------------------------------------
+     */
     use DemoModeTrait;
+
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   csrf                 | Receive the CSRF name and token from the App.
+     *  ----------------------|---------------------------------------------
+     */
     use CsrfTrait;
 
     /**
@@ -94,6 +115,8 @@ class Panel
             'setting/messenger',
             'user/login',
             'user/logout',
+            // Render the static asset files for embedding.
+            // Since 2.0, not link to shieldon-io.github.io anymore.
             'asset/css',
             'asset/js',
             'asset/favicon',
@@ -128,17 +151,16 @@ class Panel
         $controller = $urlParts[0] ?? 'home';
         $method = $urlParts[1] ?? 'index';
 
-        if (in_array("$controller/$method", $this->registerRoutes)) {
+        if (in_array($controller . '/' . $method, $this->registerRoutes)) {
+
             $this->setRouteBase($base);
             $this->checkAuth();
 
             $controller = __CLASS__ . '\\' . ucfirst($controller);
-
             $controllerClass = new $controller();
             $controllerClass->setCsrfField($this->getCsrfField());
 
             if ('demo' === $this->mode) {
-
                 // For security reasons, the POST method is not allowed 
                 // in the Demo mode.
                 set_request(get_request()->withParsedBody([])->withMethod('GET'));
@@ -150,15 +172,10 @@ class Panel
                 );
             }
 
-
-            $this->
-            /** @scrutinizer ignore-call */ 
-            resolver(call_user_func([$controllerClass, $method]));
+            $this->resolver(call_user_func([$controllerClass, $method]));
         }
-       
-        $this->
-        /** @scrutinizer ignore-call */ 
-        resolver($response->withStatus(404));
+
+        $this->resolver($response->withStatus(404));
     }
 
     /**
@@ -196,10 +213,8 @@ class Panel
                     $this->demoUser['pass']
                 );
             }
-            
-            $this->
-            /** @scrutinizer ignore-call */ 
-            resolver($user->login());
+
+            $this->resolver($user->login());
         }
     }
 
