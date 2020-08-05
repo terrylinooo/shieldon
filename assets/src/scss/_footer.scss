@@ -1,9 +1,8 @@
 .footer {
-    background-color: #ccc;
-    color: #fff;
+    margin-top: 10px;
+    text-align: center;
 
     .col-md-12 {
-        background-color: rgba(0, 0, 0, 0.03);
         color: #333;
         height: 30px;
         line-height: 30px;
@@ -14,11 +13,6 @@
             font-weight: 500;
         }
     } 
-
-    .status-field {
-        background-color: #333;
-        color: #fff;
-    }
 
     @include media-breakpoint-down(md) {
         .col-md-12 {
