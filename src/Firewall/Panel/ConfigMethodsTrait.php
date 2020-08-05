@@ -360,8 +360,9 @@ trait ConfigMethodsTrait
         if (empty($sqliteDir)) {
             $sqliteDir = $this->directory . '/data_driver_sqlite';
             $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
-            $sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
         }
+
+        $sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
 
         if (!is_dir($sqliteDir)) {
             // @codeCoverageIgnoreStart
