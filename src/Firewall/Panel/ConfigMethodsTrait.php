@@ -346,13 +346,24 @@ trait ConfigMethodsTrait
      */
     protected function saveCofigCheckDataDriverSqlLite(bool $result): bool
     {
+        $fileDir = rtrim($this->getConfig('drivers.file.directory_path'), '\\/ ');
+
+        if (empty($fileDir)) {
+            $fileDir = $this->directory . '/data_driver_file';
+            $this->setConfig('drivers.file.directory_path', $fileDir);
+        }
+
+        $this->setConfig('drivers.file.directory_path', $fileDir);
+
         $sqliteDir = rtrim($this->getConfig('drivers.sqlite.directory_path'), '\\/ ');
 
-        $sqliteDir = $sqliteDir ?? $this->directory . '/data_driver_sqlite';
-        $sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
-        $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
-        
-        if (!file_exists($sqliteFilePath) && !is_dir($sqliteDir)) {
+        if (empty($sqliteDir)) {
+            $sqliteDir = $this->directory . '/data_driver_sqlite';
+            $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
+            $sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
+        }
+
+        if (!is_dir($sqliteDir)) {
             // @codeCoverageIgnoreStart
             $originalUmask = umask(0);
             mkdir($sqliteDir, 0777, true);

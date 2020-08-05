@@ -28,11 +28,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass">
     <h2><?php _e('panel', 'setting_heading_filter_frequency', 'Frequency'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="filters__frequency__enable" value="off" />
             <input type="checkbox" name="filters__frequency__enable" class="toggle-block" value="on" data-target="filters-frequency-section" <?php $this->checked('filters.frequency.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -82,11 +82,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_label_cookie', 'Cookie'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="filters__cookie__enable" value="off" />
             <input type="checkbox" name="filters__cookie__enable" class="toggle-block" value="on" data-target="filters-cookie-section" <?php $this->checked('filters.cookie.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -152,11 +152,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_label_filter_session', 'Session'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="filters__session__enable" value="off" />
             <input type="checkbox" name="filters__session__enable" class="toggle-block" value="on" data-target="filters-session-section" <?php $this->checked('filters.session.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -195,11 +195,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_label_filter_referer', 'Referrer'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="filters__referer__enable" value="off" />
             <input type="checkbox" name="filters__referer__enable" class="toggle-block" value="on" data-target="filters-referer-section" <?php $this->checked('filters.referer.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>

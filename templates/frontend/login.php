@@ -87,6 +87,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
 
         .logo {
             height: 30px;
+            padding-right: 5px;
         }
 
         .logo-wrapper {

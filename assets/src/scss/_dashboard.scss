@@ -4,8 +4,8 @@
 	font-family: Helvetica, Arial, sans-serif !important;
 
 	background-color: #f1f1f1;
-	border: 0px #dddddd solid;
-	padding: 10px;
+	border: 0px hsl(0, 0%, 87%) solid;
+	padding: 14px;
 	overflow: hidden;
 
 	.section-heading {
@@ -82,6 +82,7 @@
 		padding-left: 0;
         width: 33.3%;
 		margin: 0 20px 0 0;
+		box-shadow: 1px 4px 10px 1px rgba(0, 0, 0, 0.1);
 
 		&.area-chart-container {
 			padding: 0;

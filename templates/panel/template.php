@@ -32,12 +32,11 @@ use function Shieldon\Firewall\_e;
         <link rel="stylesheet" href="<?php echo $css_url; ?>">
         <script src="<?php echo $js_url; ?>"></script>
         <link rel="icon" type="image/x-icon" href="<?php echo $favicon_url; ?>">
+
         <title><?php echo $title; ?></title>
     </head>
     <body>
-
-        <nav class="navbar navbar-expand-md navbar-dark shadow-md">
-            
+        <nav class="navbar navbar-expand-md navbar-dark shadow-md sticky-top">
             <a class="navbar-brand" href="#">
                 <img src="<?php echo $logo_url; ?>" class="logo-image">
             </a>
@@ -47,8 +46,6 @@ use function Shieldon\Firewall\_e;
 
             <div class="collapse navbar-collapse" id="top-navbar">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><?php _e('panel', 'channel', 'Channel'); ?> <strong class="status-field"><?php echo $channel_name; ?></strong></li>
-                    <li class="nav-item"><?php _e('panel', 'mode', 'Mode'); ?> <strong class="status-field"><?php echo $mode_name; ?></strong></li>
                     <li class="nav-item"><a href="<?php echo $this->url('user/logout') ?>" class="nav-link"><?php _e('panel', 'logout', 'Logout'); ?></a></li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><?php _e('panel', 'nav_locale', 'Locale'); ?></a>
@@ -243,6 +240,21 @@ use function Shieldon\Firewall\_e;
                 </div>
                 <div class="col-md-10 col-sm-11 col-xs-11 so-content">
                     <?php echo $content; ?>
+
+                    <div class="footer">
+                        <div class="container-fluid">
+                            <div class="col-md-12">
+                                    <span style="padding-right: 20px;">
+                                        <?php _e('panel', 'channel', 'Channel'); ?> <strong class="status-field"><?php echo $channel_name; ?></strong>
+                                        <?php _e('panel', 'mode', 'Mode'); ?> <strong class="status-field"><?php echo $mode_name; ?></strong>
+                                    </span>
+                                    Powered by <a href="https://shieldon.io" target="_blank">Shieldon</a> <?php echo SHIELDON_FIREWALL_VERSION; ?>
+                                    &copy; 2019-<?php echo date('Y'); ?> <a href="https://terryl.in" target="_blank">Terry Lin</a>
+                                    <a href="https://github.com/terrylinooo/shieldon" target="_blank"><i class="fab fa-github"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -314,6 +326,11 @@ use function Shieldon\Firewall\_e;
                             $(this).closest('ul').slideUp(500);
                         }
                     } else {
+                        $('.parent-menu li').each(function() {  
+                            $(this).removeClass('active');
+                            $(this).removeClass('current-page');
+                            $('.child-menu').attr('style', '');
+                        });
                         $(this).parent('li').addClass('active').parents('ul').slideDown(500).parent().addClass('active');
                     }
                 });
@@ -342,20 +359,6 @@ use function Shieldon\Firewall\_e;
             });
 
         </script>
-        <div class="footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-2">
-                        <a href="https://github.com/terrylinooo/shieldon" target="_blank"><i class="fab fa-github"></i></a>
-                        <?php echo SHIELDON_FIREWALL_VERSION; ?>
-                    </div>
-                    <div class="col-md-10">
-                        Powered by <a href="https://shieldon.io" target="_blank">Shieldon</a> 
-                        &copy; 2019-<?php echo date('Y'); ?> <a href="https://terryl.in" target="_blank">Terry Lin</a>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div id="loader" data-status="waiting">
             <div class="cssload-box-loading"></div>
         </div>

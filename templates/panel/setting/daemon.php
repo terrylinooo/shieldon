@@ -28,11 +28,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass">
     <h2><?php _e('panel', 'setting_heading_enable', 'Enable'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="daemon" value="off" />
             <input type="checkbox" name="daemon" class="toggle-block" value="on" data-target="daemon-section" <?php $this->checked('daemon', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -163,8 +163,8 @@ use function Shieldon\Firewall\_e;
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="cronjob__reset_circle__enable" value="off" />
                     <input type="checkbox" name="cronjob__reset_circle__enable" class="toggle-block" value="on" <?php $this->checked('cronjob.reset_circle.enable', true); ?>>
-                    <span class="switch-left">ON</span>
-                    <span class="switch-right">OFF</span>
+                    <span class="switch-left"><i>ON</i></span>
+                    <span class="switch-right"><i>OFF</i></span>
                 </label>
             </td>
         </tr>
@@ -214,11 +214,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_label_session_limit', 'Session Limit'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="online_session_limit__enable" value="off" />
             <input type="checkbox" name="online_session_limit__enable" class="toggle-block" value="on" data-target="online-session-limit-section" <?php $this->checked('online_session_limit.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -257,11 +257,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_label_action_logs', 'Action Logs'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="loggers__action__enable" value="off" />
             <input type="checkbox" name="loggers__action__enable" class="toggle-block" value="on" data-target="logger-action-section" <?php $this->checked('loggers.action.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -283,11 +283,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_label_system_firewall', 'System Firewall'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="iptables__enable" value="off" />
             <input type="checkbox" name="iptables__enable" class="toggle-block" value="on" data-target="iptables-section" <?php $this->checked('iptables.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -360,8 +360,8 @@ use function Shieldon\Firewall\_e;
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="events__failed_attempts_in_a_row__data_circle__enable" value="off" />
                     <input type="checkbox" name="events__failed_attempts_in_a_row__data_circle__enable" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.data_circle.enable', true); ?>>
-                    <span class="switch-left">ON</span>
-                    <span class="switch-right">OFF</span>
+                    <span class="switch-left"><i>ON</i></span>
+                    <span class="switch-right"><i>OFF</i></span>
                 </label>
             </td>
         </tr>
@@ -386,8 +386,8 @@ use function Shieldon\Firewall\_e;
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="events__failed_attempts_in_a_row__system_firewall__enable" value="off" />
                     <input type="checkbox" name="events__failed_attempts_in_a_row__system_firewall__enable" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.system_firewall.enable', true); ?>>
-                    <span class="switch-left">ON</span>
-                    <span class="switch-right">OFF</span>
+                    <span class="switch-left"><i>ON</i></span>
+                    <span class="switch-right"><i>OFF</i></span>
                 </label>
             </td>
         </tr>

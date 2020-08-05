@@ -7,6 +7,15 @@
     background-color: #ffffff;
     padding: 20px;
     font-size: 13px;
+    box-shadow: 1px 4px 10px 1px rgba(0, 0, 0, 0.1);
+
+    input, select, button {
+        border: 1px #dddddd solid;
+        height: 30px;
+        line-height: 30px;
+        margin: 0 5px;
+        padding: 0 10px;
+    }
 }
 
 // Border between the header (and footer) and the table body
@@ -616,3 +625,4 @@ table.dataTable td {
         }
     }
 }
+

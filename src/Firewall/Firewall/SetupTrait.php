@@ -110,14 +110,8 @@ trait SetupTrait
         $driverType = $this->getOption('driver_type');
         $driverSetting = $this->getOption($driverType, 'drivers');
 
-        if ($this->hasCheckpoint()) {
-            $this->kernel->disableDbBuilder();
-        } else {
-            $this->setCheckpoint();
-        }
-
         if (isset($driverSetting['directory_path'])) {
-            $driverSetting['directory_path'] = $driverSetting['directory_path'] ?: $this->directory;
+            $driverSetting['directory_path'] = $driverSetting['directory_path'] ?: $this->directory . '/data_driver_' . $driverType;
         }
 
         $driverInstance = DriverFactory::getInstance($driverType, $driverSetting);
@@ -126,6 +120,13 @@ trait SetupTrait
         if ($driverInstance !== null) {
             $this->kernel->setDriver($driverInstance);
             $this->status = true;
+        }
+
+        if ($this->hasCheckpoint()) {
+            $this->kernel->disableDbBuilder();
+        } else {
+            $this->kernel->driver->init(true);
+            $this->setCheckpoint();
         }
     }
 

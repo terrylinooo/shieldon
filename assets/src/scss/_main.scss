@@ -1,24 +1,24 @@
 body {
 	background-color: #f1f1f1;
 	font-size: 13px;
-	overflow-y: scroll;
+	overflow: hidden;
 }
 
 body::-webkit-scrollbar-track
 {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
-	background-color: #c4fff4;
+	background-color: #eeeeee;
 }
 
 body::-webkit-scrollbar
 {
 	width: 18px;
-	background-color: #c4fff4;
+	background-color: #dddddd;
 }
 
 body::-webkit-scrollbar-thumb
 {
-	background-color: #36d1b3;	
+	background-color: #999999;	
 	background-image: -webkit-linear-gradient(45deg,
 		rgba(255, 255, 255, .2) 25%,
 		transparent 25%,
@@ -145,6 +145,8 @@ code.tips {
 	padding: 0;
 	border-top: 1px #dddddd solid;
 	border-left: 1px #f1f1f1 solid;
+	height: calc(100vh -45px);
+	overflow-y: auto;
 }
 
 .mode-info {

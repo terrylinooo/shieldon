@@ -38,8 +38,8 @@ use function Shieldon\Firewall\_e;
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="events__failed_attempts_in_a_row__data_circle__messenger" value="off" />
                     <input type="checkbox" name="events__failed_attempts_in_a_row__data_circle__messenger" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.data_circle.messenger', true); ?>>
-                    <span class="switch-left">ON</span>
-                    <span class="switch-right">OFF</span>
+                    <span class="switch-left"><i>ON</i></span>
+                    <span class="switch-right"><i>OFF</i></span>
                 </label>
             </td>
         </tr>
@@ -54,8 +54,8 @@ use function Shieldon\Firewall\_e;
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="events__failed_attempts_in_a_row__system_firewall__messenger" value="off" />
                     <input type="checkbox" name="events__failed_attempts_in_a_row__system_firewall__messenger" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.system_firewall.messenger', true); ?>>
-                    <span class="switch-left">ON</span>
-                    <span class="switch-right">OFF</span>
+                    <span class="switch-left"><i>ON</i></span>
+                    <span class="switch-right"><i>OFF</i></span>
                 </label>
             </td>
         </tr>

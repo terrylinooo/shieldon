@@ -48,8 +48,8 @@ $timezone = '';
                             <label class="rocker rocker-sm">
                                 <input type="hidden" name="xss_protection__post" value="off" />
                                 <input type="checkbox" name="xss_protection__post" class="toggle-block" value="on" <?php $this->checked('xss_protection.post', true); ?>>
-                                <span class="switch-left">ON</span>
-                                <span class="switch-right">OFF</span>
+                                <span class="switch-left"><i>ON</i></span>
+                                <span class="switch-right"><i>OFF</i></span>
                             </label>
                             <p><?php _e('panel', 'xss_text_filter_post_variables', 'Filter all POST method variables.'); ?></p>
                         </td>
@@ -61,8 +61,8 @@ $timezone = '';
                             <label class="rocker rocker-sm">
                                 <input type="hidden" name="xss_protection__get" value="off" />
                                 <input type="checkbox" name="xss_protection__get" class="toggle-block" value="on" <?php $this->checked('xss_protection.get', true); ?>>
-                                <span class="switch-left">ON</span>
-                                <span class="switch-right">OFF</span>
+                                <span class="switch-left"><i>ON</i></span>
+                                <span class="switch-right"><i>OFF</i></span>
                             </label>
                             <p><?php _e('panel', 'xss_text_filter_get_variables', 'Filter all GET method variables.'); ?></p>
                         </td>
@@ -74,8 +74,8 @@ $timezone = '';
                             <label class="rocker rocker-sm">
                                 <input type="hidden" name="xss_protection__cookie" value="off" />
                                 <input type="checkbox" name="xss_protection__cookie" class="toggle-block" value="on" <?php $this->checked('xss_protection.cookie', true); ?>>
-                                <span class="switch-left">ON</span>
-                                <span class="switch-right">OFF</span>
+                                <span class="switch-left"><i>ON</i></span>
+                                <span class="switch-right"><i>OFF</i></span>
                             </label>
                             <p><?php _e('panel', 'xss_text_filter_cookie_variables', 'Filter all COOKIE method variables.'); ?></p>
                         </td>

@@ -36,8 +36,8 @@ use function Shieldon\Firewall\_e;
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__telegram__enable" value="off" />
             <input type="checkbox" name="messengers__telegram__enable" class="toggle-block" value="on" data-target="messenger-telegram-section" <?php $this->checked('messengers.telegram.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -72,8 +72,8 @@ use function Shieldon\Firewall\_e;
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__line_notify__enable" value="off" />
             <input type="checkbox" name="messengers__line_notify__enable" class="toggle-block" value="on" data-target="messenger-line-notify-section" <?php $this->checked('messengers.line_notify.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -98,8 +98,8 @@ use function Shieldon\Firewall\_e;
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__slack__enable" value="off" />
             <input type="checkbox" name="messengers__slack__enable" class="toggle-block" value="on" data-target="messenger-slack-section" <?php $this->checked('messengers.slack.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -134,8 +134,8 @@ use function Shieldon\Firewall\_e;
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__slack_webhook__enable" value="off" />
             <input type="checkbox" name="messengers__slack_webhook__enable" class="toggle-block" value="on" data-target="messenger-slack-webhook-section" <?php $this->checked('messengers.slack_webhook.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -160,8 +160,8 @@ use function Shieldon\Firewall\_e;
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__rocket_chat__enable" value="off" />
             <input type="checkbox" name="messengers__rocket_chat__enable" class="toggle-block" value="on" data-target="messenger-rocketchat-section" <?php $this->checked('messengers.rocket_chat.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -216,8 +216,8 @@ use function Shieldon\Firewall\_e;
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__smtp__enable" value="off" />
             <input type="checkbox" name="messengers__smtp__enable" class="toggle-block" value="on" data-target="messenger-smtp-section" <?php $this->checked('messengers.smtp.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -320,8 +320,8 @@ use function Shieldon\Firewall\_e;
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__native_php_mail__enable" value="off" />
             <input type="checkbox" name="messengers__native_php_mail__enable" class="toggle-block" value="on" data-target="messenger-php-mail-section" <?php $this->checked('messengers.native_php_mail.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -357,8 +357,8 @@ use function Shieldon\Firewall\_e;
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__sendgrid__enable" value="off" />
             <input type="checkbox" name="messengers__sendgrid__enable" class="toggle-block" value="on" data-target="messenger-sendgrid-section" <?php $this->checked('messengers.sendgrid.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -404,8 +404,8 @@ use function Shieldon\Firewall\_e;
         <label class="rocker rocker-sm">
             <input type="hidden" name="messengers__mailgun__enable" value="off" />
             <input type="checkbox" name="messengers__mailgun__enable" class="toggle-block" value="on" data-target="messenger-mailgun-section" <?php $this->checked('messengers.mailgun.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>

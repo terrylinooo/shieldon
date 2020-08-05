@@ -21,6 +21,20 @@
     }
 }
 
+.github-profile-url {
+	background-color: #333;
+	left: 0;
+	bottom: 0;
+	height: 30px;
+	line-height: 30px;
+	color: #ffffff;
+	text-align: center;
+}
+
+.navbar-toggler {
+	padding: 0 !important;
+}
+
 .nav {
 
 	&.parent-menu > li {

@@ -28,11 +28,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass">
     <h2><?php _e('panel', 'setting_heading_recaptcha', 'reCAPTCHA'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="captcha_modules__recaptcha__enable" value="off" />
             <input type="checkbox" name="captcha_modules__recaptcha__enable" class="toggle-block" value="on" data-target="captcha-recaptcha-section" <?php $this->checked('captcha_modules.recaptcha.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>
@@ -99,11 +99,11 @@ use function Shieldon\Firewall\_e;
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_heading_image_captcha', 'Image'); ?></h2>
     <div class="toggle-container">
-        <label class="rocker rocker-md">
+        <label class="rocker rocker-sm rocker-test">
             <input type="hidden" name="captcha_modules__image__enable" value="off" />
             <input type="checkbox" name="captcha_modules__image__enable" class="toggle-block" value="on" data-target="captcha-image-section" <?php $this->checked('captcha_modules.image.enable', true); ?> />
-            <span class="switch-left">ON</span>
-            <span class="switch-right">OFF</span>
+            <span class="switch-left"><i>ON</i></span>
+            <span class="switch-right"><i>OFF</i></span>
         </label>
     </div>
 </div>

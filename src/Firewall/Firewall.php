@@ -126,8 +126,7 @@ class Firewall
      */
     public function setup(): void
     {
-        $this->status = $this->getOption('daemon');
-
+        
         $setupFunctions = [
             'Driver',
             'Channel',
@@ -153,6 +152,8 @@ class Firewall
 
             $this->{$function}();
         }
+
+        $this->status = $this->getOption('daemon');
     }
 
     /**

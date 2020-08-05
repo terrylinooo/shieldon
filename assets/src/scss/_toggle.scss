@@ -24,13 +24,12 @@
     border-bottom: 0.5em solid #eee;
 
 	&.rocker-md {
-		font-size: 1.1em; /* Sizes the switch */
+		font-size: 1.0em; /* Sizes the switch */
 	}
 
 	&.rocker-sm {
 		font-size: 0.875em; /* Sizes the switch */
 	}
-	
 	&.rocker::before {
 		content: "";
 		position: absolute;
@@ -42,7 +41,9 @@
 		border: 0.5em solid #eee;
 		border-bottom: 0;
 	}
-	
+
+
+
 	input {
 		opacity: 0;
 		width: 0;
@@ -60,6 +61,12 @@
 		width: 3em;
 		transition: 0.2s;
 	}
+
+	i {
+		font-size: 12px;
+		font-weight: normal;
+		font-style: normal;
+	}
 	
 	.switch-left {
 		height: 2.4em;
@@ -73,7 +80,7 @@
 	.switch-right {
 		right: 0.5em;
 		bottom: 0;
-		background-color: #46a593;
+		background-color: #aaaaaa;
 		color: #fff;
 	}
 	
