@@ -227,9 +227,10 @@ class Setting extends BaseController
         $stream->write(json_encode($this->configuration));
         $stream->rewind();
 
+        $filename = 'shieldon_' . date('Y-m-d-Hi') . '.json';
+
         $response = $response->withHeader('Content-Type', 'text/plain');
-        $response = $response->withHeader('Content-Disposition', 'attachment');
-        $response = $response->withAddedHeader('Content-Disposition', 'filename=shieldon-' . date('YmdHis') . '.json');
+        $response = $response->withHeader('Content-Disposition', 'attachment; filename=' . $filename);
         $response = $response->withHeader('Expires', '0');
         $response = $response->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
         $response = $response->withHeader('Pragma', 'public');

@@ -27,7 +27,7 @@ use function Shieldon\Firewall\_e;
 ?>
 <div id="import-export">
     <ul>
-        <li><a href="<?php echo $this->url(); ?>?so_page=export_settings" class="btn btn-light btn-sm" target="_blank"><i class="fas fa-file-export"></i><?php _e('panel', 'setting_button_export', 'Export'); ?></a></li>
+        <li><a href="<?php echo $this->url('setting/export'); ?>" class="btn btn-light btn-sm" target="_blank"><i class="fas fa-file-export"></i><?php _e('panel', 'setting_button_export', 'Export'); ?></a></li>
         <li><a href="#" onclick="importModel();" class="btn btn-light btn-sm"><i class="fas fa-file-import"></i><?php _e('panel', 'setting_button_import', 'Import'); ?></a></li>
     </ul>
 </div>
