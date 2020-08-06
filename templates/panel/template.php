@@ -110,88 +110,6 @@ use function Shieldon\Firewall\_e;
                              </ul>
                         </li>
                         
-                        <?php if ($this->getConfig('iptables.enable') === true) : ?>
-                        <li>
-                            <a href="#">
-                                <span class="category-icon"><i class="fas fa-shield-alt"></i></span>
-                                <span><?php _e('panel', 'menu_iptables_ipv4', 'IPv4 iptables'); ?></span>
-                            </a>
-                            <ul class="nav child-menu">
-                                <li>
-                                    <a href="<?php echo $this->url('iptables/ip4'); ?>">
-                                        <span class="subcategory-icon"><i class="fas fa-dice-d20"></i></span>
-                                        <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('iptables/ip4status'); ?>">
-                                        <span class="subcategory-icon"><i class="far fa-question-circle"></i></span>
-                                        <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <span class="category-icon"><i class="fas fa-shield-alt"></i></span>
-                                <span><?php _e('panel', 'menu_iptables_ipv6', 'IPv6 iptables'); ?></span>
-                            </a>
-                            <ul class="nav child-menu">
-                                <li>
-                                    <a href="<?php echo $this->url('iptables/ip6'); ?>">
-                                        <span class="subcategory-icon"><i class="fas fa-dice-d20"></i></span>
-                                        <span><?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('iptables/ip6status'); ?>">
-                                        <span class="subcategory-icon"><i class="far fa-question-circle"></i></span>
-                                        <span><?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <?php endif; ?>
-                        <?php if ($this->getConfig('loggers.action.enable') === true) : ?>
-                        <li>
-                            <a href="#">
-                                <span class="category-icon"><i class="fas fa-chart-area"></i></span>
-                                <span><?php _e('panel', 'menu_action_logs', 'Logs'); ?></span>
-                            </a>
-                            <ul class="nav child-menu">
-                                <li>
-                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=today">
-                                        <span class="subcategory-icon"><i class="far fa-calendar-check"></i></span>
-                                        <span><?php _e('panel', 'menu_today', 'Today'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=yesterday">
-                                        <span class="subcategory-icon"><i class="fas fa-calendar-day"></i></span>
-                                        <span><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=past_seven_days">
-                                        <span class="subcategory-icon"><i class="fas fa-calendar-week"></i></span>
-                                        <span><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=this_month">
-                                        <span class="subcategory-icon"><i class="far fa-calendar-alt"></i></span>
-                                        <span><?php _e('panel', 'menu_this_month', 'This month'); ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=last_month">
-                                        <span class="subcategory-icon"><i class="fas fa-calendar-alt"></i></span>
-                                        <span><?php _e('panel', 'menu_last_month', 'Last month'); ?></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <?php endif; ?>
                         <li>
                             <a href="#">
                                 <span class="category-icon"><i class="fas fa-fire-alt"></i></span>
@@ -234,6 +152,89 @@ use function Shieldon\Firewall\_e;
                                         <span><?php _e('panel', 'menu_messenger', 'Messenger'); ?></span>
                                     </a>
                                 </li>   
+                            </ul>
+                        </li>
+                      
+                        <?php $iptablesStatus = ''; ?>
+                        <?php if ($this->getConfig('iptables.enable') !== true) : ?>
+                            <?php $iptablesStatus = 'inactive'; ?>
+                        <?php endif; ?>
+
+                        <li class="<?php echo $iptablesStatus; ?>">
+                            <a href="#">
+                                <span class="category-icon"><i class="fas fa-shield-alt"></i></span>
+                                <span><?php _e('panel', 'menu_iptables_bridge', 'iptables Bridge'); ?></span>
+                            </a>
+
+                            <ul class="nav child-menu">
+                                <li>
+                                    <a href="<?php echo $this->url('iptables/ip4'); ?>">
+                                        <span class="subcategory-icon"><i class="fas fa-dice-d20"></i></span>
+                                        <span>IPv4 <?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('iptables/ip4status'); ?>">
+                                        <span class="subcategory-icon"><i class="far fa-question-circle"></i></span>
+                                        <span>IPv4 <?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('iptables/ip6'); ?>">
+                                        <span class="subcategory-icon"><i class="fas fa-dice-d20"></i></span>
+                                        <span>IPv6 <?php _e('panel', 'menu_iptables_manager', 'Manager'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('iptables/ip6status'); ?>">
+                                        <span class="subcategory-icon"><i class="far fa-question-circle"></i></span>
+                                        <span>IPv6 <?php _e('panel', 'menu_iptables_status', 'Status'); ?></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <?php $loggerStatus = ''; ?>
+                        <?php if ($this->getConfig('loggers.action.enable') !== true) : ?>
+                            <?php $loggerStatus = 'inactive'; ?>
+                        <?php endif; ?>
+                      
+                        <li class="<?php echo $loggerStatus; ?>">
+                            <a href="#">
+                                <span class="category-icon"><i class="fas fa-chart-area"></i></span>
+                                <span><?php _e('panel', 'menu_action_logs', 'Logs'); ?></span>
+                            </a>
+                            <ul class="nav child-menu">
+                                <li>
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=today">
+                                        <span class="subcategory-icon"><i class="far fa-calendar-check"></i></span>
+                                        <span><?php _e('panel', 'menu_today', 'Today'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=yesterday">
+                                        <span class="subcategory-icon"><i class="fas fa-calendar-day"></i></span>
+                                        <span><?php _e('panel', 'menu_yesterday', 'Yesterday'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=past_seven_days">
+                                        <span class="subcategory-icon"><i class="fas fa-calendar-week"></i></span>
+                                        <span><?php _e('panel', 'menu_last_7_days', 'Last 7 days'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=this_month">
+                                        <span class="subcategory-icon"><i class="far fa-calendar-alt"></i></span>
+                                        <span><?php _e('panel', 'menu_this_month', 'This month'); ?></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('report/actionLog'); ?>?tab=last_month">
+                                        <span class="subcategory-icon"><i class="fas fa-calendar-alt"></i></span>
+                                        <span><?php _e('panel', 'menu_last_month', 'Last month'); ?></span>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     </ul>

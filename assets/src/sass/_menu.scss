@@ -18,8 +18,26 @@
 		border-radius: 50%;
 		font-size: 18px;
 		margin-right: 15px;
+
+	
     }
 }
+
+.inactive {
+	a {
+		color: #666666 !important;
+
+		&:hover {
+			color: #777777 !important;
+			cursor: not-allowed;
+		}
+	}
+
+	.category-icon {
+		color: #666666;
+    }
+}
+
 
 .github-profile-url {
 	background-color: #333;

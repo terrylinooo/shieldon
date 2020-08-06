@@ -68,6 +68,7 @@ return [
     'menu_iptables_manager' => 'Manager',
     'menu_iptables_status' => 'Status',
     'menu_messenger' => 'Messenger',
+    'menu_iptables_bridge' => 'iptables Bridge',
     'menu_iptables_ipv4' => 'IPv4 iptables',
     'menu_iptables_ipv6' => 'IPv6 iptables',
 
