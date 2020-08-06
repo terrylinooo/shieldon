@@ -236,7 +236,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->refreshRequest();
 
         $resolver = new \Shieldon\Firewall\HttpResolver();
-        $controllerClass = new \Shieldon\Firewall\Panel\iptables();
+        $controllerClass = new \Shieldon\Firewall\Panel\Iptables();
         ob_start();
         $resolver(call_user_func([$controllerClass, 'ip4'])); 
         $output = ob_get_contents();
@@ -252,7 +252,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->refreshRequest();
 
         $resolver = new \Shieldon\Firewall\HttpResolver();
-        $controllerClass = new \Shieldon\Firewall\Panel\iptables();
+        $controllerClass = new \Shieldon\Firewall\Panel\Iptables();
         ob_start();
         $resolver(call_user_func([$controllerClass, 'ip4'])); 
         $output = ob_get_contents();
