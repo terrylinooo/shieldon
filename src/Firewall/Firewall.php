@@ -144,7 +144,7 @@ class Firewall
             'Captchas',
             'MessageEvents',
             'DenyTooManyAttempts',
-            'IptablesBridgeDirectory',
+            'iptablesBridgeDirectory',
         ];
 
         foreach ($setupFunctions as $func) {

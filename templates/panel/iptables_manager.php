@@ -29,7 +29,7 @@ use function Shieldon\Firewall\mask_string;
 <div class="so-dashboard">
     <div id="so-rule-table-form" class="so-datatables">
         <div class="so-datatable-heading">
-            <?php _e('panel', 'iptable_heading', 'Iptables Manager'); ?> (<?php echo $type; ?>)
+            <?php _e('panel', 'iptable_heading', 'iptables Manager'); ?> (<?php echo $type; ?>)
         </div>
         <?php if ('IPv4' === $type) : ?>
         <div class="so-datatable-description">

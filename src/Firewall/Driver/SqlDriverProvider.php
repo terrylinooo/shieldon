@@ -332,7 +332,9 @@ class SqlDriverProvider extends DriverProvider
   
                 // Solve problem with bigint.
                 if ($v >= 2147483647) {
+                    // @codeCoverageIgnoreStart
                     $pdoParam = $this->db::PARAM_STR;
+                    // @codeCoverageIgnoreEnd
                 }
 
                 $query->bindValue(":$k", $bind[$k], $pdoParam);

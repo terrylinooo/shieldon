@@ -189,23 +189,23 @@ trait ConfigMethodsTrait
     }
 
     /**
-     * Check the settings of Iptables.
+     * Check the settings of iptables.
      * 
      * @param bool $result The result passed from previous check.
      *
      * @return bool
      */
-    protected function saveConfigCheckIptables(bool $result): bool
+    protected function saveConfigCheckiptables(bool $result): bool
     {
         if (!$result) {
             return false;
         }
 
         // System firewall.
-        $enableIptables = $this->getConfig('iptables.enable');
+        $enableiptables = $this->getConfig('iptables.enable');
         $iptablesWatchingFolder = rtrim($this->getConfig('iptables.config.watching_folder'), '\\/ ');
 
-        if ($enableIptables) {
+        if ($enableiptables) {
             if (empty($iptablesWatchingFolder)) {
                 // @codeCoverageIgnoreStart
                 $iptablesWatchingFolder = $this->directory . '/iptables';

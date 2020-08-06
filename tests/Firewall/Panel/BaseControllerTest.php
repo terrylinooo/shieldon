@@ -120,7 +120,7 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $method->setAccessible(true);
         $method->invokeArgs($baseController, ['ip6tables.config.watching_folder']);
 
-        $this->expectOutputString('Cannot view this field in demo mode.');
+        $this->expectOutputString('Cannot view this field in demonstration mode.');
     }
 
     public function testSpecialMethodUnderscoreDemoMode()

@@ -408,7 +408,7 @@ trait SetupTrait
      *
      * @return void
      */
-    protected function setupIptablesBridgeDirectory(): void
+    protected function setupiptablesBridgeDirectory(): void
     {
         $iptablesSetting = $this->getOption('config', 'iptables');
 
@@ -429,10 +429,11 @@ trait SetupTrait
 
         if ($sessionLimitSetting['enable']) {
 
-            $onlineUsers = $sessionLimitSetting['config']['count']; // default: 100
-            $alivePeriod = $sessionLimitSetting['config']['period']; // default: 300
+            $onlineUsers = $sessionLimitSetting['config']['count'];       // default: 100
+            $alivePeriod = $sessionLimitSetting['config']['period'];      // default: 300
+            $isUniqueIp  = $sessionLimitSetting['config']['unique_only']; // false
 
-            $this->kernel->limitSession($onlineUsers, $alivePeriod);
+            $this->kernel->limitSession($onlineUsers, $alivePeriod, $isUniqueIp);
         }
     }
 

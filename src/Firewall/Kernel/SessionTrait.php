@@ -38,6 +38,7 @@ trait SessionTrait
      *  ----------------------|---------------------------------------------
      *   limitSession         | Limit the amount of the online users.
      *   getSessionCount      | Get the amount of the sessions.
+     *   removeSessionsByIp   | Remove sessions using the same IP address.
      *  ----------------------|---------------------------------------------
      */
 
@@ -54,7 +55,12 @@ trait SessionTrait
 
         // How many minutes will a session be availe to visit?
         // 0 = no limit.
-        'period' => 0, 
+        'period' => 0,
+
+        // Only allow one session per IP address.
+        // If this option is set to true, user with multiple sessions will be
+        // removed from the session table.
+        'unique_only' => false,
     ];
 
     /**
@@ -77,6 +83,14 @@ trait SessionTrait
         'queue' => 0,
     ];
 
+
+    /**
+     * Current user's session data.
+     *
+     * @var array
+     */
+    protected $sessionData = [];
+
     /**
      * Limt online sessions.
      *
@@ -87,11 +101,12 @@ trait SessionTrait
      *
      * @return void
      */
-    public function limitSession(int $count = 1000, int $period = 300): void
+    public function limitSession(int $count = 1000, int $period = 300, bool $unique = false): void
     {
         $this->sessionLimit = [
             'count' => $count,
-            'period' => $period
+            'period' => $period,
+            'unique_only' => $unique,
         ];
     }
 
@@ -129,14 +144,14 @@ trait SessionTrait
             $period = (int) ($this->sessionLimit['period'] ?? 300);
             $now = time();
 
-            $sessionData = $this->driver->getAll('session');
+            $this->sessionData = $this->driver->getAll('session');
             $sessionPools = [];
 
             $i = 1;
             $sessionOrder = 0;
 
-            if (!empty($sessionData)) {
-                foreach ($sessionData as $v) {
+            if (!empty($this->sessionData)) {
+                foreach ($this->sessionData as $v) {
                     $sessionPools[] = $v['id'];
                     $lasttime = (int) $v['time'];
     
@@ -187,6 +202,25 @@ trait SessionTrait
         }
 
         return Kernel::RESPONSE_ALLOW;
+    }
+
+    /**
+     * Remove sessions using the same IP address.
+     * This method must be run after `sessionHandler`.
+     * 
+     * @param string $ip An IP address
+     *
+     * @return void
+     */
+    protected function removeSessionsByIp(string $ip): void
+    {
+        if ($this->sessionLimit['unique_only']) {
+            foreach ($this->sessionData as $v) {
+                if ($v['ip'] === $ip) {
+                    $this->driver->delete($v['id'], 'session');
+                }
+            }
+        }
     }
 
     // @codeCoverageIgnoreStart

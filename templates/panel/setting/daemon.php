@@ -253,6 +253,25 @@ use function Shieldon\Firewall\_e;
         </tr>
     </table>
 </div>
+<div class="section-body my-0" data-parent="online-session-limit-section">
+    <table class="setting-table">
+        <tr>
+            <td class="r1"><?php _e('panel', 'setting_label_unique_ip_only', 'Only Unique IP'); ?></td>
+            <td class="r2">
+                <p>
+                    <?php _e('panel', 'setting_note_unique_ip_only', 'Only allow one session per IP address.'); ?><br />
+                    <?php _e('panel', 'setting_note_unique_ip_only_2', 'Users with multiple sessions will be kicked off.'); ?>
+                </p>
+                <label class="rocker rocker-sm">
+                    <input type="hidden" name="online_session_limit__config__unique_only" value="off" />
+                    <input type="checkbox" name="online_session_limit__config__unique_only" class="toggle-block" value="on" <?php $this->checked('online_session_limit.config.unique_only', true); ?>>
+                    <span class="switch-left"><i>ON</i></span>
+                    <span class="switch-right"><i>OFF</i></span>
+                </label>
+            </td>
+        </tr>
+    </table>
+</div>
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_label_action_logs', 'Action Logs'); ?></h2>
@@ -322,7 +341,8 @@ use function Shieldon\Firewall\_e;
                 </div><br />
                 <p>
                     <?php _e('panel', 'setting_note_cronjob', 'Please use this code into the crontab file on your server.'); ?><br />
-                    <?php _e('panel', 'setting_note_iptables', '<strong>iptables_bridge.sh</strong> will watch the changes in this folder to employ command to iptables.'); ?>
+                    <?php _e('panel', 'setting_note_iptables', '<strong>iptables_bridge.sh</strong> will watch the changes in this folder to employ command to iptables.'); ?><br />
+                    <span class="text-danger"><?php _e('panel', 'setting_note_iptables_bridge', 'Please move <strong>iptables_bridge.sh</strong> to a safe place that only you know, changing the path for security reason.'); ?></span>
                 </p>
             </td>
         </tr>

@@ -277,6 +277,7 @@ return [
         'config' => [
             'count'  =>  100,
             'period' => 300,
+            'unique_only' => false,
         ],
     ],
 

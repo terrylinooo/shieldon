@@ -26,29 +26,29 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     use RouteTestTrait;
 
-    public function testIptablesManager()
+    public function testiptablesManager()
     {
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
-            'Iptables Manager (IPv4)'
+            'iptables Manager (IPv4)'
         );
 
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip6',
-            'Iptables Manager (IPv6)'
+            'iptables Manager (IPv6)'
         );
     }
 
-    public function testIptablesStatus()
+    public function testiptablesStatus()
     {
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4status',
-            'Iptables Status (IPv4)'
+            'iptables Status (IPv4)'
         );
 
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip6status',
-            'Iptables Status (IPv6)'
+            'iptables Status (IPv6)'
         );
     }
 
@@ -159,7 +159,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         return $_POST;
     }
 
-    public function testIptablesFormPostInvalidFiles()
+    public function testiptablesFormPostInvalidFiles()
     {
         if (!defined('SHIELDON_PANEL_BASE')) {
             define('SHIELDON_PANEL_BASE', 'firewall/panel');
@@ -236,7 +236,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->refreshRequest();
 
         $resolver = new \Shieldon\Firewall\HttpResolver();
-        $controllerClass = new \Shieldon\Firewall\Panel\Iptables();
+        $controllerClass = new \Shieldon\Firewall\Panel\iptables();
         ob_start();
         $resolver(call_user_func([$controllerClass, 'ip4'])); 
         $output = ob_get_contents();
@@ -252,7 +252,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->refreshRequest();
 
         $resolver = new \Shieldon\Firewall\HttpResolver();
-        $controllerClass = new \Shieldon\Firewall\Panel\Iptables();
+        $controllerClass = new \Shieldon\Firewall\Panel\iptables();
         ob_start();
         $resolver(call_user_func([$controllerClass, 'ip4'])); 
         $output = ob_get_contents();
@@ -270,7 +270,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
-            'Iptables Manager (IPv4)'
+            'iptables Manager (IPv4)'
         );
     }
 
@@ -282,7 +282,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
-            'Iptables Manager (IPv4)'
+            'iptables Manager (IPv4)'
         );
     }
 
@@ -294,7 +294,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
-            'Iptables Manager (IPv4)'
+            'iptables Manager (IPv4)'
         );
     }
 
@@ -306,7 +306,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
-            'Iptables Manager (IPv4)'
+            'iptables Manager (IPv4)'
         );
     }
 
@@ -318,7 +318,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4',
-            'Iptables Manager (IPv4)'
+            'iptables Manager (IPv4)'
         );
     }
 }

@@ -365,7 +365,7 @@ class BaseController
         $result = true;
         $result = $this->saveConfigCheckDataDriver($result);
         $result = $this->saveConfigCheckActionLogger($result);
-        $result = $this->saveConfigCheckIptables($result);
+        $result = $this->saveConfigCheckiptables($result);
 
         // Only update settings while data driver is correctly connected.
         if ($result) {
@@ -420,7 +420,7 @@ class BaseController
             ];
 
             if (in_array($field, $hiddenForDemo)) {
-                echo __('panel', 'field_not_visible', 'Cannot view this field in demo mode.');
+                echo __('panel', 'field_not_visible', 'Cannot view this field in demonstration mode.');
                 return;
             }
         }

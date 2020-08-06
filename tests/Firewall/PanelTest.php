@@ -54,4 +54,18 @@ class PanelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertStringContainsString('Login to Shieldon firewall panel (DEMO)', $output);
     }
+
+    public function testGetFirewallInstance()
+    {
+        $panel = new \Shieldon\Firewall\Panel();
+
+        $reflection = new \ReflectionObject($panel);
+        $methodSetSessionId = $reflection->getMethod('getFirewallInstance');
+        $methodSetSessionId->setAccessible(true);
+
+        // Test exception.
+        $this->expectException(\RuntimeException::class);
+
+        $methodSetSessionId->invokeArgs($panel, []);
+    }
 }

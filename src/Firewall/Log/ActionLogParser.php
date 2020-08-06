@@ -348,21 +348,20 @@ final class ActionLogParser
 
         $results = [];
 
-        $results['captcha_chart_string']  = '';     // string
-        $results['pageview_chart_string'] = '';     // string
-        $results['captcha_success_count'] = 0;      // integer
-        $results['captcha_failure_count'] = 0;      // integer
-        $results['captcha_count'] = 0;              // integer
-        $results['pageview_count'] = 0;             // integer
-        $results['captcha_percentageage'] = 0;      // integer
-        $results['captcha_failure_percentage'] = 0; // integer
-        $results['captcha_success_percentage'] = 0; // integer
-
-        $results['action_ban_count'] = 0;           // integer
-        $results['action_temp_ban_count'] = 0;      // integer
-        $results['action_unban_count'] = 0;         // integer
-        $results['blacklist_count'] = 0;            // integer
-        $results['session_limit_count'] = 0;        // integer
+        $results['captcha_chart_string']       = ''; // string
+        $results['pageview_chart_string']      = ''; // string
+        $results['captcha_success_count']      = 0;  // integer
+        $results['captcha_failure_count']      = 0;  // integer
+        $results['captcha_count']              = 0;  // integer
+        $results['pageview_count']             = 0;  // integer
+        $results['captcha_percentageage']      = 0;  // integer
+        $results['captcha_failure_percentage'] = 0;  // integer
+        $results['captcha_success_percentage'] = 0;  // integer
+        $results['action_ban_count']           = 0;  // integer
+        $results['action_temp_ban_count']      = 0;  // integer
+        $results['action_unban_count']         = 0;  // integer
+        $results['blacklist_count']            = 0;  // integer
+        $results['session_limit_count']        = 0;  // integer
 
         $ipdData = $this->getIpData();
 
@@ -373,14 +372,13 @@ final class ActionLogParser
                 if ($ipKey === $ip) {
                     $results['captcha_success_count'] += $ipInfo['captcha_success_count'];
                     $results['captcha_failure_count'] += $ipInfo['captcha_failure_count'];
-                    $results['captcha_count'] += $ipInfo['captcha_count'];
-                    $results['pageview_count'] += $ipInfo['pageview_count'];
-
-                    $results['action_ban_count'] += $ipInfo['action_ban_count'];
+                    $results['captcha_count']         += $ipInfo['captcha_count'];
+                    $results['pageview_count']        += $ipInfo['pageview_count'];
+                    $results['action_ban_count']      += $ipInfo['action_ban_count'];
                     $results['action_temp_ban_count'] += $ipInfo['action_temp_ban_count'];
-                    $results['action_unban_count'] += $ipInfo['action_unban_count'];
-                    $results['blacklist_count'] += $ipInfo['blacklist_count'];
-                    $results['session_limit_count'] += $ipInfo['session_limit_count'];
+                    $results['action_unban_count']    += $ipInfo['action_unban_count'];
+                    $results['blacklist_count']       += $ipInfo['blacklist_count'];
+                    $results['session_limit_count']   += $ipInfo['session_limit_count'];
                 }
             }
 
@@ -405,22 +403,21 @@ final class ActionLogParser
 
         $results = [];
 
-        $results['captcha_chart_string']  = '';     // string
-        $results['pageview_chart_string'] = '';     // string
-        $results['label_chart_string'] = '';        // string
-        $results['captcha_success_count'] = 0;      // integer
-        $results['captcha_failure_count'] = 0;      // integer
-        $results['captcha_count'] = 0;              // integer
-        $results['pageview_count'] = 0;             // integer
-        $results['captcha_percentageage'] = 0;      // integer
-        $results['captcha_failure_percentage'] = 0; // integer
-        $results['captcha_success_percentage'] = 0; // integer
-
-        $results['action_ban_count'] = 0;           // integer
-        $results['action_temp_ban_count'] = 0;      // integer
-        $results['action_unban_count'] = 0;         // integer
-        $results['blacklist_count'] = 0;            // integer
-        $results['session_limit_count'] = 0;        // integer
+        $results['label_chart_string']         = ''; // string
+        $results['captcha_chart_string']       = ''; // string
+        $results['pageview_chart_string']      = ''; // string
+        $results['captcha_success_count']      = 0;  // integer
+        $results['captcha_failure_count']      = 0;  // integer
+        $results['captcha_count']              = 0;  // integer
+        $results['pageview_count']             = 0;  // integer
+        $results['captcha_percentageage']      = 0;  // integer
+        $results['captcha_failure_percentage'] = 0;  // integer
+        $results['captcha_success_percentage'] = 0;  // integer
+        $results['action_ban_count']           = 0;  // integer
+        $results['action_temp_ban_count']      = 0;  // integer
+        $results['action_unban_count']         = 0;  // integer
+        $results['blacklist_count']            = 0;  // integer
+        $results['session_limit_count']        = 0;  // integer
 
         if (!empty($periodData)) {
 
@@ -431,29 +428,29 @@ final class ActionLogParser
             $labels = [];
 
             foreach ($periodData as $label => $period) {
-                $chartCaptcha[] = $period['captcha_count'];
-                $chartPageview[] = $period['pageview_count'];
-                $chartCaptchaSuccess[] = $period['captcha_success_count'];
-                $chartCaptchaFailure[] = $period['captcha_failure_count'];
                 $labels[] = $label;
 
+                $chartCaptcha[]        = $period['captcha_count'];
+                $chartPageview[]       = $period['pageview_count'];
+                $chartCaptchaSuccess[] = $period['captcha_success_count'];
+                $chartCaptchaFailure[] = $period['captcha_failure_count'];
+    
                 $results['captcha_success_count'] += $period['captcha_success_count'];
                 $results['captcha_failure_count'] += $period['captcha_failure_count'];
-                $results['captcha_count'] += $period['captcha_count'];
-                $results['pageview_count'] += $period['pageview_count'];
-
-                $results['action_ban_count'] += $period['action_ban_count'];
+                $results['captcha_count']         += $period['captcha_count'];
+                $results['pageview_count']        += $period['pageview_count'];
+                $results['action_ban_count']      += $period['action_ban_count'];
                 $results['action_temp_ban_count'] += $period['action_temp_ban_count'];
-                $results['action_unban_count'] += $period['action_unban_count'];
-                $results['blacklist_count'] += $period['blacklist_count'];
-                $results['session_limit_count'] += $period['session_limit_count'];
+                $results['action_unban_count']    += $period['action_unban_count'];
+                $results['blacklist_count']       += $period['blacklist_count'];
+                $results['session_limit_count']   += $period['session_limit_count'];
             }
 
-            $results['captcha_chart_string'] = implode(',', $chartCaptcha);
-            $results['pageview_chart_string']= implode(',', $chartPageview);
+            $results['captcha_chart_string']         = implode(',', $chartCaptcha);
+            $results['pageview_chart_string']        = implode(',', $chartPageview);
             $results['captcha_success_chart_string'] = implode(',', $chartCaptchaSuccess);
             $results['captcha_failure_chart_string'] = implode(',', $chartCaptchaFailure);
-            $results['label_chart_string'] = "'" . implode("','", $labels) . "'";
+            $results['label_chart_string']           = "'" . implode("','", $labels) . "'";
 
             if ($results['captcha_count'] > 0) {
                 $results['captcha_percentageage'] = (int) (round($results['captcha_count'] / ($results['captcha_count'] + $results['pageview_count']), 2) * 100);

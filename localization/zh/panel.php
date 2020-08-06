@@ -46,6 +46,7 @@ return [
     'menu_data_circle' => '資料週期',
     'menu_operation_status' => '運行狀態',
     'menu_iptables_manager' => '管理器',
+    'menu_iptables_bridge' => 'iptables 橋接器',
     'menu_iptables_status' => '狀態',
     'menu_messenger' => '通訊器',
 
@@ -383,6 +384,7 @@ return [
     'setting_label_cronjob' => '系統排程',
     'setting_note_cronjob' => '請使用這段程式碼到您的伺服器中的 crontab 檔案。',
     'setting_note_iptables' => '<strong>iptables_bridge.sh</strong> 將會監視在此資料夾中的變化來套用指令到 iptables 裡。',
+    'setting_note_iptables_bridge' => '為了安全起見，請搬移 <strong>iptables_bridge.sh</strong> 到一個只有你知道且安全的地方。',
     'setting_label_deny_attempt_buffer' => '緩衝',
     'setting_desc_deny_attempt_buffer' => '連續多少次錯誤會觸發此事件。',
     'setting_label_record_attempt_detection_period' => '偵測期間',
@@ -393,6 +395,9 @@ return [
     'setting_note_import' => '請選擇先前匯出的 .json 檔。',
     'setting_button_export' => '匯出',
     'setting_button_import' => '匯入',
+    'setting_label_unique_ip_only' => '只許可獨立 IP',
+    'setting_note_unique_ip_only' => '每一個 IP 位址只許可一個工作階段。',
+    'setting_note_unique_ip_only_2' => '使用者有多重工作階段將會被踢掉。',
 
     // Messenger
     'messenger_heading_events' => '事件',
@@ -431,7 +436,7 @@ return [
 
     'error_ip6tables_directory_not_writable' => 'iptables 監視資料夾需要儲存目錄是可寫入狀態。',
 
-    'iptable_heading' => 'Iptables 管理器',
+    'iptable_heading' => 'iptables 管理器',
     'iptable_description_1' => '這是 <strong>iptables</strong> 的網站介面，請小心地使用此功能。',
     'iptable_description_2' => '您只可以管理連線進來的請求。',
     'iptable_description_3' => '在您重開機您的伺服器後，在這裡的規則將會被清除。使用 <strong>iptables-save</strong> 指令保存規則',

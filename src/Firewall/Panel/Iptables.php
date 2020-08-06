@@ -41,7 +41,7 @@ use function sleep;
 use function trim;
 
 /**
- * The bridge between the Shieldon firewall and the Iptables firewall.
+ * The bridge between the Shieldon firewall and the iptables firewall.
  */
 class Iptables extends BaseController
 {
@@ -149,7 +149,7 @@ class Iptables extends BaseController
         $data['ipCommand'] = $ipCommand;
         $data['type'] = $type;
 
-        $data['title'] = __('panel', 'title_iptables_manager', 'Iptables Manager') . ' (' . $type . ')';
+        $data['title'] = __('panel', 'title_iptables_manager', 'iptables Manager') . ' (' . $type . ')';
 
         return $this->renderPage('panel/iptables_manager', $data);
     }
@@ -189,7 +189,7 @@ class Iptables extends BaseController
         $data['ipStatus'] = $ipStatus;
         $data['type'] = $type;
 
-        $data['title'] = __('panel', 'title_iptables_status', 'Iptables Status') . ' (' . $type . ')';
+        $data['title'] = __('panel', 'title_iptables_status', 'iptables Status') . ' (' . $type . ')';
 
         return $this->renderPage('panel/iptables_status', $data);
     }
@@ -200,7 +200,7 @@ class Iptables extends BaseController
      * @param string $type              IPv4 or IPv6
      * @param string $commandLogFile    The log file contains executed commands.
      * @param string $iptablesQueueFile The file contains the commands that wil 
-     *                                  be executed by Iptables
+     *                                  be executed by iptables
      *
      * @return void
      */
@@ -236,12 +236,12 @@ class Iptables extends BaseController
          * 
          * (1) The command file -
          *     This file is used on display the commands on the page 
-         *     Iptables Manager.
+         *     iptables Manager.
          * (2) The queue file -
          *     This file is a bridge between Shieldon Firewall and Iptalbes.
          *     ipbales_bridge.sh will monitor this file, once commands come, 
-         *     transforming the commands into Iptables syntax commands and 
-         *     then execute the Iptables commands.
+         *     transforming the commands into iptables syntax commands and 
+         *     then execute the iptables commands.
          */
         if ($postParams['remove'] === 'yes') {
 
@@ -267,7 +267,7 @@ class Iptables extends BaseController
                 file_put_contents($commandLogFile, implode(PHP_EOL, $t));
             }
     
-            // Pass the command to the Iptables bridge file to remove the rule
+            // Pass the command to the iptables bridge file to remove the rule
             // which is in the Iptable rule list.
             $applyCommand = "delete,$ipv,$ip,$subnet,$port,$protocol,$action";
             file_put_contents($iptablesQueueFile, $applyCommand . "\n", FILE_APPEND | LOCK_EX);

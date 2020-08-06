@@ -5,8 +5,8 @@ return [
     // Panel page title
     'title_home' => 'Overview',
     'title_overview' => 'Overview',
-    'title_iptables_manager' => 'Iptables Manager',
-    'title_iptables_status' => 'Iptables Status',
+    'title_iptables_manager' => 'iptables Manager',
+    'title_iptables_status' => 'iptables Status',
     'title_operation_status' => 'Operation Status',
     'title_action_logs' => 'Action Logs',
     'title_web_authentication' => 'Web Page Authentication',
@@ -76,17 +76,17 @@ return [
     'error_mysql_connection' => 'Cannot access to your MySQL database, please check your settings.',
     'error_mysql_driver_not_supported' => 'Your system doesn’t support MySQL driver.',
     'error_sqlite_driver_not_supported' => 'Your system doesn’t support SQLite driver.',
-    'error_sqlite_directory_not_writable' => 'SQLite data driver requires the storage directory writable.',
+    'error_sqlite_directory_not_writable' => 'SQLite data driver needs the storage directory writable.',
     'error_redis_driver_not_supported' => 'Your system doesn’t support Redis driver.',
-    'error_file_directory_not_writable' => 'File data driver requires the storage directory writable.',
-    'error_logger_directory_not_writable' => 'Action Logger requires the storage directory writable.',
+    'error_file_directory_not_writable' => 'File data driver needs the storage directory writable.',
+    'error_logger_directory_not_writable' => 'Action Logger needs the storage directory writable.',
     'error_invalid_json_file' => 'Invalid JSON file.',
     'error_invalid_config_file' => 'Invalid Shieldon configuration file.',
     'success_settings_saved' => 'Settings saved',
     'success_json_imported' => 'JSON file imported successfully.',
 
     // Others.
-    'field_not_visible' => 'Cannot view this field in demo mode.',
+    'field_not_visible' => 'Cannot view this field in demonstration mode.',
     'permission_required' => 'Permission required.',
 
     // Header status bar.
@@ -356,7 +356,7 @@ return [
     'setting_note_session_limit_1' => 'When the online user amount has reached the limitation, other users not in the queue have to line up!',
     'setting_note_session_limit_2' => 'The following image is an example.',
     'setting_label_online_limit' => 'Online Limit',
-    'setting_note_online_limit' => 'The maximum online user limit.',
+    'setting_note_online_limit' => 'The maximum amount of online user.',
     'setting_label_alive_period' => 'Keep Alive Period',
     'setting_note_alive_period' => 'Unit: minute.',
     'setting_label_action_logs' => 'Action Logs',
@@ -405,6 +405,7 @@ return [
     'setting_label_cronjob' => 'Cron Job',
     'setting_note_cronjob' => 'Please use this code into the crontab file on your server.',
     'setting_note_iptables' => '<strong>iptables_bridge.sh</strong> will watch the changes in this folder to employ command to iptables.',
+    'setting_note_iptables_bridge' => 'Please move <strong>iptables_bridge.sh</strong> to a safe place that only you know, changing the path for security reason.',
     'setting_label_deny_attempt_buffer' => 'Buffer',
     'setting_desc_deny_attempt_buffer' => 'How many fails in a row will trigger this event.',
     'setting_label_record_attempt_detection_period' => 'Detection Period',
@@ -415,10 +416,13 @@ return [
     'setting_note_import' => 'Please select the .json file exported before.',
     'setting_button_export' => 'Export',
     'setting_button_import' => 'Import',
+    'setting_label_unique_ip_only' => 'Unique IP',
+    'setting_note_unique_ip_only' => 'Only allow one session per IP address.',
+    'setting_note_unique_ip_only_2' => 'Users with multiple sessions will be kicked off.',
 
     // Messenger
     'messenger_heading_events' => 'Events',
-    'messenger_desc_events' => 'When they occur, what are the events that you would like to receive notifications sent by Messenger modules.',
+    'messenger_desc_events' => 'What are the events that you would like to receive notifications sent by Messenger modules.',
     'messenger_label_event_1' => 'Ban a user permanently in current data cycle.',
     'messenger_desc_event_1' => 'This event is triggered typically when a user fails too many times due to invalid CAPTCHA in a row.',
     'messenger_label_event_2' => 'Ban a user permanently in system firwall',
@@ -453,7 +457,7 @@ return [
 
     'error_ip6tables_directory_not_writable' => 'iptables watching folder requires the storage directory writable.',
 
-    'iptable_heading' => 'Iptables Manager',
+    'iptable_heading' => 'iptables Manager',
     'iptable_description_1' => 'This is Web Interface of <strong>iptables</strong>, be careful of using this function.',
     'iptable_description_2' => 'You can only manage incoming requests here.',
     'iptable_description_3' => 'After you reboot your server, the rules here will be disappeared. Using <strong>iptables-save</strong> youself to keep the rules exist.',

@@ -46,6 +46,7 @@ return [
     'menu_data_circle' => '资料周期',
     'menu_operation_status' => '运行状态',
     'menu_iptables_manager' => '管理器',
+    'menu_iptables_bridge' => 'iptables 桥接器',
     'menu_iptables_status' => '状态',
     'menu_messenger' => '通讯器',
     
@@ -381,6 +382,7 @@ return [
     'setting_label_cronjob' => '系统排程',
     'setting_note_cronjob' => '请使用这段程式码到您的伺服器中的 crontab 档案。',
     'setting_note_iptables' => '<strong>iptables_bridge.sh</strong> 将会监视在此资料夹中的变化来套用指令到 iptables 里。',
+    'setting_note_iptables_bridge' => '为了安全起见，请搬移 <strong>iptables_bridge.sh</strong> 到一个只有你知道且安全的地方。',
     'setting_label_deny_attempt_buffer' => '缓冲',
     'setting_desc_deny_attempt_buffer' => '连续多少次错误会触发此事件。',
     'setting_label_record_attempt_detection_period' => '检测期间',
@@ -392,6 +394,9 @@ return [
     'setting_note_import' => '请选择先前汇出的 .json 文件。',
     'setting_button_export' => '汇出',
     'setting_button_import' => '汇入',
+    'setting_label_unique_ip_only' => '只许可独立 IP',
+    'setting_note_unique_ip_only' => '每一个 IP 位址只许可一个工作阶段。',
+    'setting_note_unique_ip_only_2' => '使用者有多重工作阶段将会被踢掉。',
 
     // Messenger
     'messenger_heading_events' => '事件',
@@ -430,7 +435,7 @@ return [
 
     'error_ip6tables_directory_not_writable' => 'iptables 监视资料夹需要储存目录是可写入状态。',
 
-    'iptable_heading' => 'Iptables 管理器',
+    'iptable_heading' => 'iptables 管理器',
     'iptable_description_1' => '这是 <strong>iptables</strong> 的网站介面，请小心地使用此功能。',
     'iptable_description_2' => '您只可以管理连线进来的请求。',
     'iptable_description_3' => '在您重开机您的伺服器后，在这里的规则将会被清除。使用 <strong>iptables-save</strong> 指令保存规则',

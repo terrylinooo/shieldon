@@ -148,6 +148,7 @@ class Kernel
      *  ----------------------|---------------------------------------------
      *   limitSession         | Limit the amount of the online users.
      *   getSessionCount      | Get the amount of the sessions.
+     *   removeSessionsByIp   | Remove sessions using the same IP address.
      *  ----------------------|---------------------------------------------
      */
     use SessionTrait;
@@ -615,6 +616,8 @@ class Kernel
         // Remove logs for this IP address because It already has it's own rule on system.
         // No need to count for it anymore.
         $this->driver->delete($ip, 'filter');
+
+        $this->removeSessionsByIp($ip);
 
         // Log this action.
         $this->log($actionCode, $ip);

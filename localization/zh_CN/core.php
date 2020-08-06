@@ -35,5 +35,5 @@ return[
     'messenger_text_reason_code_14' => '达到每秒限制。',
     'messenger_text_handle' => '处置',
     'messenger_text_handle_type_1' => '这个IP已经在当前的资料周期被永久封锁,直到重设资料周期为止。',
-    'messenger_text_handle_type_2' => '这个IP已经被放到Iptables防火墙的DROP列表,直到伺服器重开机为止。',
+    'messenger_text_handle_type_2' => '这个IP已经被放到iptables防火墙的DROP列表,直到伺服器重开机为止。',
 ];
