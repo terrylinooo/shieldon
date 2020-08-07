@@ -249,19 +249,7 @@ class Report extends BaseController
     {
         $ruleList = $this->kernel->driver->getAll('rule');
 
-        $components = ['ip', 'rdns', 'header', 'useragent', 'trustedbot'];
-        $filters = ['cookie', 'referer', 'session', 'frequency'];
-
-        foreach ($components as $v) {
-            $data["component_$v"] = 0;
-            $data['rule_list'][$v] = [];
-        }
-
-        foreach ($filters as $v) {
-            $data["filter_$v"] = 0;
-            $data['rule_list'][$v] = [];
-        }
-
+        $data = $this->getDataDefault();
         $counter = $this->getCounterDefault();
         $info = $this->getInfoDefault();
 
@@ -327,6 +315,31 @@ class Report extends BaseController
         $b = $info[$this->kernel::REASON_TOO_MANY_SESSIONS];
         $data['filter_session'] = $a;
         $data['rule_list']['session'] = $b;
+
+        return $data;
+    }
+
+    /**
+     * Get data default.
+     *
+     * @return array
+     */
+    private function getDataDefault(): array
+    {
+        $data = [];
+
+        $components = ['ip', 'rdns', 'header', 'useragent', 'trustedbot'];
+        $filters = ['cookie', 'referer', 'session', 'frequency'];
+
+        foreach ($components as $v) {
+            $data["component_$v"] = 0;
+            $data['rule_list'][$v] = [];
+        }
+
+        foreach ($filters as $v) {
+            $data["filter_$v"] = 0;
+            $data['rule_list'][$v] = [];
+        }
 
         return $data;
     }
