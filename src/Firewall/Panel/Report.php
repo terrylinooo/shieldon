@@ -249,44 +249,41 @@ class Report extends BaseController
     {
         $ruleList = $this->kernel->driver->getAll('rule');
 
-        $data = $this->getDataDefault();
         $counter = $this->getCounterDefault();
         $info = $this->getInfoDefault();
 
         // @codeCoverageIgnoreStart
         foreach ($ruleList as $ruleInfo) {
-            $reason = $ruleInfo['reason']; 
+            $reason = $ruleInfo['reason'];
+
             $counter[$reason]++;
             $info[$reason][] = $ruleInfo;
         }
         // @codeCoverageIgnoreEnd
 
-        $a = $counter[$this->kernel::REASON_DENY_IP];
-        $b = $counter[$this->kernel::REASON_COMPONENT_IP];
-        $c = $info[$this->kernel::REASON_DENY_IP];
-        $d = $info[$this->kernel::REASON_COMPONENT_IP];
-        $data['component_ip'] = $a + $b;
-        $data['rule_list']['ip'] = array_merge_recursive($c, $d);
+        $data = $this->getComponentsData($data, $counter, $info);
+        $data = $this->getFiltersData($data, $counter, $info);
 
-        $a = $counter[$this->kernel::REASON_COMPONENT_RDNS];
-        $b = $info[$this->kernel::REASON_COMPONENT_RDNS];
-        $data['component_rdns'] = $a;
-        $data['rule_list']['rdns'] = $b;
+        return $data;
+    }
 
-        $a = $counter[$this->kernel::REASON_COMPONENT_HEADER];
-        $b = $info[$this->kernel::REASON_COMPONENT_HEADER];
-        $data['component_header'] = $a;
-        $data['rule_list']['header'] = $b;
+    /**
+     * Get filters' data.
+     *
+     * @param array $data    The data array.
+     * @param array $counter The counter array.
+     * @param array $info    The into array.
+     *
+     * @return array
+     */
+    private function getFiltersData(array $data, array $counter, array $info): array
+    {
+        $filters = ['cookie', 'referer', 'session', 'frequency'];
 
-        $a = $counter[$this->kernel::REASON_COMPONENT_USERAGENT];
-        $b = $info[$this->kernel::REASON_COMPONENT_USERAGENT];
-        $data['component_useragent'] = $a;
-        $data['rule_list']['useragent'] = $b;
-
-        $a = $counter[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT];
-        $b = $info[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT];
-        $data['component_trustedbot'] = $a;
-        $data['rule_list']['trustedbot'] = $b;
+        foreach ($filters as $v) {
+            $data["filter_$v"] = 0;
+            $data['rule_list'][$v] = [];
+        }
 
         $a = $counter[$this->kernel::REASON_TOO_MANY_ACCESSES];
         $b = $counter[$this->kernel::REASON_REACHED_LIMIT_DAY];
@@ -320,26 +317,49 @@ class Report extends BaseController
     }
 
     /**
-     * Get data default.
+     * Get components' data.
+     * 
+     * @param array $data    The data array.
+     * @param array $counter The counter array.
+     * @param array $info    The into array.
      *
      * @return array
      */
-    private function getDataDefault(): array
+    private function getComponentsData(array $data, array $counter, array $info): array
     {
-        $data = [];
-
         $components = ['ip', 'rdns', 'header', 'useragent', 'trustedbot'];
-        $filters = ['cookie', 'referer', 'session', 'frequency'];
 
         foreach ($components as $v) {
             $data["component_$v"] = 0;
             $data['rule_list'][$v] = [];
         }
 
-        foreach ($filters as $v) {
-            $data["filter_$v"] = 0;
-            $data['rule_list'][$v] = [];
-        }
+        $a = $counter[$this->kernel::REASON_DENY_IP];
+        $b = $counter[$this->kernel::REASON_COMPONENT_IP];
+        $c = $info[$this->kernel::REASON_DENY_IP];
+        $d = $info[$this->kernel::REASON_COMPONENT_IP];
+        $data['component_ip'] = $a + $b;
+        $data['rule_list']['ip'] = array_merge_recursive($c, $d);
+
+        $a = $counter[$this->kernel::REASON_COMPONENT_RDNS];
+        $b = $info[$this->kernel::REASON_COMPONENT_RDNS];
+        $data['component_rdns'] = $a;
+        $data['rule_list']['rdns'] = $b;
+
+        $a = $counter[$this->kernel::REASON_COMPONENT_HEADER];
+        $b = $info[$this->kernel::REASON_COMPONENT_HEADER];
+        $data['component_header'] = $a;
+        $data['rule_list']['header'] = $b;
+
+        $a = $counter[$this->kernel::REASON_COMPONENT_USERAGENT];
+        $b = $info[$this->kernel::REASON_COMPONENT_USERAGENT];
+        $data['component_useragent'] = $a;
+        $data['rule_list']['useragent'] = $b;
+
+        $a = $counter[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT];
+        $b = $info[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT];
+        $data['component_trustedbot'] = $a;
+        $data['rule_list']['trustedbot'] = $b;
 
         return $data;
     }
