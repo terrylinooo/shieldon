@@ -135,26 +135,18 @@ class RedisDriver extends DriverProvider
             return $results;
         }
 
-        switch ($type) {
+        if ($type === 'filter') {
+            $content = $this->redis->get($this->getKeyName($ip, $type));
+            $resultData = json_decode($content, true);
 
-            case 'rule':
-                // no break
-            case 'session':
-                $content = $this->redis->get($this->getKeyName($ip, $type));
-                $resultData = json_decode($content, true);
+            if (!empty($resultData['log_data'])) {
+                $results = $resultData['log_data']; 
+            }
 
-                if (is_array($resultData)) {
-                    $results = $resultData;
-                }
-                break;
-            case 'filter':
-                $content = $this->redis->get($this->getKeyName($ip, $type));
-                $resultData = json_decode($content, true);
-
-                if (!empty($resultData['log_data'])) {
-                    $results = $resultData['log_data']; 
-                }
-                break;
+        } else {
+            // type: rule | session
+            $content = $this->redis->get($this->getKeyName($ip, $type));
+            $results = json_decode($content, true);
         }
 
         return $results;
