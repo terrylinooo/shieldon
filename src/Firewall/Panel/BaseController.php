@@ -427,18 +427,13 @@ class BaseController
 
         $fieldtype = gettype($this->getConfig($field));
 
-        if (in_array($fieldtype, ['integer', 'string', 'double'])) {
-            echo (!empty($this->getConfig($field))) ? $this->getConfig($field) : $default;
-            return;
-            // @codeCoverageIgnoreStart
-        } elseif (in_array($fieldtype, ['array'])) {
+        if ($fieldtype === 'array') {
             echo implode("\n", $this->getConfig($field));
             return;
         }
 
-        echo '';
+        echo $this->getConfig($field) ?: $default;
     }
-    // @codeCoverageIgnoreEnd
 
     /**
      * Use on HTML checkbox and radio elements.

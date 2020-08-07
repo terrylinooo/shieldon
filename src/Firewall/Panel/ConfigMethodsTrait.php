@@ -339,17 +339,10 @@ trait ConfigMethodsTrait
      */
     protected function saveCofigCheckDataDriverSqlLite(bool $result): bool
     {
-        //$fileDir = rtrim($this->getConfig('drivers.file.directory_path'), '\\/ ');
-        $fileDir = $this->directory . '/data_driver_file';
+        // $sqliteDir = rtrim($this->getConfig('drivers.sqlite.directory_path'), '\\/ ');
+        $sqliteDir = $this->directory . '/data_driver_sqlite';
 
-        $this->setConfig('drivers.file.directory_path', $fileDir);
-
-        $sqliteDir = rtrim($this->getConfig('drivers.sqlite.directory_path'), '\\/ ');
-
-        if (empty($sqliteDir)) {
-            $sqliteDir = $this->directory . '/data_driver_sqlite';
-            $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
-        }
+        $this->setConfig('drivers.sqlite.directory_path', $sqliteDir);
 
         $sqliteFilePath = $sqliteDir . '/shieldon.sqlite3';
 
