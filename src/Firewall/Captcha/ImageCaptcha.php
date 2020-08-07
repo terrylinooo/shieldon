@@ -125,6 +125,10 @@ class ImageCaptcha extends CaptchaProvider
             }
         }
 
+        if (!is_array($this->properties['colors'])) {
+            $this->properties['colors'] = $defaults['colors'];
+        }
+
         foreach ($defaults['colors'] as $k => $v) {
             if (!is_array($this->properties['colors'][$k])) {
                 $this->properties['colors'][$k] = $defaults['colors'][$k];
