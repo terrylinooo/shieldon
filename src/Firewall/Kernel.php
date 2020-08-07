@@ -584,12 +584,8 @@ class Kernel
      * 
      * @return void
      */
-    protected function action(
-        int    $actionCode,
-        int    $reasonCode,
-        string $assignIp = ''
-    ): void {
-
+    protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
+    {
         $ip = $this->ip;
         $rdns = $this->rdns;
         $now = time();

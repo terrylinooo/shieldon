@@ -63,10 +63,10 @@ class Helpers
 /**
  *   Public methods       | Desctiotion
  *  ----------------------|---------------------------------------------
- *   __                   | Get locale message.
- *   _e                   | Echo string from __()
- *   get_user_lang        | Get user lang.
- *   include_i18n_file    | Include i18n file.
+ *  __                    | Get locale message.
+ *  _e                    | Echo string from __()
+ *  get_user_lang         | Get user lang.
+ *  include_i18n_file     | Include i18n file.
  *  mask_string           | Mask strings with asterisks.
  *  get_cpu_usage         | Get current CPU usage information.
  *  get_memory_usage      | Get current RAM usage information. 
@@ -340,10 +340,12 @@ function get_default_properties(): array
             'data_circle'     => false,
             'system_firewall' => false,
         ],
+
         'deny_attempt_notify' => [
             'data_circle'     => false,
             'system_firewall' => false,
         ],
+
         'deny_attempt_buffer' => [
             'data_circle'     => 10,
             'system_firewall' => 10,
@@ -452,6 +454,7 @@ function unset_global_cookie($name = null): void
     if (empty($name)) {
         $cookieParams = get_request()->getCookieParams();
         set_request(get_request()->withCookieParams([]));
+
         foreach (array_keys($cookieParams) as $name) {
             set_response(
                 get_response()->withHeader(

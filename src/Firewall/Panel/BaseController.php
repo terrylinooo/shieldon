@@ -365,7 +365,7 @@ class BaseController
         $result = true;
         $result = $this->saveConfigCheckDataDriver($result);
         $result = $this->saveConfigCheckActionLogger($result);
-        $result = $this->saveConfigCheckiptables($result);
+        $result = $this->saveConfigCheckIptables($result);
 
         // Only update settings while data driver is correctly connected.
         if ($result) {

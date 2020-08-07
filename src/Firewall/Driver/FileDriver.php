@@ -238,15 +238,10 @@ class FileDriver extends DriverProvider
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
     {
-        switch ($type) {
-            case 'rule':
-                // no break
-            case 'filter':
-                // no break
-            case 'session':
-                return $this->remove($this->getFilename($ip, $type));
+        if (in_array($type, ['rule', 'filter', 'session'])) {
+            return $this->remove($this->getFilename($ip, $type));
         }
-
+ 
         return false;
     }
 
@@ -260,14 +255,14 @@ class FileDriver extends DriverProvider
     protected function doRebuild(): bool
     {
         // Those are Shieldon logs directories.
-        $removeDirs = [
-            $this->getDirectory('filter'),
-            $this->getDirectory('rule'),
-            $this->getDirectory('session'),
+        $tables = [
+            'filter'  => $this->getDirectory('filter'),
+            'rule'    => $this->getDirectory('rule'),
+            'session' => $this->getDirectory('session'),
         ];
-        
+
         // Remove them recursively.
-        foreach ($removeDirs as $dir) {
+        foreach ($tables as $dir) {
             if (file_exists($dir)) {
                 $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
                 $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
@@ -289,16 +284,7 @@ class FileDriver extends DriverProvider
             }
         }
 
-        $conA = !is_dir($this->getDirectory('filter'));
-        $conB = !is_dir($this->getDirectory('rule'));
-        $conC = !is_dir($this->getDirectory('session'));
-
-        // Check if are Shieldon directories removed or not.
-        $result = ($conA && $conB && $conC);
-
-        $this->createDirectory();
-
-        return $result;
+        return $this->createDirectory();
     }
 
     /**

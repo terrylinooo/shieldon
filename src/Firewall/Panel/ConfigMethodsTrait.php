@@ -195,7 +195,7 @@ trait ConfigMethodsTrait
      *
      * @return bool
      */
-    protected function saveConfigCheckiptables(bool $result): bool
+    protected function saveConfigCheckIptables(bool $result): bool
     {
         if (!$result) {
             return false;

@@ -61,7 +61,7 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
 
         $reflection = new \ReflectionObject($baseController);
-        $method = $reflection->getMethod('saveConfigCheckiptables');
+        $method = $reflection->getMethod('saveConfigCheckIptables');
         $method->setAccessible(true);
         $result = $method->invokeArgs($baseController, [false]);
 
@@ -75,7 +75,7 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $baseController->setConfig('iptables.enable', false);
 
         $reflection = new \ReflectionObject($baseController);
-        $method = $reflection->getMethod('saveConfigCheckiptables');
+        $method = $reflection->getMethod('saveConfigCheckIptables');
         $method->setAccessible(true);
         $result = $method->invokeArgs($baseController, [true]);
 
