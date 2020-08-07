@@ -68,9 +68,9 @@ use function Shieldon\Firewall\_e;
                             <div class="row">
                                 <div class="col-sm-7 py-2">
                                     <label><?php _e('panel', 'setting_label_directory', 'Directory'); ?></label>
-                                    <input type="text" name="drivers__file__directory_path" class="form-control form-control-sm" value="<?php $this->_('drivers.file.directory_path'); ?>">
+                                    <input disabled type="text" name="drivers__file__directory_path" class="form-control form-control-sm" value="<?php $this->_('drivers.file.directory_path'); ?>">
                                     <br />
-                                    <p><?php _e('panel', 'setting_note_directory', 'Please fill in the absolute path of the directory where you store the data.'); ?></p>
+                                    <p><?php _e('panel', 'setting_note_directory', 'The absolute path of the directory where you store the data.'); ?></p>
                                 </div>
                             </div>
                             <p class="text-info"><?php _e('panel', 'setting_note_driver_not_recommended', 'Not recommended for high-traffic wwebsite.'); ?></p>
@@ -141,9 +141,9 @@ use function Shieldon\Firewall\_e;
                             <div class="row">
                                 <div class="col-sm-7 py-2">
                                     <label><?php _e('panel', 'setting_label_directory', 'Directory'); ?></label>
-                                    <input type="text" name="drivers__sqlite__directory_path" class="form-control form-control-sm" value="<?php $this->_('drivers.sqlite.directory_path'); ?>">
+                                    <input disabled type="text" name="drivers__sqlite__directory_path" class="form-control form-control-sm" value="<?php $this->_('drivers.sqlite.directory_path'); ?>">
                                     <br />
-                                    <p><?php _e('panel', 'setting_note_directory', 'Please fill in the absolute path of the directory where you store the data.'); ?></p>
+                                    <p><?php _e('panel', 'setting_note_directory', 'The absolute path of the directory where you store the data.'); ?></p>
                                 </div>
                             </div>
                             <p class="text-info"><?php _e('panel', 'setting_note_driver_not_recommended', 'Not recommended for high-traffic wwebsite.'); ?></p>
@@ -290,9 +290,9 @@ use function Shieldon\Firewall\_e;
             <td class="r1"><?php _e('panel', 'setting_label_action_logger', 'Action Logger'); ?></td>
             <td class="r2">
                 <label><?php _e('panel', 'setting_label_directory', 'Directory'); ?></label>
-                <input type="text" name="loggers__action__config__directory_path" class="form-control form-control-sm col-sm-7" value="<?php $this->_('loggers.action.config.directory_path'); ?>">
+                <input disabled type="text" name="loggers__action__config__directory_path" class="form-control form-control-sm col-sm-7" value="<?php $this->_('loggers.action.config.directory_path'); ?>">
                 <br />
-                <p><?php _e('panel', 'setting_note_directory', 'Please fill in the absolute path of the directory where you store the data.'); ?></p>
+                <p><?php _e('panel', 'setting_note_directory', 'The absolute path of the directory where you store the data.'); ?></p>
                 <p class="text-info"><?php _e('panel', 'setting_note_driver_not_recommended', 'Not recommended for high-traffic wwebsite.'); ?></p>
             </td>
         </tr>
@@ -316,10 +316,10 @@ use function Shieldon\Firewall\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_watching_folder', 'Watching Folder'); ?></td>
             <td class="r2">
-                <input type="text" name="iptables__config__watching_folder" class="form-control form-control-sm col-sm-7" value="<?php $this->_('iptables.config.watching_folder'); ?>">
+                <input disabled type="text" name="iptables__config__watching_folder" class="form-control form-control-sm col-sm-7" value="<?php $this->_('iptables.config.watching_folder'); ?>">
                 <br />
                 <p>
-                    <?php _e('panel', 'setting_note_directory', 'Please fill in the absolute path of the directory where you store the data.'); ?>
+                    <?php _e('panel', 'setting_note_directory', 'The absolute path of the directory where you store the data.'); ?>
                 </p>
             </td>
         </tr>

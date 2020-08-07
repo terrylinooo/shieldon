@@ -324,7 +324,7 @@ return [
     'setting_note_redis_auth' => '只有需要密码时才必填。',
     'setting_note_driver_not_recommended' => '不推荐用于高流量网站。',
     'setting_label_directory' => '目录',
-    'setting_note_directory' => '请填写你要存储资料的目录的绝对路径。',
+    'setting_note_directory' => '存储资料的目录的绝对路径。',
     'setting_label_reset_data_cycle' => '重设资料周期',
     'setting_note_reset_data_cycle' => '自动地在每天 0:00 清除所有记录。启用这个选项能提升效能。',
     'setting_label_ip_source' => 'IP来源',

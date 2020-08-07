@@ -203,15 +203,11 @@ trait ConfigMethodsTrait
 
         // System firewall.
         $enableiptables = $this->getConfig('iptables.enable');
-        $iptablesWatchingFolder = rtrim($this->getConfig('iptables.config.watching_folder'), '\\/ ');
 
+        // $iptablesWatchingFolder = rtrim($this->getConfig('iptables.config.watching_folder'), '\\/ ');
+        $iptablesWatchingFolder = $this->directory . '/iptables';
+        
         if ($enableiptables) {
-            if (empty($iptablesWatchingFolder)) {
-                // @codeCoverageIgnoreStart
-                $iptablesWatchingFolder = $this->directory . '/iptables';
-                // @codeCoverageIgnoreEnd
-            }
-
             $this->setConfig('iptables.config.watching_folder', $iptablesWatchingFolder);
 
             if (!is_dir($iptablesWatchingFolder)) {

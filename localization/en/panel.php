@@ -347,7 +347,7 @@ return [
     'setting_note_redis_auth' => 'Required only if a password is needed.',
     'setting_note_driver_not_recommended' => 'Not recommended for high-traffic website.',
     'setting_label_directory' => 'Directory',
-    'setting_note_directory' => 'Please fill in the absolute path of the directory where you store the data.',
+    'setting_note_directory' => 'The absolute path of the directory where you store the data.',
     'setting_label_reset_data_cycle' => 'Reset Data Cycle',
     'setting_note_reset_data_cycle' => 'Clear all logs every day at 0:00 a.m. automatically. Turning this option on will improve performance.',
     'setting_label_ip_source' => 'IP Source',
