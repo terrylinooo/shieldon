@@ -153,13 +153,10 @@ trait ConfigMethodsTrait
         // Check Action Logger settings.
         $enableActionLogger = $this->getConfig('loggers.action.enable');
 
-        $actionLogDir = rtrim($this->getConfig('loggers.action.config.directory_path'), '\\/ ');
+        // $actionLogDir = rtrim($this->getConfig('loggers.action.config.directory_path'), '\\/ ');
+        $actionLogDir = $this->directory . '/action_logs';
 
         if ($enableActionLogger) {
-            if (empty($actionLogDir)) {
-                $actionLogDir = $this->directory . '/action_logs';
-            }
-
             $this->setConfig('loggers.action.config.directory_path', $actionLogDir);
 
             if (!is_dir($actionLogDir)) {
@@ -342,12 +339,8 @@ trait ConfigMethodsTrait
      */
     protected function saveCofigCheckDataDriverSqlLite(bool $result): bool
     {
-        $fileDir = rtrim($this->getConfig('drivers.file.directory_path'), '\\/ ');
-
-        if (empty($fileDir)) {
-            $fileDir = $this->directory . '/data_driver_file';
-            $this->setConfig('drivers.file.directory_path', $fileDir);
-        }
+        //$fileDir = rtrim($this->getConfig('drivers.file.directory_path'), '\\/ ');
+        $fileDir = $this->directory . '/data_driver_file';
 
         $this->setConfig('drivers.file.directory_path', $fileDir);
 
@@ -471,12 +464,8 @@ trait ConfigMethodsTrait
      */
     protected function saveCofigCheckDataDriverFile(bool $result): bool
     {
-        $fileDir = rtrim($this->getConfig('drivers.file.directory_path'), '\\/ ');
-
-        if (empty($fileDir)) {
-            $fileDir = $this->directory . '/data_driver_file';
-            $this->setConfig('drivers.file.directory_path', $fileDir);
-        }
+        //$fileDir = rtrim($this->getConfig('drivers.file.directory_path'), '\\/ ');
+        $fileDir = $this->directory . '/data_driver_file';
 
         $this->setConfig('drivers.file.directory_path', $fileDir);
 

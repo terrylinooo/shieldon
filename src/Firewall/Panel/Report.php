@@ -29,6 +29,7 @@ use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 
 use ReflectionObject;
+use function array_merge;
 use function date;
 
 /**
@@ -129,62 +130,73 @@ class Report extends BaseController
         }
 
         $data = [];
-
-        $data['ip_details'] = [];
-        $data['period_data'] = [];
-        
-        $lastCachedTime = '';
+        $data['last_cached_time'] = '';
 
         if (!empty($this->parser)) {
-
-            $logCacheHandler = new ActionLogParsedCache($this->parser->getDirectory());
-
-            $ipDetailsCachedData = $logCacheHandler->get($type);
-
-            // If we have cached data then we don't need to parse them again.
-            // This will save a lot of time in parsing logs.
-            if (!empty($ipDetailsCachedData)) {
-
-                $data['ip_details'] = $ipDetailsCachedData['ip_details'];
-                $data['period_data'] = $ipDetailsCachedData['period_data'];
-                $lastCachedTime = date('Y-m-d H:i:s', $ipDetailsCachedData['time']);
-    
-                if ('today' === $type) {
-                    $ipDetailsCachedData = $logCacheHandler->get('past_seven_hours');
-                    $data['past_seven_hours'] = $ipDetailsCachedData['period_data'];
-                }
-
-            } else {
-
-                $this->parser->prepare($type);
-
-                $data['ip_details'] = $this->parser->getIpData();
-                $data['period_data'] = $this->parser->getParsedPeriodData();
-
-                $logCacheHandler->save($type, $data);
-    
-                if ('today' === $type) {
-                    $this->parser->prepare('past_seven_hours');
-                    $data['past_seven_hours'] = $this->parser->getParsedPeriodData();
-
-                    $logCacheHandler->save(
-                        'past_seven_hours',
-                        [
-                            'period_data' => $data['past_seven_hours']
-                        ]
-                    );
-                }
-            }
+            $result = $this->fetchActionLogsData($type);
+            $data = array_merge($data, $result);
         }
 
-        $data['page_availability'] = $this->pageAvailability['logs'];
-        $data['last_cached_time'] = $lastCachedTime;
+        $data['page_availability'] = $this->pageAvailability['logs'];;
 
         $data['page_url'] = $this->url('report/actionLog');
 
         $data['title'] = __('panel', 'title_action_logs', 'Action Logs');
 
         return $this->renderPage('panel/action_log_' . $type, $data);
+    }
+
+    /**
+     * Fetch the log data.
+     *
+     * @param string $type The date type.
+     *
+     * @return array
+     */
+    private function fetchActionLogsData($type = 'today'): array
+    {
+        $data = [];
+
+        $logCacheHandler = new ActionLogParsedCache($this->parser->getDirectory());
+
+        $ipDetailsCachedData = $logCacheHandler->get($type);
+
+        // If we have cached data then we don't need to parse them again.
+        // This will save a lot of time in parsing logs.
+        if (!empty($ipDetailsCachedData)) {
+
+            $data['ip_details'] = $ipDetailsCachedData['ip_details'];
+            $data['period_data'] = $ipDetailsCachedData['period_data'];
+            $data['last_cached_time'] = date('Y-m-d H:i:s', $ipDetailsCachedData['time']);
+
+            if ('today' === $type) {
+                $ipDetailsCachedData = $logCacheHandler->get('past_seven_hours');
+                $data['past_seven_hours'] = $ipDetailsCachedData['period_data'];
+            }
+
+        } else {
+
+            $this->parser->prepare($type);
+
+            $data['ip_details'] = $this->parser->getIpData();
+            $data['period_data'] = $this->parser->getParsedPeriodData();
+
+            $logCacheHandler->save($type, $data);
+
+            if ('today' === $type) {
+                $this->parser->prepare('past_seven_hours');
+                $data['past_seven_hours'] = $this->parser->getParsedPeriodData();
+
+                $logCacheHandler->save(
+                    'past_seven_hours',
+                    [
+                        'period_data' => $data['past_seven_hours']
+                    ]
+                );
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -267,31 +279,26 @@ class Report extends BaseController
         $d = $info[$this->kernel::REASON_COMPONENT_IP];
         $data['component_ip'] = $a + $b;
         $data['rule_list']['ip'] = array_merge_recursive($c, $d);
-        unset($a, $b, $c, $d);
 
         $a = $counter[$this->kernel::REASON_COMPONENT_RDNS];
         $b = $info[$this->kernel::REASON_COMPONENT_RDNS];
         $data['component_rdns'] = $a;
         $data['rule_list']['rdns'] = $b;
-        unset($a, $b);
 
         $a = $counter[$this->kernel::REASON_COMPONENT_HEADER];
         $b = $info[$this->kernel::REASON_COMPONENT_HEADER];
         $data['component_header'] = $a;
         $data['rule_list']['header'] = $b;
-        unset($a, $b);
 
         $a = $counter[$this->kernel::REASON_COMPONENT_USERAGENT];
         $b = $info[$this->kernel::REASON_COMPONENT_USERAGENT];
         $data['component_useragent'] = $a;
         $data['rule_list']['useragent'] = $b;
-        unset($a, $b);
 
         $a = $counter[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT];
         $b = $info[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT];
         $data['component_trustedbot'] = $a;
         $data['rule_list']['trustedbot'] = $b;
-        unset($a, $b);
 
         $a = $counter[$this->kernel::REASON_TOO_MANY_ACCESSES];
         $b = $counter[$this->kernel::REASON_REACHED_LIMIT_DAY];
@@ -305,25 +312,21 @@ class Report extends BaseController
         $j = $info[$this->kernel::REASON_REACHED_LIMIT_SECOND];
         $data['filter_frequency'] = $a + $b + $c + $d + $e;
         $data['rule_list']['frequency'] = array_merge_recursive($f, $g, $h, $i, $j);
-        unset($a, $b, $c, $d, $e, $f, $g, $h, $i, $j);
 
         $a = $counter[$this->kernel::REASON_EMPTY_REFERER];
         $b = $info[$this->kernel::REASON_EMPTY_REFERER];
         $data['filter_referer'] = $a;
         $data['rule_list']['referer'] = $b;
-        unset($a, $b);
 
         $a = $counter[$this->kernel::REASON_EMPTY_JS_COOKIE];
         $b = $info[$this->kernel::REASON_EMPTY_JS_COOKIE];
         $data['filter_cookie'] = $a;
         $data['rule_list']['cookie'] = $b;
-        unset($a, $b);
 
         $a = $counter[$this->kernel::REASON_TOO_MANY_SESSIONS];
         $b = $info[$this->kernel::REASON_TOO_MANY_SESSIONS];
         $data['filter_session'] = $a;
         $data['rule_list']['session'] = $b;
-        unset($a, $b);
 
         return $data;
     }
