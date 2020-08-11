@@ -27,7 +27,7 @@ use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\HttpFactory;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_request;
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -125,7 +125,7 @@ trait TemplateTrait
         $viewPath = $this->getTemplate($type);
 
         // The language of output UI. It is used on views.
-        $langCode = get_session()->get('shieldon_ui_lang') ?? 'en';
+        $langCode = get_session_instance()->get('shieldon_ui_lang') ?? 'en';
 
         $onlineinfo = [];
         $onlineinfo['queue'] = $this->sessionStatus['queue'];

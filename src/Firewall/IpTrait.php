@@ -24,6 +24,7 @@ namespace Shieldon\Firewall;
 
 use function substr;
 use function gethostbyaddr;
+use function Shieldon\Firewall\set_ip;
 
 /**
  * IP Trait
@@ -68,6 +69,8 @@ trait IpTrait
     public function setIp(string $ip, $queryRdns = false): void
     {
         $this->ip = $ip;
+        
+        set_ip($this->ip);
 
         if ($queryRdns) {
 

@@ -28,7 +28,7 @@ use Shieldon\Firewall\Firewall\Driver\DriverFactory;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Middleware\HttpAuthentication;
 use function Shieldon\Firewall\get_request;
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 
 use RuntimeException;
 use function strpos;
@@ -524,7 +524,7 @@ trait SetupTrait
         $ui = $this->getOption('dialog_ui');
 
         if (!empty($ui)) {
-            get_session()->set('shieldon_ui_lang', $ui['lang']);
+            get_session_instance()->set('shieldon_ui_lang', $ui['lang']);
             $this->kernel->setDialog($this->getOption('dialog_ui'));
         }
     }

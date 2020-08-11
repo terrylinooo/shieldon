@@ -26,6 +26,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Shieldon\Firewall\Kernel;
+use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\FirewallTrait;
 use Shieldon\Firewall\Firewall\SetupTrait;
@@ -128,11 +129,11 @@ class Firewall
     {
         
         $setupFunctions = [
+            'IpSource',
             'Driver',
             'Channel',
             'Filters',
             'Components',
-            'IpSource',
             'Logger',
             'LimitSession',
             'CronJob',
@@ -279,5 +280,15 @@ class Firewall
             $this->kernel->setChannel($channelId);
             $this->channel = $channelId;
         }
+    }
+
+    /**
+     * Refresh / refetch the server request if needed.
+     *
+     * @return void
+     */
+    protected function refreshRequest(): void
+    {
+        Container::set('request', HttpFactory::createRequest(), true);
     }
 }

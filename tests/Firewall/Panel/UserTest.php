@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Panel;
 
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 
 class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
@@ -60,7 +60,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->refreshRequest();
 
         $this->getRouteResponse('firewall/panel/user/login');
-        $loginStatus = get_session()->get('shieldon_user_login');
+        $loginStatus = get_session_instance()->get('shieldon_user_login');
 
         $this->assertTrue($loginStatus);
     }
@@ -82,7 +82,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testLogout()
     {
         $this->getRouteResponse('firewall/panel/user/logout');
-        $loginStatus = get_session()->get('shieldon_user_login');
+        $loginStatus = get_session_instance()->get('shieldon_user_login');
 
         $this->assertSame($loginStatus, '');
     }
@@ -153,7 +153,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $output = ob_get_contents();
         ob_end_clean();
 
-        $loginStatus = get_session()->get('shieldon_user_login');
+        $loginStatus = get_session_instance()->get('shieldon_user_login');
 
         $this->assertTrue($loginStatus);
     }

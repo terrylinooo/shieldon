@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest;
 
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 
 class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
@@ -333,7 +333,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->run();
 
         // Test.
-        $testSessionId = get_session()->get('id');
+        $testSessionId = get_session_instance()->get('id');
 
         $this->assertSame($sessionId, $testSessionId);
 

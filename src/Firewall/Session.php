@@ -30,6 +30,7 @@ use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\set_response;
 use function Shieldon\Firewall\get_microtimesamp;
 use function Shieldon\Firewall\create_session_id;
+use function Shieldon\Firewall\get_ip;
 use function time;
 use function rand;
 use function intval;
@@ -91,6 +92,18 @@ class Session
     public function __construct(string $sessionId = '')
     {
         $this->setId($sessionId);
+
+        /**
+         * Store the session data back into the database table when the 
+         * Shieldon Kernel workflow is reaching the end of the process.
+         */
+        add_listener('kernel_end', [$this, 'save'], 10);
+
+        /**
+         * Store the session data back into the database table when the 
+         * user is logged successfully.
+         */
+        add_listener('user_login', [$this, 'save'], 10);
     }
 
     /**
@@ -152,13 +165,16 @@ class Session
             }
     
             $this->data = $this->driver->get(self::$id, 'session');
-     
+
+            $this->parsedData();
+
             if (empty($this->data)) {
                 self::resetCookie($psr7);
                 $this->create();
             }
         } else {
             $this->data = $this->driver->get(self::$id, 'session');
+            $this->data['parsed_data'] = json_decode($this->data['data'], true);
         }
 
         self::$status = true;
@@ -174,7 +190,7 @@ class Session
         return $this->status;
     }
 
-  /**
+    /**
      * Get specific value from session by key.
      *
      * @param string $key The key of a data field.
@@ -183,7 +199,22 @@ class Session
      */
     public function get(string $key)
     {
-        return $this->data['data'][$key] ?? '';
+        $this->assertInit();
+
+        return $this->data['parsed_data'][$key] ?? '';
+    }
+
+    /**
+     * Parse JSON data and store it into parsed_data field.
+     *
+     * @return void
+     */
+    protected function parsedData()
+    {
+        if (empty($this->data['data'])) {
+            $this->data['data'] = '{}';
+        }
+        $this->data['parsed_data'] = json_decode($this->data['data'], true);
     }
 
     /**
@@ -198,8 +229,7 @@ class Session
     {
         $this->assertInit();
 
-        $this->data['data'][$key] = $value;
-        $this->driver->save(self::$id, $this->data, 'session');
+        $this->data['parsed_data'][$key] = $value;
     }
 
     /**
@@ -213,9 +243,8 @@ class Session
     {
         $this->assertInit();
 
-        if (isset($this->data['data'][$key])) {
-            unset($this->data['data'][$key]);
-            $this->driver->save(self::$id, $this->data, 'session');
+        if (isset($this->data['parsed_data'][$key])) {
+            unset($this->data['parsed_data'][$key]);
         }
     }
 
@@ -228,7 +257,9 @@ class Session
      */
     public function has($key): bool
     {
-        return isset($this->data['data'][$key]);
+        $this->assertInit();
+
+        return isset($this->data['parsed_data'][$key]);
     }
 
     /**
@@ -241,7 +272,6 @@ class Session
         $this->assertInit();
 
         $this->data = [];
-        $this->driver->delete(self::$id, 'session');
     }
 
     /**
@@ -293,11 +323,11 @@ class Session
             $expires = date('D, d M Y H:i:s', $expiredTime) . ' GMT';
             $response = get_response()->withHeader(
                 'Set-Cookie',
-                $cookieName . '=' . $sessionHashId . '; expires=' . $expires
+                $cookieName . '=' . $sessionHashId . '; Path=/; Expires=' . $expires
             );
             set_response($response);
         } else {
-            setcookie($cookieName, $sessionHashId, $expiredTime);
+            setcookie($cookieName, $sessionHashId, $expiredTime, '/');
         }
 
         self::$id = $sessionHashId;
@@ -310,18 +340,30 @@ class Session
      */
     protected function create(): void
     {
-        $ip = Container::get('ip_address');
-
         // Initialize new session data.
         $data['id'] = self::$id;
-        $data['ip'] = $ip;
+        $data['ip'] = get_ip();
         $data['time'] = time();
         $data['microtimesamp'] = get_microtimesamp();
 
-        $data['data'] = null;
+        // This field is a JSON string.
+        $data['data'] = '{}';
+        $data['parsed_data'] = [];
 
-        $this->driver->save(self::$id, $data, 'session');
         $this->data = $data;
+        $this->save();
+    }
+
+    /**
+     * Save session data into database.
+     *
+     * @return void
+     */
+    public function save(): void
+    {
+        $this->data['data'] = json_encode($this->data['parsed_data']);
+
+        $this->driver->save(self::$id, $this->data, 'session');
     }
 
     /**

@@ -40,8 +40,7 @@ use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Utils\Container;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
-use function Shieldon\Firewall\get_session;
-use function Shieldon\Firewall\set_session;
+use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\add_listener;
 
 use Closure;
@@ -303,7 +302,7 @@ class Kernel
 
         $request = $request ?? HttpFactory::createRequest();
         $response = $response ?? HttpFactory::createResponse();
-        $session = get_session();
+        $session = get_session_instance();
 
         add_listener('set_driver', function($args) use ($session) {
             $session->init($args['driver']);
@@ -372,6 +371,11 @@ class Kernel
 
         // @ MessengerTrait
         $this->triggerMessengers();
+
+        /**
+         * Hook - kernel_end
+         */
+        do_dispatch('kernel_end');
 
         return $result;
     }
@@ -642,7 +646,7 @@ class Kernel
         $logData = [];
  
         $logData['ip'] = $ip ?: $this->getIp();
-        $logData['session_id'] = get_session()->get('id');
+        $logData['session_id'] = get_session_instance()->get('id');
         $logData['action_code'] = $actionCode;
         $logData['timesamp'] = time();
 

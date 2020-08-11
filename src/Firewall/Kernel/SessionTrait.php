@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Kernel;
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 use function microtime;
 use function str_replace;
 use function time;
@@ -155,7 +155,7 @@ trait SessionTrait
                     $sessionPools[] = $v['id'];
                     $lasttime = (int) $v['time'];
     
-                    if (get_session()->get('id') === $v['id']) {
+                    if (get_session_instance()->get('id') === $v['id']) {
                         $sessionOrder = $i;
                     }
     
@@ -178,13 +178,14 @@ trait SessionTrait
             $this->sessionStatus['order'] = $sessionOrder;
             $this->sessionStatus['queue'] = $sessionOrder - $limit;
 
-            if (!in_array(get_session()->get('id'), $sessionPools)) {
+            /*
+            if (!in_array(get_session_instance()->get('id'), $sessionPools)) {
                 $this->sessionStatus['count']++;
 
                 $data = [];
 
                 // New session, record this data.
-                $data['id'] = get_session()->get('id');
+                $data['id'] = get_session_instance()->get('id');
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
 
@@ -192,8 +193,8 @@ trait SessionTrait
                 $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
                 $data['microtimesamp'] = $microtimesamp;
 
-                $this->driver->save(get_session()->get('id'), $data, 'session');
-            }
+                $this->driver->save(get_session_instance()->get('id'), $data, 'session');
+            } */
 
             // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
             if ($sessionOrder >= $limit) {
@@ -235,7 +236,7 @@ trait SessionTrait
     protected function setSessionId(string $sessionId = ''): void
     {
         if ('' !== $sessionId) {
-            get_session()->set('id', $sessionId);
+            get_session_instance()->set('id', $sessionId);
         }
     }
 

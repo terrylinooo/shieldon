@@ -97,11 +97,11 @@ trait SqlDriverTrait
     /**
      * Fetch data from session table.
      *
-     * @param string $ip An IP address.
+     * @param string $id A session ID.
      *
      * @return array
      */
-    protected function doFetchFromSessionTable(string $ip): array
+    protected function doFetchFromSessionTable(string $id): array
     {
         $results = [];
 
@@ -109,8 +109,10 @@ trait SqlDriverTrait
             WHERE id = :id
             LIMIT 1';
 
+      
         $query = $this->db->prepare($sql);
-        $query->bindValue(':id', $ip, $this->db::PARAM_STR);
+
+        $query->bindValue(':id', $id, $this->db::PARAM_STR);
         $query->execute();
         $resultData = $query->fetch($this->db::FETCH_ASSOC);
 

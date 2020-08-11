@@ -43,6 +43,13 @@ trait XssProtectionTrait
     abstract protected function getOption(string $option, string $section = '');
 
     /**
+     * Refresh / refetch the server request if needed.
+     *
+     * @return void
+     */
+    abstract protected function refreshRequest(): void;
+
+    /**
      * Set up the XSS protection.
      *
      * @return void
@@ -63,6 +70,8 @@ trait XssProtectionTrait
         $this->cleanGet($enable, $xss);
         $this->cleanCookie($enable, $xss);
         $this->cleanProtectedList($protectedList, $xss);
+
+        $this->refreshRequest();
     }
 
     /**

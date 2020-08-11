@@ -226,7 +226,7 @@ class SqlDriverProvider extends DriverProvider
 
                 $logWhere = [];
                 $logWhere['id'] = $data['id'];
-
+                unset($data['parsed_data']);
                 $logData = $data;
                 break;
         }
@@ -384,13 +384,7 @@ class SqlDriverProvider extends DriverProvider
             $query = $this->db->prepare($sql);
 
             foreach ($data as $k => $v) {
-                $valueType = gettype($v);
-
-                if ($valueType === 'array') {
-                    throw new Exception('Field: ' . $k . ' should not be an array.');
-                }
-
-                $pdoParam = $paramTypeCheck[$valueType];
+                $pdoParam = $paramTypeCheck[gettype($v)];
 
                 // Solve problem with bigint.
                 if ($v >= 2147483647) {

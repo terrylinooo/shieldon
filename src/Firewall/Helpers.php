@@ -28,6 +28,7 @@ use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Session;
 use Shieldon\Firewall\Utils\Container;
 use Shieldon\Firewall\Utils\EventDispatcher;
+use Shieldon\Firewall\Driver\FileDriver;
 
 use function explode;
 use function file_exists;
@@ -74,7 +75,7 @@ class Helpers
  *  get_default_properties| The default settings of Shieldon core.
  *  get_request           | Get PSR-7 HTTP server request from container.
  *  get_response          | Get PSR-7 HTTP response from container.
- *  get_session           | Get PHP native session from container.
+ *  get_session_instance           | Get PHP native session from container.
  *  set_request           | Set PSR-7 HTTP server request to container.
  *  set_response          | Set PSR-7 HTTP response to container.
  *  unset_global_cookie   | Unset superglobal COOKIE variable.
@@ -176,7 +177,7 @@ function get_user_lang(): string
         $lang = 'en';
 
         // Fetch session variables.
-        $session = get_session();
+        $session = get_session_instance();
         $panelLang = $session->get('shieldon_panel_lang');
         $uiLang = $session->get('shieldon_ui_lang');
     
@@ -525,13 +526,13 @@ function unset_global_get($name = null): void
 function unset_global_session($name = null): void
 {
     if (empty($name)) {
-        get_session()->clear();
+        get_session_instance()->clear();
         $_SESSION = [];
 
         return;
     }
 
-    get_session()->remove($name);
+    get_session_instance()->remove($name);
     unset($_SESSION[$name]);
 }
 
@@ -559,6 +560,34 @@ function unset_superglobal($name, string $type): void
 
     $method = '\Shieldon\Firewall\unset_global_' . $type;
     $method($name, $type);
+}
+
+/*
+|--------------------------------------------------------------------------
+| IP address.
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Get an IP address.
+ *
+ * @return string
+ */
+function get_ip(): string
+{
+    return Container::get('ip_address');
+}
+
+/**
+ * Set an IP address.
+ *
+ * @param string $ip An IP address.
+ *
+ * @return void
+ */
+function set_ip(string $ip)
+{
+    Container::set('ip_address', $ip, true);
 }
 
 /*
@@ -597,7 +626,11 @@ function get_microtimesamp(): int
  */
 function add_listener(string $name, $func, int $priority = 10)
 {
-    return EventDispatcher::instance()->addListener($name, $func, $priority);
+    return EventDispatcher::instance()->addListener(
+        $name,
+        $func,
+        $priority
+    );
 }
 
 /**
@@ -610,7 +643,10 @@ function add_listener(string $name, $func, int $priority = 10)
  */
 function do_dispatch(string $name, array $args = [])
 {
-    return EventDispatcher::instance()->doDispatch($name, $args);
+    return EventDispatcher::instance()->doDispatch(
+        $name,
+        $args
+    );
 }
 
 /*
@@ -624,7 +660,7 @@ function do_dispatch(string $name, array $args = [])
  *
  * @return Session
  */
-function get_session(): Session
+function get_session_instance(): Session
 {
     if (php_sapi_name() === 'cli') {
         return get_mock_session();
@@ -681,7 +717,7 @@ function get_mock_session(): Session
  * 
  * @return void
  */
-function set_session(Session $session): void
+function set_session_instance(Session $session): void
 {
     Container::set('session', $session, true);
 }

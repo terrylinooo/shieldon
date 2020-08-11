@@ -33,7 +33,7 @@ use Shieldon\Firewall\Log\ActionLogParser;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
 use function Shieldon\Firewall\get_user_lang;
 
@@ -181,12 +181,12 @@ class BaseController
             $this->pageAvailability['logs'] = true;
         }
 
-        $flashMessage = get_session()->get('flash_messages');
+        $flashMessage = get_session_instance()->get('flash_messages');
 
         // Flash message, use it when redirecting page.
         if (!empty($flashMessage) && is_array($flashMessage)) {
             $this->messages = $flashMessage;
-            get_session()->remove('flash_messages');
+            get_session_instance()->remove('flash_messages');
         }
 
         $this->locate = get_user_lang();

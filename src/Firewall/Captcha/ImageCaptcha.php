@@ -26,7 +26,7 @@ use RuntimeException;
 use Shieldon\Firewall\Captcha\CaptchaProvider;
 
 use function Shieldon\Firewall\get_request;
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
 use function base64_encode;
 use function cos;
@@ -144,8 +144,8 @@ class ImageCaptcha extends CaptchaProvider
     public function response(): bool
     {
         $postParams = get_request()->getParsedBody();
-        $sessionCaptchaHash = get_session()->get('shieldon_image_captcha_hash');
-        
+        $sessionCaptchaHash = get_session_instance()->get('shieldon_image_captcha_hash');
+
         if (empty($postParams['shieldon_image_captcha']) || empty($sessionCaptchaHash)) {
             return false;
         }
@@ -263,7 +263,9 @@ class ImageCaptcha extends CaptchaProvider
 
         // Save hash to the user sesssion.
         $hash = password_hash($this->word, PASSWORD_BCRYPT);
-        get_session()->set('shieldon_image_captcha_hash', $hash);
+
+        get_session_instance()->set('shieldon_image_captcha_hash', $hash);
+        get_session_instance()->save();
 
         return $this->getImageBase64Content();
     }

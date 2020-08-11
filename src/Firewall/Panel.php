@@ -222,7 +222,7 @@ class Panel
      */
     protected function checkAuth(): void
     {
-        $check = get_session()->get('shieldon_user_login');
+        $check = get_session_instance()->get('shieldon_user_login');
 
         if (empty($check)) {
             $user = new User();

@@ -216,6 +216,7 @@ class FileDriver extends DriverProvider
                 break;
 
             case 'session':
+                unset($data['parsed_data']);
                 $logData = $data;
                 break;
         }

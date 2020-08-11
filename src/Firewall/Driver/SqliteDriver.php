@@ -80,7 +80,7 @@ class SqliteDriver extends SqlDriverProvider
                     ip VARCHAR(46),
                     time INT(10),
                     microtimesamp BIGINT(20),
-                    log_data
+                    data
                 );
             ";
 

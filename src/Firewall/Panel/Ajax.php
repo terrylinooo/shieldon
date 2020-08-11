@@ -28,7 +28,7 @@ use Shieldon\Firewall\HttpFactory;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\set_request;
 use function array_map;
 use function explode;
@@ -86,7 +86,7 @@ class Ajax extends BaseController
     public function changeLocale(): ResponseInterface
     {
         $langCode = get_request()->getQueryParams()['langCode'] ?? 'en';
-        get_session()->set('shieldon_panel_lang', $langCode);
+        get_session_instance()->set('shieldon_panel_lang', $langCode);
         $data = [];
 
         $data['status'] = 'success';

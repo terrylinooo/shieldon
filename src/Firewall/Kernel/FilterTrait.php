@@ -24,7 +24,7 @@ namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Kernel;
 use function Shieldon\Firewall\get_request;
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
 use function time;
 use function array_keys;
@@ -186,7 +186,7 @@ trait FilterTrait
 
         if (!empty($ipDetail['ip'])) {
             $logData['ip'] = $this->ip;
-            $logData['session'] = get_session()->get('id');
+            $logData['session'] = get_session_instance()->get('id');
             $logData['hostname'] = $this->rdns;
             $logData['last_time'] = $now;
 
@@ -259,7 +259,7 @@ trait FilterTrait
         $now = time();
 
         $logData['ip']        = $this->ip;
-        $logData['session']   = get_session()->get('id');
+        $logData['session']   = get_session_instance()->get('id');
         $logData['hostname']  = $this->rdns;
         $logData['last_time'] = $now;
 
@@ -334,7 +334,7 @@ trait FilterTrait
                 // Get values from data table. We will count it and save it back to data table.
                 $logData['flag_multi_session'] = $ipDetail['flag_multi_session'];
                 
-                if (get_session()->get('id') !== $ipDetail['session']) {
+                if (get_session_instance()->get('id') !== $ipDetail['session']) {
 
                     // Is is possible because of direct access by the same user many times.
                     // Or they don't have session cookie set.

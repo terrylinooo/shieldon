@@ -27,7 +27,7 @@ use Shieldon\Firewall\Panel\BaseController;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
 
 use function array_keys;
@@ -265,7 +265,7 @@ class Setting extends BaseController
                         'Invalid JSON file.'
                     )
                 );
-                get_session()->set('flash_messages', $this->messages);
+                get_session_instance()->set('flash_messages', $this->messages);
 
                 // Return failed result message.
                 return $response->withHeader('Location', $this->url('setting/basic'));
@@ -301,7 +301,7 @@ class Setting extends BaseController
                     )
                 );
 
-                get_session()->set('flash_messages', $this->messages);
+                get_session_instance()->set('flash_messages', $this->messages);
 
                 // Return succesfull result message.
                 return $response->withHeader('Location', $this->url('setting/basic'));
@@ -317,7 +317,7 @@ class Setting extends BaseController
             )
         );
 
-        get_session()->set('flash_messages', $this->messages);
+        get_session_instance()->set('flash_messages', $this->messages);
 
         return $response->withHeader('Location', $this->url('setting/basic'));
     }

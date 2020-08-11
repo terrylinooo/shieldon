@@ -29,10 +29,11 @@ use Shieldon\Firewall\Captcha\Foundation;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
-use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
 
 use function password_verify;
+use function Shieldon\Firewall\do_dispatch;
 
 /**
  * User
@@ -73,21 +74,31 @@ class User extends BaseController
         $data['error'] = '';
         $addonTitle = $this->markAsDemo;
 
-        if (isset($postParams['s_user']) && isset($postParams['s_pass'])) {
-
+        if (
+            isset($postParams['s_user']) &&
+            isset($postParams['s_pass'])
+        ) {
             if ($this->mode === 'demo') {
-                $loginResult = $this->userLoginAsDemo($postParams['s_user'], $postParams['s_pass']);
+                $loginResult = $this->userLoginAsDemo(
+                    $postParams['s_user'],
+                    $postParams['s_pass']
+                );
             } else {
-                $loginResult = $this->userLoginAsAdmin($postParams['s_user'], $postParams['s_pass']);
+                $loginResult = $this->userLoginAsAdmin(
+                    $postParams['s_user'],
+                    $postParams['s_pass']
+                );
             }
-    
+
             $login = $loginResult['result'];
             $data['error'] = $loginResult['message'];
         }
 
         if ($login) {
             // This session variable is to mark current session as a logged user.
-            get_session()->set('shieldon_user_login', true);
+            get_session_instance()->set('shieldon_user_login', true);
+
+            do_dispatch('user_login');
 
             // Redirect to overview page if logged in successfully.
             return get_response()->withHeader('Location', $this->url('home/overview'));
@@ -129,8 +140,8 @@ class User extends BaseController
      */
     public function logout(): ResponseInterface
     {
-        $sessionLoginStatus = get_session()->get('shieldon_user_login');
-        $sessionPanelLang = get_session()->get('shieldon_panel_lang');
+        $sessionLoginStatus = get_session_instance()->get('shieldon_user_login');
+        $sessionPanelLang = get_session_instance()->get('shieldon_panel_lang');
         $response = get_response();
 
         if (isset($sessionLoginStatus)) {
