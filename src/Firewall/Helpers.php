@@ -25,8 +25,9 @@ namespace Shieldon\Firewall;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\HttpFactory;
-use Shieldon\Firewall\Utils\Collection;
+use Shieldon\Firewall\Session;
 use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Utils\EventDispatcher;
 
 use function explode;
 use function file_exists;
@@ -404,9 +405,9 @@ function get_response(): ResponseInterface
 /**
  * Session
  *
- * @return Collection
+ * @return Session
  */
-function get_session(): Collection
+function get_session(): Session
 {
     $session = Container::get('session');
 
@@ -575,4 +576,31 @@ function unset_superglobal($name, string $type): void
 
     $method = '\Shieldon\Firewall\unset_global_' . $type;
     $method($name, $type);
+}
+
+/**
+ * Add a new event Listener
+ *
+ * @param string  $name     The name of an event.
+ * @param mixed   $func     Can be a function name, closure function or class.
+ * @param integer $priority The execution priority.
+ * 
+ * @return void
+ */
+function add_listener(string $name, $func, int $priority = 10)
+{
+    return EventDispatcher::instance()->addListener($name, $func, $priority);
+}
+
+/**
+ * Execute an event.
+ *
+ * @param string $name The name of an event.
+ * @param array  $args The arguments.
+ * 
+ * @return mixed
+ */
+function do_dispatch(string $name, array $args = [])
+{
+    return EventDispatcher::instance()->doDispatch($name, $args);
 }

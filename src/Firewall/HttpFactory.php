@@ -22,8 +22,9 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall;
 
-use Shieldon\Firewall\Utils\Collection;
-use Shieldon\Firewall\Utils\Session;
+//use Shieldon\Firewall\Utils\Collection;
+//use Shieldon\Firewall\Utils\Session;
+use Shieldon\Firewall\Session;
 use Shieldon\Psr17\ResponseFactory;
 use Shieldon\Psr17\ServerRequestFactory;
 use Shieldon\Psr17\StreamFactory;
@@ -74,10 +75,20 @@ class HttpFactory
      *
      * @return Collection
      */
+
+    /*
     public static function createSession($id = ''): Collection
     {
         $session = new Session($id);
 
         return $session->createFromGlobal();
+    }
+    */
+
+    public static function createSession($id = ''): Session
+    {
+        $session = new Session($id);
+
+        return $session;
     }
 }

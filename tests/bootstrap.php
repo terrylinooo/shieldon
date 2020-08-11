@@ -62,3 +62,7 @@ if (!isset($_SERVER['HTTP_HOST'])) {
 
 new Helpers();
 
+function test_event_disptcher()
+{
+    echo 'This is a function call.';
+}
