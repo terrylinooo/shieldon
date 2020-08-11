@@ -47,7 +47,6 @@ class ShieldonTestCase extends TestCase
     
         Container::set('request', HttpFactory::createRequest(), true);
         Container::set('response', HttpFactory::createResponse(), true);
-        Container::set('session', HttpFactory::createSession(), true);
     }
 
     /**

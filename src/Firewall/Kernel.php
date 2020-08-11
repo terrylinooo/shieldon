@@ -305,15 +305,18 @@ class Kernel
         $session = get_session_instance();
 
         add_listener('set_driver', function($args) use ($session) {
-            $session->init($args['driver']);
 
+            if (php_sapi_name() !== 'cli') {
+                $session->init($args['driver']);
+            }
             $this->setSessionId($session->getId());
         });
 
         $this->properties = get_default_properties();
         $this->setCaptcha(new Foundation());
 
-        Container::set('session', $session, true);
+        set_session_instance($session);
+
         Container::set('request', $request);
         Container::set('response', $response);
         Container::set('shieldon', $this);

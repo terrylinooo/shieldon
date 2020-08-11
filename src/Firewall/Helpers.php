@@ -662,14 +662,16 @@ function do_dispatch(string $name, array $args = [])
  */
 function get_session_instance(): Session
 {
-    if (php_sapi_name() === 'cli') {
-        return get_mock_session();
-    }
-
     $session = Container::get('session');
 
     if (is_null($session)) {
-        $session = new Session(get_session_id());
+        if (php_sapi_name() === 'cli') {
+            $session = get_mock_session();
+        } else {
+            $session = new Session(get_session_id());
+        }
+
+        set_session_instance($session);
     }
 
     return $session;
@@ -686,13 +688,13 @@ function get_mock_session(): Session
     $fileDriverStorage = BOOTSTRAP_DIR . '/../tmp/shieldon/data_driver_file';
     $session = new Session($sessionId);
     $driver = new FileDriver($fileDriverStorage);
-    $session->init($driver);
 
     // Prepare mock data.
     $data['id'] = $sessionId;
     $data['ip'] = '192.168.95.1';
     $data['time'] = '1597028827';
     $data['microtimesamp'] = '159702882767804400';
+    $data['data'] = '{}';
 
     $json = json_encode($data);
     $dir = $fileDriverStorage . '/shieldon_sessions';
@@ -706,6 +708,8 @@ function get_mock_session(): Session
 
     umask($originalUmask);
     file_put_contents($file, $json);
+
+    $session->init($driver);
 
     return $session;
 }

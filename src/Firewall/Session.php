@@ -156,26 +156,21 @@ class Session
         $this->gc($gcExpires, $gcProbability, $gcDivisor);
  
         // New visitor? Create a new session.
-        if (php_sapi_name() !== 'cli') {
-            if (empty($cookie['_shieldon'])) {
-                self::resetCookie($psr7);
-                $this->create();
-                self::$status = true;
-                return;
-            }
-    
-            $this->data = $this->driver->get(self::$id, 'session');
-
-            $this->parsedData();
-
-            if (empty($this->data)) {
-                self::resetCookie($psr7);
-                $this->create();
-            }
-        } else {
-            $this->data = $this->driver->get(self::$id, 'session');
-            $this->data['parsed_data'] = json_decode($this->data['data'], true);
+        if (php_sapi_name() !== 'cli' && empty($cookie['_shieldon'])) {
+            self::resetCookie($psr7);
+            $this->create();
+            self::$status = true;
+            return;
         }
+
+        $this->data = $this->driver->get(self::$id, 'session');
+
+        if (empty($this->data)) {
+            self::resetCookie($psr7);
+            $this->create();
+        }
+
+        $this->parsedData();
 
         self::$status = true;
     }
