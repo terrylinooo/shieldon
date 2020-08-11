@@ -403,23 +403,6 @@ function get_response(): ResponseInterface
 }
 
 /**
- * Session
- *
- * @return Session
- */
-function get_session(): Session
-{
-    $session = Container::get('session');
-
-    if (is_null($session)) {
-        $session = HttpFactory::createSession();
-        Container::set('session', $session);
-    }
-
-    return $session;
-}
-
-/**
  * Set a PSR-7 HTTP server request into container.
  *
  * @param ServerRequestInterface $request The PSR-7 server request.
@@ -578,6 +561,31 @@ function unset_superglobal($name, string $type): void
     $method($name, $type);
 }
 
+/*
+|--------------------------------------------------------------------------
+| Time.
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Get the microtimesamp.
+ * 
+ * @return int
+ */
+function get_microtimesamp(): int
+{
+    $microtimesamp = explode(' ', microtime());
+    $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
+
+    return (int) $microtimesamp;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Event Dispatcher.
+|--------------------------------------------------------------------------
+*/
+
 /**
  * Add a new event Listener
  *
@@ -603,4 +611,123 @@ function add_listener(string $name, $func, int $priority = 10)
 function do_dispatch(string $name, array $args = [])
 {
     return EventDispatcher::instance()->doDispatch($name, $args);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Session.
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Session
+ *
+ * @return Session
+ */
+function get_session(): Session
+{
+    if (php_sapi_name() === 'cli') {
+        return get_mock_session();
+    }
+
+    $session = Container::get('session');
+
+    if (is_null($session)) {
+        $session = new Session(get_session_id());
+    }
+
+    return $session;
+}
+
+/**
+ * For unit testing purpose.
+ *
+ * @return Session
+ */
+function get_mock_session(): Session
+{
+    $sessionId = '624689c34690a1d0a8c5658db66cf73d';
+    $fileDriverStorage = BOOTSTRAP_DIR . '/../tmp/shieldon/data_driver_file';
+    $session = new Session($sessionId);
+    $driver = new FileDriver($fileDriverStorage);
+    $session->init($driver);
+
+    // Prepare mock data.
+    $data['id'] = $sessionId;
+    $data['ip'] = '192.168.95.1';
+    $data['time'] = '1597028827';
+    $data['microtimesamp'] = '159702882767804400';
+
+    $json = json_encode($data);
+    $dir = $fileDriverStorage . '/shieldon_sessions';
+    $file = $dir . '/' . $sessionId . '.json';
+
+    $originalUmask = umask(0);
+
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
+
+    umask($originalUmask);
+    file_put_contents($file, $json);
+
+    return $session;
+}
+
+/**
+ * Set the Session, if exists, it will be overwritten.
+ *
+ * @param Session $session The session instance.
+ * 
+ * @return void
+ */
+function set_session(Session $session): void
+{
+    Container::set('session', $session, true);
+}
+
+/**
+ * Set session ID.
+ *
+ * @param string $sessionId
+ *
+ * @return void
+ */
+function set_session_id(string $sessionId): void
+{
+    Container::set('session_id', $sessionId, true);
+}
+
+/**
+ * Get session ID.
+ * @return string
+ */
+function get_session_id(): string
+{
+    $sessionId = Container::get('session_id');
+
+    if (is_null($sessionId)) {
+        $cookie = get_request()->getCookieParams();
+
+        if (!empty($cookie['_shieldon'])) {
+            $sessionId = $cookie['_shieldon'];
+        } else {
+            $sessionId = create_session_id();
+        }
+        Container::set('session_id', $sessionId);
+    }
+
+    return $sessionId;
+}
+
+/**
+ * Create a hash code for the Session ID.
+ *
+ * @return string
+ */
+function create_session_id(): string
+{
+    $hash =  rand() . 'ej;1zj47vu;3e;31g642941ek62au/41' . time();
+
+    return md5($hash);
 }

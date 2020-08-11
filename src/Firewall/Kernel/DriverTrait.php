@@ -25,6 +25,7 @@ namespace Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Driver\DriverProvider;
 use LogicException;
 use RuntimeException;
+use function Shieldon\Firewall\do_dispatch;
 
 /*
  * Messenger Trait is loaded in Kernel instance only.
@@ -65,6 +66,17 @@ trait DriverTrait
     public function setDriver(DriverProvider $driver): void
     {
         $this->driver = $driver;
+
+        $this->driver->init($this->isCreateDatabase);
+
+        /**
+         * [Hook] set_driver
+         * 
+         * After initializing data driver.
+         */
+        do_dispatch('set_driver', [
+            'driver' => $this->driver
+        ]);
     }
 
     /**

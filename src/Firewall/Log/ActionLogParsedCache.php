@@ -29,6 +29,7 @@ use function json_encode;
 use function rtrim;
 use function strtotime;
 use function time;
+use const JSON_PRETTY_PRINT;
 
 /**
  * Cache the data parsed by ActionLogParser.
@@ -67,7 +68,7 @@ final class ActionLogParsedCache
 
         $filePath = rtrim($this->directory, '/') . '/cache_' . $type . '.json';
 
-        file_put_contents($filePath, json_encode($data));
+        file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT));
 
         return $this;
     }

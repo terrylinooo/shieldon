@@ -41,6 +41,8 @@ use Shieldon\Firewall\Utils\Container;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session;
+use function Shieldon\Firewall\set_session;
+use function Shieldon\Firewall\add_listener;
 
 use Closure;
 use function array_push;
@@ -301,14 +303,20 @@ class Kernel
 
         $request = $request ?? HttpFactory::createRequest();
         $response = $response ?? HttpFactory::createResponse();
-        $session = HttpFactory::createSession();
+        $session = get_session();
+
+        add_listener('set_driver', function($args) use ($session) {
+            $session->init($args['driver']);
+
+            $this->setSessionId($session->getId());
+        });
 
         $this->properties = get_default_properties();
         $this->setCaptcha(new Foundation());
 
+        Container::set('session', $session, true);
         Container::set('request', $request);
         Container::set('response', $response);
-        Container::set('session', $session);
         Container::set('shieldon', $this);
     }
 
@@ -548,8 +556,6 @@ class Kernel
      */
     protected function process(): int
     {
-        $this->driver->init($this->isCreateDatabase);
-
         $this->initComponents();
 
         $processMethods = [

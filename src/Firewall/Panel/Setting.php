@@ -24,7 +24,6 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
-use Shieldon\Psr17\StreamFactory;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
@@ -37,6 +36,8 @@ use function explode;
 use function filter_var;
 use function json_decode;
 use function json_last_error;
+
+use const JSON_PRETTY_PRINT;
 
 /**
  * Home
@@ -224,7 +225,7 @@ class Setting extends BaseController
         $response = get_response();
 
         $stream = $response->getBody();
-        $stream->write(json_encode($this->configuration));
+        $stream->write(json_encode($this->configuration), JSON_PRETTY_PRINT);
         $stream->rewind();
 
         $filename = 'shieldon_' . date('Y-m-d-Hi') . '.json';

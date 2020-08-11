@@ -51,6 +51,7 @@ use function ob_end_clean;
 use function ob_get_contents;
 use function ob_start;
 use function trim;
+use const JSON_PRETTY_PRINT;
 
 /**
  * Base controller.
@@ -369,7 +370,7 @@ class BaseController
 
         // Only update settings while data driver is correctly connected.
         if ($result) {
-            file_put_contents($configFilePath, json_encode($this->configuration));
+            file_put_contents($configFilePath, json_encode($this->configuration, JSON_PRETTY_PRINT));
 
             $this->pushMessage(
                 'success',

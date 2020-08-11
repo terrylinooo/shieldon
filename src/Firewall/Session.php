@@ -161,7 +161,6 @@ class Session
             $this->data = $this->driver->get(self::$id, 'session');
         }
 
-
         self::$status = true;
     }
 

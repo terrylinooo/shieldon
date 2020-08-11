@@ -24,6 +24,7 @@ namespace Shieldon\Firewall;
 
 use function count;
 use function explode;
+use const JSON_PRETTY_PRINT;
 
 /*
  * FirewallTrait
@@ -236,7 +237,7 @@ trait FirewallTrait
             }
         }
 
-        file_put_contents($configFilePath, json_encode($this->configuration));
+        file_put_contents($configFilePath, json_encode($this->configuration, JSON_PRETTY_PRINT));
     }
 
     /**
