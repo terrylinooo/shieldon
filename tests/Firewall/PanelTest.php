@@ -52,7 +52,7 @@ class PanelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $output = ob_get_contents();
         ob_end_clean();
 
-        $this->assertStringContainsString('Login to Shieldon firewall panel (DEMO)', $output);
+        $this->assertStringContainsString('Mode: demo', $output);
     }
 
     public function testGetFirewallInstance()

@@ -302,14 +302,13 @@ class Kernel
 
         $request = $request ?? HttpFactory::createRequest();
         $response = $response ?? HttpFactory::createResponse();
+
         $session = get_session_instance();
 
         add_listener('set_driver', function($args) use ($session) {
-
             if (php_sapi_name() !== 'cli') {
                 $session->init($args['driver']);
             }
-            $this->setSessionId($session->getId());
         });
 
         $this->properties = get_default_properties();
@@ -649,7 +648,7 @@ class Kernel
         $logData = [];
  
         $logData['ip'] = $ip ?: $this->getIp();
-        $logData['session_id'] = get_session_instance()->get('id');
+        $logData['session_id'] = get_session_instance()->getId();
         $logData['action_code'] = $actionCode;
         $logData['timesamp'] = time();
 

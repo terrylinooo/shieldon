@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Captcha;
 
+use Shieldon\Firewall\Helpers;
+
 class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
@@ -73,18 +75,30 @@ class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testResponse()
     {
-        $_SESSION['shieldon_image_captcha_hash'] = '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.';
-        $_POST['shieldon_image_captcha'] = '';
+        new Helpers();
+
+        $this->mockUserSession('shieldon_image_captcha_hash', '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.');
+
+        //$_SESSION['shieldon_image_captcha_hash'] = '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.';
+        $_POST['shieldon_image_captcha'] = 'hh';
         $this->refreshRequest();
 
         $captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha();
         $result = $captchaInstance->response();
 
         $this->assertFalse($result);
+    }
+
+    public function testResponse2()
+    {
+        new Helpers();
+
+        $this->mockUserSession('shieldon_image_captcha_hash', '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.');
 
         $_POST['shieldon_image_captcha'] = 'IA63BXxo';
         $this->refreshRequest();
 
+        $captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha();
         $result = $captchaInstance->response();
         $this->assertTrue($result);
     }

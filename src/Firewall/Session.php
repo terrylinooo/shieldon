@@ -85,6 +85,11 @@ class Session
     protected static $id = '_php_cli_';
 
     /**
+     * Debug mode.
+     */
+    protected $debug = true;
+
+    /**
      * Constructor.
      * 
      * @param string $id Session ID
@@ -104,6 +109,36 @@ class Session
          * user is logged successfully.
          */
         add_listener('user_login', [$this, 'save'], 10);
+
+        $this->log();
+    }
+    
+    /**
+     * Log.
+     *
+     * @return void
+     */
+    protected function log($text = '')
+    {
+        if (!$this->debug) {
+            return;
+        }
+    
+        $dir = BOOTSTRAP_DIR . '/../tmp/shieldon/session_logs';
+        $file = $dir . '/' . date('Y-m-d') . '.json';
+    
+        $originalUmask = umask(0);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+    
+        umask($originalUmask);
+
+        $method = debug_backtrace()[1]['function'];
+    
+        $content = date('Y-m-d H:i:s') . ' - [' . $method . '] ' . $text;
+        file_put_contents($file, $content . PHP_EOL, FILE_APPEND);
     }
 
     /**
@@ -128,7 +163,9 @@ class Session
         self::$id = $id;
 
         // We store this session ID into the container for the use of other functions.
-        Container::set('session_id', $id);
+        Container::set('session_id', $id, true);
+
+        $this->log($id);
     }
 
     /**
@@ -173,6 +210,8 @@ class Session
         $this->parsedData();
 
         self::$status = true;
+
+        $this->log(self::$id);
     }
 
     /**
@@ -326,6 +365,8 @@ class Session
         }
 
         self::$id = $sessionHashId;
+
+        $this->log($sessionHashId);
     }
 
     /**
@@ -347,6 +388,8 @@ class Session
 
         $this->data = $data;
         $this->save();
+
+        $this->log(json_encode($this->data));
     }
 
     /**
@@ -356,9 +399,16 @@ class Session
      */
     public function save(): void
     {
-        $this->data['data'] = json_encode($this->data['parsed_data']);
+        $data['id'] = self::$id;
+        $data['ip'] = get_ip();
+        $data['time'] = (string) time();
+        $data['microtimesamp'] = (string) get_microtimesamp();
 
-        $this->driver->save(self::$id, $this->data, 'session');
+        $data['data'] = json_encode($this->data['parsed_data']);
+
+        $this->driver->save(self::$id, $data, 'session');
+
+        $this->log(self::$id . "\n" . $this->data['data']);
     }
 
     /**

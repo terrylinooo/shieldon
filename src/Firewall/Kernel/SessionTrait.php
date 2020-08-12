@@ -24,8 +24,7 @@ namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Kernel;
 use function Shieldon\Firewall\get_session_instance;
-use function microtime;
-use function str_replace;
+use function Shieldon\Firewall\create_new_session_instance;
 use function time;
 
 /*
@@ -92,6 +91,13 @@ trait SessionTrait
     protected $sessionData = [];
 
     /**
+     * The session Id for the Kernel.
+     *
+     * @var string
+     */
+    protected $sessionId = '';
+
+    /**
      * Limt online sessions.
      *
      * @param int $count  The amount of online users. If reached, users will be
@@ -145,6 +151,7 @@ trait SessionTrait
             $now = time();
 
             $this->sessionData = $this->driver->getAll('session');
+
             $sessionPools = [];
 
             $i = 1;
@@ -155,7 +162,7 @@ trait SessionTrait
                     $sessionPools[] = $v['id'];
                     $lasttime = (int) $v['time'];
     
-                    if (get_session_instance()->get('id') === $v['id']) {
+                    if (get_session_instance()->getId() === $v['id']) {
                         $sessionOrder = $i;
                     }
     
@@ -179,13 +186,13 @@ trait SessionTrait
             $this->sessionStatus['queue'] = $sessionOrder - $limit;
 
             /*
-            if (!in_array(get_session_instance()->get('id'), $sessionPools)) {
+            if (!in_array(get_session_instance()->getId(), $sessionPools)) {
                 $this->sessionStatus['count']++;
 
                 $data = [];
 
                 // New session, record this data.
-                $data['id'] = get_session_instance()->get('id');
+                $data['id'] = get_session_instance()->getId();
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
 
@@ -193,7 +200,7 @@ trait SessionTrait
                 $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
                 $data['microtimesamp'] = $microtimesamp;
 
-                $this->driver->save(get_session_instance()->get('id'), $data, 'session');
+                $this->driver->save(get_session_instance()->getId(), $data, 'session');
             } */
 
             // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
@@ -227,7 +234,7 @@ trait SessionTrait
     // @codeCoverageIgnoreStart
 
     /**
-     * For testing propose.
+     * For testing propose. This method will create new Session.
      *
      * @param string $sessionId The session Id.
      *
@@ -236,7 +243,7 @@ trait SessionTrait
     protected function setSessionId(string $sessionId = ''): void
     {
         if ('' !== $sessionId) {
-            get_session_instance()->set('id', $sessionId);
+            create_new_session_instance($sessionId);
         }
     }
 

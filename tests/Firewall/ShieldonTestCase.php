@@ -87,7 +87,7 @@ class ShieldonTestCase extends TestCase
         switch ($driver) {
 
             case 'file':
-                $kernel->setDriver(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon'));
+                $kernel->setDriver(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon/data_driver_file'));
                 break;
 
             case 'mysql':
@@ -144,7 +144,7 @@ class ShieldonTestCase extends TestCase
             */
             case 'sqlite':
             default:
-                $dbLocation = $this->getWritableTestFilePath('shieldon_unittest.sqlite3');
+                $dbLocation = $this->getWritableTestFilePath('shieldon_unittest.sqlite3', 'shieldon/data_driver_sqlite');
 
                 try {
                     $pdoInstance = new \PDO('sqlite:' . $dbLocation);
@@ -238,5 +238,52 @@ class ShieldonTestCase extends TestCase
     function getRandomIpAddress():string
     {
         return rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255);
+    }
+
+/**
+     * Mock the user session for tests which need session to test.
+     *
+     * @param string|array $key
+     * @param string       $value
+     *
+     * @return void
+     */
+    public function mockUserSession($key = '', $value = '')
+    {
+        $sessionId = '624689c34690a1d0a8c5658db66cf73d';
+        $_COOKIE['_shieldon'] = $sessionId;
+
+        $data['id'] = $sessionId;
+        $data['ip'] = '192.168.95.1';
+        $data['time'] = '1597028827';
+        $data['microtimesamp'] = '159702882767804400';
+        $data['parsed_data']['shieldon_ui_lang'] = 'en';
+        $data['parsed_data']['shieldon_user_login'] = true;
+
+        if (is_string($key) && $key !== '') {
+            $data['parsed_data'][$key] = $value;
+        }
+
+        if (is_array($key)) {
+            foreach ($key as $k => $v) {
+                $data['parsed_data'][$k] = $v;
+            }
+        }
+
+        $data['data'] = json_encode($data['parsed_data']);
+
+        $json = json_encode($data);
+        $dir = BOOTSTRAP_DIR . '/../tmp/shieldon/data_driver_file/shieldon_sessions';
+        $file = $dir . '/' . $sessionId . '.json';
+
+        $originalUmask = umask(0);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        umask($originalUmask);
+
+        file_put_contents($file, $json);
     }
 }

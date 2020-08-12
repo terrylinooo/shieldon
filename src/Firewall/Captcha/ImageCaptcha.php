@@ -267,6 +267,8 @@ class ImageCaptcha extends CaptchaProvider
         get_session_instance()->set('shieldon_image_captcha_hash', $hash);
         get_session_instance()->save();
 
+        echo get_session_instance()->get('shieldon_image_captcha_hash');
+
         return $this->getImageBase64Content();
     }
 

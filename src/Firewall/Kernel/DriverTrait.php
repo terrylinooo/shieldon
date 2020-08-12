@@ -70,9 +70,7 @@ trait DriverTrait
         $this->driver->init($this->isCreateDatabase);
 
         /**
-         * [Hook] set_driver
-         * 
-         * After initializing data driver.
+         * [Hook] `set_driver` - After initializing data driver.
          */
         do_dispatch('set_driver', [
             'driver' => $this->driver

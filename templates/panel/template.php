@@ -246,8 +246,8 @@ use function Shieldon\Firewall\_e;
                         <div class="container-fluid">
                             <div class="col-md-12">
                                     <!-- 
-                                        <?php _e('panel', 'channel', 'Channel'); ?><?php echo $channel_name; ?>
-                                        <?php _e('panel', 'mode', 'Mode'); ?><?php echo $mode_name; ?>
+                                        <?php _e('panel', 'channel', 'Channel'); ?>: <?php echo $channel_name; ?>
+                                        <?php _e('panel', 'mode', 'Mode'); ?>: <?php echo $mode_name; ?>
                                     -->
                                     Powered by <a href="https://shieldon.io" target="_blank">Shieldon</a> <?php echo SHIELDON_FIREWALL_VERSION; ?>
                                     &copy; 2019-<?php echo date('Y'); ?> <a href="https://terryl.in" target="_blank">Terry Lin</a>

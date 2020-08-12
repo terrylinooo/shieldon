@@ -186,7 +186,7 @@ trait FilterTrait
 
         if (!empty($ipDetail['ip'])) {
             $logData['ip'] = $this->ip;
-            $logData['session'] = get_session_instance()->get('id');
+            $logData['session'] = get_session_instance()->getId();
             $logData['hostname'] = $this->rdns;
             $logData['last_time'] = $now;
 
@@ -259,7 +259,7 @@ trait FilterTrait
         $now = time();
 
         $logData['ip']        = $this->ip;
-        $logData['session']   = get_session_instance()->get('id');
+        $logData['session']   = get_session_instance()->getId();
         $logData['hostname']  = $this->rdns;
         $logData['last_time'] = $now;
 
@@ -333,8 +333,8 @@ trait FilterTrait
 
                 // Get values from data table. We will count it and save it back to data table.
                 $logData['flag_multi_session'] = $ipDetail['flag_multi_session'];
-                
-                if (get_session_instance()->get('id') !== $ipDetail['session']) {
+
+                if (get_session_instance()->getId() !== $ipDetail['session']) {
 
                     // Is is possible because of direct access by the same user many times.
                     // Or they don't have session cookie set.

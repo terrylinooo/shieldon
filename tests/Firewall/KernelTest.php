@@ -333,7 +333,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->run();
 
         // Test.
-        $testSessionId = get_session_instance()->get('id');
+        $testSessionId = get_session_instance()->getId();
 
         $this->assertSame($sessionId, $testSessionId);
 
@@ -903,10 +903,16 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testDetect_fileDriver()
     {
         $this->testDetectByFilterFrequency('file');
-        $this->testDetectByFilterSession('file');
+        
         $this->testDetectByFilterReferer('file');
         $this->testDetectByFilterCookie('file');
         $this->testResetFilterFlagChecks('file');
+    }
+
+    public function testDetect_fileDriver_filterSession()
+    {
+        // 剩下的問題是 ip 沒更新到 session 檔案裡。
+        $this->testDetectByFilterSession('file');
     }
 
     public function testAction_fileDriver()

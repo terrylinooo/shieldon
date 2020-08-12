@@ -527,13 +527,10 @@ function unset_global_session($name = null): void
 {
     if (empty($name)) {
         get_session_instance()->clear();
-        $_SESSION = [];
-
         return;
     }
 
     get_session_instance()->remove($name);
-    unset($_SESSION[$name]);
 }
 
 /**
@@ -575,7 +572,13 @@ function unset_superglobal($name, string $type): void
  */
 function get_ip(): string
 {
-    return Container::get('ip_address');
+    $ip = Container::get('ip_address');
+    
+    if (empty($ip)) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+
+    return $ip;
 }
 
 /**
@@ -657,7 +660,7 @@ function do_dispatch(string $name, array $args = [])
 
 /**
  * Session
- *
+ * 
  * @return Session
  */
 function get_session_instance(): Session
@@ -666,7 +669,7 @@ function get_session_instance(): Session
 
     if (is_null($session)) {
         if (php_sapi_name() === 'cli') {
-            $session = get_mock_session();
+            $session = get_mock_session(get_session_id());
         } else {
             $session = new Session(get_session_id());
         }
@@ -679,35 +682,57 @@ function get_session_instance(): Session
 
 /**
  * For unit testing purpose.
+ * Create new session by specifying a session ID.
+ * 
+ * @param string $sessionId A session ID string.
+ *
+ * @return void
+ */
+function create_new_session_instance(string $sessionId)
+{
+    Container::set('session_id', $sessionId, true);
+    $session = get_mock_session($sessionId);
+    set_session_instance($session);
+}
+
+/**
+ * For unit testing purpose.
  *
  * @return Session
  */
-function get_mock_session(): Session
+function get_mock_session($sessionId): Session
 {
-    $sessionId = '624689c34690a1d0a8c5658db66cf73d';
+    Container::set('session_id', $sessionId, true);
+
     $fileDriverStorage = BOOTSTRAP_DIR . '/../tmp/shieldon/data_driver_file';
-    $session = new Session($sessionId);
-    $driver = new FileDriver($fileDriverStorage);
-
-    // Prepare mock data.
-    $data['id'] = $sessionId;
-    $data['ip'] = '192.168.95.1';
-    $data['time'] = '1597028827';
-    $data['microtimesamp'] = '159702882767804400';
-    $data['data'] = '{}';
-
-    $json = json_encode($data);
     $dir = $fileDriverStorage . '/shieldon_sessions';
     $file = $dir . '/' . $sessionId . '.json';
 
-    $originalUmask = umask(0);
+    $session = new Session($sessionId);
+    $driver = new FileDriver($fileDriverStorage);
 
-    if (!is_dir($dir)) {
-        mkdir($dir, 0777, true);
+    if (!file_exists($file)) {
+
+        // Prepare mock data.
+        $data['id'] = $sessionId;
+        $data['ip'] = get_ip();
+        $data['time'] = time();
+        $data['microtimesamp'] = get_microtimesamp();
+        $data['data'] = '{}';
+    
+        $json = json_encode($data);
+        
+        // Check and build the folder.
+        $originalUmask = umask(0);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        umask($originalUmask);
+
+        file_put_contents($file, $json);
     }
-
-    umask($originalUmask);
-    file_put_contents($file, $json);
 
     $session->init($driver);
 
@@ -727,26 +752,15 @@ function set_session_instance(Session $session): void
 }
 
 /**
- * Set session ID.
- *
- * @param string $sessionId
- *
- * @return void
- */
-function set_session_id(string $sessionId): void
-{
-    Container::set('session_id', $sessionId, true);
-}
-
-/**
  * Get session ID.
+ *
  * @return string
  */
 function get_session_id(): string
 {
-    $sessionId = Container::get('session_id');
+    static $sessionId;
 
-    if (is_null($sessionId)) {
+    if (!$sessionId) {
         $cookie = get_request()->getCookieParams();
 
         if (!empty($cookie['_shieldon'])) {
@@ -754,7 +768,6 @@ function get_session_id(): string
         } else {
             $sessionId = create_session_id();
         }
-        Container::set('session_id', $sessionId);
     }
 
     return $sessionId;
