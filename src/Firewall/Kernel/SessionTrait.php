@@ -91,13 +91,6 @@ trait SessionTrait
     protected $sessionData = [];
 
     /**
-     * The session Id for the Kernel.
-     *
-     * @var string
-     */
-    protected $sessionId = '';
-
-    /**
      * Limt online sessions.
      *
      * @param int $count  The amount of online users. If reached, users will be

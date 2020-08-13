@@ -69,11 +69,17 @@ trait DriverTrait
 
         $this->driver->init($this->isCreateDatabase);
 
+        $period = $this->sessionLimit['period'] ?: 300;
+
         /**
          * [Hook] `set_driver` - After initializing data driver.
          */
         do_dispatch('set_driver', [
-            'driver' => $this->driver
+            'driver'         => $this->driver,
+            'gc_expires'     => $period,
+            'gc_probability' => 1,
+            'gc_divisor'     => 100,
+            'psr7'           => $this->psr7,
         ]);
     }
 

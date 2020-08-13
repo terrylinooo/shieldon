@@ -22,19 +22,22 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall;
 
-use Shieldon\Firewall\Driver\DirverProvider;
 use Shieldon\Firewall\Container;
+use Shieldon\Firewall\Driver\DirverProvider;
+use Shieldon\Firewall\Log\SessionLogger;
 use RuntimeException;
+use function Shieldon\Firewall\add_listener;
+use function Shieldon\Firewall\create_session_id;
+use function Shieldon\Firewall\get_ip;
+use function Shieldon\Firewall\get_microtimesamp;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\set_response;
-use function Shieldon\Firewall\get_microtimesamp;
-use function Shieldon\Firewall\create_session_id;
-use function Shieldon\Firewall\get_ip;
-use function time;
-use function rand;
 use function intval;
+use function rand;
 use function setcookie;
+use function time;
+use function php_sapi_name;
 
 /*
  * Session for the use of Shieldon.
@@ -107,34 +110,6 @@ class Session
 
         self::log();
     }
-    
-    /**
-     * Log.
-     *
-     * @return void
-     */
-    protected static function log($text = '')
-    {
-        if (php_sapi_name() !== 'cli') {
-            return;
-        }
-
-        $dir = BOOTSTRAP_DIR . '/../tmp/shieldon/session_logs';
-        $file = $dir . '/' . date('Y-m-d') . '.json';
-    
-        $originalUmask = umask(0);
-
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-    
-        umask($originalUmask);
-
-        $method = debug_backtrace()[1]['function'];
-    
-        $content = date('Y-m-d H:i:s') . ' - [' . $method . '] ' . $text;
-        file_put_contents($file, $content . PHP_EOL, FILE_APPEND);
-    }
 
     /**
      * Get session ID.
@@ -179,7 +154,7 @@ class Session
         int  $gcExpires     = 300, 
         int  $gcProbability = 1, 
         int  $gcDivisor     = 100, 
-        bool $psr7          = false
+        bool $psr7          = true
     ): void {
         $this->driver = $driver;
 
@@ -188,10 +163,14 @@ class Session
         $this->gc($gcExpires, $gcProbability, $gcDivisor);
  
         // New visitor? Create a new session.
-        if (php_sapi_name() !== 'cli' && empty($cookie['_shieldon'])) {
+        if (
+            php_sapi_name() !== 'cli' && 
+            empty($cookie['_shieldon'])
+        ) {
             self::resetCookie($psr7);
             $this->create();
             self::$status = true;
+
             return;
         }
 
@@ -214,9 +193,9 @@ class Session
      *
      * @return bool
      */
-    public function IsInitialized(): bool
+    public function isInitialized(): bool
     {
-        return $this->status;
+        return self::$status;
     }
 
     /**
@@ -413,10 +392,22 @@ class Session
      */
     protected function assertInit(): void
     {
-        if (!self::$status) {
+        if (!$this->isInitialized()) {
             throw new RuntimeException(
                 'The init method is supposed to run first.'
             );
+        }
+    }
+
+    /**
+     * Log.
+     *
+     * @return void
+     */
+    protected static function log($text = '')
+    {
+        if (php_sapi_name() === 'cli') {
+            SessionLogger::log($text);
         }
     }
 }

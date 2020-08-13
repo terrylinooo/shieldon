@@ -288,6 +288,14 @@ class Kernel
     protected $firewallType = 'self'; 
 
     /**
+     * The session cookie will be created by the PSR-7 HTTP resolver.
+     * If this option is false, created by PHP native function `setcookie`.
+     *
+     * @var bool
+     */
+    protected $psr7 = true;
+
+    /**
      * Shieldon constructor.
      *
      * @param ServerRequestInterface|null $request  A PSR-7 server request.
@@ -300,18 +308,34 @@ class Kernel
         // Load helper functions. This is the must.
         new Helpers();
 
-        $request = $request ?? HttpFactory::createRequest();
-        $response = $response ?? HttpFactory::createResponse();
+        if (is_null($request)) {
+            $request = HttpFactory::createRequest();
+            $this->nonPsr7Request();
+        }
 
+        if (is_null($response)) {
+            $response = HttpFactory::createResponse();
+        }
+
+        // Session start.
         $session = get_session_instance();
 
         add_listener('set_driver', function($args) use ($session) {
             if (php_sapi_name() !== 'cli') {
-                $session->init($args['driver']);
+                $session->init(
+                    $args['driver'],
+                    $args['gc_expires'],
+                    $args['gc_probability'],
+                    $args['gc_divisor'],
+                    $args['psr7']
+                );
             }
         });
 
+        // Load default settings.
         $this->properties = get_default_properties();
+
+        // Basic Captcha form.
         $this->setCaptcha(new Foundation());
 
         set_session_instance($session);
@@ -544,6 +568,17 @@ class Kernel
         if (in_array($type, ['managed', 'config', 'demo'])) {
             $this->firewallType = $type;
         }
+    }
+
+    /**
+     * The session cookie will be created by the PSR-7 HTTP resolver.
+     * If this option is false, created by PHP native function `setcookie`.
+     *
+     * @return void
+     */
+    public function nonPsr7Request(): void
+    {
+        $this->psr7 = false;
     }
 
     /*
