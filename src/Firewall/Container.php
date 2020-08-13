@@ -20,11 +20,11 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Utils;
+namespace Shieldon\Firewall;
 
 /**
  * This is a very, very simple container.
- * For storing Shieldon releated instances.
+ * For storing Shieldon releated instances and variables..
  */
 class Container
 {

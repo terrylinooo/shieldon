@@ -44,8 +44,8 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $firewall->setup();
 
         // Get Firewall from Container.
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
-        $kernel = \Shieldon\Firewall\Utils\Container::get('shieldon');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
+        $kernel = \Shieldon\Firewall\Container::get('shieldon');
 
         $firewall->getKernel()->setIp('141.11.72.12');
 
@@ -59,7 +59,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $this->testFromJsonConfig();
 
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
         $firewall->getKernel()->driver->rebuild();
 
         $firewall->getKernel()->setIp('131.122.87.35');
@@ -118,7 +118,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $this->testFromJsonConfig();
 
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
         $firewall->getKernel()->driver->rebuild();
 
         $firewall->getKernel()->setIp('131.122.87.9');
@@ -146,7 +146,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->refreshRequest();
 
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
         $firewall->getKernel()->driver->rebuild();
 
         $firewall->getKernel()->setIp('131.132.87.12');
@@ -171,7 +171,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->refreshRequest();
 
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
         $firewall->getKernel()->driver->rebuild();
 
         // HTTP_X_FORWARDED_FOR
@@ -190,7 +190,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->refreshRequest();
 
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
         $firewall->getKernel()->driver->rebuild();
 
         $firewall->setConfig('ip_variable_source.REMOTE_ADDR', false);
@@ -210,7 +210,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->getWritableTestFilePath('_file_driver_initialized.txt', 'test_sitelite_driver');
 
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
 
         /*
         |--------------------------------------------------------------------------
@@ -245,7 +245,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testSetCronJobOption()
     {
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
         $firewall->getKernel()->driver->rebuild();
         
         /*
@@ -275,8 +275,8 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $firewall->configure(BOOTSTRAP_DIR . '/config.php', 'php');
 
         // Get Firewall from Container.
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
-        $kernel = \Shieldon\Firewall\Utils\Container::get('shieldon');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
+        $kernel = \Shieldon\Firewall\Container::get('shieldon');
 
         $kernel->setIp('131.111.11.115');
         $reflection = new \ReflectionObject($kernel);
@@ -290,7 +290,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testSetMessengers()
     {
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
         
         $firewall->setConfig('messengers.telegram.enable', true);
         $firewall->setConfig('messengers.telegram.confirm_test', true);
@@ -325,7 +325,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testCaptchaResponse()
     {
         $this->testFromJsonConfig();
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
         $firewall->getKernel()->driver->rebuild();
         $firewall->getKernel()->setIp('140.132.75.15');
         $firewall->setup();

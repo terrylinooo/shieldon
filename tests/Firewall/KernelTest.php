@@ -313,7 +313,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $kernel = $this->getKernelInstance($driver);
 
-      //  $kernel->setChannel('test_shieldon_session');
+        $kernel->setChannel('test_shieldon_session');
 
         $_limit = 4;
         $kernel->limitSession($_limit, 300);

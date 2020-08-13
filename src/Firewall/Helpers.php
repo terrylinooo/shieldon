@@ -26,8 +26,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Session;
-use Shieldon\Firewall\Utils\Container;
-use Shieldon\Firewall\Utils\EventDispatcher;
+use Shieldon\Firewall\Container;
+use Shieldon\Firewall\EventDispatcher;
 use Shieldon\Firewall\Driver\FileDriver;
 
 use function explode;
@@ -75,7 +75,7 @@ class Helpers
  *  get_default_properties| The default settings of Shieldon core.
  *  get_request           | Get PSR-7 HTTP server request from container.
  *  get_response          | Get PSR-7 HTTP response from container.
- *  get_session_instance           | Get PHP native session from container.
+ *  get_session_instance  | Get PHP native session from container.
  *  set_request           | Set PSR-7 HTTP server request to container.
  *  set_response          | Set PSR-7 HTTP response to container.
  *  unset_global_cookie   | Unset superglobal COOKIE variable.
@@ -369,6 +369,12 @@ function get_default_properties(): array
     ];
 }
 
+/*
+|--------------------------------------------------------------------------
+| PSR-7 helpers.
+|--------------------------------------------------------------------------
+*/
+
 /**
  * PSR-7 HTTP server request
  *
@@ -426,6 +432,12 @@ function set_response(ResponseInterface $response): void
 {
     Container::set('response', $response, true);
 }
+
+/*
+|--------------------------------------------------------------------------
+| Superglobal variables.
+|--------------------------------------------------------------------------
+*/
 
 /**
  * Unset cookie.
@@ -668,10 +680,12 @@ function get_session_instance(): Session
     $session = Container::get('session');
 
     if (is_null($session)) {
+
+        // For unit testing purpose. Not use in production.
         if (php_sapi_name() === 'cli') {
             $session = get_mock_session(get_session_id());
         } else {
-            $session = new Session(get_session_id());
+            $session = HttpFactory::createSession(get_session_id());
         }
 
         set_session_instance($session);
@@ -681,7 +695,7 @@ function get_session_instance(): Session
 }
 
 /**
- * For unit testing purpose.
+ * For unit testing purpose. Not use in production.
  * Create new session by specifying a session ID.
  * 
  * @param string $sessionId A session ID string.
@@ -696,7 +710,7 @@ function create_new_session_instance(string $sessionId)
 }
 
 /**
- * For unit testing purpose.
+ * For unit testing purpose. Not use in production.
  *
  * @return Session
  */
@@ -704,11 +718,12 @@ function get_mock_session($sessionId): Session
 {
     Container::set('session_id', $sessionId, true);
 
+    // Constant BOOTSTRAP_DIR is available in unit testing mode.
     $fileDriverStorage = BOOTSTRAP_DIR . '/../tmp/shieldon/data_driver_file';
     $dir = $fileDriverStorage . '/shieldon_sessions';
     $file = $dir . '/' . $sessionId . '.json';
 
-    $session = new Session($sessionId);
+    $session = HttpFactory::createSession($sessionId);
     $driver = new FileDriver($fileDriverStorage);
 
     if (!file_exists($file)) {

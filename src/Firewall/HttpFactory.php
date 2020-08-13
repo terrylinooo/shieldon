@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall;
 
-//use Shieldon\Firewall\Utils\Collection;
-//use Shieldon\Firewall\Utils\Session;
 use Shieldon\Firewall\Session;
 use Shieldon\Psr17\ResponseFactory;
 use Shieldon\Psr17\ServerRequestFactory;
@@ -68,27 +66,14 @@ class HttpFactory
     }
 
     /**
-     * Create a Session collection from superglobal.
-     * This method is not a PSR-7 pattern.
+     * Create a session by using Shieldon's Session driver.
      *
      * @param string $id Session ID
      *
-     * @return Collection
+     * @return Session
      */
-
-    /*
-    public static function createSession($id = ''): Collection
-    {
-        $session = new Session($id);
-
-        return $session->createFromGlobal();
-    }
-    */
-
     public static function createSession($id = ''): Session
     {
-        $session = new Session($id);
-
-        return $session;
+        return new Session($id);
     }
 }

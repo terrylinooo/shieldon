@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Utils;
 
-use Shieldon\Firewall\Utils\EventDispatcherHelper;
+use Shieldon\Firewall\EventDispatcherHelper;
 
 use function Shieldon\Firewall\do_dispatch;
 use function Shieldon\Firewall\add_listener;

@@ -37,7 +37,7 @@ use Shieldon\Firewall\Kernel\RuleTrait;
 use Shieldon\Firewall\Kernel\SessionTrait;
 use Shieldon\Firewall\Kernel\TemplateTrait;
 use Shieldon\Firewall\Log\ActionLogger;
-use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Container;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;

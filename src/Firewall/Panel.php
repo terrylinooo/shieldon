@@ -27,7 +27,7 @@ use Shieldon\Firewall\HttpResolver;
 use Shieldon\Firewall\Panel\CsrfTrait;
 use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\User;
-use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Container;
 use Shieldon\Firewall\Firewall;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;

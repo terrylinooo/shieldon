@@ -203,7 +203,7 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $response = $this->getRouteResponse('firewall/panel/setting/import');
 
-        $session = \Shieldon\Firewall\Utils\Container::get('session');
+        $session = \Shieldon\Firewall\Container::get('session');
         $flashMessage = $session->get('flash_messages');
 
         $this->assertSame($flashMessage[0]['text'], 'JSON file imported successfully.');
@@ -225,7 +225,7 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $response = $this->getRouteResponse('firewall/panel/setting/import');
 
-        $session = \Shieldon\Firewall\Utils\Container::get('session');
+        $session = \Shieldon\Firewall\Container::get('session');
         $flashMessage = $session->get('flash_messages');
 
         $this->assertSame($flashMessage[0]['text'], 'Invalid JSON file.');
@@ -247,7 +247,7 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $response = $this->getRouteResponse('firewall/panel/setting/import');
 
-        $session = \Shieldon\Firewall\Utils\Container::get('session');
+        $session = \Shieldon\Firewall\Container::get('session');
         $flashMessage = $session->get('flash_messages');
 
         $this->assertSame($flashMessage[0]['text'], 'Invalid Shieldon configuration file.');

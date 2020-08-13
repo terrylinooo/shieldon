@@ -29,7 +29,7 @@ class ContainerTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->configure(BOOTSTRAP_DIR . '/../tmp/shieldon');
 
-        $firewall = \Shieldon\Firewall\Utils\Container::get('firewall');
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
 
         if ($firewall instanceof \Shieldon\Firewall\Firewall) {
             $this->assertTrue(true);
@@ -37,14 +37,14 @@ class ContainerTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $this->assertTrue(false);
         }
 
-        $typo = \Shieldon\Firewall\Utils\Container::get('firewall_typo');
+        $typo = \Shieldon\Firewall\Container::get('firewall_typo');
         $this->assertEquals($typo, null);
 
-        $result = \Shieldon\Firewall\Utils\Container::has('firewall');
+        $result = \Shieldon\Firewall\Container::has('firewall');
         $this->assertTrue($result);
 
-        \Shieldon\Firewall\Utils\Container::remove('firewall');
-        $result = \Shieldon\Firewall\Utils\Container::has('firewall');
+        \Shieldon\Firewall\Container::remove('firewall');
+        $result = \Shieldon\Firewall\Container::has('firewall');
         $this->assertFalse($result);
     }
 }

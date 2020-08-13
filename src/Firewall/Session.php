@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Shieldon\Firewall;
 
 use Shieldon\Firewall\Driver\DirverProvider;
-use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Container;
 use RuntimeException;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;

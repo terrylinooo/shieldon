@@ -28,7 +28,7 @@ use Shieldon\Firewall\FirewallTrait;
 use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\ConfigMethodsTrait;
 use Shieldon\Firewall\Panel\CsrfTrait;
-use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Container;
 use Shieldon\Firewall\Log\ActionLogParser;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;

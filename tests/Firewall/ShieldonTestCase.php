@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Shieldon\FirewallTest;
 
 use PHPUnit\Framework\TestCase;
-use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Container;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Kernel;
 

@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\Firewall\Utils;
+namespace Shieldon\Firewall;
 
 /**
  * This is just a simple event dispatcher for Shieldon firewall.

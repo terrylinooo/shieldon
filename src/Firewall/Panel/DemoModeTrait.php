@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Panel;
 
-use Shieldon\Firewall\Utils\Container;
+use Shieldon\Firewall\Container;
 
 /*
  * Tradit for demonstration.
