@@ -38,11 +38,15 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testInitialWithActionLogger()
     {
-        $_SESSION['flash_messages'] = [[
-            'type' => 'success',
-            'text' => 'This is a flash message.',
-            'class' => 'success',
-        ]];
+        $_SESSION['flash_messages'] = [
+            [
+                'type' => 'success',
+                'text' => 'This is a flash message.',
+                'class' => 'success',
+            ]
+        ];
+
+        $this->mockUserSession('flash_messages', $_SESSION['flash_messages']);
 
         $firewall = new \Shieldon\Firewall\Firewall();
         $firewall->setConfig('loggers.action.config.directory_path', BOOTSTRAP_DIR . '/../tmp/shieldon/logs');

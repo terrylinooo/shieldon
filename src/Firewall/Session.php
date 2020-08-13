@@ -85,11 +85,6 @@ class Session
     protected static $id = '_php_cli_';
 
     /**
-     * Debug mode.
-     */
-    protected $debug = true;
-
-    /**
      * Constructor.
      * 
      * @param string $id Session ID
@@ -110,7 +105,7 @@ class Session
          */
         add_listener('user_login', [$this, 'save'], 10);
 
-        $this->log();
+        self::log();
     }
     
     /**
@@ -118,12 +113,12 @@ class Session
      *
      * @return void
      */
-    protected function log($text = '')
+    protected static function log($text = '')
     {
-        if (!$this->debug) {
+        if (php_sapi_name() !== 'cli') {
             return;
         }
-    
+
         $dir = BOOTSTRAP_DIR . '/../tmp/shieldon/session_logs';
         $file = $dir . '/' . date('Y-m-d') . '.json';
     
@@ -165,7 +160,7 @@ class Session
         // We store this session ID into the container for the use of other functions.
         Container::set('session_id', $id, true);
 
-        $this->log($id);
+        self::log($id);
     }
 
     /**
@@ -211,7 +206,7 @@ class Session
 
         self::$status = true;
 
-        $this->log(self::$id);
+        self::log(self::$id);
     }
 
     /**
@@ -366,7 +361,7 @@ class Session
 
         self::$id = $sessionHashId;
 
-        $this->log($sessionHashId);
+        self::log($sessionHashId);
     }
 
     /**
@@ -389,7 +384,7 @@ class Session
         $this->data = $data;
         $this->save();
 
-        $this->log(json_encode($this->data));
+        self::log(json_encode($this->data));
     }
 
     /**
@@ -408,7 +403,7 @@ class Session
 
         $this->driver->save(self::$id, $data, 'session');
 
-        $this->log(self::$id . "\n" . $this->data['data']);
+        self::log(self::$id . "\n" . $this->data['data']);
     }
 
     /**

@@ -185,7 +185,7 @@ trait SessionTrait
             $this->sessionStatus['order'] = $sessionOrder;
             $this->sessionStatus['queue'] = $sessionOrder - $limit;
 
-            /*
+            
             if (!in_array(get_session_instance()->getId(), $sessionPools)) {
                 $this->sessionStatus['count']++;
 
@@ -201,7 +201,7 @@ trait SessionTrait
                 $data['microtimesamp'] = $microtimesamp;
 
                 $this->driver->save(get_session_instance()->getId(), $data, 'session');
-            } */
+            }
 
             // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
             if ($sessionOrder >= $limit) {

@@ -240,7 +240,7 @@ class ShieldonTestCase extends TestCase
         return rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255);
     }
 
-/**
+    /**
      * Mock the user session for tests which need session to test.
      *
      * @param string|array $key
