@@ -45,6 +45,23 @@ use function php_sapi_name;
 class Session
 {
     /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   init                 | Initialize the session.
+     *   getId                | Get session ID.
+     *   setId                | Set session ID
+     *   isInitialized        | Check if a session has been initialized or not.
+     *   get                  | Get specific value from session by key.
+     *   set                  | To store data in the session.
+     *   remove               | To delete data from the session.
+     *   has                  | To determine if an item is present in the session.
+     *   clear                | Clear all data in the session array.
+     *   save                 | Save session data into database.
+     *   ::resetCookie        | Create a new session cookie for current user.
+     *  ----------------------|---------------------------------------------
+     */
+
+    /**
      * The session data.
      *
      * @var array
@@ -112,33 +129,6 @@ class Session
     }
 
     /**
-     * Get session ID.
-     *
-     * @return string
-     */
-    public function getId(): string
-    {
-        return self::$id;
-    }
-
-    /**
-     * Set session ID.
-     *
-     * @param string $id Session Id.
-     *
-     * @return void
-     */
-    public function setId(string $id): void
-    {
-        self::$id = $id;
-
-        // We store this session ID into the container for the use of other functions.
-        Container::set('session_id', $id, true);
-
-        self::log($id);
-    }
-
-    /**
      * Initialize.
      *
      * @param object $driver        The data driver.
@@ -199,6 +189,33 @@ class Session
     }
 
     /**
+     * Get session ID.
+     *
+     * @return string
+     */
+    public function getId(): string
+    {
+        return self::$id;
+    }
+
+    /**
+     * Set session ID.
+     *
+     * @param string $id Session Id.
+     *
+     * @return void
+     */
+    public function setId(string $id): void
+    {
+        self::$id = $id;
+
+        // We store this session ID into the container for the use of other functions.
+        Container::set('session_id', $id, true);
+
+        self::log($id);
+    }
+
+    /**
      * Get specific value from session by key.
      *
      * @param string $key The key of a data field.
@@ -210,19 +227,6 @@ class Session
         $this->assertInit();
 
         return $this->data['parsed_data'][$key] ?? '';
-    }
-
-    /**
-     * Parse JSON data and store it into parsed_data field.
-     *
-     * @return void
-     */
-    protected function parsedData()
-    {
-        if (empty($this->data['data'])) {
-            $this->data['data'] = '{}';
-        }
-        $this->data['parsed_data'] = json_decode($this->data['data'], true);
     }
 
     /**
@@ -283,35 +287,22 @@ class Session
     }
 
     /**
-     * Perform session data garbage collection.
+     * Save session data into database.
      *
-     * @param int $expires     The time of expiring.
-     * @param int $probability Numerator.
-     * @param int $divisor     Denominator.
-     *
-     * @return bool
+     * @return void
      */
-    protected function gc(int $expires, int $probability, int $divisor): bool
+    public function save(): void
     {
-        $chance = intval($divisor / $probability);
-        $hit = rand(1, $chance);
+        $data['id'] = self::$id;
+        $data['ip'] = get_ip();
+        $data['time'] = time();
+        $data['microtimesamp'] = (string) get_microtimesamp();
 
-        if ($hit === 1) {
-            
-            $sessionData = $this->driver->getAll('session');
+        $data['data'] = json_encode($this->data['parsed_data']);
 
-            if (!empty($sessionData)) {
-                foreach ($sessionData as $v) {
-                    $lasttime = (int) $v['time'];
-    
-                    if (time() - $lasttime > $expires) {
-                        $this->driver->delete($v['id'], 'session');
-                    }
-                }
-            }
-            return true;
-        }
-        return false;
+        $this->driver->save(self::$id, $data, 'session');
+
+        self::log(self::$id . "\n" . $this->data['data']);
     }
 
     /**
@@ -344,6 +335,38 @@ class Session
     }
 
     /**
+     * Perform session data garbage collection.
+     *
+     * @param int $expires     The time of expiring.
+     * @param int $probability Numerator.
+     * @param int $divisor     Denominator.
+     *
+     * @return bool
+     */
+    protected function gc(int $expires, int $probability, int $divisor): bool
+    {
+        $chance = intval($divisor / $probability);
+        $hit = rand(1, $chance);
+
+        if ($hit === 1) {
+            
+            $sessionData = $this->driver->getAll('session');
+
+            if (!empty($sessionData)) {
+                foreach ($sessionData as $v) {
+                    $lasttime = (int) $v['time'];
+    
+                    if (time() - $lasttime > $expires) {
+                        $this->driver->delete($v['id'], 'session');
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Create session data structure.
      *
      * @return void
@@ -367,22 +390,16 @@ class Session
     }
 
     /**
-     * Save session data into database.
+     * Parse JSON data and store it into parsed_data field.
      *
      * @return void
      */
-    public function save(): void
+    protected function parsedData()
     {
-        $data['id'] = self::$id;
-        $data['ip'] = get_ip();
-        $data['time'] = (string) time();
-        $data['microtimesamp'] = (string) get_microtimesamp();
-
-        $data['data'] = json_encode($this->data['parsed_data']);
-
-        $this->driver->save(self::$id, $data, 'session');
-
-        self::log(self::$id . "\n" . $this->data['data']);
+        if (empty($this->data['data'])) {
+            $this->data['data'] = '{}';
+        }
+        $this->data['parsed_data'] = json_decode($this->data['data'], true);
     }
 
     /**

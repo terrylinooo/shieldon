@@ -29,10 +29,9 @@ use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\User;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\Firewall;
+use RuntimeException;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
-
-use RuntimeException;
 use function call_user_func;
 use function explode;
 use function in_array;

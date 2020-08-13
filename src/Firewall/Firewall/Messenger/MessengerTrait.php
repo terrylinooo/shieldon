@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Firewall\Messenger;
 
+use function is_array;
+
 /*
  * Messenger Trait is loaded in Firewall instance only.
  */

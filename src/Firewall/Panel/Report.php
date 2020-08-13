@@ -25,10 +25,9 @@ namespace Shieldon\Firewall\Panel;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
 use Shieldon\Firewall\Log\ActionLogParsedCache;
+use ReflectionObject;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
-
-use ReflectionObject;
 use function array_merge;
 use function date;
 

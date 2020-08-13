@@ -38,12 +38,11 @@ use Shieldon\Firewall\Kernel\SessionTrait;
 use Shieldon\Firewall\Kernel\TemplateTrait;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Container;
+use Closure;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\add_listener;
-
-use Closure;
 use function array_push;
 use function get_class;
 use function gethostbyaddr;
@@ -310,7 +309,7 @@ class Kernel
 
         if (is_null($request)) {
             $request = HttpFactory::createRequest();
-            $this->nonPsr7Request();
+            $this->psr7 = false;
         }
 
         if (is_null($response)) {
@@ -568,17 +567,6 @@ class Kernel
         if (in_array($type, ['managed', 'config', 'demo'])) {
             $this->firewallType = $type;
         }
-    }
-
-    /**
-     * The session cookie will be created by the PSR-7 HTTP resolver.
-     * If this option is false, created by PHP native function `setcookie`.
-     *
-     * @return void
-     */
-    public function nonPsr7Request(): void
-    {
-        $this->psr7 = false;
     }
 
     /*

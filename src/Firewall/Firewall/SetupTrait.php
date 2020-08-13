@@ -27,10 +27,9 @@ use Shieldon\Firewall\Firewall\Captcha\CaptchaFactory;
 use Shieldon\Firewall\Firewall\Driver\DriverFactory;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Middleware\HttpAuthentication;
+use RuntimeException;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
-
-use RuntimeException;
 use function strpos;
 use function time;
 

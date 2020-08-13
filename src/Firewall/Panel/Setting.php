@@ -29,14 +29,12 @@ use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
-
 use function array_keys;
 use function array_values;
 use function explode;
 use function filter_var;
 use function json_decode;
 use function json_last_error;
-
 use const JSON_PRETTY_PRINT;
 
 /**

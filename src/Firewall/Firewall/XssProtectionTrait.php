@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Firewall;
 
 use Shieldon\Security\Xss;
-
 use function array_keys;
+use function array_search;
 
 /*
  * Xss Protection Trait is loaded in Firewall instance only.

@@ -28,7 +28,6 @@ use DateTime;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
-
 use function date;
 use function explode;
 use function file_exists;

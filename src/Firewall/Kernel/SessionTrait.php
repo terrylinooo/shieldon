@@ -25,6 +25,7 @@ namespace Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Kernel;
 use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\create_new_session_instance;
+use function Shieldon\Firewall\get_microtimesamp;
 use function time;
 
 /*
@@ -188,10 +189,7 @@ trait SessionTrait
                 $data['id'] = get_session_instance()->getId();
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
-
-                $microtimesamp = explode(' ', microtime());
-                $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
-                $data['microtimesamp'] = $microtimesamp;
+                $data['microtimesamp'] = get_microtimesamp();
 
                 $this->driver->save(get_session_instance()->getId(), $data, 'session');
             }

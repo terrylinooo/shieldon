@@ -29,7 +29,6 @@ use Shieldon\Firewall\Session;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\EventDispatcher;
 use Shieldon\Firewall\Driver\FileDriver;
-
 use function explode;
 use function file_exists;
 use function func_get_arg;
@@ -59,7 +58,7 @@ define('SHIELDON_FIREWALL_VERSION', '2.0');
  */
 class Helpers
 {
-    //            ^_______^           //
+
 }
 
 /**
@@ -75,7 +74,6 @@ class Helpers
  *  get_default_properties| The default settings of Shieldon core.
  *  get_request           | Get PSR-7 HTTP server request from container.
  *  get_response          | Get PSR-7 HTTP response from container.
- *  get_session_instance  | Get PHP native session from container.
  *  set_request           | Set PSR-7 HTTP server request to container.
  *  set_response          | Set PSR-7 HTTP response to container.
  *  unset_global_cookie   | Unset superglobal COOKIE variable.
@@ -83,6 +81,18 @@ class Helpers
  *  unset_global_get      | Unset superglobal GET variable.
  *  unset_global_session  | Unset superglobal SESSION variable.
  *  unset_superglobal     | Unset superglobal variables.
+ *  get_ip                | Get an IP address from container.
+ *  set_ip                | Set an IP address to container.
+ *  get_microtimesamp     | Get the microtimesamp.
+ *  add_listener          | Add an event listener.
+ *  do_dispatch           | Execute an event.
+ *  get_session_instance  | Get a session instance.
+ *  create_new_session_i- | Create a new session instance for current user.
+ *  n stance              |
+ *  get_mock_session      | For unit testing purpose.
+ *  set_session_instance  | Set a session instance to container.
+ *  get_session_id        | Get session ID from cookie or creating new.
+ *  create_session_id     | Create a new session ID.
  *  ----------------------|---------------------------------------------
  */
 
@@ -614,14 +624,14 @@ function set_ip(string $ip)
 /**
  * Get the microtimesamp.
  * 
- * @return int
+ * @return string
  */
-function get_microtimesamp(): int
+function get_microtimesamp()
 {
     $microtimesamp = explode(' ', microtime());
     $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
 
-    return (int) $microtimesamp;
+    return $microtimesamp;
 }
 
 /*

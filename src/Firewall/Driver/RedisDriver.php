@@ -24,7 +24,6 @@ namespace Shieldon\Firewall\Driver;
 
 use Shieldon\Firewall\Driver\DriverProvider;
 use Redis;
-use function is_array;
 use function is_bool;
 use function json_decode;
 use function json_encode;

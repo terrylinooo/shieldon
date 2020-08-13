@@ -24,6 +24,7 @@ namespace Shieldon\Firewall\Driver;
 
 use function is_array;
 use function is_bool;
+use function json_decode;
 
 /**
  * SQL Driver Trait

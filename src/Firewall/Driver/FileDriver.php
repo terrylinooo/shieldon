@@ -26,7 +26,6 @@ use Shieldon\Firewall\Driver\DriverProvider;
 use Shieldon\Firewall\Driver\FileDriverTrait;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;

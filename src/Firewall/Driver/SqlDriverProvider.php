@@ -26,8 +26,9 @@ use Shieldon\Firewall\Driver\DriverProvider;
 use Shieldon\Firewall\Driver\SqlDriverTrait;
 use Exception;
 use PDO;
-
+use function array_merge;
 use function gettype;
+use function implode;
 
 /**
  * SQL Driver provider.

@@ -22,6 +22,13 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall;
 
+use function call_user_func_array;
+use function function_exists;
+use function is_array;
+use function is_callable;
+use function is_string;
+use function ksort;
+
 /**
  * This is just a simple event dispatcher for Shieldon firewall.
  */

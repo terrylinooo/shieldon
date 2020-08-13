@@ -24,11 +24,10 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
-use function Shieldon\Firewall\__;
-use function Shieldon\Firewall\get_request;
-
 use SplFileObject;
 use ReflectionObject;
+use function Shieldon\Firewall\__;
+use function Shieldon\Firewall\get_request;
 use function explode;
 use function file;
 use function file_exists;

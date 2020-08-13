@@ -31,9 +31,8 @@ use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
-
-use function password_verify;
 use function Shieldon\Firewall\do_dispatch;
+use function password_verify;
 
 /**
  * User
