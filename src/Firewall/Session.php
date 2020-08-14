@@ -25,8 +25,8 @@ namespace Shieldon\Firewall;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\Driver\DirverProvider;
 use Shieldon\Firewall\Log\SessionLogger;
+use Shieldon\Event\Event;
 use RuntimeException;
-use function Shieldon\Firewall\add_listener;
 use function Shieldon\Firewall\create_session_id;
 use function Shieldon\Firewall\get_ip;
 use function Shieldon\Firewall\get_microtimesamp;
@@ -117,13 +117,13 @@ class Session
          * Store the session data back into the database table when the 
          * Shieldon Kernel workflow is reaching the end of the process.
          */
-        add_listener('kernel_end', [$this, 'save'], 10);
+        Event::AddListener('kernel_end', [$this, 'save'], 10);
 
         /**
          * Store the session data back into the database table when the 
          * user is logged successfully.
          */
-        add_listener('user_login', [$this, 'save'], 10);
+        Event::AddListener('user_login', [$this, 'save'], 10);
 
         self::log();
     }

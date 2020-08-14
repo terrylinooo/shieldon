@@ -38,11 +38,11 @@ use Shieldon\Firewall\Kernel\SessionTrait;
 use Shieldon\Firewall\Kernel\TemplateTrait;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Container;
+use Shieldon\Event\Event;
 use Closure;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
-use function Shieldon\Firewall\add_listener;
 use function array_push;
 use function get_class;
 use function gethostbyaddr;
@@ -319,17 +319,19 @@ class Kernel
         // Session start.
         $session = get_session_instance();
 
-        add_listener('set_driver', function($args) use ($session) {
-            if (php_sapi_name() !== 'cli') {
-                $session->init(
-                    $args['driver'],
-                    $args['gc_expires'],
-                    $args['gc_probability'],
-                    $args['gc_divisor'],
-                    $args['psr7']
-                );
+        Event::AddListener('set_driver',
+            function($args) use ($session) {
+                if (php_sapi_name() !== 'cli') {
+                    $session->init(
+                        $args['driver'],
+                        $args['gc_expires'],
+                        $args['gc_probability'],
+                        $args['gc_divisor'],
+                        $args['psr7']
+                    );
+                }
             }
-        });
+        );
 
         // Load default settings.
         $this->properties = get_default_properties();
@@ -400,7 +402,7 @@ class Kernel
         /**
          * Hook - kernel_end
          */
-        do_dispatch('kernel_end');
+        Event::doDispatch('kernel_end');
 
         return $result;
     }

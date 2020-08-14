@@ -23,9 +23,9 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Driver\DriverProvider;
+use Shieldon\Event\Event;
 use LogicException;
 use RuntimeException;
-use function Shieldon\Firewall\do_dispatch;
 
 /*
  * Messenger Trait is loaded in Kernel instance only.
@@ -74,7 +74,7 @@ trait DriverTrait
         /**
          * [Hook] `set_driver` - After initializing data driver.
          */
-        do_dispatch('set_driver', [
+        Event::doDispatch('set_driver', [
             'driver'         => $this->driver,
             'gc_expires'     => $period,
             'gc_probability' => 1,

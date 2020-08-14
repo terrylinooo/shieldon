@@ -76,7 +76,7 @@ class Helpers
  *  get_response          | Get PSR-7 HTTP response from container.
  *  set_request           | Set PSR-7 HTTP server request to container.
  *  set_response          | Set PSR-7 HTTP response to container.
- *  unset_global_cookie   | Unset superglobal COOKIE variable.
+ *  unset_global_cookie   | Unset superglobal COOKIE variable.F
  *  unset_global_post     | Unset superglobal POST variable.
  *  unset_global_get      | Unset superglobal GET variable.
  *  unset_global_session  | Unset superglobal SESSION variable.
@@ -84,8 +84,6 @@ class Helpers
  *  get_ip                | Get an IP address from container.
  *  set_ip                | Set an IP address to container.
  *  get_microtimesamp     | Get the microtimesamp.
- *  add_listener          | Add an event listener.
- *  do_dispatch           | Execute an event.
  *  get_session_instance  | Get a session instance.
  *  create_new_session_i- | Create a new session instance for current user.
  *  n stance              |
@@ -632,46 +630,6 @@ function get_microtimesamp()
     $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
 
     return $microtimesamp;
-}
-
-/*
-|--------------------------------------------------------------------------
-| Event Dispatcher.
-|--------------------------------------------------------------------------
-*/
-
-/**
- * Add a new event Listener
- *
- * @param string  $name     The name of an event.
- * @param mixed   $func     Can be a function name, closure function or class.
- * @param integer $priority The execution priority.
- * 
- * @return void
- */
-function add_listener(string $name, $func, int $priority = 10)
-{
-    return EventDispatcher::instance()->addListener(
-        $name,
-        $func,
-        $priority
-    );
-}
-
-/**
- * Execute an event.
- *
- * @param string $name The name of an event.
- * @param array  $args The arguments.
- * 
- * @return mixed
- */
-function do_dispatch(string $name, array $args = [])
-{
-    return EventDispatcher::instance()->doDispatch(
-        $name,
-        $args
-    );
 }
 
 /*
