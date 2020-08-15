@@ -12,7 +12,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and usefu
 
 ## Installation
 
-`2.x` will be released at **15, Augest**
+`2.x` will be released at **1, September**
 
 ```php
 composer require shieldon/shieldon ^2
