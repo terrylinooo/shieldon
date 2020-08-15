@@ -41,7 +41,7 @@ $timezone = '';
         </div>
         <div class="so-rule-form iptables-form">
             <form method="post">
-                <?php $this->fieldCsrf(); ?>
+                <?php echo $this->fieldCsrf(); ?>
                 <input name="ip" type="text" value="" class="regular-text" placeholder="<?php _e('panel', 'table_ip_placeholder', 'Please fill in an IP address..'); ?>">
                 <select name="action" class="regular">
                     <option value="none">--- <?php _e('panel', 'ipma_label_plz_select', 'Please select'); ?> ---</option>

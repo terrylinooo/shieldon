@@ -61,7 +61,7 @@ $timezone = '';
         <button type="submit" class="btn btn-enter"><i class="fas fa-fire-alt"></i> <?php _e('panel', 'overview_btn_save', 'SAVE'); ?></button>
     </div>
 </div>
-<?php $this->fieldCsrf(); ?>
+<?php echo $this->fieldCsrf(); ?>
 <input type="hidden" name="tab" value="daemon">
 <input type="hidden" name="managed_by" value="firewall">
 </form>
