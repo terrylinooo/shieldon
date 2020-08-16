@@ -24,7 +24,6 @@ namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Driver\DriverProvider;
 use Shieldon\Event\Event;
-use LogicException;
 use RuntimeException;
 
 /*
@@ -67,6 +66,13 @@ trait DriverTrait
     {
         $this->driver = $driver;
 
+        /**
+         * [Hook] `set_channel` - After initializing data driver.
+         */
+        Event::doDispatch('set_channel', [
+            'driver' => $this->driver,
+        ]);
+
         $this->driver->init($this->isCreateDatabase);
 
         $period = $this->sessionLimit['period'] ?: 300;
@@ -94,11 +100,11 @@ trait DriverTrait
      */
     public function setChannel(string $channel): void
     {
-        if (!$this->driver) {
-            throw new LogicException('setChannel method requires setDriver set first.');
-        } else {
-            $this->driver->setChannel($channel);
-        }
+        Event::AddListener('set_channel',
+            function ($args) use ($channel) {
+                $args['driver']->setChannel($channel);
+            }
+        );
     }
 
     /**

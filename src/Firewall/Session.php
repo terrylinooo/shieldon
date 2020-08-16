@@ -166,6 +166,8 @@ class Session
 
         $this->data = $this->driver->get(self::$id, 'session');
 
+        echo $this->driver->getChannel() . "\n";
+
         if (empty($this->data)) {
             self::resetCookie($psr7);
             $this->create();
@@ -176,6 +178,16 @@ class Session
         self::$status = true;
 
         self::log(self::$id);
+    }
+
+    /**
+     * Get the channel name from data driver.
+     *
+     * @return string
+     */
+    public function getChannel(): string
+    {
+        return $this->driver->getChannel();
     }
 
     /**

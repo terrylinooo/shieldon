@@ -191,6 +191,8 @@ trait SessionTrait
                 $data['time'] = $now;
                 $data['microtimesamp'] = get_microtimesamp();
 
+                echo $this->driver->getChannel() . "\n";
+
                 $this->driver->save(get_session_instance()->getId(), $data, 'session');
             }
 

@@ -1048,12 +1048,28 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
      * Redis Driver 
      ***********************************************/
 
-    public function testDetect_redisDriver()
+    public function testDetect_redisDriver_filterFrequency()
     {
         $this->testDetectByFilterFrequency('redis');
+    }
+
+    public function testDetect_redisDriver_filterSession()
+    {
         $this->testDetectByFilterSession('redis');
-        $this->testDetectByFilterReferer('redis');
+    }
+
+    public function testDetect_redisDriver_filterReferer()
+    {
+        $this->testDetectByFilterReferer('redis');;
+    }
+
+    public function testDetect_redisDriver_filterCookie()
+    {
         $this->testDetectByFilterCookie('redis');
+    }
+
+    public function testDetect_redisDriver()
+    {
         $this->testResetFilterFlagChecks('redis');
     }
 

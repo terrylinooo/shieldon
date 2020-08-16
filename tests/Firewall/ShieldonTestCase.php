@@ -87,6 +87,7 @@ class ShieldonTestCase extends TestCase
         switch ($driver) {
 
             case 'file':
+                $kernel->setChannel('testsessionlimit');
                 $kernel->setDriver(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon/data_driver_file'));
                 break;
 
@@ -105,12 +106,14 @@ class ShieldonTestCase extends TestCase
                     $db['pass']
                 );
 
+                $kernel->setChannel('testsessionlimit');
                 $kernel->setDriver(new \Shieldon\Firewall\Driver\MysqlDriver($pdoInstance));
                 break;
 
             case 'redis':
                 $redisInstance = new \Redis();
-                $redisInstance->connect('127.0.0.1', 6379); 
+                $redisInstance->connect('127.0.0.1', 6379);
+                $kernel->setChannel('testsessionlimit');
                 $kernel->setDriver(new \Shieldon\Firewall\Driver\RedisDriver($redisInstance));
                 break;
             /*
@@ -143,17 +146,20 @@ class ShieldonTestCase extends TestCase
                 break;
             */
             case 'sqlite':
-            default:
                 $dbLocation = $this->getWritableTestFilePath('shieldon_unittest.sqlite3', 'shieldon/data_driver_sqlite');
 
                 try {
                     $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-                    $kernel->setDriver(new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance));
+                    $kernel->setChannel('testsessionlimit');
+                    $driver = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
+                    $kernel->setDriver($driver);
+                    
                 } catch (\PDOException $e) {
                     throw $e->getMessage();
                 }
     
                 break;
+            default:
         }
 
         return $kernel;

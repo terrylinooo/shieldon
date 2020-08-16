@@ -113,6 +113,11 @@ trait SqlDriverTrait
       
         $query = $this->db->prepare($sql);
 
+        if (!$query) {
+            echo "\nPDO::errorInfo():\n";
+            print_r($this->db->errorInfo());
+        }
+
         $query->bindValue(':id', $id, $this->db::PARAM_STR);
         $query->execute();
         $resultData = $query->fetch($this->db::FETCH_ASSOC);

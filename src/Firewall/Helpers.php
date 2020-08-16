@@ -659,6 +659,8 @@ function get_session_instance(): Session
         set_session_instance($session);
     }
 
+  //  echo "\n[debug] " . $session->getChannel() . "\n";
+
     return $session;
 }
 
@@ -692,6 +694,8 @@ function get_mock_session($sessionId): Session
     $file = $dir . '/' . $sessionId . '.json';
 
     $session = HttpFactory::createSession($sessionId);
+
+    /*
     $driver = new FileDriver($fileDriverStorage);
 
     if (!file_exists($file)) {
@@ -717,7 +721,7 @@ function get_mock_session($sessionId): Session
         file_put_contents($file, $json);
     }
 
-    $session->init($driver);
+    $session->init($driver); */
 
     return $session;
 }
