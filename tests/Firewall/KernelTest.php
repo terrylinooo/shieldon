@@ -900,18 +900,28 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
      * File Driver 
      ***********************************************/
 
-    public function testDetect_fileDriver()
+    public function testDetect_fileDriver_filterFrequency()
     {
         $this->testDetectByFilterFrequency('file');
-        
+    }
+
+    public function testDetect_fileDriver_filterReferer()
+    {
         $this->testDetectByFilterReferer('file');
+    }
+
+    public function testDetect_fileDriver_filterCookie()
+    {
         $this->testDetectByFilterCookie('file');
+    }
+
+    public function testDetect_fileDriver_flagChecks()
+    {
         $this->testResetFilterFlagChecks('file');
     }
 
     public function testDetect_fileDriver_filterSession()
     {
-        // 剩下的問題是 ip 沒更新到 session 檔案裡。
         $this->testDetectByFilterSession('file');
     }
 
@@ -964,13 +974,29 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
      * MySQL Driver 
      ***********************************************/
 
-    public function testDetect_mysqlDriver()
+    public function testDetect_mysqlDriver_filterFrequency()
     {
         $this->testDetectByFilterFrequency('mysql');
+    }
+
+    public function testDetect_mysqlDriver_filterSession()
+    {
         $this->testDetectByFilterSession('mysql');
-        $this->testDetectByFilterReferer('mysql');
+    }
+
+    public function testDetect_mysqlDriver_filterCookie()
+    {
         $this->testDetectByFilterCookie('mysql');
+    }
+
+    public function testDetect_mysqlDriver_flagChecks()
+    {
         $this->testResetFilterFlagChecks('mysql');
+    }
+
+    public function testDetect_mysqlDriver_filterReferer()
+    {
+        $this->testDetectByFilterReferer('mysql');
     }
 
     public function testAction_mysqlDriver()
