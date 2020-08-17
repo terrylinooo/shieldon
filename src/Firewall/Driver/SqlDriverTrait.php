@@ -81,6 +81,11 @@ trait SqlDriverTrait
             LIMIT 1';
 
         $query = $this->db->prepare($sql);
+
+        if (!$query) {
+            throw new RuntimeException(json_encode($this->db->errorInfo()));
+        }
+        
         $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
         $query->execute();
         $resultData = $query->fetch($this->db::FETCH_ASSOC);
