@@ -151,12 +151,14 @@ trait SessionTrait
             $i = 1;
             $sessionOrder = 0;
 
+            $sessionId = get_session_instance()->getId();
+
             if (!empty($this->sessionData)) {
                 foreach ($this->sessionData as $v) {
                     $sessionPools[] = $v['id'];
                     $lasttime = (int) $v['time'];
     
-                    if (get_session_instance()->getId() === $v['id']) {
+                    if ($sessionId === $v['id']) {
                         $sessionOrder = $i;
                     }
     
@@ -180,20 +182,18 @@ trait SessionTrait
             $this->sessionStatus['queue'] = $sessionOrder - $limit;
 
             
-            if (!in_array(get_session_instance()->getId(), $sessionPools)) {
+            if (!in_array($sessionId, $sessionPools)) {
                 $this->sessionStatus['count']++;
 
                 $data = [];
 
                 // New session, record this data.
-                $data['id'] = get_session_instance()->getId();
+                $data['id'] = $sessionId;
                 $data['ip'] = $this->ip;
                 $data['time'] = $now;
                 $data['microtimesamp'] = get_microtimesamp();
 
-                echo $this->driver->getChannel() . "\n";
-
-                $this->driver->save(get_session_instance()->getId(), $data, 'session');
+                $this->driver->save($sessionId, $data, 'session');
             }
 
             // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
@@ -236,7 +236,7 @@ trait SessionTrait
     protected function setSessionId(string $sessionId = ''): void
     {
         if ('' !== $sessionId) {
-            create_new_session_instance($sessionId);
+            create_new_session_instance($sessionId, $this->driver);
         }
     }
 

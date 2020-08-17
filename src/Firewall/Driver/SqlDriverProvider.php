@@ -511,8 +511,6 @@ class SqlDriverProvider extends DriverProvider
      */
     protected function rebuildSql(): bool
     {
-        echo '-------------' . $this->tableFilterLogs . '------';
-
         try {
             $sql = "DROP TABLE IF EXISTS `{$this->tableFilterLogs}`";
             $this->db->query($sql);

@@ -648,18 +648,9 @@ function get_session_instance(): Session
     $session = Container::get('session');
 
     if (is_null($session)) {
-
-        // For unit testing purpose. Not use in production.
-        if (php_sapi_name() === 'cli') {
-            $session = get_mock_session(get_session_id());
-        } else {
-            $session = HttpFactory::createSession(get_session_id());
-        }
-
+        $session = HttpFactory::createSession(get_session_id());
         set_session_instance($session);
     }
-
-  //  echo "\n[debug] " . $session->getChannel() . "\n";
 
     return $session;
 }
@@ -672,10 +663,11 @@ function get_session_instance(): Session
  *
  * @return void
  */
-function create_new_session_instance(string $sessionId)
+function create_new_session_instance(string $sessionId, $driver)
 {
     Container::set('session_id', $sessionId, true);
-    $session = get_mock_session($sessionId);
+    $session = Container::get('session');
+    $session->setId($sessionId);
     set_session_instance($session);
 }
 
@@ -693,9 +685,18 @@ function get_mock_session($sessionId): Session
     $dir = $fileDriverStorage . '/shieldon_sessions';
     $file = $dir . '/' . $sessionId . '.json';
 
+    if (!is_dir($dir)) {
+        $originalUmask = umask(0);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        umask($originalUmask);
+    }
+
     $session = HttpFactory::createSession($sessionId);
 
-    /*
     $driver = new FileDriver($fileDriverStorage);
 
     if (!file_exists($file)) {
@@ -721,7 +722,9 @@ function get_mock_session($sessionId): Session
         file_put_contents($file, $json);
     }
 
-    $session->init($driver); */
+    $session->init($driver);
+
+    Container::set('session', $session, true);
 
     return $session;
 }

@@ -100,11 +100,15 @@ trait DriverTrait
      */
     public function setChannel(string $channel): void
     {
-        Event::AddListener('set_channel',
+        if (!is_null($this->driver)) {
+            $this->driver->setChannel($channel);
+        } else {
+            Event::AddListener('set_channel',
             function ($args) use ($channel) {
                 $args['driver']->setChannel($channel);
             }
         );
+        }
     }
 
     /**

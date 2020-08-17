@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Driver;
 
+use RuntimeException;
+
 use function is_array;
 use function is_bool;
 use function json_decode;
@@ -114,8 +116,7 @@ trait SqlDriverTrait
         $query = $this->db->prepare($sql);
 
         if (!$query) {
-            echo "\nPDO::errorInfo():\n";
-            print_r($this->db->errorInfo());
+            throw new RuntimeException(json_encode($this->db->errorInfo()));
         }
 
         $query->bindValue(':id', $id, $this->db::PARAM_STR);

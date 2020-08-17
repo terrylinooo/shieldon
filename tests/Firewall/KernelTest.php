@@ -496,11 +496,6 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         } else {
             $this->assertTrue(false);
         }
-
-        // Test exception.
-        $this->expectException(\LogicException::class);
-        $kernel = new \Shieldon\Firewall\Kernel();
-        $kernel->setChannel('unittest');
     }
 
     public function testSetCaptcha()

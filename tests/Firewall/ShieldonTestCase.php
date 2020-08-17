@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Kernel;
+use function Shieldon\Firewall\get_mock_session;
 
 /**
  * The test case for Shieldon Firewall
@@ -291,5 +292,15 @@ class ShieldonTestCase extends TestCase
         umask($originalUmask);
 
         file_put_contents($file, $json);
+    }
+
+    /**
+     * Mock Session.
+     *
+     * @return void
+     */
+    public function mockSession(): void
+    {
+        get_mock_session('624689c34690a1d0a8c5658db66cf73d');
     }
 }

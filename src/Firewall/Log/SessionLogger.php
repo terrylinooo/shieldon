@@ -56,9 +56,10 @@ final class SessionLogger
     
         umask($originalUmask);
 
-        $method = debug_backtrace()[1]['function'];
-    
-        $content = date('Y-m-d H:i:s') . ' - [' . $method . '] ' . $text;
+        $method = json_encode(debug_backtrace()[3], JSON_PRETTY_PRINT);
+
+        $content = date('Y-m-d H:i:s') . ' [text]' . $text . "\n";
+        $content .= $method;
 
         file_put_contents($file, $content . PHP_EOL, FILE_APPEND);
     }

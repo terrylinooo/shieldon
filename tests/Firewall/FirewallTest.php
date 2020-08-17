@@ -36,6 +36,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         // setChannel()
         $firewall->setConfig('channel_id', 'test_firewall');
+        $firewall->getKernel()->setChannel('test_firewall');
         $firewall->getKernel()->driver->rebuild();
         $firewall->getKernel()->setStrict(false);
 
@@ -207,7 +208,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testDataDriverOption()
     {
         $this->getWritableTestFilePath('_file_driver_initialized.txt', 'shieldon');
-        $this->getWritableTestFilePath('_file_driver_initialized.txt', 'test_sitelite_driver');
+        $this->getWritableTestFilePath('_file_driver_initialized.txt', 'test_sqlite_driver');
 
         $this->testFromJsonConfig();
         $firewall = \Shieldon\Firewall\Container::get('firewall');
@@ -220,11 +221,11 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         // SQLite
         $firewall->setConfig('driver_type', 'sqlite');
-        $firewall->setConfig('drivers.sqlite.directory_path', BOOTSTRAP_DIR . '/../tmp/test_sitelite_driver');
-        
+        $firewall->setConfig('drivers.sqlite.directory_path', BOOTSTRAP_DIR . '/../tmp/test_sqlite_driver');
         $firewall->getKernel()->setIp($this->getRandomIpAddress());
-        $firewall->setup();
         $firewall->getKernel()->driver->rebuild();
+        $firewall->setup();
+        
         $firewall->run();
         
         // Redis
@@ -324,7 +325,10 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testCaptchaResponse()
     {
+        $this->mockSession();
+
         $this->testFromJsonConfig();
+        
         $firewall = \Shieldon\Firewall\Container::get('firewall');
         $firewall->getKernel()->driver->rebuild();
         $firewall->getKernel()->setIp('140.132.75.15');

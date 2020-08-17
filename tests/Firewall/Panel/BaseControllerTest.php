@@ -38,6 +38,8 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testInitialWithActionLogger()
     {
+        $this->mockSession();
+
         $_SESSION['flash_messages'] = [
             [
                 'type' => 'success',
@@ -103,6 +105,8 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveConfigDemoMode()
     {
+        $this->mockSession();
+        
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->demo();
@@ -115,6 +119,8 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testdUnderscoreDemoModeForHiddenField()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->demo();
@@ -129,6 +135,8 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSpecialMethodUnderscoreDemoMode()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->demo();
@@ -141,6 +149,8 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSpecialMethodUnderscore()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
 

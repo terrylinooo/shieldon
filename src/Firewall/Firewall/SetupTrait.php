@@ -121,12 +121,12 @@ trait SetupTrait
             $this->status = true;
         }
 
-        if ($this->hasCheckpoint()) {
-            $this->kernel->disableDbBuilder();
-        } else {
+      //  if ($this->hasCheckpoint()) {
+     //       $this->kernel->disableDbBuilder();
+     //   } else {
             $this->kernel->driver->init(true);
             $this->setCheckpoint();
-        }
+     //   }
     }
 
     /**

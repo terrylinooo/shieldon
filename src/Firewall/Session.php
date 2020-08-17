@@ -166,8 +166,6 @@ class Session
 
         $this->data = $this->driver->get(self::$id, 'session');
 
-        echo $this->driver->getChannel() . "\n";
-
         if (empty($this->data)) {
             self::resetCookie($psr7);
             $this->create();
