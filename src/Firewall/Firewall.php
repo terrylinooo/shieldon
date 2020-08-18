@@ -33,6 +33,7 @@ use Shieldon\Firewall\Firewall\SetupTrait;
 use Shieldon\Firewall\Firewall\Messenger\MessengerTrait;
 use Shieldon\Firewall\Firewall\XssProtectionTrait;
 use Shieldon\Psr15\RequestHandler;
+use Shieldon\Event\Event;
 use function Shieldon\Firewall\get_request;
 use function defined;
 use function file_exists;
@@ -113,11 +114,33 @@ class Firewall
      * @param ServerRequestInterface|null $request  A PSR-7 server request.
      * @param ResponseInterface|null      $response A PSR-7 server response.
      */
-    public function __construct(?ServerRequestInterface $request = null, ?ResponseInterface $response = null)
+    public function __construct(?ServerRequestInterface $request = null, ?ResponseInterface $response = null) 
     {
         Container::set('firewall', $this);
 
         $this->kernel = new Kernel($request, $response);
+    }
+
+    /**
+     * Display the performance report as showing dialogs.
+     *
+     * @return void
+     */
+    public function enablePerformanceReport(): void
+    {
+        Container::set('shieldon_start', [
+            'time'   => microtime(),
+            'memory' => memory_get_usage(),
+        ]);
+
+        Event::AddListener('dialog_output',
+            function() {
+                Container::set('shieldon_end', [
+                    'time'   => microtime(),
+                    'memory' => memory_get_usage(),
+                ]);
+            }
+        );
     }
 
     /**
@@ -127,7 +150,6 @@ class Firewall
      */
     public function setup(): void
     {
-        
         $setupFunctions = [
             'IpSource',
             'Driver',

@@ -157,7 +157,7 @@ trait SessionTrait
                 foreach ($this->sessionData as $v) {
                     $sessionPools[] = $v['id'];
                     $lasttime = (int) $v['time'];
-    
+
                     if ($sessionId === $v['id']) {
                         $sessionOrder = $i;
                     }
@@ -181,7 +181,11 @@ trait SessionTrait
             $this->sessionStatus['order'] = $sessionOrder;
             $this->sessionStatus['queue'] = $sessionOrder - $limit;
 
-            
+            if (!in_array($sessionId, $sessionPools)) {
+                $this->sessionStatus['count']++;
+            }
+
+            /*
             if (!in_array($sessionId, $sessionPools)) {
                 $this->sessionStatus['count']++;
 
@@ -194,7 +198,7 @@ trait SessionTrait
                 $data['microtimesamp'] = get_microtimesamp();
 
                 $this->driver->save($sessionId, $data, 'session');
-            }
+            }*/
 
             // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
             if ($sessionOrder >= $limit) {

@@ -25,10 +25,11 @@ namespace Shieldon\Firewall\Kernel;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\HttpFactory;
+use Shieldon\Firewall\Container;
+use Shieldon\Event\Event;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
-
 use InvalidArgumentException;
 use RuntimeException;
 use function array_keys;
@@ -146,13 +147,20 @@ trait TemplateTrait
 
         $css = include $this->getTemplate('css/default');
 
+        /**
+         * Hook - dialog_output
+         */
+        Event::doDispatch('dialog_output');
+
+        $performanceReport = $this->displayPerformanceReport();
+
         ob_start();
         include $viewPath;
         $output = ob_get_contents();
         ob_end_clean();
 
         // Remove unused variable notices generated from PHP intelephense.
-        unset($css, $ui, $form, $captchas, $langCode);
+        unset($css, $ui, $form, $captchas, $langCode, $performanceReport);
 
         $stream = HttpFactory::createStream();
         $stream->write($output);
@@ -279,5 +287,58 @@ trait TemplateTrait
         }
 
         return $path;
+    }
+
+    /**
+     * Count the performance statistics.
+     *
+     * @return array
+     */
+    protected function getPerformanceStats(): array
+    {
+        $statStart = Container::get('shieldon_start');
+        $statEnd = Container::get('shieldon_end');
+
+        $startTimeArr = explode(' ',$statStart['time']);
+        $endTimeArr = explode(' ',$statStart['time']);
+
+        $timeDifference = ($endTimeArr[1] - $startTimeArr[1]) + ($endTimeArr[0] - $startTimeArr[0]);
+        $memoryDifference = round(($statEnd['memory'] - $statStart['memory']) / 1024, 2); // KB
+
+        $data = [
+            'time' => $timeDifference,
+            'memory' => $memoryDifference,
+        ];
+
+        return $data;
+    }
+
+    /**
+     * Display the HTML of the performance report.
+     *
+     * @return string
+     */
+    protected function displayPerformanceReport(): string
+    {
+        if (!Container::get('shieldon_start')) {
+            return '';
+        }
+
+        $html = '';
+
+        $performance = $this->getPerformanceStats();
+
+        if ($performance['time'] < 0.001) {
+            $performance['time'] = 'fewer than 0.001';
+        }
+
+        if (isset($performance['time'])) {
+            $html .= '<div class="performance-report">';
+            $html .= 'Memory consumed: <strong>' . $performance['memory'] . '</strong> KB / ';
+            $html .= 'Execution:  <strong>' . $performance['time'] . ' </strong> seconds.';
+            $html .= '</div>';
+        }
+
+        return $html;
     }
 }

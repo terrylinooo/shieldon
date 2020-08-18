@@ -451,6 +451,8 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $methodSetSessionId->invokeArgs($kernel, [$sessionId]);
             $kernel->run();
         }
+
+        $this->assertEquals(7, $kernel->getSessionCount());
     }
 
     public function testSetProperty()
@@ -869,6 +871,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
+        $kernel->disableFilters();
 
         $reflection = new \ReflectionObject($kernel);
         $methodSetSessionId = $reflection->getMethod('setSessionId');

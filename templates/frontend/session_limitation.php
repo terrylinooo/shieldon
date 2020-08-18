@@ -66,5 +66,6 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-clock_96x96.png';
             </div>
         </div>
     </div>
+    <?php echo $performanceReport; ?>
 </body>
 </html>

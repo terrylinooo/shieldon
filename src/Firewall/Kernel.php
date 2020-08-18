@@ -43,6 +43,8 @@ use Closure;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
+use function memory_get_usage;
+use function microtime;
 use function array_push;
 use function get_class;
 use function gethostbyaddr;
@@ -304,7 +306,7 @@ class Kernel
      */
     public function __construct(?ServerRequestInterface $request = null, ?ResponseInterface $response = null)
     {
-        // Load helper functions. This is the must.
+        // Load helper functions. This is the must and first.
         new Helpers();
 
         if (is_null($request)) {
@@ -316,20 +318,6 @@ class Kernel
             $response = HttpFactory::createResponse();
         }
 
-        Event::AddListener('set_session_driver',
-            function($args) {
-                $session = get_session_instance();
-                $session->init(
-                    $args['driver'],
-                    $args['gc_expires'],
-                    $args['gc_probability'],
-                    $args['gc_divisor'],
-                    $args['psr7']
-                );
-                set_session_instance($session);
-            }
-        );
-
         // Load default settings.
         $this->properties = get_default_properties();
 
@@ -339,6 +327,18 @@ class Kernel
         Container::set('request', $request);
         Container::set('response', $response);
         Container::set('shieldon', $this);
+
+        Event::AddListener('set_session_driver', function($args) {
+            $session = get_session_instance();
+            $session->init(
+                $args['driver'],
+                $args['gc_expires'],
+                $args['gc_probability'],
+                $args['gc_divisor'],
+                $args['psr7']
+            );
+            set_session_instance($session);
+        });
     }
 
     /**
@@ -400,6 +400,16 @@ class Kernel
         Event::doDispatch('kernel_end');
 
         return $result;
+    }
+
+    /**
+     * Display the performance report as showing dialogs.
+     *
+     * @return void
+     */
+    public function enablePerformanceReport(): void
+    {
+        $this->performanceCheck = true;
     }
 
     /**

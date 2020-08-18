@@ -189,6 +189,21 @@ $css = '
         vertical-align: middle;
         white-space: nowrap;
     }
+
+    .performance-report {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 30px;
+        padding: 0 10px;
+        line-height: 30px;
+        font-size: 12px;
+        color: #666666;
+    }
+
+    .performance-report strong {
+        color: #000000;
+    }
 ';
 
 return $css;

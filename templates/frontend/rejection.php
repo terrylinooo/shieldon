@@ -64,6 +64,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
             </div>
         </div>
     </div>
+    <?php echo $performanceReport; ?>
 </body>
 </html>
 
