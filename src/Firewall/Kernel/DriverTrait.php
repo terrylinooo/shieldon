@@ -70,7 +70,7 @@ trait DriverTrait
         /**
          * [Hook] `set_channel` - After initializing data driver.
          */
-        Event::doDispatch('set_channel', [
+        Event::doDispatch('set_driver', [
             'driver' => $this->driver,
         ]);
 
@@ -81,7 +81,7 @@ trait DriverTrait
         /**
          * [Hook] `set_driver` - After initializing data driver.
          */
-        Event::doDispatch('set_driver', [
+        Event::doDispatch('set_session_driver', [
             'driver'         => $this->driver,
             'gc_expires'     => $period,
             'gc_probability' => 1,
@@ -104,7 +104,7 @@ trait DriverTrait
         if (!is_null($this->driver)) {
             $this->driver->setChannel($channel);
         } else {
-            Event::AddListener('set_channel',
+            Event::AddListener('set_driver',
                 function ($args) use ($channel) {
                     $args['driver']->setChannel($channel);
                 }

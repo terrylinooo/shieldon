@@ -316,11 +316,9 @@ class Kernel
             $response = HttpFactory::createResponse();
         }
 
-        // Session start.
-        $session = get_session_instance();
-
-        Event::AddListener('set_driver',
-            function($args) use ($session) {
+        Event::AddListener('set_session_driver',
+            function($args) {
+                $session = get_session_instance();
                 $session->init(
                     $args['driver'],
                     $args['gc_expires'],
@@ -328,6 +326,7 @@ class Kernel
                     $args['gc_divisor'],
                     $args['psr7']
                 );
+                set_session_instance($session);
             }
         );
 
@@ -336,8 +335,6 @@ class Kernel
 
         // Basic Captcha form.
         $this->setCaptcha(new Foundation());
-
-        set_session_instance($session);
 
         Container::set('request', $request);
         Container::set('response', $response);
