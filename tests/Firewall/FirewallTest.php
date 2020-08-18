@@ -350,4 +350,70 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertSame($response->getStatusCode(), 303);
     }
+
+    public function testHasCheckpoint()
+    {
+        $this->testFromJsonConfig();
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
+
+        $reflection = new \ReflectionObject($firewall);
+
+        $method = $reflection->getMethod('getCheckpoint');
+        $method->setAccessible(true);
+        $checkpointFile = $method->invokeArgs($firewall, []);
+
+        if (!file_exists($checkpointFile)) {
+            $method = $reflection->getMethod('setCheckpoint');
+            $method->setAccessible(true);
+            $method->invokeArgs($firewall, [true]);
+        }
+
+        $method = $reflection->getMethod('hasCheckpoint');
+        $method->setAccessible(true);
+        $hasCheckpoint = $method->invokeArgs($firewall, []);
+
+        $this->assertTrue($hasCheckpoint);
+
+        $method = $reflection->getMethod('getCheckpoint');
+        $method->setAccessible(true);
+        $checkpointFile = $method->invokeArgs($firewall, []);
+
+        if (file_exists($checkpointFile)) {
+            unlink($checkpointFile);
+        }
+
+        $method = $reflection->getMethod('hasCheckpoint');
+        $method->setAccessible(true);
+        $hasCheckpoint = $method->invokeArgs($firewall, []);
+
+        $this->assertFalse($hasCheckpoint);
+
+        $method = $reflection->getMethod('setCheckpoint');
+        $method->setAccessible(true);
+        $method->invokeArgs($firewall, [true]);
+
+        if (file_exists($checkpointFile)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+
+        if (file_exists($checkpointFile)) {
+            unlink($checkpointFile);
+        }
+
+        if (!file_exists($checkpointFile)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+
+        $firewall->setup();
+
+        if (file_exists($checkpointFile)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
 }

@@ -419,6 +419,40 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
     }
 
+    public function testSessionHandler_uniqueSession($driver = 'file')
+    {
+        $kernel = $this->getKernelInstance($driver);
+
+        $kernel->disableFilters();
+        $kernel->setFilter('session', true);
+
+        $kernel->setChannel('testsessionlimit');
+
+        $_limit = 100;
+        $kernel->limitSession($_limit, 300, true);
+        $kernel->driver->rebuild();
+
+        $reflection = new \ReflectionObject($kernel);
+        $methodSessionHandler = $reflection->getMethod('sessionHandler');
+        $methodSessionHandler->setAccessible(true);
+
+        // The first visitor.
+        $kernel->setIp('140.112.172.11');
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
+
+        $sessionId = md5(date('YmdHis') . mt_rand(1, 999999));
+        $methodSetSessionId->invokeArgs($kernel, [$sessionId]);
+        $kernel->run();
+
+        for ($i = 1; $i <= 10; $i++) {
+            $kernel->setIp('140.112.172.12');
+            $sessionId = md5(date('YmdHis') . mt_rand(1, 999999));
+            $methodSetSessionId->invokeArgs($kernel, [$sessionId]);
+            $kernel->run();
+        }
+    }
+
     public function testSetProperty()
     {
         $kernel = new \Shieldon\Firewall\Kernel();

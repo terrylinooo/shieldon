@@ -27,6 +27,7 @@ use Shieldon\Firewall\Firewall\Captcha\CaptchaFactory;
 use Shieldon\Firewall\Firewall\Driver\DriverFactory;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Middleware\HttpAuthentication;
+use Shieldon\Event\Event;
 use RuntimeException;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
@@ -202,7 +203,7 @@ trait SetupTrait
 
         $this->kernel->setProperty(
             'interval_check_session',
-            $settings['referer']['config']['time_buffer']
+            $settings['session']['config']['time_buffer']
         );
     }
 
@@ -520,11 +521,15 @@ trait SetupTrait
      */
     protected function setupDialogUserInterface()
     {
-        $ui = $this->getOption('dialog_ui');
+        Event::AddListener('session_init',
+            function() {
+                $ui = $this->getOption('dialog_ui');
 
-        if (!empty($ui)) {
-            get_session_instance()->set('shieldon_ui_lang', $ui['lang']);
-            $this->kernel->setDialog($this->getOption('dialog_ui'));
-        }
+                if (!empty($ui)) {
+                    get_session_instance()->set('shieldon_ui_lang', $ui['lang']);
+                    $this->kernel->setDialog($this->getOption('dialog_ui'));
+                }
+            }
+        );
     }
 }

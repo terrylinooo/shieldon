@@ -48,9 +48,4 @@ class FirewallTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertSame($e, 'five');
         $this->assertSame($f, '');
     }
-
-    public function testHasCheckpoint()
-    {
-        $mock = $this->getMockForTrait('Shieldon\Firewall\FirewallTrait');
-    }
 }

@@ -284,7 +284,6 @@ trait FilterTrait
         $isReject = false;
 
         if ($this->filterStatus['referer']) {
-
             if ($logData['last_time'] - $ipDetail['last_time'] > $this->properties['interval_check_referer']) {
 
                 // Get values from data table. We will count it and save it back to data table.
@@ -326,33 +325,30 @@ trait FilterTrait
     protected function filterSession(array $logData, array $ipDetail, bool $isFlagged): array
     {
         $isReject = false;
+        $sessionId = get_session_instance()->getId();
 
         if ($this->filterStatus['session']) {
 
-            if ($logData['last_time'] - $ipDetail['last_time'] > $this->properties['interval_check_session']) {
+            // Get values from data table. We will count it and save it back to data table.
+            $logData['flag_multi_session'] = $ipDetail['flag_multi_session'];
 
-                // Get values from data table. We will count it and save it back to data table.
-                $logData['flag_multi_session'] = $ipDetail['flag_multi_session'];
+            if ($sessionId !== $ipDetail['session']) {
 
-                if (get_session_instance()->getId() !== $ipDetail['session']) {
+                // Is is possible because of direct access by the same user many times.
+                // Or they don't have session cookie set.
+                $logData['flag_multi_session']++;
+                $isFlagged = true;
+            }
 
-                    // Is is possible because of direct access by the same user many times.
-                    // Or they don't have session cookie set.
-                    $logData['flag_multi_session']++;
-                    $isFlagged = true;
-                }
-
-                // Ban this IP if they reached the limit.
-                if ($logData['flag_multi_session'] > $this->properties['limit_unusual_behavior']['session']) {
-                    $this->action(
-                        kernel::ACTION_TEMPORARILY_DENY,
-                        kernel::REASON_TOO_MANY_SESSIONS
-                    );
-                    $isReject = true;
-                }
+            // Ban this IP if they reached the limit.
+            if ($logData['flag_multi_session'] > $this->properties['limit_unusual_behavior']['session']) {
+                $this->action(
+                    kernel::ACTION_TEMPORARILY_DENY,
+                    kernel::REASON_TOO_MANY_SESSIONS
+                );
+                $isReject = true;
             }
         }
-
 
         return [
             'is_flagged' => $isFlagged,

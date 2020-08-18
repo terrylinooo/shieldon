@@ -23,7 +23,14 @@ declare(strict_types=1);
 namespace Shieldon\Firewall;
 
 use function count;
+use function date;
 use function explode;
+use function file_exists;
+use function file_put_contents;
+use function is_dir;
+use function json_encode;
+use function mkdir;
+use function umask;
 use const JSON_PRETTY_PRINT;
 
 /*
@@ -237,7 +244,10 @@ trait FirewallTrait
             }
         }
 
-        file_put_contents($configFilePath, json_encode($this->configuration, JSON_PRETTY_PRINT));
+        file_put_contents(
+            $configFilePath,
+            json_encode($this->configuration, JSON_PRETTY_PRINT)
+        );
     }
 
     /**

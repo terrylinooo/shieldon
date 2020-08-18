@@ -201,4 +201,30 @@ class SqlDriverProviderTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         // Has been tested in other method.
     }
+
+    public function testAssertPrepare()
+    {
+        $db = [
+            'host' => '127.0.0.1',
+            'dbname' => 'shieldon_unittest',
+            'user' => 'shieldon',
+            'pass' => 'taiwan',
+            'charset' => 'utf8',
+        ];
+        
+        $pdoInstance = new \PDO(
+            'mysql:host=' . $db['host'] . ';dbname=' . $db['dbname'] . ';charset=' . $db['charset'],
+            $db['user'],
+            $db['pass']
+        );
+
+        $mockSqlDriver = new \Shieldon\Firewall\Driver\SqlDriverProvider($pdoInstance);
+        $reflection = new \ReflectionObject($mockSqlDriver);
+        $method = $reflection->getMethod('assertPrepare');
+        $method->setAccessible(true);
+
+        $this->expectException(\RuntimeException::class);
+
+        $method->invokeArgs($mockSqlDriver, [false]);
+    }
 }

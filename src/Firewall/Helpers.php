@@ -24,19 +24,22 @@ namespace Shieldon\Firewall;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Shieldon\Firewall\Container;
+use Shieldon\Firewall\Driver\FileDriver;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Session;
-use Shieldon\Firewall\Container;
-use Shieldon\Firewall\EventDispatcher;
-use Shieldon\Firewall\Driver\FileDriver;
 use function explode;
 use function file_exists;
+use function file_put_contents;
 use function func_get_arg;
 use function func_num_args;
 use function implode;
 use function is_array;
 use function is_null;
+use function md5;
+use function microtime;
 use function preg_split;
+use function rand;
 use function round;
 use function shell_exec;
 use function str_repeat;
@@ -45,6 +48,7 @@ use function stripos;
 use function strtoupper;
 use function substr;
 use function sys_getloadavg;
+use function time;
 use function trim;
 use const PHP_OS;
 
@@ -324,7 +328,7 @@ function get_default_properties(): array
 
         'time_reset_limit'       => 3600,
         'interval_check_referer' => 5,
-        'interval_check_session' => 30,
+        'interval_check_session' => 5,
         'limit_unusual_behavior' => [
             'cookie'  => 5,
             'session' => 5,
