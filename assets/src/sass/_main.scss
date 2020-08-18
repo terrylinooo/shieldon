@@ -187,8 +187,8 @@ code.tips {
 .filter-status {
 	position: relative;
 	text-align: center;
-	border-top: 2px #dddddd solid;
-	border-left: 1px #dddddd solid;
+	border-top: 3px #cccccc solid;
+	border-left: 2px #dddddd solid;
 	border-right: 1px #eeeeee solid;
 	border-bottom: 1px #eeeeee solid;
 	background: rgba(255, 255, 255, 1);
@@ -342,6 +342,15 @@ code.tips {
 		color: #000;
 		font-weight: 500;
 	}
+
+	.f-icon {
+		margin: 0 3px;
+		color: #777;
+
+		&:hover {
+			color: rgb(12, 74, 78);
+		}
+	}
 }
 
 .nav-link {
@@ -356,8 +365,8 @@ code.tips {
 		font-size: 18px
 	}
 
-    border-top: 2px #dddddd solid;
-    border-left: 1px #dddddd solid;
+    border-top: 3px #cccccc solid;
+    border-left: 2px #dddddd solid;
     border-right: 1px #eeeeee solid;
     border-bottom: 1px #eeeeee solid;
     background: #fff;

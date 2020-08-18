@@ -314,8 +314,8 @@ $timezone = '';
     <p><?php _e('panel', 'overview_text_reset_data_circle_1', 'Would you like to reset current data circle?'); ?></p>
     <table class="table table-bordered">
         <thead class="thead-dark">
-            <th><?php _e('panel', 'overview_thread_rows', 'Table'); ?></th>
-            <th><?php _e('panel', 'overview_thread_table', 'Rows'); ?></th>
+            <th><?php _e('panel', 'overview_thread_table', 'Table'); ?></th>
+            <th><?php _e('panel', 'overview_thread_rows', 'Rows'); ?></th>
         </thead>
         <tr>
             <td>shieldon_rule_list</td>
