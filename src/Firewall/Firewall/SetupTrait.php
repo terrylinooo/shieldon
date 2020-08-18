@@ -115,18 +115,18 @@ trait SetupTrait
 
         $driverInstance = DriverFactory::getInstance($driverType, $driverSetting);
 
+        if ($this->hasCheckpoint()) {
+            $this->kernel->disableDbBuilder();
+        } else {
+            $this->setCheckpoint();
+        }
+
         $this->status = false;
+
         if ($driverInstance !== null) {
             $this->kernel->setDriver($driverInstance);
             $this->status = true;
         }
-
-      //  if ($this->hasCheckpoint()) {
-     //       $this->kernel->disableDbBuilder();
-     //   } else {
-            $this->kernel->driver->init(true);
-            $this->setCheckpoint();
-     //   }
     }
 
     /**

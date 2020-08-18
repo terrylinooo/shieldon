@@ -482,7 +482,9 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $reflection = new \ReflectionObject($kernel);
         $t = $reflection->getProperty('isCreateDatabase');
         $t->setAccessible(true);
-        $this->assertFalse($t->getValue($kernel));
+
+        // CLI returns true always.
+        $this->assertTrue($t->getValue($kernel));
     }
 
     public function testSetChannel($driver = 'sqlite')

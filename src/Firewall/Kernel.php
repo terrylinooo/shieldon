@@ -321,15 +321,13 @@ class Kernel
 
         Event::AddListener('set_driver',
             function($args) use ($session) {
-             //   if (php_sapi_name() !== 'cli') {
-                    $session->init(
-                        $args['driver'],
-                        $args['gc_expires'],
-                        $args['gc_probability'],
-                        $args['gc_divisor'],
-                        $args['psr7']
-                    );
-            //    }
+                $session->init(
+                    $args['driver'],
+                    $args['gc_expires'],
+                    $args['gc_probability'],
+                    $args['gc_divisor'],
+                    $args['psr7']
+                );
             }
         );
 

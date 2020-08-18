@@ -25,6 +25,7 @@ namespace Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\Driver\DriverProvider;
 use Shieldon\Event\Event;
 use RuntimeException;
+use function php_sapi_name;
 
 /*
  * Messenger Trait is loaded in Kernel instance only.
@@ -104,10 +105,10 @@ trait DriverTrait
             $this->driver->setChannel($channel);
         } else {
             Event::AddListener('set_channel',
-            function ($args) use ($channel) {
-                $args['driver']->setChannel($channel);
-            }
-        );
+                function ($args) use ($channel) {
+                    $args['driver']->setChannel($channel);
+                }
+            );
         }
     }
 
@@ -121,6 +122,11 @@ trait DriverTrait
     public function disableDbBuilder(): void
     {
         $this->isCreateDatabase = false;
+
+        if (php_sapi_name() === 'cli') {
+            // Unit testing needs.
+            $this->isCreateDatabase = true;
+        }
     }
 
     /**
