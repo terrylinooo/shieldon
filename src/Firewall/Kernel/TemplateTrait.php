@@ -72,6 +72,13 @@ trait TemplateTrait
     protected $dialog = [];
 
     /**
+     * The reason code of a user to be allowed or denied.
+     *
+     * @var int|null
+     */
+    protected $reason;
+
+    /**
      * Get current visior's path.
      *
      * @return string
@@ -212,7 +219,8 @@ trait TemplateTrait
     private function confirmUiInfoSettings(int $statusCode): array
     {
         $uiInfo = [];
-        $reasonCode = $this->userRuleData['reason'];
+
+        $reasonCode = $this->reason;
 
         $uiInfo['http_status_code'] = $statusCode;
         $uiInfo['reason_code']      = $reasonCode;

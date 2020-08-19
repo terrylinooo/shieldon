@@ -325,11 +325,13 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testCaptchaResponse()
     {
-        $this->mockSession();
+       // $this->mockSession();
+       $this->getWritableTestFilePath('_file_driver_initialized.txt', 'shieldon');
 
         $this->testFromJsonConfig();
-        
+
         $firewall = \Shieldon\Firewall\Container::get('firewall');
+
         $firewall->getKernel()->driver->rebuild();
         $firewall->getKernel()->setIp('140.132.75.15');
         $firewall->setup();

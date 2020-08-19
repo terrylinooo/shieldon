@@ -43,8 +43,6 @@ use Closure;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
-use function memory_get_usage;
-use function microtime;
 use function array_push;
 use function get_class;
 use function gethostbyaddr;
@@ -294,7 +292,7 @@ class Kernel
      *
      * @var bool
      */
-    protected $psr7 = true;
+    public $psr7 = true;
 
     /**
      * Shieldon constructor.
@@ -659,6 +657,8 @@ class Kernel
 
         // Log this action.
         $this->log($actionCode, $ip);
+
+        $this->reason = $reasonCode;
     }
 
     /**

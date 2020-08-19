@@ -87,6 +87,7 @@ class Ajax extends BaseController
     {
         $langCode = get_request()->getQueryParams()['langCode'] ?? 'en';
         get_session_instance()->set('shieldon_panel_lang', $langCode);
+        get_session_instance()->save();
         $data = [];
 
         $data['status'] = 'success';

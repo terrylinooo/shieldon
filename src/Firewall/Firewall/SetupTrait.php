@@ -105,7 +105,7 @@ trait SetupTrait
      *
      * @return void
      */
-    protected function setupDriver(): void
+    public function setupDriver(): void
     {
         $driverType = $this->getOption('driver_type');
         $driverSetting = $this->getOption($driverType, 'drivers');
