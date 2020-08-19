@@ -72,13 +72,6 @@ trait TemplateTrait
     protected $dialog = [];
 
     /**
-     * The reason code of a user to be allowed or denied.
-     *
-     * @var int|null
-     */
-    protected $reason;
-
-    /**
      * Get current visior's path.
      *
      * @return string

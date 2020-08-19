@@ -284,7 +284,14 @@ class Kernel
      *
      * @var string
      */
-    protected $firewallType = 'self'; 
+    protected $firewallType = 'self';
+
+   /**
+     * The reason code of a user to be allowed or denied.
+     *
+     * @var int|null
+     */
+    protected $reason;
 
     /**
      * The session cookie will be created by the PSR-7 HTTP resolver.

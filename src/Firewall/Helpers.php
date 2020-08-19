@@ -670,12 +670,15 @@ function get_session_instance(): Session
  *
  * @return void
  */
-function create_new_session_instance(string $sessionId, $driver)
+function create_new_session_instance(string $sessionId)
 {
     Container::set('session_id', $sessionId, true);
     $session = Container::get('session');
-    $session->setId($sessionId);
-    set_session_instance($session);
+
+    if ($session instanceof Session) {
+        $session->setId($sessionId);
+        set_session_instance($session);
+    }
 }
 
 /**

@@ -240,7 +240,7 @@ trait SessionTrait
     protected function setSessionId(string $sessionId = ''): void
     {
         if ('' !== $sessionId) {
-            create_new_session_instance($sessionId, $this->driver);
+            create_new_session_instance($sessionId);
         }
     }
 
