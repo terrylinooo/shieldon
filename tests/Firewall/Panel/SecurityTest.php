@@ -76,6 +76,22 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
         );
     }
 
+    public function testXssProtectionPostFormSuperglobal()
+    {
+        $_POST['xss_protection__cookie'] = 'on';
+        $_POST['xss_protection__post'] = 'off';
+        $_POST['xss_protection__get'] = 'off';
+        $_POST['xss_form_1'] = 'page';
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $this->refreshRequest();
+
+        $this->assertOutputContainsString(
+            'firewall/panel/security/xssProtection',
+            '<input type="checkbox" name="xss_protection__cookie" class="toggle-block" value="on" checked>'
+        );
+    }
+
     public function testXssProtectionPostFormAddItem()
     {
         $_POST['type'] = 'post';

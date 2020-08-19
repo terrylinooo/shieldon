@@ -521,16 +521,14 @@ trait SetupTrait
      */
     protected function setupDialogUserInterface()
     {
-        Event::AddListener('session_init',
-            function() {
-                $ui = $this->getOption('dialog_ui');
+        Event::AddListener('session_init', function() {
+            $ui = $this->getOption('dialog_ui');
 
-                if (!empty($ui)) {
-                    get_session_instance()->set('shieldon_ui_lang', $ui['lang']);
-                    $this->kernel->setDialog($this->getOption('dialog_ui'));
-                }
+            if (!empty($ui)) {
+                get_session_instance()->set('shieldon_ui_lang', $ui['lang']);
+                $this->kernel->setDialog($this->getOption('dialog_ui'));
             }
-        );
+        });
 
         $dialogInfo = $this->getOption('dialog_info_disclosure');
 

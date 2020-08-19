@@ -328,6 +328,7 @@ class Kernel
 
         Event::AddListener('set_session_driver', function($args) {
             $session = get_session_instance();
+
             $session->init(
                 $args['driver'],
                 $args['gc_expires'],
@@ -335,6 +336,12 @@ class Kernel
                 $args['gc_divisor'],
                 $args['psr7']
             );
+
+            /**
+             * Hook - session_init
+             */
+            Event::doDispatch('session_init');
+
             set_session_instance($session);
         });
     }

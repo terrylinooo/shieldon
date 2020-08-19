@@ -418,4 +418,31 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $this->assertTrue(false);
         }
     }
+
+    public function testDisplayPerformanceReport()
+    {
+        $this->testFromJsonConfig();
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
+        $firewall->enablePerformanceReport();
+
+        $firewall->getKernel()->driver->rebuild();
+        $firewall->getKernel()->setIp('140.199.99.99');
+        $firewall->setup();
+
+        for ($i = 1; $i <= 6; $i++) {
+            $response = $firewall->run();
+        }
+
+        ob_start();
+
+        if ($response->getStatusCode() !== 200) {
+            $httpResolver = new \Shieldon\Firewall\HttpResolver();
+            $httpResolver($response);
+        }
+
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertStringContainsString('Memory consumed', $output);
+    }
 }
