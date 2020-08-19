@@ -259,7 +259,7 @@ return [
     'table_heading_period' => 'Period',
     'table_note_period' => 'Keep-alive period. (minutes)',
     'table_heading_online' => 'Online',
-    'table_note_online' => 'Online session limit.',
+    'table_note_online' => 'Online user amount.',
 
     // Xss protection.
     'xss_heading' => 'XSS Protection',
@@ -419,6 +419,24 @@ return [
     'setting_label_unique_ip_only' => 'Unique IP',
     'setting_note_unique_ip_only' => 'Only allow one session per IP address.',
     'setting_note_unique_ip_only_2' => 'Users with multiple sessions will be kicked off.',
+
+    // Added at 8/19/2020
+    'setting_heading_dialog_information' => 'Information Disclosure',
+    'setting_label_dialog_user_inforamtion' => 'User Information',
+    'setting_note_dialog_user_inforamtion' => 'Display IP address, RDNS and user-agent.',
+
+    'setting_label_dialog_http_status' => 'HTTP Status Code',
+    'setting_note_dialog_http_status' => 'Display HTTP status code to the users.',
+
+    'setting_label_dialog_reason_code' => 'Reason Code',
+    'setting_note_dialog_reason_code' => 'Display the reason code what causes a user blocked.',
+
+    'setting_label_dialog_reason_text' => 'Reason Text',
+    'setting_note_dialog_reason_text' => 'Display the reason text what causes a user blocked.',
+    'setting_note_dialog_reason_notice' => 'Not recommended to display such information, people with bad intentions might get to know how to get through the protection.',
+
+    'setting_label_dialog_user_amount' => 'Online User Amount',
+    'setting_note_dialog_user_amount' => 'Display the total amount of online users as showing the dialog of session limit.',
 
     // Messenger
     'messenger_heading_events' => 'Events',

@@ -340,6 +340,9 @@ function get_default_properties(): array
         'cookie_value'        => '1',
         'display_online_info' => true,
         'display_user_info'   => false,
+        'display_http_code'   => false,
+        'display_reason_code' => false,
+        'display_reason_text' => false,
 
         /**
          * If you set this option enabled, Shieldon will record every CAPTCHA fails 

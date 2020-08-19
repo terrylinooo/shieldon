@@ -30,6 +30,7 @@ use Shieldon\Event\Event;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
+use function Shieldon\Firewall\__;
 use InvalidArgumentException;
 use RuntimeException;
 use function array_keys;
@@ -144,6 +145,7 @@ trait TemplateTrait
 
         // Check and confirm the UI settings.
         $ui = $this->confirmUiSettings();
+        $uiInfo = $this->confirmUiInfoSettings($statusCode);
 
         $css = include $this->getTemplate('css/default');
 
@@ -160,7 +162,7 @@ trait TemplateTrait
         ob_end_clean();
 
         // Remove unused variable notices generated from PHP intelephense.
-        unset($css, $ui, $form, $captchas, $langCode, $performanceReport);
+        unset($css, $ui, $form, $captchas, $langCode, $performanceReport, $uiInfo);
 
         $stream = HttpFactory::createStream();
         $stream->write($output);
@@ -197,20 +199,32 @@ trait TemplateTrait
             }
         }
 
-        $ui['is_display_online_info'] = false;
-        $ui['is_display_user_info'] = false;
-
-        // Show online session count. It is used on views.
-        if (!empty($this->properties['display_online_info'])) {
-            $ui['is_display_online_info'] = true;
-        }
-
-        // Show user information such as IP, user-agent, device name.
-        if (!empty($this->properties['display_user_info'])) {
-            $ui['is_display_user_info'] = true;
-        }
-
         return $ui;
+    }
+
+    /**
+     * Confirm UI information settings.
+     * 
+     * @param int $statusCode HTTP status code.
+     *
+     * @return array
+     */
+    private function confirmUiInfoSettings(int $statusCode): array
+    {
+        $uiInfo = [];
+        $reasonCode = $this->userRuleData['reason'];
+
+        $uiInfo['http_status_code'] = $statusCode;
+        $uiInfo['reason_code']      = $reasonCode;
+        $uiInfo['reason_text']      = __('core', 'messenger_text_reason_code_' . $reasonCode);
+
+        $uiInfo['is_display_online_user_amount']  = $this->properties['display_online_info'];
+        $uiInfo['is_display_user_information']    = $this->properties['display_user_info'];
+        $uiInfo['is_display_display_http_code']   = $this->properties['display_http_code'];
+        $uiInfo['is_display_display_reason_code'] = $this->properties['display_reason_code'];
+        $uiInfo['is_display_display_reason_text'] = $this->properties['display_reason_text'];
+
+        return $uiInfo;
     }
 
     /**

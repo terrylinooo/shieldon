@@ -60,7 +60,7 @@ $timezone = '';
             <div class="board-field right">
                 <div class="heading"><?php _e('panel', 'table_heading_online', 'Online'); ?></div>
                 <div class="nums"><?php echo number_format($online_count ); ?></div>
-                <div class="note"><?php _e('panel', 'table_note_online', 'Online session amount.'); ?></div>
+                <div class="note"><?php _e('panel', 'table_note_online', 'Online user amount.'); ?></div>
             </div>
         </div>
     </div>

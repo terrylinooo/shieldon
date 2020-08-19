@@ -48,10 +48,23 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                             <img src="<?php echo $imgsrc; ?>">
                         </div>
                         <div class="status-message">
-                            <?php _e('core', 'deny_message', 'The IP address you are using has been blocked.') ?>
+                            <p>
+                                <?php _e('core', 'deny_message', 'The IP address you are using has been blocked.') ?>
+                            </p>
+                            <div>
+                                <?php if (!empty($uiInfo['is_display_display_http_code'])) : ?>
+                                    <span class="http-status-code"><?php echo $uiInfo['http_status_code']; ?></span>
+                                <?php endif; ?>
+                                <?php if (!empty($uiInfo['is_display_display_reason_code'])) : ?>
+                                    <span class="reason-code"><?php echo $uiInfo['reason_code']; ?></span>
+                                <?php endif; ?>
+                                <?php if (!empty($uiInfo['is_display_display_reason_text'])) : ?>
+                                    <?php echo $uiInfo['reason_text']; ?>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
-                    <?php if (!empty($ui['is_display_user_info'])) : ?>
+                    <?php if (!empty($uiInfo['is_display_user_information'])) : ?>
                         <div class="status-user-info">
                             <?php foreach ($dialoguserinfo as $key => $userinfo) : ?>
                                 <div class="row">

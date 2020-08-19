@@ -94,7 +94,6 @@ use function Shieldon\Firewall\_e;
     </table>
 </div>
                 
-
 <!-------------------------------------------------------------------------------------------------------------->
 <div class="section-title bg-glass mt-3">
     <h2><?php _e('panel', 'setting_heading_image_captcha', 'Image'); ?></h2>

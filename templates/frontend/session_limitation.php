@@ -55,7 +55,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-clock_96x96.png';
                     <div class="status-info">
                         <?php _e('core', 'lineup_info', '', ['<strong>' . $onlineinfo['queue'] . '</strong>']); ?><br />
 
-                        <?php if (!empty($ui['is_display_online_info'])) : ?>
+                        <?php if (!empty($uiInfo['is_display_online_user_amount'])) : ?>
                             <?php _e('core', 'online_info', '', ['<strong>' . $onlineinfo['count'] . '</strong>']); ?><br />
                         <?php endif; ?>
 

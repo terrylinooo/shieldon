@@ -52,6 +52,13 @@ trait RuleTrait
     ];
 
     /**
+     * A user's data in the rule table.
+     *
+     * @var array
+     */
+    protected $userRuleData = [];
+
+    /**
      * Set the message body.
      *
      * @param string $message The message text.
@@ -81,6 +88,8 @@ trait RuleTrait
     protected function isRuleExist()
     {
         $ipRule = $this->driver->get($this->ip, 'rule');
+
+        $this->userRuleData =& $ipRule;
 
         if (empty($ipRule)) {
             return false;

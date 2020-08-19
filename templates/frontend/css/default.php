@@ -128,14 +128,22 @@ $css = '
     .status-message {
         text-align: left;
         padding: 15px;
+        line-height: 150%;
     }
 
     .status-user-info {
+        clear: both;
         padding: 10px;
         text-align: left;
         font-size: 12px;
         color: #999;
+        margin-top: 20px;
+        display: block;
+        overflow: hidden;
+        position: relative;
         line-height: 150%;
+        border-top: 1px #dddddd solid;
+        background-color: rgba(225, 225, 225, 0.3);
     }
 
     .status-user-info > .row {
@@ -145,14 +153,17 @@ $css = '
     .status-user-info > .row > strong {
         color: #666;
         margin-right: 5px;
-        width: 80px;
+        width: 100px;
+        text-align: right;
+        padding-right: 10px;
         display: inline-block;
+        text-transform: uppercase;
     }
 
     .status-user-info > .row > span {
         display: inline-block;
         word-break: break-all;
-        width: calc(100% - 80px);
+        width: calc(100% - 100px);
     }
 
     a {
@@ -203,6 +214,33 @@ $css = '
 
     .performance-report strong {
         color: #000000;
+    }
+
+    .http-status-code,
+    .reason-code,
+    .reason-text {
+        line-height: 100%;
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 3px;
+        margin-right: 2px;
+        margin-top: 10px;
+        font-size: 12px;
+    }
+
+    .http-status-code {
+        border: 1px #6683e2 solid;
+        color: #6683e2;
+    }
+
+    .reason-code {
+        border: 1px #00b38a solid;
+        color: #00b38a;
+    }
+
+    .reason-text {
+        border: 1px #bdb344 solid;
+        color: #bdb344;
     }
 ';
 

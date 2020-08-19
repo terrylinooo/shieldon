@@ -105,8 +105,12 @@ code.tips {
 		strong {
 			font-weight: bold;
 			padding: 3px 8px;
+			background-color: #fafafa;
 			border: 1px #dddddd solid;
+			border-top: 1px #cccccc solid;
+			border-left: 1px #cccccc solid;
 			font-weight: normal;
+			border-radius: 3px;
 		}
 
 		ul {

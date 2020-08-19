@@ -531,5 +531,13 @@ trait SetupTrait
                 }
             }
         );
+
+        $dialogInfo = $this->getOption('dialog_info_disclosure');
+
+        $this->kernel->setProperty('display_online_info', $dialogInfo['online_user_amount']);
+        $this->kernel->setProperty('display_user_info',   $dialogInfo['user_inforamtion']);
+        $this->kernel->setProperty('display_http_code',   $dialogInfo['http_status_code']);
+        $this->kernel->setProperty('display_reason_code', $dialogInfo['reason_code']);
+        $this->kernel->setProperty('display_reason_text', $dialogInfo['reason_text']);
     }
 }
