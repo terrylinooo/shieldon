@@ -301,6 +301,8 @@ class ShieldonTestCase extends TestCase
      */
     public function mockSession(): void
     {
-        get_mock_session('624689c34690a1d0a8c5658db66cf73d');
+        $sessionId = '624689c34690a1d0a8c5658db66cf73d';
+        $_COOKIE['_shieldon'] = $sessionId;
+        get_mock_session($sessionId);
     }
 }

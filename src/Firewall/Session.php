@@ -397,10 +397,9 @@ class Session
      */
     protected function parsedData()
     {
-        if (empty($this->data['data'])) {
-            $this->data['data'] = '{}';
-        }
-        $this->data['parsed_data'] = json_decode($this->data['data'], true);
+        $data = $this->data['data'] ?? '{}';
+
+        $this->data['parsed_data'] = json_decode($data, true);
     }
 
     /**
