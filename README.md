@@ -21,13 +21,13 @@ composer require shieldon/shieldon ^2
 This will also install dependencies built for Shieldon:
 
 - [shieldon/psr-http](https://github.com/terrylinooo/psr-http) 
-    - *PSR- 7, 15, 17 Implementation with full documented and well tested.*
+    - PSR- 7, 15, 17 Implementation with full documented and well tested.
 - [shieldon/event-dispatcher](https://github.com/terrylinooo/event-dispatcher)
-    - *Simple event dispatcher.*
+    - Simple event dispatcher.
 - [shieldon/web-security](https://github.com/terrylinooo/web-security)
-    - *Collection of functions about web security.*
+    - Collection of functions about web security.
 - [shieldon/messenger](https://github.com/terrylinooo/messenger)
-    - *Collection of modules of sending message to third-party API or service, such as Telegram, Line, RocketChat, Slack, SendGrid, MailGun and more...*
+    - Collection of modules of sending message to third-party API or service, such as Telegram, Line, RocketChat, Slack, SendGrid, MailGun and more...
 
 `1.x`
 

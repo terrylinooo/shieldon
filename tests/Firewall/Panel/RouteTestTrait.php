@@ -66,6 +66,10 @@ trait RouteTestTrait
         'setting/messenger',
         'user/login',
         'user/logout',
+        'asset/css',
+        'asset/js',
+        'asset/favicon',
+        'asset/logo',
     ];
 
     /**

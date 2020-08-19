@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall;
 
+use Shieldon\Event\Event;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\Driver\DirverProvider;
 use Shieldon\Firewall\Log\SessionLogger;
-use Shieldon\Event\Event;
 use RuntimeException;
 use function Shieldon\Firewall\create_session_id;
 use function Shieldon\Firewall\get_ip;
@@ -34,10 +34,10 @@ use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\set_response;
 use function intval;
+use function php_sapi_name;
 use function rand;
 use function setcookie;
 use function time;
-use function php_sapi_name;
 
 /*
  * Session for the use of Shieldon.
@@ -146,25 +146,18 @@ class Session
         int  $gcDivisor     = 100, 
         bool $psr7          = true
     ): void {
+
         $this->driver = $driver;
+        $this->gc($gcExpires, $gcProbability, $gcDivisor);
+
+        $this->data = [];
 
         $cookie = get_request()->getCookieParams();
 
-        $this->gc($gcExpires, $gcProbability, $gcDivisor);
- 
-        // New visitor? Create a new session.
-        if (
-            php_sapi_name() !== 'cli' && 
-            empty($cookie['_shieldon'])
-        ) {
-            self::resetCookie($psr7);
-            $this->create();
-            self::$status = true;
-
-            return;
+        if (!empty($cookie['_shieldon'])) {
+            self::$id = $cookie['_shieldon'];
+            $this->data = $this->driver->get(self::$id, 'session');
         }
-
-        $this->data = $this->driver->get(self::$id, 'session');
 
         if (empty($this->data)) {
             self::resetCookie($psr7);
@@ -174,7 +167,6 @@ class Session
         $this->parsedData();
 
         self::$status = true;
-
         self::log(self::$id);
     }
 
@@ -306,8 +298,7 @@ class Session
         $data['id'] = self::$id;
         $data['ip'] = get_ip();
         $data['time'] = time();
-        $data['microtimesamp'] = (string) get_microtimesamp();
-
+        $data['microtimesamp'] = get_microtimesamp();
         $data['data'] = json_encode($this->data['parsed_data']);
 
         $this->driver->save(self::$id, $data, 'session');
@@ -335,12 +326,12 @@ class Session
                 $cookieName . '=' . $sessionHashId . '; Path=/; Expires=' . $expires
             );
             set_response($response);
+
         } else {
             setcookie($cookieName, $sessionHashId, $expiredTime, '/');
         }
 
         self::$id = $sessionHashId;
-
         self::log($sessionHashId);
     }
 
@@ -431,7 +422,7 @@ class Session
      *
      * @return void
      */
-    protected static function log($text = '')
+    protected static function log($text = ''): void
     {
         if (php_sapi_name() === 'cli') {
             SessionLogger::log($text);

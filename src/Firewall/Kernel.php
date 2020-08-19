@@ -319,7 +319,7 @@ class Kernel
         // Load default settings.
         $this->properties = get_default_properties();
 
-        // Basic Captcha form.
+        // Basic form for Captcha.
         $this->setCaptcha(new Foundation());
 
         Container::set('request', $request);
@@ -405,16 +405,6 @@ class Kernel
         Event::doDispatch('kernel_end');
 
         return $result;
-    }
-
-    /**
-     * Display the performance report as showing dialogs.
-     *
-     * @return void
-     */
-    public function enablePerformanceReport(): void
-    {
-        $this->performanceCheck = true;
     }
 
     /**
