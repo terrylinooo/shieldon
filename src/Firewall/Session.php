@@ -24,7 +24,6 @@ namespace Shieldon\Firewall;
 
 use Shieldon\Event\Event;
 use Shieldon\Firewall\Container;
-use Shieldon\Firewall\Driver\DirverProvider;
 use Shieldon\Firewall\Log\SessionLogger;
 use RuntimeException;
 use function Shieldon\Firewall\create_session_id;
@@ -295,6 +294,8 @@ class Session
      */
     public function save(): void
     {
+        $data = [];
+
         $data['id'] = self::$id;
         $data['ip'] = get_ip();
         $data['time'] = time();
@@ -374,6 +375,8 @@ class Session
      */
     protected function create(): void
     {
+        $data = [];
+
         // Initialize new session data.
         $data['id'] = self::$id;
         $data['ip'] = get_ip();

@@ -223,7 +223,7 @@ class Setting extends BaseController
         $response = get_response();
 
         $stream = $response->getBody();
-        $stream->write(json_encode($this->configuration), JSON_PRETTY_PRINT);
+        $stream->write(json_encode($this->configuration, JSON_PRETTY_PRINT));
         $stream->rewind();
 
         $filename = 'shieldon_' . date('Y-m-d-Hi') . '.json';

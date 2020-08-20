@@ -710,6 +710,7 @@ function get_mock_session($sessionId): Session
     $driver = new FileDriver($fileDriverStorage);
 
     if (!file_exists($file)) {
+        $data = [];
 
         // Prepare mock data.
         $data['id'] = $sessionId;
