@@ -24,6 +24,7 @@ namespace Shieldon\Firewall;
 
 use Shieldon\Event\Event;
 use Shieldon\Firewall\Container;
+use Shieldon\Firewall\Driver\DriverProvider;
 use Shieldon\Firewall\Log\SessionLogger;
 use RuntimeException;
 use function Shieldon\Firewall\create_session_id;
@@ -85,7 +86,7 @@ class Session
     /**
      * The data driver.
      *
-     * @var DirverProvider|null
+     * @var DriverProvider|null
      */
     protected $driver;
 
