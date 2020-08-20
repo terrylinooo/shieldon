@@ -142,17 +142,17 @@ class Ajax extends BaseController
         // Call testing method if exists.
         $status = $this->{$method}($getParams, $message);
 
-        if ( $status) {
+        if ($status) {
             $data['status'] = 'success';
             $postParams[$postKey] = 'on';
-            $this->saveConfig();
         } else {
             $data['status'] = 'error';
-            $postParams[$postKey] = 'off';
-            $this->saveConfig();
+            $postParams[$postKey] = 'off'; 
         }
 
         set_request($request->withParsedBody($postParams));
+
+        $this->saveConfig();
 
         // @codeCoverageIgnoreEnd
 

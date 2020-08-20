@@ -54,6 +54,8 @@ class Firewall
      *   run                  | Execute the firewall.
      *   add                  | Add a PRS-15 middleware used before firewall.
      *   controlPanel         | Set the base URL of the control panel.
+     *   enablePerformanceRe- | Display the performance report when dialog is showed.
+     *   port                 |
      *  ----------------------|---------------------------------------------
      */
 
