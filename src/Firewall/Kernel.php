@@ -78,10 +78,9 @@ class Kernel
     /**
      *   Public methods       | Desctiotion
      *  ----------------------|---------------------------------------------
-     *   setIp                | Ban an IP.
-     *   getIp                | Get current user's browsing path.
-     *   setRdns              | Print a JavaScript snippet in the pages.
-     *   getRdns              | Used on testing purpose.
+     *   setCaptcha           | Set a captcha.
+     *   captchaResponse      | Return the result from Captchas.
+     *   disableCaptcha       | Mostly be used in unit testing purpose.
      *  ----------------------|---------------------------------------------
      */
     use CaptchaTrait;
@@ -148,7 +147,6 @@ class Kernel
      *  ----------------------|---------------------------------------------
      *   limitSession         | Limit the amount of the online users.
      *   getSessionCount      | Get the amount of the sessions.
-     *   removeSessionsByIp   | Remove sessions using the same IP address.
      *  ----------------------|---------------------------------------------
      */
     use SessionTrait;
@@ -156,6 +154,7 @@ class Kernel
     /**
      *   Public methods       | Desctiotion
      *  ----------------------|---------------------------------------------
+     *   setDialog            | Set the dialog UI.
      *   respond              | Respond the result.
      *   setTemplateDirectory | Set the frontend template directory.
      *   getJavascript        | Print a JavaScript snippet in the pages.

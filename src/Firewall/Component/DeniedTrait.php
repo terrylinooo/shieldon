@@ -38,11 +38,11 @@ trait DeniedTrait
      *   setDeniedItems       | Add items to the blacklist pool.
      *   setDeniedItem        | Add an item to the blacklist pool.
      *   getDeniedItems       | Get items from the blacklist pool.
-     *   getDeniedItem        | Get items from the blacklist pool.
+     *   getDeniedItem        | Get an item from the blacklist pool.
      *   removeDeniedItem     | Remove a denied item if exists.
      *   removeDeniedItems    | Remove all denied items.
      *   hasDeniedItem        | Check if a denied item exists.
-     *   getDenyWithPrefix    | Check if a denied item exists have the same prefix.
+     *   getDenyWithPrefix    | Check if a denied items exist with the same prefix.
      *   removeDenyWithPrefix | Remove denied items with the same prefix.
      *   isDenied             | Check if an item is denied?
      *  ----------------------|---------------------------------------------
@@ -97,6 +97,8 @@ trait DeniedTrait
 
     /**
      * Get an item from the blacklist pool.
+     * 
+     * @param string $key The key of the data field.
      *
      * @return string|array
      */
@@ -140,7 +142,7 @@ trait DeniedTrait
     }
 
     /**
-     * Check if a denied item exists have the same prefix.
+     * Check if a denied items exist with the same prefix.
      *
      * @param string $key The key of the data.
      *

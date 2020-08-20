@@ -94,10 +94,11 @@ trait SessionTrait
     /**
      * Limt online sessions.
      *
-     * @param int $count  The amount of online users. If reached, users will be
-     *                    in queue.
-     * @param int $period The period of time allows users browsering. 
-     *                    (unit: second)
+     * @param int $count   The amount of online users. If reached, users will be
+     *                     in queue.
+     * @param int $period  The period of time allows users browsing. 
+     *                     (unit: second)
+     * @param bool $unique Allow only one session per IP address.
      *
      * @return void
      */

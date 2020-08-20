@@ -175,60 +175,6 @@ trait TemplateTrait
     }
 
     /**
-     * Confirm the UI settings.
-     *
-     * @return array
-     */
-    private function confirmUiSettings(): array
-    {
-        if (!defined('SHIELDON_VIEW')) {
-            define('SHIELDON_VIEW', true);
-        }
-
-        $ui = [
-            'background_image' => '',
-            'bg_color'         => '#ffffff',
-            'header_bg_color'  => '#212531',
-            'header_color'     => '#ffffff',
-            'shadow_opacity'   => '0.2',
-        ];
-
-        foreach (array_keys($ui) as $key) {
-            if (!empty($this->dialog[$key])) {
-                $ui[$key] = $this->dialog[$key];
-            }
-        }
-
-        return $ui;
-    }
-
-    /**
-     * Confirm UI information settings.
-     * 
-     * @param int $statusCode HTTP status code.
-     *
-     * @return array
-     */
-    private function confirmUiInfoSettings(int $statusCode): array
-    {
-        $uiInfo = [];
-
-        $reasonCode = $this->reason;
-
-        $uiInfo['http_status_code'] = $statusCode;
-        $uiInfo['reason_code']      = $reasonCode;
-        $uiInfo['reason_text']      = __('core', 'messenger_text_reason_code_' . $reasonCode);
-
-        $uiInfo['is_display_online_user_amount']  = $this->properties['display_online_info'];
-        $uiInfo['is_display_user_information']    = $this->properties['display_user_info'];
-        $uiInfo['is_display_display_http_code']   = $this->properties['display_http_code'];
-        $uiInfo['is_display_display_reason_code'] = $this->properties['display_reason_code'];
-        $uiInfo['is_display_display_reason_text'] = $this->properties['display_reason_text'];
-
-        return $uiInfo;
-    }
-
-    /**
      * Print a JavaScript snippet in your webpages.
      * 
      * This snippet generate cookie on client's browser,then we check the 
@@ -355,5 +301,60 @@ trait TemplateTrait
         }
 
         return $html;
+    }
+
+
+    /**
+     * Confirm the UI settings.
+     *
+     * @return array
+     */
+    private function confirmUiSettings(): array
+    {
+        if (!defined('SHIELDON_VIEW')) {
+            define('SHIELDON_VIEW', true);
+        }
+
+        $ui = [
+            'background_image' => '',
+            'bg_color'         => '#ffffff',
+            'header_bg_color'  => '#212531',
+            'header_color'     => '#ffffff',
+            'shadow_opacity'   => '0.2',
+        ];
+
+        foreach (array_keys($ui) as $key) {
+            if (!empty($this->dialog[$key])) {
+                $ui[$key] = $this->dialog[$key];
+            }
+        }
+
+        return $ui;
+    }
+
+    /**
+     * Confirm UI information settings.
+     * 
+     * @param int $statusCode HTTP status code.
+     *
+     * @return array
+     */
+    private function confirmUiInfoSettings(int $statusCode): array
+    {
+        $uiInfo = [];
+
+        $reasonCode = $this->reason;
+
+        $uiInfo['http_status_code'] = $statusCode;
+        $uiInfo['reason_code']      = $reasonCode;
+        $uiInfo['reason_text']      = __('core', 'messenger_text_reason_code_' . $reasonCode);
+
+        $uiInfo['is_display_online_user_amount']  = $this->properties['display_online_info'];
+        $uiInfo['is_display_user_information']    = $this->properties['display_user_info'];
+        $uiInfo['is_display_display_http_code']   = $this->properties['display_http_code'];
+        $uiInfo['is_display_display_reason_code'] = $this->properties['display_reason_code'];
+        $uiInfo['is_display_display_reason_text'] = $this->properties['display_reason_text'];
+
+        return $uiInfo;
     }
 }
