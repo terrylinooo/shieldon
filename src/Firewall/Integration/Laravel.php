@@ -53,7 +53,7 @@ class Laravel
     public function __construct(string $storage = '', string $panelUri = '')
     {
         // The Shieldon generated data is stored at that place.
-        $this->storage = storage_path('shieldon');
+        $this->storage = storage_path('shieldon_firewall');
         $this->panelUri = '/firewall/panel/';
 
         if ('' !== $storage) {

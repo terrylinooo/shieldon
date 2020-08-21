@@ -554,10 +554,12 @@ function unset_global_session($name = null): void
 {
     if (empty($name)) {
         get_session_instance()->clear();
+        get_session_instance()->save();
         return;
     }
 
     get_session_instance()->remove($name);
+    get_session_instance()->save();
 }
 
 /**
