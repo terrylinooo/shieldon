@@ -17,7 +17,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shieldon\Firewall\Firewall;
 use Shieldon\Firewall\HttpResolver;
-use const TMP;
+use Shieldon\Firewall\Captcha\Csrf;
+use const TMP; // CakePHP
 
 /**
  * CakePHP Middleware
@@ -85,7 +86,7 @@ class CakePhp
         // Pass CSRF token to the Captcha form.
         // Note: The CsrfProtectionMiddleware was added in 3.5.0
         $firewall->getKernel()->setCaptcha(
-            new \Shieldon\Captcha\Csrf([
+            new Csrf([
                 'name' => '_csrfToken',
                 'value' => $request->getParam('_csrfToken'),
             ])

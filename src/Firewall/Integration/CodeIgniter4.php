@@ -18,7 +18,10 @@ use Shieldon\Firewall\HttpResolver;
 use CodeIgniter\HTTP\RequestInterface as Request;
 use CodeIgniter\HTTP\ResponseInterface as Response;
 use CodeIgniter\Filters\FilterInterface;
+use Shieldon\Firewall\Captcha\Csrf;
 use function dirname;
+use function csrf_token; // CodeIgniter 4
+use function csrf_hash; // CodeIgniter 4
 
 /**
  * CodeIgniter 4 Middleware of Shieldon Firewall.
@@ -66,18 +69,18 @@ class CodeIgniter4 implements FilterInterface
         }
     }
 
-	/**
+    /**
      * Shieldon middleware invokable class.
      *
-	 * @param Request $request
-	 *
-	 * @return mixed
-	 */
-	public function before(Request $request)
-	{
-		if ($request->isCLI()) {
-			return;
-		}
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public function before(Request $request)
+    {
+        if ($request->isCLI()) {
+            return;
+        }
 
         // CodeIgniter 4 is not a PSR-7 compatible framework, therefore we don't 
         // pass the Reqest and Reposne to Firewall instance.
@@ -88,7 +91,7 @@ class CodeIgniter4 implements FilterInterface
 
         // Pass CodeIgniter CSRF Token to Captcha form.
         $firewall->getKernel()->setCaptcha(
-            new \Shieldon\Captcha\Csrf([
+            new Csrf([
                 'name' => csrf_token(),
                 'value' => csrf_hash(),
             ])
@@ -100,18 +103,18 @@ class CodeIgniter4 implements FilterInterface
             $httpResolver = new HttpResolver();
             $httpResolver($response);
         }
-	}
+    }
 
-	/**
-	 * We don't have anything to do here.
-	 *
-	 * @param Response $request
-	 * @param Response $response
-	 *
-	 * @return mixed
-	 */
-	public function after(Request $request, Response $response)
-	{
+    /**
+     * We don't have anything to do here.
+     *
+     * @param Response $request
+     * @param Response $response
+     *
+     * @return mixed
+     */
+    public function after(Request $request, Response $response)
+    {
 
     }
 }

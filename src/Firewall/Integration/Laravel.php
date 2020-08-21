@@ -16,7 +16,9 @@ namespace Shieldon\Firewall\Integration;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shieldon\Firewall\Firewall;
 use Shieldon\Firewall\HttpResolver;
-use function storage_path;
+use Shieldon\Firewall\Captcha\Csrf;
+use function storage_path; // Laravel
+use function csrf_token; // Laravel
 
 /**
  * Middleware for Laravel framework (5.x - 6.x)
@@ -78,7 +80,7 @@ class Laravel
 
         // Pass Laravel CSRF Token to Captcha form.
         $firewall->getKernel()->setCaptcha(
-            new \Shieldon\Captcha\Csrf([
+            new Csrf([
                 'name' => '_token',
                 'value' => csrf_token(),
             ])

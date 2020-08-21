@@ -19,6 +19,7 @@ use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Shieldon\Firewall\Firewall;
 use Shieldon\Firewall\HttpResolver;
+use Shieldon\Firewall\Captcha\Csrf;
 use function dirname;
 
 /**
@@ -83,14 +84,14 @@ class Slim4 implements Middleware
         
         // Pass Slim CSRF Token to Captcha form.
         $firewall->getKernel()->setCaptcha(
-            new \Shieldon\Captcha\Csrf([
+            new Csrf([
                 'name' => 'csrf_name',
                 'value' => $request->getAttribute('csrf_name'),
             ])
         );
 
         $firewall->getKernel()->setCaptcha(
-            new \Shieldon\Captcha\Csrf([
+            new Csrf([
                 'name' => 'csrf_value',
                 'value' => $request->getAttribute('csrf_value'),
             ])

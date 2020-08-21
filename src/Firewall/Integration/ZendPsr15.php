@@ -19,6 +19,7 @@ use Psr\Http\Server\MiddlewareInterface as Middleware;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Shieldon\Firewall\Firewall;
 use Shieldon\Firewall\HttpResolver;
+use Shieldon\Firewall\Captcha\Csrf;
 use function dirname;
 
 /**
@@ -78,10 +79,12 @@ class ZendPsr15 implements Middleware
     public function process(Request $request, RequestHandler $handler): Response
     {
         $firewall = new Firewall($request);
+        $firewall->configure($this->storage);
+        $firewall->controlPanel($this->panelUri);
         
         // Pass \Zend\Validator\Csrf CSRF Token to Captcha form.
         $firewall->getKernel()->setCaptcha(
-            new \Shieldon\Captcha\Csrf([
+            new Csrf([
                 'name' => '_shieldon_csrf',
                 'value' => $request->getAttribute('_shieldon_csrf'),
             ])

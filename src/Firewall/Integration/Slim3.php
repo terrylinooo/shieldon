@@ -17,6 +17,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shieldon\Firewall\Firewall;
 use Shieldon\Firewall\HttpResolver;
+use Shieldon\Firewall\Captcha\Csrf;
 use function dirname;
 
 /**
@@ -83,15 +84,19 @@ class Slim3
         // Pass Slim CSRF Token to Captcha form.
         // Slim-Csrf no longer support Slim 3, please install older version 0.8.3 to get supported.
         // composer require slim/csrf:0.8.3  
-        $firewall->getKernel()->setCaptcha(new \Shieldon\Captcha\Csrf([
-            'name' => 'csrf_name',
-            'value' => $request->getAttribute('csrf_name'),
-        ]));
+        $firewall->getKernel()->setCaptcha(
+            new Csrf([
+                'name' => 'csrf_name',
+                'value' => $request->getAttribute('csrf_name'),
+            ])
+        );
 
-        $firewall->getKernel()->setCaptcha(new \Shieldon\Captcha\Csrf([
-            'name' => 'csrf_value',
-            'value' => $request->getAttribute('csrf_value'),
-        ]));
+        $firewall->getKernel()->setCaptcha(
+            new Csrf([
+                'name' => 'csrf_value',
+                'value' => $request->getAttribute('csrf_value'),
+            ])
+        );
 
         $response = $firewall->run();
 

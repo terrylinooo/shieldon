@@ -17,6 +17,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Shieldon\Firewall\Firewall;
 use Shieldon\Firewall\HttpResolver;
+use Shieldon\Firewall\Captcha\Csrf;
 use function dirname;
 
 /**
@@ -77,10 +78,12 @@ class ZendPsr7
     public function __invoke(Request $request, Response $response, $next): Response
     {
         $firewall = new Firewall($request, $response);
+        $firewall->configure($this->storage);
+        $firewall->controlPanel($this->panelUri);
 
         // Pass \Zend\Validator\Csrf CSRF Token to Captcha form.
         $firewall->getKernel()->setCaptcha(
-            new \Shieldon\Captcha\Csrf([
+            new Csrf([
                 'name' => '_shieldon_csrf',
                 'value' => $request->getAttribute('_shieldon_csrf'),
             ])
