@@ -68,11 +68,12 @@ class Laravel
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
+     * @param Request $request The PSR-7 server request.
+     * @param Closure $next    The next middleware.
+     *
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next)
     {
         $firewall = new Firewall($request);
         $firewall->configure($this->storage);
