@@ -59,16 +59,20 @@ class Bootstrap
             $serverRequestUri = $_SERVER['REQUEST_URI'];
             $scriptFilename = $_SERVER['SCRIPT_FILENAME'];
 
-            if (empty($storage)) {
+            if ('' === $storage) {
 
                 // The storage folder should be placed above www-root for best security, 
                 // this folder must be writable.
                 $storage = dirname($scriptFilename) . '/../shieldon_firewall';
             }
 
+            if ('' === $requestUri) {
+                $requestUri = '/firewall/panel/';
+            }
+
             $firewall = new Firewall();
             $firewall->configure($storage);
-            $firewall->controlPanel('/firewall/panel/');
+            $firewall->controlPanel($requestUri);
 
             if (
                 $requestUri !== '' && 
