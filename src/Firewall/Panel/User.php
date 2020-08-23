@@ -140,16 +140,21 @@ class User extends BaseController
     public function logout(): ResponseInterface
     {
         $sessionLoginStatus = get_session_instance()->get('shieldon_user_login');
+        $sessionPanelLang = get_session_instance()->get('shieldon_panel_lang');
         $response = get_response();
 
         if (isset($sessionLoginStatus)) {
-            unset_superglobal(null, 'session');
+            unset_superglobal('shieldon_user_login', 'session');
+        }
+
+        if (isset($sessionPanelLang)) {
+            unset_superglobal('shieldon_panel_lang', 'session');
         }
 
         if ($this->kernel->psr7) {
             unset_superglobal('_shieldon', 'cookie');
         } else {
-            setcookie('_shieldon', null, -1, '/'); 
+            setcookie('_shieldon', '', time() - 3600, '/');
         }
 
         return $response->withHeader('Location', $this->url('user/login'));
