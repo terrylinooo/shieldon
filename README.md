@@ -8,6 +8,7 @@ Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and usefu
 
 
 - Website: [https://shieldon.io](https://shieldon.io/)
+- Wiki: [https://github.com/terrylinooo/shieldon/wiki](https://github.com/terrylinooo/shieldon/wiki)
 - GitHub repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
 - WordPress plugin: [https://wordpress.org/plugins/wp-shieldon/](https://wordpress.org/plugins/wp-shieldon/)
 
