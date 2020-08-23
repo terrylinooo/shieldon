@@ -176,7 +176,7 @@ return [
     'overview_thread_rows' => '列',
     'overview_thread_table' => '表',
     'overview_text_reset_data_circle_1' => '您想要重置当前的资料周期吗？',
-    'overview_text_reset_data_circle_2' => '进行这个动作将会移除所有目前资料周期的记录，以及重建资料表。',
+    'overview_text_reset_data_circle_2' => '进行这个动作将会移除所有目前资料周期的记录，以及重建资料表。您在控制台的状态将被登出。',
     'overview_text_reset_action_logs' => '您想要重置当前的访客动作日志吗？',
     'overview_heading_messenger' => '通讯器模组',
     'overview_label_telegram' => 'Telegram',

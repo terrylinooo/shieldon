@@ -95,38 +95,7 @@ class Panel
      */
     public function __construct() 
     {
-        $this->registerRoutes = [
-            'ajax/changeLocale',
-            'ajax/tryMessenger',
-            'circle/filter',
-            'circle/rule',
-            'circle/session',
-            'home/index',
-            'home/overview',
-            'iptables/ip4',
-            'iptables/ip4status',
-            'iptables/ip6',
-            'iptables/ip6status',
-            'report/actionLog',
-            'report/operation',
-            'security/authentication',
-            'security/xssProtection',
-            'setting/basic',
-            'setting/exclusion',
-            'setting/export',
-            'setting/import',
-            'setting/ipManager',
-            'setting/messenger',
-            'user/login',
-            'user/logout',
-            // Render the static asset files for embedding.
-            // Since 2.0, not link to shieldon-io.github.io anymore.
-            'asset/css',
-            'asset/js',
-            'asset/favicon',
-            'asset/logo',
-        ];
-
+        $this->registerRoutes = self::getRoutes();
         $this->resolver = new HttpResolver();
     }
 
@@ -196,6 +165,46 @@ class Panel
         }
 
         $this->resolver($response->withStatus(404));
+    }
+
+    /**
+     * Get routes.
+     *
+     * @return array
+     */
+    public static function getRoutes(): array
+    {
+        return [
+            'ajax/changeLocale',
+            'ajax/tryMessenger',
+            'circle/filter',
+            'circle/rule',
+            'circle/session',
+            'home/index',
+            'home/overview',
+            'iptables/ip4',
+            'iptables/ip4status',
+            'iptables/ip6',
+            'iptables/ip6status',
+            'report/actionLog',
+            'report/operation',
+            'security/authentication',
+            'security/xssProtection',
+            'setting/basic',
+            'setting/exclusion',
+            'setting/export',
+            'setting/import',
+            'setting/ipManager',
+            'setting/messenger',
+            'user/login',
+            'user/logout',
+            // Render the static asset files for embedding.
+            // Since 2.0, not link to shieldon-io.github.io anymore.
+            'asset/css',
+            'asset/js',
+            'asset/favicon',
+            'asset/logo',
+        ];
     }
 
     /**

@@ -177,7 +177,7 @@ return [
     'overview_thread_rows' => '列',
     'overview_thread_table' => '表',
     'overview_text_reset_data_circle_1' => '您想要重設當前的資料週期嗎？',
-    'overview_text_reset_data_circle_2' => '進行這個動作將會移除所有目前資料週期的記錄，以及重建資料表。',
+    'overview_text_reset_data_circle_2' => '進行這個動作將會移除所有目前資料週期的記錄，以及重建資料表。您在控制台的狀態將被登出。',
     'overview_text_reset_action_logs' => '您想要重設當前的訪客動作記錄嗎？',
     'overview_heading_messenger' => '通訊器模組',
     'overview_label_telegram' => 'Telegram',

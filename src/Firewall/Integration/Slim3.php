@@ -77,7 +77,7 @@ class Slim3
      */
     public function __invoke(Request $request, Response $response, $next): Response
     {
-        $firewall = new Firewall($request, $response);
+        $firewall = new Firewall($request);
         $firewall->configure($this->storage);
         $firewall->controlPanel($this->panelUri);
 

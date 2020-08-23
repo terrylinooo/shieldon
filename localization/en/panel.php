@@ -199,7 +199,7 @@ return [
     'overview_thread_rows' => 'Rows',
     'overview_thread_table' => 'Table',
     'overview_text_reset_data_circle_1' => 'Would you like to reset current data circle?',
-    'overview_text_reset_data_circle_2' => 'Performing this action will remove all data from current data circle and rebuild data tables.',
+    'overview_text_reset_data_circle_2' => 'Performing this action will remove all data from current data circle and rebuild data tables. You will be logged out from the control panel.',
     'overview_text_reset_action_logs' => 'Would you like to remove all action logs?',
     'overview_heading_messenger' => 'Messenger Modules',
     'overview_label_telegram' => 'Telegram',
