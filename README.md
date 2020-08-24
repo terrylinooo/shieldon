@@ -34,14 +34,14 @@ This is basic concepts about how Shieldon works.
 
 ![](https://i.imgur.com/pRbI7gg.png)
 
- The network-layer firewall such as CloudFlare.
+- The network-layer firewall such as CloudFlare.
 - The system-layer firewall such as iptables module.
 - To use firewall software in the Web application layer, we are capable of implementing Shieldon in a very early stage of your APP, mostly just after Composer autoloader, or at the first place of middleware-piepline.
 - Shieldon analyzes all your HTTP and HTTPS requests.
-- Once Shieldon has detected strange behaviors of a request, blocking and prompting them CAPTCHA to unblock.
-    ![Firewall Dialog 1](https://i.imgur.com/rlsEwSG.png)
+- Once Shieldon has detected strange behaviors of a request, blocking and prompting them CAPTCHA to unblock. 
+![Firewall Dialog 1](https://i.imgur.com/rlsEwSG.png)
 - If a request fails in a row many times (depends on your setting), they will be permanently banned in current data circle.
-    ![Firewall Dialog 2](https://i.imgur.com/Qy1sADw.png)
+![Firewall Dialog 2](https://i.imgur.com/Qy1sADw.png)
 
 - If a request has been permanently banned, but they still access your page, drop them in System-layer firewall - iptables. (You have to set up iptables bridge correctly)
 

@@ -52,6 +52,7 @@ class Panel
      *  ----------------------|---------------------------------------------
      *   __call               | Magic method. Let property can run as a method.
      *   entry                | Initialize the entry point of the control panel
+     *   ::getRoutes          | Get the path string list for all routes.
      *  ----------------------|---------------------------------------------
      */
 
