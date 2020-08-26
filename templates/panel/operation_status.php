@@ -46,7 +46,7 @@ $timezone = '';
                             <?php echo $filter_cookie; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_cookie', 'Check whether visitors can create cookie by JavaScript.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_cookie', 'Check whether visitors can create cookies with JavaScript'); ?></div>
                     <button class="note-code">
                         <?php echo $filters['cookie'] ? '<i class="fas fa-play-circle"></i>' : '<i class="fas fa-stop-circle"></i>'; ?>
                     </button>
@@ -62,7 +62,7 @@ $timezone = '';
                             <?php echo $filter_session; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_session', 'Detect whether multiple sessions created by the same visitor.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_session', 'Detect whether multiple sessions were created by the same visitor.'); ?></div>
                     <button class="note-code">
                         <?php echo $filters['session'] ? '<i class="fas fa-play-circle"></i>' : '<i class="fas fa-stop-circle"></i>'; ?>
                     </button>
@@ -78,7 +78,7 @@ $timezone = '';
                             <?php echo $filter_frequency; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_frequency', 'Check how often does a visitor view the pages.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_frequency', 'Check how often a visitor views pages.'); ?></div>
                     <button class="note-code">
                         <?php echo $filters['frequency'] ? '<i class="fas fa-play-circle"></i>' : '<i class="fas fa-stop-circle"></i>'; ?>
                     </button>
@@ -136,7 +136,7 @@ $timezone = '';
                             <?php echo $component_trustedbot; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'operation_note_trustedbot', 'Allow popular search engines crawl your website.'); ?></div>
+                    <div class="note"><?php _e('panel', 'operation_note_trustedbot', 'Allow popular search engines to crawl your website.'); ?></div>
                     <button class="note-code">
                         <?php echo $components['TrustedBot'] ? '<i class="fas fa-play-circle"></i>' : '<i class="fas fa-stop-circle"></i>'; ?>
                     </button>
@@ -152,7 +152,7 @@ $timezone = '';
                             <?php echo $component_header; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'operation_note_header', 'Analyze header information from visitors.'); ?></div>
+                    <div class="note"><?php _e('panel', 'operation_note_header', 'Analyze visitors header information.'); ?></div>
                     <button class="note-code">
                         <?php echo $components['Header'] ? '<i class="fas fa-play-circle"></i>' : '<i class="fas fa-stop-circle"></i>'; ?>
                     </button>
@@ -168,7 +168,7 @@ $timezone = '';
                             <?php echo $component_rdns; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'operation_note_rdns', 'Identify IP resolved hostname (RDNS) from visitors.'); ?></div>
+                    <div class="note"><?php _e('panel', 'operation_note_rdns', 'Identify visitor IP resolved hostname (RDNS).'); ?></div>
                     <button class="note-code">
                         <?php echo $components['Rdns'] ? '<i class="fas fa-play-circle"></i>' : '<i class="fas fa-stop-circle"></i>'; ?>
                     </button>

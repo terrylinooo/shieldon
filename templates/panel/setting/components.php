@@ -104,7 +104,7 @@ use function Shieldon\Firewall\_e;
             <td class="r1"></td>
             <td class="r2">
                 <p>
-                    <?php _e('panel', 'setting_note_component_header_1', 'Analyze header information from visitors.'); ?>
+                    <?php _e('panel', 'setting_note_component_header_1', 'Analyze visitors header information.'); ?>
                 </p>
             </td>
         </tr>
@@ -143,7 +143,7 @@ use function Shieldon\Firewall\_e;
             <td class="r1"></td>
             <td class="r2">
                 <p>
-                    <?php _e('panel', 'setting_note_component_useragent_1', 'Analyze user-agent information from visitors.'); ?>
+                    <?php _e('panel', 'setting_note_component_useragent_1', 'Analyze visitors user-agent information.'); ?>
                 </p>
             </td>
         </tr>

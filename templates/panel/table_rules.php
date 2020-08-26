@@ -35,9 +35,8 @@ $timezone = '';
             <?php _e('panel', 'table_heading_rule', 'Rule Table'); ?>
         </div>
         <div class="so-datatable-description">
-            <?php _e('panel', 'table_description_rule_1', 'It is the place where the Shieldon temporarily allows or denies users in the current cycle. '); ?><br />
-            <?php _e('panel', 'table_description_rule_2', 'All processes are automatic and instant, you can ignore that.'); ?><br />
-            <?php _e('panel', 'table_description_rule_3', 'Rule table will be reset when new cycle begins.'); ?>
+            <?php _e('panel', 'table_description_rule_1', 'Shieldon temporarily allows or denies access to users in this table. '); ?><br />
+            <?php _e('panel', 'table_description_rule_3', 'Rule table will be reset when a new cycle begins.'); ?>
         </div>
         <div class="so-rule-form iptables-form">
             <form method="post">

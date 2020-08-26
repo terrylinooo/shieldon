@@ -194,7 +194,7 @@ use function Shieldon\Firewall\_e;
 <div class="section-body my-0">
     <table class="setting-table">
         <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_dialog_user_amount', 'Online User Amount'); ?></td>
+            <td class="r1"><?php _e('panel', 'setting_label_dialog_user_amount', 'Online user count'); ?></td>
             <td class="r2">
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="dialog_info_disclosure__online_user_amount" value="off" />

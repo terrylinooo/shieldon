@@ -32,9 +32,9 @@ use function Shieldon\Firewall\_e;
 <p><?php _e('panel', 'messenger_desc_events', 'When they occur, what are the events that you would like to receive notifications sent by Messenger modules.'); ?></p>
     <table class="setting-table">
         <tr>
-            <td class="r1"><?php _e('panel', 'messenger_label_event_1', 'Ban a user permanently in current data cycle.'); ?></td>
+            <td class="r1"><?php _e('panel', 'messenger_label_event_1', 'Ban user in current data cycle.'); ?></td>
             <td class="r2">
-                <p><?php _e('panel', 'messenger_desc_event_1', 'This event is triggered typically when a user fails too many times due to invalid CAPTCHA in a row.'); ?></p>
+                <p><?php _e('panel', 'messenger_desc_event_1', 'This event is typically triggered when a user fails too many CAPTCHAs in a row.'); ?></p>
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="events__failed_attempts_in_a_row__data_circle__messenger" value="off" />
                     <input type="checkbox" name="events__failed_attempts_in_a_row__data_circle__messenger" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.data_circle.messenger', true); ?>>
@@ -48,9 +48,9 @@ use function Shieldon\Firewall\_e;
 <div class="section-body my-0" data-parent="daemon-section">
     <table class="setting-table">
         <tr>
-            <td class="r1"><?php _e('panel', 'messenger_label_event_2', 'Ban a user permanently in system firwall'); ?></td>
+            <td class="r1"><?php _e('panel', 'messenger_label_event_2', 'Permanently ban user in system firewall'); ?></td>
             <td class="r2">
-                <p><?php _e('panel', 'messenger_desc_event_2', 'This event is triggered typically when a user is already banned permanently in curent data cycle, but they are still access the warning pages too many times in a row, we can confirm that they are malicious bots.'); ?></p>
+                <p><?php _e('panel', 'messenger_desc_event_2', 'This event is typically triggered when a user is already banned in the current data cycle, but they still access the warning pages too many times in a row - we can conclude that they are malicious bots.'); ?></p>
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="events__failed_attempts_in_a_row__system_firewall__messenger" value="off" />
                     <input type="checkbox" name="events__failed_attempts_in_a_row__system_firewall__messenger" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.system_firewall.messenger', true); ?>>
