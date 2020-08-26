@@ -12,6 +12,11 @@ Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and usefu
 - GitHub repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
 - WordPress plugin: [https://wordpress.org/plugins/wp-shieldon/](https://wordpress.org/plugins/wp-shieldon/)
 
+## Demo
+
+- Before you installing Shieldon, you can try the online [DEMO](https://shieldon.io/demo/) of the firewall control panel, the user and password both are `demo`.
+- Try temporarily blocked by Shieldon, refreshing serveral times on [shieldon.io](https://shieldon.io/), then you will see a dialog asking you for solving Google ReCaptcha to get unblocked.
+
 ## Installation
 
 Install via PHP Composer.
