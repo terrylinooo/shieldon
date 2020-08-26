@@ -55,7 +55,9 @@ use const PHP_OS;
 /**
  * This value will be only displayed on Firewall Panel.
  */
-define('SHIELDON_FIREWALL_VERSION', '2.0');
+const SHIELDON_FIREWALL_VERSION = '2.0';
+
+const SESSION_ID_SALT = 'ej;1zj47vu;3e;31g642941ek62au/41';
 
 /**
  * Just use PSR-4 autoloader to load those helper functions.
@@ -87,7 +89,7 @@ class Helpers
  *  unset_superglobal     | Unset superglobal variables.
  *  get_ip                | Get an IP address from container.
  *  set_ip                | Set an IP address to container.
- *  get_microtimesamp     | Get the microtimesamp.
+ *  get_microtimestamp    | Get the microtimesamp.
  *  get_session_instance  | Get a session instance.
  *  create_new_session_i- | Create a new session instance for current user.
  *  n stance              |
@@ -219,14 +221,15 @@ function include_i18n_file(string $lang, string $filename): array
     $lang = str_replace('-', '_', $lang);
 
     if (stripos($lang, 'zh_') !== false) {
-        if (stripos($lang, 'zh_CN') !== false) {
-            $lang = 'zh_CN';
-        } else {
-            $lang = 'zh';
-        }
+        $lang = stripos($lang, 'zh_CN') === false ? 'zh' : 'zh_CN';
     }
 
-    $file = __DIR__ . '/../../localization/' . $lang . '/' . $filename . '.php';
+    $file = sprintf(
+        '%s/localization/%s/%s.php',
+        dirname(__DIR__, 2),
+        $lang,
+        $filename
+    );
     
     if (file_exists($file)) {
         $content = include $file;
@@ -244,14 +247,13 @@ function include_i18n_file(string $lang, string $filename): array
  */
 function mask_string($str): string
 {
-    if (filter_var($str, FILTER_VALIDATE_IP) !== false) {
+    if (filter_var($str, FILTER_VALIDATE_IP) === false) {
+        $masked =  str_repeat('*', strlen($str) - 6) . substr($str, -6);
+    } else {
         $tmp = explode('.', $str);
         $tmp[0] = '*';
         $tmp[1] = '*';
         $masked = implode('.', $tmp);
-
-    } else {
-        $masked =  str_repeat('*', strlen($str) - 6) . substr($str, -6);
     }
 
     return $masked;
@@ -268,20 +270,21 @@ function mask_string($str): string
  */
 function get_cpu_usage(): string
 {
-    $return = '';
+    $cpuUsage = '';
 
     // This feature is not available on Windows platform.
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        return $return;
+        return $cpuUsage;
     }
 
     $cpuLoads = @sys_getloadavg();
     $cpuCores = trim(@shell_exec("grep -P '^processor' /proc/cpuinfo|wc -l"));
 
     if (!empty($cpuCores) && !empty($cpuLoads)) {
-        $return = round($cpuLoads[1] / ($cpuCores + 1) * 100, 0) . '%';
+        $cpuUsage = round($cpuLoads[1] / ($cpuCores + 1) * 100, 0) . '%';
     }
-    return $return;
+
+    return $cpuUsage;
 }
 
 /**
@@ -294,20 +297,21 @@ function get_cpu_usage(): string
  */
 function get_memory_usage(): string
 {
-    $return = '';
+    $memoryUsage = '';
 
     // This feature is not available on Windows platform.
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        return $return;
+        return $memoryUsage;
     }
 
     $freeResult = explode("\n", trim(@shell_exec('free')));
 
     if (!empty($freeResult)) {
         $parsed = preg_split("/[\s]+/", $freeResult[1]);
-        $return = round($parsed[2] / $parsed[1] * 100, 0) . '%';
+        $memoryUsage = round($parsed[2] / $parsed[1] * 100, 0) . '%';
     }
-    return $return;
+
+    return $memoryUsage;
 }
 
 /**
@@ -318,12 +322,11 @@ function get_memory_usage(): string
 function get_default_properties(): array
 {
     return [
-
         'time_unit_quota' => [
             's' => 2,
             'm' => 10,
             'h' => 30,
-            'd' => 60
+            'd' => 60,
         ],
 
         'time_reset_limit'       => 3600,
@@ -332,7 +335,7 @@ function get_default_properties(): array
         'limit_unusual_behavior' => [
             'cookie'  => 5,
             'session' => 5,
-            'referer' => 10
+            'referer' => 10,
         ],
 
         'cookie_name'         => 'ssjd',
@@ -471,7 +474,7 @@ function unset_global_cookie($name = null): void
             set_response(
                 get_response()->withHeader(
                     'Set-Cookie',
-                    "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+                    "{$name}=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
                 )
             );
         }
@@ -492,7 +495,7 @@ function unset_global_cookie($name = null): void
     set_response(
         get_response()->withHeader(
             'Set-Cookie',
-            "$name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
+            "{$name}=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0"
         )
     );
     // Prevent direct access to superglobal.
@@ -629,16 +632,16 @@ function set_ip(string $ip)
 */
 
 /**
- * Get the microtimesamp.
+ * Get the microtimestamp.
  * 
  * @return string
  */
-function get_microtimesamp()
+function get_microtimestamp()
 {
-    $microtimesamp = explode(' ', microtime());
-    $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
+    $microtimestamp = explode(' ', microtime());
+    $microtimestamp = $microtimestamp[1] . str_replace('0.', '', $microtimestamp[0]);
 
-    return $microtimesamp;
+    return $microtimestamp;
 }
 
 /*
@@ -718,7 +721,7 @@ function get_mock_session($sessionId): Session
         $data['id'] = $sessionId;
         $data['ip'] = get_ip();
         $data['time'] = time();
-        $data['microtimesamp'] = get_microtimesamp();
+        $data['microtimestamp'] = get_microtimestamp();
         $data['data'] = '{}';
     
         $json = json_encode($data);
@@ -765,12 +768,7 @@ function get_session_id(): string
 
     if (!$sessionId) {
         $cookie = get_request()->getCookieParams();
-
-        if (!empty($cookie['_shieldon'])) {
-            $sessionId = $cookie['_shieldon'];
-        } else {
-            $sessionId = create_session_id();
-        }
+        $sessionId = empty($cookie['_shieldon']) ? create_session_id() : $cookie['_shieldon'];
     }
 
     return $sessionId;
@@ -783,7 +781,5 @@ function get_session_id(): string
  */
 function create_session_id(): string
 {
-    $hash =  rand() . 'ej;1zj47vu;3e;31g642941ek62au/41' . time();
-
-    return md5($hash);
+    return md5(rand() . SESSION_ID_SALT . time());
 }
