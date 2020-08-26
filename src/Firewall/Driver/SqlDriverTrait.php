@@ -198,7 +198,7 @@ trait SqlDriverTrait
     {
         $results = [];
 
-        $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY microtimesamp ASC';
+        $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY microtimestamp ASC';
 
         $query = $this->db->prepare($sql);
 
