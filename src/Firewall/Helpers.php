@@ -53,9 +53,9 @@ use function trim;
 use const PHP_OS;
 
 /**
- * This value will be only displayed on Firewall Panel.
+ * This global constant will be only displayed on Firewall Panel.
  */
-const SHIELDON_FIREWALL_VERSION = '2.0';
+define('SHIELDON_FIREWALL_VERSION', '2.0');
 
 const SESSION_ID_SALT = 'ej;1zj47vu;3e;31g642941ek62au/41';
 
