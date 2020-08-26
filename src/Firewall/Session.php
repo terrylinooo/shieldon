@@ -29,7 +29,7 @@ use Shieldon\Firewall\Log\SessionLogger;
 use RuntimeException;
 use function Shieldon\Firewall\create_session_id;
 use function Shieldon\Firewall\get_ip;
-use function Shieldon\Firewall\get_microtimesamp;
+use function Shieldon\Firewall\get_microtimestamp;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\set_response;
@@ -300,7 +300,7 @@ class Session
         $data['id'] = self::$id;
         $data['ip'] = get_ip();
         $data['time'] = time();
-        $data['microtimesamp'] = get_microtimesamp();
+        $data['microtimesamp'] = get_microtimestamp();
         $data['data'] = json_encode($this->data['parsed_data']);
 
         $this->driver->save(self::$id, $data, 'session');
@@ -382,7 +382,7 @@ class Session
         $data['id'] = self::$id;
         $data['ip'] = get_ip();
         $data['time'] = time();
-        $data['microtimesamp'] = get_microtimesamp();
+        $data['microtimestamp'] = get_microtimestamp();
 
         // This field is a JSON string.
         $data['data'] = '{}';
