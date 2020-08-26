@@ -263,7 +263,7 @@ class ShieldonTestCase extends TestCase
         $data['id'] = $sessionId;
         $data['ip'] = '192.168.95.1';
         $data['time'] = '1597028827';
-        $data['microtimesamp'] = '159702882767804400';
+        $data['microtimestamp'] = '159702882767804400';
         $data['parsed_data']['shieldon_ui_lang'] = 'en';
         $data['parsed_data']['shieldon_user_login'] = true;
 
