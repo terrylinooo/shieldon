@@ -487,7 +487,7 @@ class SqlDriverProvider extends DriverProvider
                     `id` varchar(40) NOT NULL,
                     `ip` varchar(46) NOT NULL,
                     `time` int(10) UNSIGNED NOT NULL,
-                    `microtimesamp` bigint(20) UNSIGNED NOT NULL,
+                    `microtimestamp` bigint(20) UNSIGNED NOT NULL,
                     `data` blob,
                     PRIMARY KEY (`id`)
                 ) ENGINE={$this->tableDbEngine} DEFAULT CHARSET=latin1;
