@@ -54,13 +54,13 @@ jobs:
           run: sudo /etc/init.d/mysql start
           
         - name: Mysql - Create database.
-          run: sudo mysql -u root -e 'CREATE DATABASE shieldon_unittest;'
+          run: sudo mysql -u root -p taiwan -e 'CREATE DATABASE shieldon_unittest;'
 
         - name: Mysql - Create user.
-          run: sudo mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
+          run: sudo mysql -u root -p taiwan -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
           
         - name: Mysql - Grant permission.
-          run: sudo mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
+          run: sudo mysql -u root -p taiwan -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
   
         - name: Install dependencies
           run: composer install --prefer-dist --no-interaction --dev
