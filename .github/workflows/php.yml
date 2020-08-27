@@ -19,11 +19,6 @@ jobs:
  
         mysql:
           image: mysql:5.7
-          env:
-            MYSQL_USER: shieldon
-            MYSQL_PASSWORD: taiwan
-            MYSQL_DATABASE: shieldon_unittest
-            MYSQL_ROOT_PASSWORD: taiwan
           ports:
             - 3306/tcp
           options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -47,11 +42,20 @@ jobs:
         - name: Create a folder for testing.
           run: sudo mkdir /home/runner/work/shieldon/shieldon/tmp
         
-        - name: Make folder wriable.
+        - name: Make folder writable.
           run: sudo chmod 777 /home/runner/work/shieldon/shieldon/tmp
             
-        - name: Start mysql service
+        - name: Start mysql service.
           run: sudo /etc/init.d/mysql start
+          
+        - name: Mysql - Create database.
+          run: sudo mysql -u root -e 'CREATE DATABASE shieldon_unittest;'
+
+        - name: Mysql - Create user.
+          run: sudo mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
+          
+        - name: Mysql - Grant permission.
+          run: sudo mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
   
         - name: Install dependencies
           run: composer install --prefer-dist --no-interaction --dev
