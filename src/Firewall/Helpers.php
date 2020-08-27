@@ -87,7 +87,7 @@ class Helpers
  *  unset_superglobal     | Unset superglobal variables.
  *  get_ip                | Get an IP address from container.
  *  set_ip                | Set an IP address to container.
- *  get_microtimesamp     | Get the microtimesamp.
+ *  get_microtimestamp     | Get the microtimestamp.
  *  get_session_instance  | Get a session instance.
  *  create_new_session_i- | Create a new session instance for current user.
  *  n stance              |
@@ -629,16 +629,16 @@ function set_ip(string $ip)
 */
 
 /**
- * Get the microtimesamp.
+ * Get the microtimestamp.
  * 
  * @return string
  */
-function get_microtimesamp()
+function get_microtimestamp()
 {
-    $microtimesamp = explode(' ', microtime());
-    $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
+    $microtimestamp = explode(' ', microtime());
+    $microtimestamp = $microtimestamp[1] . str_replace('0.', '', $microtimestamp[0]);
 
-    return $microtimesamp;
+    return $microtimestamp;
 }
 
 /*
@@ -718,7 +718,7 @@ function get_mock_session($sessionId): Session
         $data['id'] = $sessionId;
         $data['ip'] = get_ip();
         $data['time'] = time();
-        $data['microtimesamp'] = get_microtimesamp();
+        $data['microtimestamp'] = get_microtimestamp();
         $data['data'] = '{}';
     
         $json = json_encode($data);

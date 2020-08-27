@@ -94,6 +94,13 @@ trait FirewallTrait
     protected $channel = '';
 
     /**
+     * Version number.
+     *
+     * @var string
+     */
+    protected $version = '2.0.1';
+
+    /**
      * Get the Shieldon instance.
      *
      * @return object
@@ -259,7 +266,13 @@ trait FirewallTrait
     {
         $driverType = (string) $this->getOption('driver_type');
 
-        return $this->directory . '/' . $this->channel .  '_' . $driverType . '_' . $this->checkpoint;
+        $channel = '';
+
+        if (!empty($this->channel)) {
+            $channel = '_' . $this->channel;
+        }
+
+        return $this->directory . '/' . $this->version . $channel .  '_' . $driverType . '_' . $this->checkpoint;
     }
 
     /**

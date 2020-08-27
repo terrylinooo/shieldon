@@ -52,14 +52,14 @@ class ActionLoggerTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = md5((string) time());
         $data['action_code'] = $kernel::ACTION_TEMPORARILY_DENY;
-        $data['timesamp'] = time();
+        $data['timestamp'] = time();
 
         $logger->add($data);
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = md5((string) time());
         $data['action_code'] = $kernel::ACTION_UNBAN;
-        $data['timesamp'] = time() + 4;
+        $data['timestamp'] = time() + 4;
 
         $logger->add($data);
 
@@ -67,7 +67,7 @@ class ActionLoggerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertEquals($data['ip'], $results[1]['ip']);
         $this->assertEquals($data['action_code'], $results[1]['action_code']);
-        $this->assertEquals($data['timesamp'], $results[1]['timesamp']);
+        $this->assertEquals($data['timestamp'], $results[1]['timestamp']);
 
         $results = $logger->get('19890604', date('Ymd'));
 

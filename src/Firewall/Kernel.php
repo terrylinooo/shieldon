@@ -683,7 +683,7 @@ class Kernel
         $logData['ip'] = $ip ?: $this->getIp();
         $logData['session_id'] = get_session_instance()->getId();
         $logData['action_code'] = $actionCode;
-        $logData['timesamp'] = time();
+        $logData['timestamp'] = time();
 
         $this->logger->add($logData);
     }

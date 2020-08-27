@@ -104,7 +104,7 @@ class RedisDriver extends DriverProvider
             $content = json_decode($content, true);
 
             if ($type === 'session') {
-                $sort = $content['microtimesamp'] . '.' . $content['id']; 
+                $sort = $content['microtimestamp'] . '.' . $content['id']; 
             } else {
                 $sort = $content['log_ip'];
             }
@@ -112,7 +112,7 @@ class RedisDriver extends DriverProvider
             $results[$sort] = $content;   
         }
 
-        // Sort by ascending timesamp (microtimesamp).
+        // Sort by ascending timestamp (microtimestamp).
         ksort($results);
 
         return $results;

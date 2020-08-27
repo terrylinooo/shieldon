@@ -79,65 +79,65 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
         $data['action_code'] = $kernel::LOG_PAGEVIEW;
-        $data['timesamp'] = $this->mockTimesamp(1, $type);
+        $data['timestamp'] = $this->mockTimesamp(1, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 1
 
-        $data['timesamp'] = $this->mockTimesamp(1, $type);
+        $data['timestamp'] = $this->mockTimesamp(1, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 2
 
-        $data['timesamp'] = $this->mockTimesamp(3, $type);
+        $data['timestamp'] = $this->mockTimesamp(3, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 3
 
-        $data['timesamp'] = $this->mockTimesamp(5, $type);
+        $data['timestamp'] = $this->mockTimesamp(5, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 4
 
-        $data['timesamp'] = $this->mockTimesamp(7, $type);
+        $data['timestamp'] = $this->mockTimesamp(7, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 5
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
         $data['action_code'] = $kernel::ACTION_TEMPORARILY_DENY;
-        $data['timesamp'] = $this->mockTimesamp(9, $type);
+        $data['timestamp'] = $this->mockTimesamp(9, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 5, temporarily ban: 1, stuck in captcha: 1, captcha falied: 1
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
         $data['action_code'] = $kernel::LOG_CAPTCHA;
-        $data['timesamp'] = $this->mockTimesamp(11, $type);
+        $data['timestamp'] = $this->mockTimesamp(11, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 5, temporarily ban: 1, stuck in captcha: 2, captcha falied: 2
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
         $data['action_code'] = $kernel::LOG_CAPTCHA;
-        $data['timesamp'] = $this->mockTimesamp(13, $type);
+        $data['timestamp'] = $this->mockTimesamp(13, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 5, temporarily ban: 1, stuck in captcha: 3, captcha falied: 3
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
         $data['action_code'] = $kernel::ACTION_UNBAN;
-        $data['timesamp'] = $this->mockTimesamp(15, $type);
+        $data['timestamp'] = $this->mockTimesamp(15, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 5, temporarily ban: 1, stuck in captcha: 3, captcha falied: 2, captcha soloved: 1, unban: 1
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
         $data['action_code'] = $kernel::LOG_PAGEVIEW;
-        $data['timesamp'] = $this->mockTimesamp(17, $type);
+        $data['timestamp'] = $this->mockTimesamp(17, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 6, temporarily ban: 1, stuck in captcha: 3, captcha falied: 2, captcha soloved: 1, unban: 1
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = 'lo1hk46k6io3vdugamg762c6m1';
         $data['action_code'] = $kernel::LOG_PAGEVIEW;
-        $data['timesamp'] = $this->mockTimesamp(1, $type);
+        $data['timestamp'] = $this->mockTimesamp(1, $type);
 
         $logger->add($data); // 127.0.0.2 - pagview: 1 (7)
         $logger->add($data); // 127.0.0.2 - pagview: 2 (8)
@@ -146,49 +146,49 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = 'lo1hk46k6io3vdugamg762c6m1';
         $data['action_code'] = $kernel::ACTION_TEMPORARILY_DENY;
-        $data['timesamp'] = $this->mockTimesamp(2, $type);
+        $data['timestamp'] = $this->mockTimesamp(2, $type);
 
         $logger->add($data); // 127.0.0.2 - pagview: 3 (9), temporarily ban: 1 (2), , stuck in captcha: 1 (4), captcha falied: 1 (3), captcha soloved: 0 (1), unban: 0 (1)
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
         $data['action_code'] = $kernel::LOG_CAPTCHA; // display captcha.
-        $data['timesamp'] = $this->mockTimesamp(3, $type);
+        $data['timestamp'] = $this->mockTimesamp(3, $type);
 
         $logger->add($data); // 127.0.0.2 - pagview: 3 (9), temporarily ban: 2 (3), , stuck in captcha: 2 (5), captcha falied: 2 (4), captcha soloved: 0 (1), unban: 0 (1)
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = 'lo1hk46k6io3vdugamg762c6m1';
         $data['action_code'] = $kernel::ACTION_UNBAN;
-        $data['timesamp'] = $this->mockTimesamp(4, $type);
+        $data['timestamp'] = $this->mockTimesamp(4, $type);
 
         $logger->add($data); // 127.0.0.2 - pagview: 3 (9), temporarily ban: 2 (3), , stuck in captcha: 2 (5), captcha falied: 1 (3), captcha soloved: 1 (2), unban: 1 (2)
 
         $data['ip'] = '32.10.1.2';
         $data['session_id'] = '3as8ukdfpdgred2q4c2b6r4bgm';
         $data['action_code'] = $kernel::ACTION_DENY;
-        $data['timesamp'] = $this->mockTimesamp(5, $type);
+        $data['timestamp'] = $this->mockTimesamp(5, $type);
 
         $logger->add($data); // 32.10.1.2 - ban 1
 
         $data['ip'] = '32.10.1.2';
         $data['session_id'] = '3as8ukdfpdgred2q4c2b6r4bgm';
         $data['action_code'] = $kernel::ACTION_DENY;
-        $data['timesamp'] = $this->mockTimesamp(6, $type);
+        $data['timestamp'] = $this->mockTimesamp(6, $type);
 
         $logger->add($data); // 32.10.1.2 - ban 1
 
         $data['ip'] = '32.10.1.2';
         $data['session_id'] = '3as8ukdfpdgred2q4c2b6r4bgm';
         $data['action_code'] = $kernel::LOG_BLACKLIST;
-        $data['timesamp'] = $this->mockTimesamp(6, $type);
+        $data['timestamp'] = $this->mockTimesamp(6, $type);
 
         $logger->add($data); // 32.10.1.2 - ban 1, blacklist: 1
 
         $data['ip'] = '32.10.1.3';
         $data['session_id'] = '2q4c2b6r4hk43as8ukdfpdgred';
         $data['action_code'] = $kernel::LOG_LIMIT;
-        $data['timesamp'] = $this->mockTimesamp(6, $type);
+        $data['timestamp'] = $this->mockTimesamp(6, $type);
 
         $logger->add($data); // 32.10.1.2 - ban 1, blacklist: 1
 

@@ -114,7 +114,7 @@ final class ActionLogger
         $data[0] = $record['ip']          ?? 'null';
         $data[1] = $record['session_id']  ?? 'null';
         $data[2] = $record['action_code'] ?? 'null';
-        $data[3] = $record['timesamp']    ?? 'null';
+        $data[3] = $record['timestamp']    ?? 'null';
 
         file_put_contents($this->filePath, implode(',', $data) . "\n", FILE_APPEND | LOCK_EX);
     }
@@ -261,7 +261,7 @@ final class ActionLogger
                             'ip'          => $data[0],
                             'session_id'  => $data[1],
                             'action_code' => $data[2],
-                            'timesamp'    => $data[3],
+                            'timestamp'    => $data[3],
                         ];
                     }
 
@@ -318,7 +318,7 @@ final class ActionLogger
                                 'ip'          => $data[0],
                                 'session_id'  => $data[1],
                                 'action_code' => $data[2],
-                                'timesamp'    => $data[3],
+                                'timestamp'    => $data[3],
                             ];
                         }
                         unset($line, $data);

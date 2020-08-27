@@ -137,7 +137,7 @@ class DriverProvider extends AbstractDriver
                     'session'  => 'string', 
                     'hostname' => 'string', 
 
-                    // timesamp while visting first time.
+                    // timestamp while visting first time.
                     'first_time_s'    => 'int',
                     'first_time_m'    => 'int',
                     'first_time_h'    => 'int',

@@ -120,7 +120,7 @@ class FileDriver extends DriverProvider
                     $content = json_decode(file_get_contents($file->getPath() . '/' . $file->getFilename()), true);
 
                     if ($type === 'session') {
-                        $sort = $content['microtimesamp'] . '.' . $file->getFilename(); 
+                        $sort = $content['microtimestamp'] . '.' . $file->getFilename(); 
                     } else {
                         $sort = $file->getMTime() . '.' . $file->getFilename();
                     }
@@ -129,7 +129,7 @@ class FileDriver extends DriverProvider
             }
             unset($it, $files);
 
-            // Sort by ascending timesamp (microtimesamp).
+            // Sort by ascending timestamp (microtimestamp).
             ksort($results);
         }
 
