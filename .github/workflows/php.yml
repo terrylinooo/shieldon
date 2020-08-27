@@ -16,17 +16,6 @@ jobs:
       name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
 
       services:
- 
-        mysql:
-          image: mysql:5.7
-          env:	
-            MYSQL_USER: shieldon	
-            MYSQL_PASSWORD: taiwan	
-            MYSQL_DATABASE: shieldon_unittest	
-            MYSQL_ROOT_PASSWORD: taiwan
-          ports:
-            - 3306/tcp
-          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
         redis:
           image: redis
@@ -50,17 +39,12 @@ jobs:
         - name: Make folder writable.
           run: sudo chmod 777 /home/runner/work/shieldon/shieldon/tmp
             
-        - name: Start mysql service.
-          run: sudo /etc/init.d/mysql start
-          
-        - name: Mysql - Create database.
-          run: sudo mysql -u root -p taiwan -e 'CREATE DATABASE shieldon_unittest;'
-
-        - name: Mysql - Create user.
-          run: sudo mysql -u root -p taiwan -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
-          
-        - name: Mysql - Grant permission.
-          run: sudo mysql -u root -p taiwan -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
+        - name: Setup MySQL
+        - uses: mirromutth/mysql-action@v1.1
+          with:
+            mysql database: 'shieldon_unittest' 
+            mysql user: 'shieldon'
+            mysql password: 'taiwan'
   
         - name: Install dependencies
           run: composer install --prefer-dist --no-interaction --dev
