@@ -37,12 +37,12 @@ jobs:
       steps:
         - uses: actions/checkout@v2
 
-        - name: Setup PHP
-          uses: shivammathur/setup-php@v1
+        - name: Setup PHP with Xdebug
+          uses: shivammathur/setup-php@v2
           with:
             php-version: ${{ matrix.php-versions }}
             extensions: mbstring, pdo, pdo_mysql, intl, zip, redis
-            coverage: none
+            coverage: xdebug
 
         - name: Install dependencies
           run: composer install --prefer-dist --no-interaction --dev
