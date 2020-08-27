@@ -361,7 +361,7 @@ trait SetupTrait
             // @codeCoverageIgnoreEnd
         }
 
-        $this->kernel->setIp($ip);
+        $this->kernel->setIp($ip, true);
     }
 
     /**
