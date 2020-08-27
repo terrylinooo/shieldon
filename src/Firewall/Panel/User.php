@@ -151,11 +151,13 @@ class User extends BaseController
             unset_superglobal('shieldon_panel_lang', 'session');
         }
 
+        // @codeCoverageIgnoreStart
         if ($this->kernel->psr7) {
             unset_superglobal('_shieldon', 'cookie');
         } else {
             setcookie('_shieldon', '', time() - 3600, '/');
         }
+        // // @codeCoverageIgnoreEnd
 
         return $response->withHeader('Location', $this->url('user/login'));
     }
