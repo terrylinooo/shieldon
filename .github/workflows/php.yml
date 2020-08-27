@@ -15,6 +15,25 @@ jobs:
           php-versions: ['7.1', '7.2', '7.3']
       name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
 
+      services:
+ 
+        mysql:
+          image: mysql:5.7
+          env:
+            MYSQL_USER: shieldon
+            MYSQL_PASSWORD: taiwan
+            MYSQL_DATABASE: shieldon_unittest
+            MYSQL_ROOT_PASSWORD: taiwan
+          ports:
+            - 3306/tcp
+          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+        redis:
+          image: redis
+          ports:
+            - 6379/tcp
+          options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        
       steps:
         - uses: actions/checkout@v2
 
@@ -30,15 +49,6 @@ jobs:
 
         - name: Update packages
           run: composer self-update
-
-        - name: Create DB.
-          run: mysql -u root -e 'CREATE DATABASE shieldon_unittest;'
-
-        - name: Create user.
-          run: mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
-
-        - name: Grant permission.
-          run: -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
 
         - name: Run tests.
           run: composer test
