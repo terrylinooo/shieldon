@@ -117,14 +117,19 @@ class FileDriver extends DriverProvider
             foreach ($files as $file) {
                 if ($file->isFile()) {
 
-                    $content = json_decode(file_get_contents($file->getPath() . '/' . $file->getFilename()), true);
+                    $filename = $file->getPath() . '/' . $file->getFilename();
+                    $fileContent = file_get_contents($filename);
 
-                    if ($type === 'session') {
-                        $sort = $content['microtimestamp'] . '.' . $file->getFilename(); 
-                    } else {
-                        $sort = $file->getMTime() . '.' . $file->getFilename();
+                    if (!empty($fileContent)) {
+                        $content = json_decode($fileContent, true);
+
+                        if ($type === 'session') {
+                            $sort = $content['microtimestamp'] . '.' . $file->getFilename(); 
+                        } else {
+                            $sort = $file->getMTime() . '.' . $file->getFilename();
+                        }
+                        $results[$sort] = $content;
                     }
-                    $results[$sort] = $content;
                 }
             }
             unset($it, $files);

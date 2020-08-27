@@ -101,15 +101,18 @@ class RedisDriver extends DriverProvider
 
         foreach ($keys as $key) {
             $content = $this->redis->get($key);
-            $content = json_decode($content, true);
 
-            if ($type === 'session') {
-                $sort = $content['microtimestamp'] . '.' . $content['id']; 
-            } else {
-                $sort = $content['log_ip'];
+            if (!empty($content)) {
+                $content = json_decode($content, true);
+
+                if ($type === 'session') {
+                    $sort = $content['microtimestamp'] . '.' . $content['id']; 
+                } else {
+                    $sort = $content['log_ip'];
+                }
+    
+                $results[$sort] = $content; 
             }
-
-            $results[$sort] = $content;   
         }
 
         // Sort by ascending timestamp (microtimestamp).
