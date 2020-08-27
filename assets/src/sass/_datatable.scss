@@ -18,6 +18,26 @@
     }
 }
 
+#so-datalog_paginate {
+    margin-top: 10px;
+    padding-top: 10px;
+
+    a {
+        font-size: 14px;
+        border: 1px #dddddd solid;
+        padding: 4px 8px;
+        margin: 3px;
+        border-radius: 3px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #666666;
+            border: 1px #333333 solid;
+            color: #ffffff;
+        }
+    }
+}
+
 // Border between the header (and footer) and the table body
 $table-header-border: 1px solid #dddddd !default;
  
