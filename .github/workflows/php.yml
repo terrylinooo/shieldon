@@ -25,6 +25,9 @@ jobs:
         
       steps:
         - uses: actions/checkout@v2
+        
+        - name: Start MySQL service
+          run: sudo service mysql start
 
         - name: MySQL - Create database.
           run: sudo mysql -uroot -proot -h 127.0.0.1 -e 'CREATE DATABASE shieldon_unittest;'
