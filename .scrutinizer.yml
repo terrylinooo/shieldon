@@ -16,7 +16,6 @@ build:
       version: 7.1.0
       pecl_extensions:
         - redis
-        - xdebug
     mysql: true
     redis: true
   nodes:
@@ -33,9 +32,8 @@ build:
       - mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
       - mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
   tests:
-    before:
-      -
-        command: composer test
+    override:
+      - command: phpunit --coverage-clover=clover.xml
         coverage:
-          file: 'clover.xml'
-          format: 'clover'
+          file: clover.xml
+          format: clover
