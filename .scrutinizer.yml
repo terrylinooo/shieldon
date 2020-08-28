@@ -16,6 +16,7 @@ build:
       version: 7.1.0
       pecl_extensions:
         - redis
+        - xdebug
     mysql: true
     redis: true
   nodes:
@@ -34,7 +35,7 @@ build:
   tests:
     before:
       -
-        command: vendor/bin/phpunit --coverage-clover /home/scrutinizer/build/clover.xml
+        command: composer test
         coverage:
-          file: '/home/scrutinizer/build/clover.xml'
+          file: 'clover.xml'
           format: 'clover'
