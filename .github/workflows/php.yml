@@ -31,7 +31,7 @@ jobs:
           run: sudo mysql -uroot -proot -h 127.0.0.1 -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
 
         - name: Install Redis service.
-          run: sudo install -y redis-server
+          run: sudo apt-get install -y redis-server
 
         - name: Start Redis service.
           run: sudo service redis-server start
