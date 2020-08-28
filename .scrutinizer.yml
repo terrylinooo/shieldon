@@ -34,7 +34,7 @@ build:
   tests:
     before:
       -
-        command: vendor/bin/phpunit --coverage-clover clover.xml
+        command: vendor/bin/phpunit --coverage-clover /home/scrutinizer/build/clover.xml
         coverage:
-          file: 'clover.xml'
+          file: '/home/scrutinizer/build/clover.xml'
           format: 'clover'
