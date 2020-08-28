@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Shieldon Unit Test
 
 on:
   push:
