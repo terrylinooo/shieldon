@@ -33,7 +33,7 @@ build:
       - mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
   tests:
     override:
-      - command: phpunit --coverage-clover=clover.xml
+      - command: composer test
         coverage:
           file: clover.xml
           format: clover
