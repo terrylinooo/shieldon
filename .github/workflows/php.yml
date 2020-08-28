@@ -14,15 +14,7 @@ jobs:
           operating-system: [ubuntu-16.04]
           php-versions: ['7.1', '7.2', '7.3']
       name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
-
-      services:
-
-        redis:
-          image: redis
-          ports:
-            - 6379/tcp
-          options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
-        
+ 
       steps:
         - uses: actions/checkout@v2
         
@@ -38,6 +30,12 @@ jobs:
         - name: MySQL - Grant permission.	
           run: sudo mysql -uroot -proot -h 127.0.0.1 -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
 
+        - name: Install Redis service.
+          run: sudo install -y redis-server
+
+        - name: Start Redis service.
+          run: sudo service redis-server start
+          
         - name: Setup PHP with Xdebug
           uses: shivammathur/setup-php@v2
           with:
