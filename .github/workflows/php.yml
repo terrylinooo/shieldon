@@ -27,13 +27,13 @@ jobs:
         - uses: actions/checkout@v2
 
         - name: MySQL - Create database.
-          run: sudo mysql -uroot -proot -e 'CREATE DATABASE shieldon_unittest;'
+          run: sudo mysql -uroot -proot -h 127.0.0.1 -e 'CREATE DATABASE shieldon_unittest;'
 
         - name: MySQL - Create user.	
-          run: sudo mysql -uroot -proo -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"	
+          run: sudo mysql -uroot -proot -h 127.0.0.1 -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"	
 
         - name: MySQL - Grant permission.	
-          run: sudo mysql -uroot -proo -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
+          run: sudo mysql -uroot -proot -h 127.0.0.1 -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
 
         - name: Setup PHP with Xdebug
           uses: shivammathur/setup-php@v2
