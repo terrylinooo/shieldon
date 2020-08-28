@@ -26,14 +26,14 @@ jobs:
       steps:
         - uses: actions/checkout@v2
 
-        - name: Shutdown Ubuntu MySQL
-          run: sudo service mysql stop
+        - name: MySQL - Create database.
+          run: sudo mysql -uroot -proot -e 'CREATE DATABASE shieldon_unittest;'
 
-        - uses: mirromutth/mysql-action@v1.1
-          with:
-            mysql database: 'shieldon_unittest' 
-            mysql user: 'shieldon'
-            mysql password: 'taiwan'
+        - name: MySQL - Create user.	
+          run: sudo mysql -uroot -proo -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"	
+
+        - name: MySQL - Grant permission.	
+          run: sudo mysql -uroot -proo -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
 
         - name: Setup PHP with Xdebug
           uses: shivammathur/setup-php@v2
