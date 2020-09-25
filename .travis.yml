@@ -5,10 +5,9 @@ language: php
 
 branches:
   only:
-    - 1.x
-    - 2.x
-  except:
     - master
+  except:
+    - development
 
 php:
   - 7.1
@@ -18,6 +17,7 @@ php:
 services:
   - mysql
   - redis
+  - memcached
 
 addons:
   mariadb: '10.0'
@@ -29,6 +29,10 @@ before_script:
   - mysql -u root -e 'CREATE DATABASE shieldon_unittest;'
   - mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
   - mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
+  - pecl install -f apcu
+  - pecl install -f apcu_bc
+  - pecl install -f memcache
+  - pecl install -f memcached
   - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script: composer test
