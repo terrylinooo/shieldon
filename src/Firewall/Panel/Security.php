@@ -62,7 +62,7 @@ class Security extends BaseController
     {
         $postParams = get_request()->getParsedBody();
 
-        if ($this->checkPostParamsExist('url', 'user', 'pass', 'action')) {
+        if ($this->checkPostParamsExist('action', 'submit')) {
 
             $url = $postParams['url'];
             $user = $postParams['user'];

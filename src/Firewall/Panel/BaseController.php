@@ -496,7 +496,7 @@ class BaseController
         $postParams = (array) get_request()->getParsedBody();
 
         foreach ($fields as $field) {
-            if (empty($postParams[$field])) {
+            if (empty($postParams[$field]) && @!is_numeric($postParams[$field])) {
                 return false;
             }
         }
