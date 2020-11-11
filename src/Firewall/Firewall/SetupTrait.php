@@ -313,8 +313,10 @@ trait SetupTrait
         $deniedList = [];
 
         foreach ($ipList as $ip) {
+            if (empty($ip))
+                continue;
 
-            if (0 === strpos($this->kernel->getCurrentUrl(), $ip['url']) ) {
+            if (0 === strpos($this->kernel->getCurrentUrl(), empty($ip['url']) ? '/' : $ip['url']) ) {
 
                 if ('allow' === $ip['rule']) {
                     $allowedList[] = $ip['ip'];
