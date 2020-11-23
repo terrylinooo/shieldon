@@ -41,7 +41,7 @@ This is basic concepts about how Shieldon works.
 
 - The network-layer firewall such as CloudFlare.
 - The system-layer firewall such as iptables module.
-- To use firewall software in the Web application layer, you can implement Shieldon in a very early stage of your APP, mostly just after Composer autoloader, or at the first place of middleware-piepline.
+- To use firewall software in the Web application layer, you can implement Shieldon in a very early stage of your APP, mostly just after Composer autoloader, or at the first place of middleware-pipeline.
 - Shieldon analyzes all your HTTP and HTTPS requests.
 - Once Shieldon has detected strange behaviors of a request, blocking and prompting them CAPTCHA to unblock. 
 ![Firewall Dialog 1](https://i.imgur.com/rlsEwSG.png)
