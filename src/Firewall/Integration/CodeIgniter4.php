@@ -76,7 +76,7 @@ class CodeIgniter4 implements FilterInterface
      *
      * @return mixed
      */
-    public function before(Request $request)
+    public function before(Request $request, $arguments = null)
     {
         if ($request->isCLI()) {
             return;
@@ -113,7 +113,7 @@ class CodeIgniter4 implements FilterInterface
      *
      * @return mixed
      */
-    public function after(Request $request, Response $response)
+    public function after(Request $request, Response $response, $arguments = null)
     {
 
     }
