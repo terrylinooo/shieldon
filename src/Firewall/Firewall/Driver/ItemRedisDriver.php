@@ -57,7 +57,11 @@ class ItemRedisDriver
 
             // Create a Redis instance.
             $redis = new Redis();
-            $redis->connect($host, $port);
+            if (empty($setting['port'])) {
+                $redis->connect($host);
+            } else {
+                $redis->connect($host, $port);
+            }
 
             if (!empty($setting['auth'])) {
                 // @codeCoverageIgnoreStart
