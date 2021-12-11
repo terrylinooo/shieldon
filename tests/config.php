@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  * 
- * Notice: This file is a simple file for configuration, copy this file
- * to your framework's config directory.
+ * Notice: This file is a sample file for configuration.
  */
+
 return [
 
     /*
@@ -37,8 +37,8 @@ return [
 
     'admin' => [
         'user' => 'shieldon_user',
-        'pass' => '$2y$10$x/celAC.L8xBn1UPPq619uG6ZGKoA6yfbjxtAJqAAtB.yLjU3S3Fu',
-        'last_modified' => '1989-06-04',
+        'pass' => 'shieldon_pass',
+        'last_modified' => '2020-02-05',
     ],
 
     /*
@@ -86,7 +86,6 @@ return [
             'user'    => 'shieldon_user',
             'pass'    => '1234',
             'charset' => 'utf8',
-            
         ],
 
         // Data driver: SQLite.
@@ -141,10 +140,10 @@ return [
         'cookie' => [
             'enable' => false,
             'config' => [
-                'cookie_name'   => 'ssjd',
+                'cookie_name' => 'ssjd',
                 'cookie_domain' => '',
-                'cookie_value'  => '1',
-                'quota'         => 5,
+                'cookie_value' => '1',
+                'quota' => 5,
             ],
         ],
 
@@ -152,7 +151,7 @@ return [
         'session' => [
             'enable' => false,
             'config' => [
-                'quota'       => 5,
+                'quota' => 5,
                 'time_buffer' => 5,
             ],
         ],
@@ -161,7 +160,7 @@ return [
         'referer' => [
             'enable' => false,
             'config' => [
-                'quota'       => 5,
+                'quota' => 5,
                 'time_buffer' => 5,
             ],
         ],
@@ -188,27 +187,27 @@ return [
 
         // Trusted-bot component.
         'trusted_bot' => [
-            'enable'       => true,
-            'strict_mode'  => true,
+            'enable' => true,
+            'strict_mode'  => false,
             'allowed_list' => [],
         ],
 
         // Header filter.
         'header' => [
-            'enable'      => true,
-            'strict_mode' => true,
+            'enable' => true,
+            'strict_mode' => false,
         ],
 
         // User-agent filter.
         'user_agent' => [
-            'enable'      => true,
-            'strict_mode' => true,
+            'enable' => true,
+            'strict_mode' => false,
         ],
 
         // RDNS filter.
         'rdns' => [
-            'enable'      => true,
-            'strict_mode' => true,
+            'enable' => true,
+            'strict_mode' => false,
         ],
     ],
 
@@ -227,10 +226,10 @@ return [
         'recaptcha' => [
             'enable' => false,
             'config' => [
-                'site_key'   => null,
+                'site_key' => null,
                 'secret_key' => null,
-                'version'    => 'v2',
-                'lang'       => 'en-US'
+                'version' => 'v2',
+                'lang' => 'en-US'
             ],
         ],
 
@@ -238,7 +237,7 @@ return [
         'image' => [
             'enable' => false,
             'config' => [
-                'type'   =>  'alnum', // alnum, alpha, numeric
+                'type' =>  'alnum', // // alnum, alpha, numeric
                 'length' => 4
             ],
         ],
@@ -254,7 +253,7 @@ return [
     */
 
     'ip_variable_source' => [
-        'REMOTE_ADDR'           => true,
+        'REMOTE_ADDR' => true,
         'HTTP_CF_CONNECTING_IP' =>  false,
         'HTTP_X_FORWARDED_FOR'  =>  false,
         'HTTP_X_FORWARDED_HOST' =>  false
@@ -273,7 +272,7 @@ return [
     'online_session_limit' => [
         'enable' => false,
         'config' => [
-            'count'  =>  100,
+            'count' => 100,
             'period' => 300,
             'unique_only' => false,
         ],
@@ -290,9 +289,9 @@ return [
     */
 
     'xss_protection' => [
-        'post'        => false,
-        'get'         => false,
-        'cookie'      => false,
+        'post' => false,
+        'get' => false,
+        'cookie' => false,
     ],
 
     'xss_protected_list' => [
@@ -311,6 +310,30 @@ return [
             'variable' => '_test',
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | DDOS protection.
+    |--------------------------------------------------------------------------
+    |
+    | Block users permanently while they never solve any CAPTCHA many times.
+    | You can block they by Shieldon or by IPTABLE, UTW, etc...
+    |
+    |   iptables -A INPUT -s %s -j DROP
+    |   ufw deny from %s to any
+    |
+    */
+
+    'ddos_protection' => [
+        'enable' => false,
+        'config' => [
+            'attacks' => 10,
+            'handler' => [
+                'type' => 'shieldon' // shieldon, iptable, utw (Ubuntu firewall).
+            ],
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | CSRF protection. (Not ready.)
@@ -324,7 +347,7 @@ return [
     'csrf_protection' => [
         'enable' => true,
         'config' => [
-            'expire'        => 7200,
+            'expire' => 7200,
             'excluded_urls' => [
                 [
                     'url' => '/ajax/',
@@ -347,7 +370,7 @@ return [
         'reset_circle' => [
             'enable' => true,
             'config' => [
-                'period'      => 86400,
+                'period'  => 86400,
                 'last_update' => '2019-01-01 00:00:00',
             ],
         ],
@@ -380,9 +403,9 @@ return [
 
     'ip_manager' => [
         [
-            'url'  => '/',
+            'url' => '/',
             'rule' => 'allow',
-            'ip'   => '127.0.0.1',
+            'ip' => '127.0.0.1',
         ],
     ],
 
@@ -411,12 +434,20 @@ return [
     */
 
     'dialog_ui' => [
-        'lang'             => 'en',
+        'lang' => 'en',
         'background_image' => '',
-        'bg_color'         => '#ffffff',
-        'header_bg_color'  => '#212531',
-        'header_color'     => '#ffffff',
-        'shadow_opacity'   => '0.2',
+        'bg_color' => '#ffffff',
+        'header_bg_color' => '#212531',
+        'header_color' => '#ffffff',
+        'shadow_opacity' => '0.2',
+    ],
+
+    'dialog_info_disclosure' => [
+        'user_inforamtion' => false,
+        'http_status_code' => false,
+        'reason_code' => false,
+        'reason_text' => false,
+        'online_user_amount' => false,
     ],
 
     /*
@@ -453,7 +484,7 @@ return [
             'enable' => false,
             'config' => [
                 'bot_token' => 'your_bot_token',
-                'channel' => 'your_channel',
+                'channel'   => 'your_channel',
             ],
             'confirm_test' => false,
         ],
@@ -480,8 +511,8 @@ return [
         'sendgrid' => [
             'enable' => false,
             'config' => [
-                'api_key'    => 'your_api_key',
-                'sender'     => 'your@email.com',
+                'api_key' => 'your_api_key',
+                'sender' => 'your@email.com',
                 'recipients' => [
                     'user1@email.com',
                     'user2@email.com',
@@ -493,10 +524,10 @@ return [
         'mailgun' => [
             'enable' => false,
             'config' => [
-                'api_key'     => 'your_api_key',
+                'api_key' => 'your_api_key',
                 'domain_name' => 'your_domain.com',
-                'sender'      => 'your@email.com',
-                'recipients'  => [
+                'sender' => 'your@email.com',
+                'recipients' => [
                     'user1@email.com',
                     'user2@email.com',
                 ]
@@ -507,8 +538,8 @@ return [
         'native_php_mail' => [
             'enable' => false,
             'config' => [
-                'sender'      => 'your@email.com',
-                'recipients'  => [
+                'sender' => 'your@email.com',
+                'recipients' => [
                     'user1@email.com',
                     'user2@email.com',
                 ]
@@ -519,8 +550,8 @@ return [
         'native_php_mail' => [
             'enable' => false,
             'config' => [
-                'sender'      => 'your@email.com',
-                'recipients'  => [
+                'sender' => 'your@email.com',
+                'recipients' => [
                     'user1@email.com',
                     'user2@email.com',
                 ]
@@ -536,8 +567,8 @@ return [
                 'type' => '', // null, ssl, tls
                 'user' => '',
                 'pass' => '',
-                'sender'      => 'your@email.com',
-                'recipients'  => [
+                'sender' => 'your@email.com',
+                'recipients' => [
                     'user1@email.com',
                     'user2@email.com',
                 ]
@@ -557,15 +588,15 @@ return [
         'failed_attempts_in_a_row' => [
 
             'data_circle' => [
-                'enable'    => true,
+                'enable' => true,
                 'messenger' => true,
-                'buffer'    => 10,
+                'buffer' => 10,
             ],
 
             'system_firewall' => [
-                'enable'    => true,
+                'enable' => true,
                 'messenger' => true,
-                'buffer'    => 10,
+                'buffer' => 10,
             ]
         ]
 
@@ -579,8 +610,10 @@ return [
 
     'record_attempt' => [
         'detection_period' => 5,
-        'time_to_reset'=> 1800,
+        'time_to_reset' => 1800,
     ],
+
+    'check_last_failed_attempt_time' => 5,
 
     /*
     |--------------------------------------------------------------------------
