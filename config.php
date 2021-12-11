@@ -267,7 +267,7 @@ return [
     | Online Session Limit
     |--------------------------------------------------------------------------
     |
-    | When the online user amount has reached the limit, other users not in the 
+    | When the Online user count has reached the limit, other users not in the 
     | queue have to line up!
     |
     */

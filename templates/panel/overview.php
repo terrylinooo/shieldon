@@ -101,7 +101,7 @@ $timezone = '';
                     <div class="nums">
                         <?php echo $filters['cookie'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_cookie', 'Check whether visitors can create cookie by JavaScript.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_cookie', 'Check whether visitors can create cookies with JavaScript'); ?></div>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -110,7 +110,7 @@ $timezone = '';
                     <div class="nums">
                         <?php echo $filters['session'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_session', 'Detect whether multiple sessions created by the same visitor.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_session', 'Detect whether multiple sessions were created by the same visitor.'); ?></div>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -119,7 +119,7 @@ $timezone = '';
                     <div class="nums">
                         <?php echo $filters['frequency'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_frequency', 'Check how often does a visitor view the pages.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_frequency', 'Check how often a visitor views pages.'); ?></div>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -156,7 +156,7 @@ $timezone = '';
                     <div class="nums">
                         <?php echo $components['TrustedBot'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_trustedbot', 'Allow popular search engines crawl your website.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_trustedbot', 'Allow popular search engines to crawl your website.'); ?></div>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -165,7 +165,7 @@ $timezone = '';
                     <div class="nums">
                         <?php echo $components['Header'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_header', 'Analyze header information from visitors.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_header', 'Analyze visitors header information.'); ?></div>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -174,7 +174,7 @@ $timezone = '';
                     <div class="nums">
                         <?php echo $components['Rdns'] ? '<i class="far fa-play-circle"></i>' : '<i class="far fa-stop-circle"></i>'; ?>
                     </div>
-                    <div class="note"><?php _e('panel', 'overview_note_rdns', 'Identify IP resolved hostname (RDNS) from visitors.'); ?></div>
+                    <div class="note"><?php _e('panel', 'overview_note_rdns', 'Identify visitor IP resolved hostname (RDNS).'); ?></div>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -292,7 +292,7 @@ $timezone = '';
 <div id="reset-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form method="post" id="form-reset-data">
-        <?php $this->fieldCsrf(); ?>
+        <?php echo $this->fieldCsrf(); ?>
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>
@@ -314,8 +314,8 @@ $timezone = '';
     <p><?php _e('panel', 'overview_text_reset_data_circle_1', 'Would you like to reset current data circle?'); ?></p>
     <table class="table table-bordered">
         <thead class="thead-dark">
-            <th><?php _e('panel', 'overview_thread_rows', 'Table'); ?></th>
-            <th><?php _e('panel', 'overview_thread_table', 'Rows'); ?></th>
+            <th><?php _e('panel', 'overview_thread_table', 'Table'); ?></th>
+            <th><?php _e('panel', 'overview_thread_rows', 'Rows'); ?></th>
         </thead>
         <tr>
             <td>shieldon_rule_list</td>

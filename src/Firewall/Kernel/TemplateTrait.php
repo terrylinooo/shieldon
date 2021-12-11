@@ -25,10 +25,12 @@ namespace Shieldon\Firewall\Kernel;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Kernel;
 use Shieldon\Firewall\HttpFactory;
+use Shieldon\Firewall\Container;
+use Shieldon\Event\Event;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
-
+use function Shieldon\Firewall\__;
 use InvalidArgumentException;
 use RuntimeException;
 use function array_keys;
@@ -143,8 +145,16 @@ trait TemplateTrait
 
         // Check and confirm the UI settings.
         $ui = $this->confirmUiSettings();
+        $uiInfo = $this->confirmUiInfoSettings($statusCode);
 
         $css = include $this->getTemplate('css/default');
+
+        /**
+         * Hook - dialog_output
+         */
+        Event::doDispatch('dialog_output');
+
+        $performanceReport = $this->displayPerformanceReport();
 
         ob_start();
         include $viewPath;
@@ -152,7 +162,7 @@ trait TemplateTrait
         ob_end_clean();
 
         // Remove unused variable notices generated from PHP intelephense.
-        unset($css, $ui, $form, $captchas, $langCode);
+        unset($css, $ui, $form, $captchas, $langCode, $performanceReport, $uiInfo);
 
         $stream = HttpFactory::createStream();
         $stream->write($output);
@@ -162,47 +172,6 @@ trait TemplateTrait
             ->withHeader('X-Protected-By', 'shieldon.io')
             ->withBody($stream)
             ->withStatus($statusCode);
-    }
-
-    /**
-     * Confirm the UI settings.
-     *
-     * @return array
-     */
-    private function confirmUiSettings(): array
-    {
-        if (!defined('SHIELDON_VIEW')) {
-            define('SHIELDON_VIEW', true);
-        }
-
-        $ui = [
-            'background_image' => '',
-            'bg_color'         => '#ffffff',
-            'header_bg_color'  => '#212531',
-            'header_color'     => '#ffffff',
-            'shadow_opacity'   => '0.2',
-        ];
-
-        foreach (array_keys($ui) as $key) {
-            if (!empty($this->dialog[$key])) {
-                $ui[$key] = $this->dialog[$key];
-            }
-        }
-
-        $ui['is_display_online_info'] = false;
-        $ui['is_display_user_info'] = false;
-
-        // Show online session count. It is used on views.
-        if (!empty($this->properties['display_online_info'])) {
-            $ui['is_display_online_info'] = true;
-        }
-
-        // Show user information such as IP, user-agent, device name.
-        if (!empty($this->properties['display_user_info'])) {
-            $ui['is_display_user_info'] = true;
-        }
-
-        return $ui;
     }
 
     /**
@@ -279,5 +248,113 @@ trait TemplateTrait
         }
 
         return $path;
+    }
+
+    /**
+     * Count the performance statistics.
+     *
+     * @return array
+     */
+    protected function getPerformanceStats(): array
+    {
+        $statStart = Container::get('shieldon_start');
+        $statEnd = Container::get('shieldon_end');
+
+        $startTimeArr = explode(' ',$statStart['time']);
+        $endTimeArr = explode(' ',$statStart['time']);
+
+        $timeDifference = ($endTimeArr[1] - $startTimeArr[1]) + ($endTimeArr[0] - $startTimeArr[0]);
+        $memoryDifference = round(($statEnd['memory'] - $statStart['memory']) / 1024, 2); // KB
+
+        $data = [
+            'time' => $timeDifference,
+            'memory' => $memoryDifference,
+        ];
+
+        return $data;
+    }
+
+    /**
+     * Display the HTML of the performance report.
+     *
+     * @return string
+     */
+    protected function displayPerformanceReport(): string
+    {
+        if (!Container::get('shieldon_start')) {
+            return '';
+        }
+
+        $html = '';
+
+        $performance = $this->getPerformanceStats();
+
+        if ($performance['time'] < 0.001) {
+            $performance['time'] = 'fewer than 0.001';
+        }
+
+        if (isset($performance['time'])) {
+            $html .= '<div class="performance-report">';
+            $html .= 'Memory consumed: <strong>' . $performance['memory'] . '</strong> KB / ';
+            $html .= 'Execution:  <strong>' . $performance['time'] . ' </strong> seconds.';
+            $html .= '</div>';
+        }
+
+        return $html;
+    }
+
+
+    /**
+     * Confirm the UI settings.
+     *
+     * @return array
+     */
+    private function confirmUiSettings(): array
+    {
+        if (!defined('SHIELDON_VIEW')) {
+            define('SHIELDON_VIEW', true);
+        }
+
+        $ui = [
+            'background_image' => '',
+            'bg_color'         => '#ffffff',
+            'header_bg_color'  => '#212531',
+            'header_color'     => '#ffffff',
+            'shadow_opacity'   => '0.2',
+        ];
+
+        foreach (array_keys($ui) as $key) {
+            if (!empty($this->dialog[$key])) {
+                $ui[$key] = $this->dialog[$key];
+            }
+        }
+
+        return $ui;
+    }
+
+    /**
+     * Confirm UI information settings.
+     * 
+     * @param int $statusCode HTTP status code.
+     *
+     * @return array
+     */
+    private function confirmUiInfoSettings(int $statusCode): array
+    {
+        $uiInfo = [];
+
+        $reasonCode = $this->reason;
+
+        $uiInfo['http_status_code'] = $statusCode;
+        $uiInfo['reason_code']      = $reasonCode;
+        $uiInfo['reason_text']      = __('core', 'messenger_text_reason_code_' . $reasonCode);
+
+        $uiInfo['is_display_online_user_amount']  = $this->properties['display_online_info'];
+        $uiInfo['is_display_user_information']    = $this->properties['display_user_info'];
+        $uiInfo['is_display_display_http_code']   = $this->properties['display_http_code'];
+        $uiInfo['is_display_display_reason_code'] = $this->properties['display_reason_code'];
+        $uiInfo['is_display_display_reason_text'] = $this->properties['display_reason_text'];
+
+        return $uiInfo;
     }
 }

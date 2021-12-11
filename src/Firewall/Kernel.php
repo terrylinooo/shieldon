@@ -38,12 +38,11 @@ use Shieldon\Firewall\Kernel\SessionTrait;
 use Shieldon\Firewall\Kernel\TemplateTrait;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Container;
+use Shieldon\Event\Event;
+use Closure;
 use function Shieldon\Firewall\get_default_properties;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
-use function Shieldon\Firewall\add_listener;
-
-use Closure;
 use function array_push;
 use function get_class;
 use function gethostbyaddr;
@@ -79,10 +78,9 @@ class Kernel
     /**
      *   Public methods       | Desctiotion
      *  ----------------------|---------------------------------------------
-     *   setIp                | Ban an IP.
-     *   getIp                | Get current user's browsing path.
-     *   setRdns              | Print a JavaScript snippet in the pages.
-     *   getRdns              | Used on testing purpose.
+     *   setCaptcha           | Set a captcha.
+     *   captchaResponse      | Return the result from Captchas.
+     *   disableCaptcha       | Mostly be used in unit testing purpose.
      *  ----------------------|---------------------------------------------
      */
     use CaptchaTrait;
@@ -149,7 +147,6 @@ class Kernel
      *  ----------------------|---------------------------------------------
      *   limitSession         | Limit the amount of the online users.
      *   getSessionCount      | Get the amount of the sessions.
-     *   removeSessionsByIp   | Remove sessions using the same IP address.
      *  ----------------------|---------------------------------------------
      */
     use SessionTrait;
@@ -157,6 +154,7 @@ class Kernel
     /**
      *   Public methods       | Desctiotion
      *  ----------------------|---------------------------------------------
+     *   setDialog            | Set the dialog UI.
      *   respond              | Respond the result.
      *   setTemplateDirectory | Set the frontend template directory.
      *   getJavascript        | Print a JavaScript snippet in the pages.
@@ -285,7 +283,22 @@ class Kernel
      *
      * @var string
      */
-    protected $firewallType = 'self'; 
+    protected $firewallType = 'self';
+
+   /**
+     * The reason code of a user to be allowed or denied.
+     *
+     * @var int|null
+     */
+    protected $reason;
+
+    /**
+     * The session cookie will be created by the PSR-7 HTTP resolver.
+     * If this option is false, created by PHP native function `setcookie`.
+     *
+     * @var bool
+     */
+    public $psr7 = true;
 
     /**
      * Shieldon constructor.
@@ -297,28 +310,46 @@ class Kernel
      */
     public function __construct(?ServerRequestInterface $request = null, ?ResponseInterface $response = null)
     {
-        // Load helper functions. This is the must.
+        // Load helper functions. This is the must and first.
         new Helpers();
 
-        $request = $request ?? HttpFactory::createRequest();
-        $response = $response ?? HttpFactory::createResponse();
+        if (is_null($request)) {
+            $request = HttpFactory::createRequest();
+            $this->psr7 = false;
+        }
 
-        $session = get_session_instance();
+        if (is_null($response)) {
+            $response = HttpFactory::createResponse();
+        }
 
-        add_listener('set_driver', function($args) use ($session) {
-            if (php_sapi_name() !== 'cli') {
-                $session->init($args['driver']);
-            }
-        });
-
+        // Load default settings.
         $this->properties = get_default_properties();
-        $this->setCaptcha(new Foundation());
 
-        set_session_instance($session);
+        // Basic form for Captcha.
+        $this->setCaptcha(new Foundation());
 
         Container::set('request', $request);
         Container::set('response', $response);
         Container::set('shieldon', $this);
+
+        Event::AddListener('set_session_driver', function($args) {
+            $session = get_session_instance();
+
+            $session->init(
+                $args['driver'],
+                $args['gc_expires'],
+                $args['gc_probability'],
+                $args['gc_divisor'],
+                $args['psr7']
+            );
+
+            /**
+             * Hook - session_init
+             */
+            Event::doDispatch('session_init');
+
+            set_session_instance($session);
+        });
     }
 
     /**
@@ -377,7 +408,7 @@ class Kernel
         /**
          * Hook - kernel_end
          */
-        do_dispatch('kernel_end');
+        Event::doDispatch('kernel_end');
 
         return $result;
     }
@@ -629,6 +660,8 @@ class Kernel
 
         // Log this action.
         $this->log($actionCode, $ip);
+
+        $this->reason = $reasonCode;
     }
 
     /**
@@ -650,7 +683,7 @@ class Kernel
         $logData['ip'] = $ip ?: $this->getIp();
         $logData['session_id'] = get_session_instance()->getId();
         $logData['action_code'] = $actionCode;
-        $logData['timesamp'] = time();
+        $logData['timestamp'] = time();
 
         $this->logger->add($logData);
     }

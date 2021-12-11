@@ -42,7 +42,7 @@ trait AllowedTrait
      *   removeAllowedItem    | Remove an allowed item if exists.
      *   removeAllowedItems   | Remove all allowed items.
      *   hasAllowedItem       | Check if an allowed item exists.
-     *   getAllowByPrefix     | Check if an allowed item exists have the same prefix.
+     *   getAllowByPrefix     | Check if allowed items exist with the same prefix.
      *   removeAllowByPrefix  | Remove allowed items with the same prefix.
      *   isAllowed            | Check if an item is allowed?
      *  ----------------------|---------------------------------------------
@@ -140,7 +140,7 @@ trait AllowedTrait
     }
 
     /**
-     * Check if an allowed item exists have the same prefix.
+     * Check if allowed items exist with the same prefix.
      *
      * @param string $key The key of the data.
      *

@@ -10,7 +10,7 @@
         <whitelist>
             <directory suffix=".php">src/Firewall/</directory>
             <exclude>
-                <file>src/Firewall/Autoloader.php</file>
+                <file>src/Firewall/Log/SessionLogger.php</file>
                 <file>src/Firewall/Helpers.php</file>
                 <directory suffix=".php">src/Firewall/Integration/</directory>
             </exclude>

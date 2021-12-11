@@ -23,9 +23,9 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Kernel;
 
 use Shieldon\Firewall\Driver\DriverProvider;
-use LogicException;
+use Shieldon\Event\Event;
 use RuntimeException;
-use function Shieldon\Firewall\do_dispatch;
+use function php_sapi_name;
 
 /*
  * Messenger Trait is loaded in Kernel instance only.
@@ -67,13 +67,26 @@ trait DriverTrait
     {
         $this->driver = $driver;
 
+        /**
+         * [Hook] `set_channel` - After initializing data driver.
+         */
+        Event::doDispatch('set_driver', [
+            'driver' => $this->driver,
+        ]);
+
         $this->driver->init($this->isCreateDatabase);
+
+        $period = $this->sessionLimit['period'] ?: 300;
 
         /**
          * [Hook] `set_driver` - After initializing data driver.
          */
-        do_dispatch('set_driver', [
-            'driver' => $this->driver
+        Event::doDispatch('set_session_driver', [
+            'driver'         => $this->driver,
+            'gc_expires'     => $period,
+            'gc_probability' => 1,
+            'gc_divisor'     => 100,
+            'psr7'           => $this->psr7,
         ]);
     }
 
@@ -88,10 +101,14 @@ trait DriverTrait
      */
     public function setChannel(string $channel): void
     {
-        if (!$this->driver) {
-            throw new LogicException('setChannel method requires setDriver set first.');
-        } else {
+        if (!is_null($this->driver)) {
             $this->driver->setChannel($channel);
+        } else {
+            Event::AddListener('set_driver',
+                function ($args) use ($channel) {
+                    $args['driver']->setChannel($channel);
+                }
+            );
         }
     }
 
@@ -105,6 +122,11 @@ trait DriverTrait
     public function disableDbBuilder(): void
     {
         $this->isCreateDatabase = false;
+
+        if (php_sapi_name() === 'cli') {
+            // Unit testing needs.
+            $this->isCreateDatabase = true;
+        }
     }
 
     /**

@@ -4,31 +4,67 @@ Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and usefu
 
 ![Shieldon - Web Application Firewall for PHP](https://i.imgur.com/G4xpugB.png)
 
-[![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=2.x)](https://travis-ci.org/terrylinooo/shieldon) [![codecov](https://codecov.io/gh/terrylinooo/shieldon/branch/2.x/graph/badge.svg)](https://codecov.io/gh/terrylinooo/shieldon) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/terrylinooo/shieldon/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/terrylinooo/shieldon/?branch=2.x) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/terrylinooo/shieldon.svg?branch=2.x)](https://travis-ci.org/terrylinooo/shieldon) ![build](https://github.com/terrylinooo/shieldon/workflows/build/badge.svg) [![codecov](https://codecov.io/gh/terrylinooo/shieldon/branch/2.x/graph/badge.svg?v=202008201)](https://codecov.io/gh/terrylinooo/shieldon) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/terrylinooo/shieldon/badges/quality-score.png?b=2.x)](https://scrutinizer-ci.com/g/terrylinooo/shieldon/?branch=2.x) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
 
 - Website: [https://shieldon.io](https://shieldon.io/)
+- Wiki: [https://github.com/terrylinooo/shieldon/wiki](https://github.com/terrylinooo/shieldon/wiki)
 - GitHub repository:  [https://github.com/terrylinooo/shieldon](https://github.com/terrylinooo/shieldon)
 - WordPress plugin: [https://wordpress.org/plugins/wp-shieldon/](https://wordpress.org/plugins/wp-shieldon/)
 
+## Demo
+
+- Before you installing Shieldon, you can try the online [DEMO](https://shieldon.io/demo/) of the firewall control panel, the user and password both are `demo`.
+- Try temporarily blocked by Shieldon, refreshing serveral times on [shieldon.io](https://shieldon.io/), then you will see a dialog asking you for solving Google ReCaptcha to get unblocked.
+
 ## Installation
 
-`2.x` will be released at **15, Augest**
-
+Install via PHP Composer.
 ```php
 composer require shieldon/shieldon ^2
 ```
 
-`1.x`
+This will also install dependencies built for Shieldon:
 
-```php
-composer require shieldon/shieldon ^1
-```
+| package | description |
+| --- | --- | 
+| [shieldon/psr-http](https://github.com/terrylinooo/psr-http) | PSR-7, 15, 17 Implementation with full documented and well tested. | 
+| [shieldon/event-dispatcher](https://github.com/terrylinooo/event-dispatcher) | Simple event dispatcher. |
+| [shieldon/web-security](https://github.com/terrylinooo/web-security) | Collection of functions about web security. | 
+| [shieldon/messenger](https://github.com/terrylinooo/messenger) |  Collection of modules of sending message to third-party API or service, such as Telegram, Line, RocketChat, Slack, SendGrid, MailGun and more... | 
 
-Guide: [Shieldon 1.x documentation](https://shieldon-io.github.io/v1/)
+## Concepts
+
+This is basic concepts about how Shieldon works.
+
+![](https://i.imgur.com/pRbI7gg.png)
+
+- The network-layer firewall such as CloudFlare.
+- The system-layer firewall such as iptables module.
+- To use firewall software in the Web application layer, you can implement Shieldon in a very early stage of your APP, mostly just after Composer autoloader, or at the first place of middleware-piepline.
+- Shieldon analyzes all your HTTP and HTTPS requests.
+- Once Shieldon has detected strange behaviors of a request, blocking and prompting them CAPTCHA to unblock. 
+![Firewall Dialog 1](https://i.imgur.com/rlsEwSG.png)
+- If a request fails in a row many times (depends on your setting), they will be permanently banned in current data circle.
+![Firewall Dialog 2](https://i.imgur.com/Qy1sADw.png)
+- If a request has been permanently banned, but they still access your page, drop them in System-layer firewall - iptables. (You have to set up iptables bridge correctly)
 
 ## How to Use
 
-The examples here are for **Shieldon 2**.
+### Integration with Frameworks
+
+There are some step-by-step installation guides that lead you implementing Shieldon firewall on your PHP application. Choose a framework you are using.
+
+|   |   |   |   |
+| --- | --- | --- | --- |
+| ![Firewall in Laravel](https://shieldon.io/images/home/laravel-framework-firewall.png) | ![Firewall in CakePHP](https://shieldon.io/images/home/cakephp-framework-firewall.png) | ![Firewall in Symfony](https://shieldon.io/images/home/symfony-framework-firewall.png) | ![Firewall in PHPixie](https://shieldon.io/images/home/phpixie-framework-firewall.png) | 
+| [Laravel](https://github.com/terrylinooo/shieldon/wiki/Laravel-Framework) | [CakePHP 3](https://github.com/terrylinooo/shieldon/wiki/CakePHP-Framework) | [Symfony](https://github.com/terrylinooo/shieldon/wiki/Symfony-Framework)  | [PHPixie](https://github.com/terrylinooo/shieldon/wiki/PHPixie-Framework) |
+| ![Firewall in FatFree](https://shieldon.io/images/home/fatfree-framework-firewall.png) | ![Firewall in CodeIgniterr](https://shieldon.io/images/home/codeigniter-framework-firewall.png) | ![Firewall in Yii Framework](https://shieldon.io/images/home/yii-framework-firewall.png) | ![Firewall in Zend](https://shieldon.io/images/home/zend-framework-firewall.png) |
+| [FatFree](https://github.com/terrylinooo/shieldon/wiki/FatFree-Framework) | [CodeIgniter 3](https://github.com/terrylinooo/shieldon/wiki/CodeIgniter-3-Framework)<br />[CodeIgniter 4](https://github.com/terrylinooo/shieldon/wiki/CodeIgniter-4-Framework) | [Yii 2](https://github.com/terrylinooo/shieldon/wiki/Yii-2-Framework) | [Zend MVC](https://github.com/terrylinooo/shieldon/wiki/Zend-Framework-MVC)<br />[Zend Expressive](https://github.com/terrylinooo/shieldon/wiki/Zend-Framework-Expressive) |
+| ![Firewall in Slim](https://shieldon.io/images/home/slim-framework-firewall.png) | ![Firewall in Fuel](https://shieldon.io/images/home/fuel-framework-firewall.png) | - |
+| [Slim 3](https://github.com/terrylinooo/shieldon/wiki/Slim-3-Framework)<br />[Slim 4](https://github.com/terrylinooo/shieldon/wiki/Slim-3-Framework) | [Fuel](https://github.com/terrylinooo/shieldon/wiki/Fuel-Framework) |  [Pure PHP project](https://github.com/terrylinooo/shieldon/wiki/Pure-PHP-Project) |
+
+Listed frameworks: [Laravel](https://shieldon.io/en/guide/laravel.html), [Symfony](https://shieldon.io/en/guide/symfony.html), [CodeIgniter](https://shieldon.io/en/guide/codeigniter.html), [CakePHP](https://shieldon.io/en/guide/cakephp.html), [Yii](https://shieldon.io/en/guide/yii.html), [Zend](https://shieldon.io/en/guide/zend.html), [Slim](https://shieldon.io/en/guide/slim.html), [Fat-Free](https://shieldon.io/en/guide/fatfree.html), [Fuel](https://shieldon.io/en/guide/fuel.html), [PHPixie](https://shieldon.io/en/guide/phpixie.html). Can't find the documentation of the framework you are using? 
 
 There are three ways you can choose to use Shieldon on your application.
 
@@ -36,9 +72,7 @@ There are three ways you can choose to use Shieldon on your application.
 - Implement Shieldon in the *`bootstrap stage`* of your application.
 - Implement Shieldon in the *`parent controller`* extended by the other controllers.
 
-Shieldon `2.x` implements PSR-7 so that it could be compatible with modern frameworks such as Laravel, Symfony, Slim, Yii, etc. Using Shieldon `2.x` as a PSR-15 middleware is the best practice in this case.
-
----
+Shieldon `2.x` implements PSR-7 so that it could be compatible with modern frameworks such as Laravel, Symfony, Slim, Yii and so on.
 
 ### PSR-15 Middleware
 
@@ -114,8 +148,6 @@ Note:
 - The HTTP method `POST` and `GET` both should be applied to your website. 
 - `POST` method is needed for solving CAPTCHA by users who were temporarily blocked.
 
----
-
 ### Bootstrap Stage
 
 #### `Example: Laravel 6 framework`
@@ -169,8 +201,6 @@ Route::any('/firewall/panel/{path?}', function() {
 
 })->where('path', '(.*)');
 ```
-
----
 
 ### Parent Controller
 
@@ -256,179 +286,13 @@ class Firewall extends MY_Controller
 }
 ```
 
-
 Finally, no matter which way you choose, entering `https://yoursite.com/firewall/panel/`, the login page is suppose to be shown on your screen.
 
 ![](https://i.imgur.com/GFKzNYh.png)
 
 The default user and password is `shieldon_user` and `shieldon_pass`. The first thing to do is to change the login and password after you login to control panel.
 
-
-## Concepts
-
-This is basic concepts about how Shieldon works.
-
-![](https://i.imgur.com/pRbI7gg.png)
-
-- The network-layer firewall such as CloudFlare.
-- The system-layer firewall such as iptables module.
-- To use firewall software in the Web application layer, we are capable of implementing Shieldon in a very early stage of your APP, mostly just after Composer autoloader.
-- Shieldon analyzes all your HTTP and HTTPS requests.
-- Once Shieldon has detected strange behaviors of a request, Shieldon will temporarily ban them and prompt them CAPTCHA for them to unban.
-- If a request fails in a row many times (depends on your setting), they will be permanently banned in current data circle.
-- If a request has been permanently banned, but they still access your page, drop them in System-layer firewall - iptables.
-
-## Features
-
-- SEO friendly, no impacts to SERP.
-- Http-type DDOS mitigation.
-- Anti-scraping.
-- Limit the amount of online users.
-- Cross-site scripting (XSS) protection.
-- Interrupting vulnerability scanning.
-- Eradicating brute force attacks.
-- IP manager.
-- Protecting pages via WWW-Authenticate.
-- Detailed statistics and charts.
-- Sending notifications to third-party services.
-- A Web UI for management of iptables, the system firewall.
-
-## Implementing
-
-Here are the guides to integrating with the popular PHP frameworks.
-
-- [Laravel](https://shieldon.io/en/guide/laravel.html)
-- [Symfony](https://shieldon.io/en/guide/symfony.html)
-- [CodeIgniter](https://shieldon.io/en/guide/codeigniter.html)
-- [CakePHP](https://shieldon.io/en/guide/cakephp.html)
-- [Yii](https://shieldon.io/en/guide/yii.html)
-- [Zend](https://shieldon.io/en/guide/zend.html)
-- [Slim](https://shieldon.io/en/guide/slim.html)
-- [Fat-Free](https://shieldon.io/en/guide/fatfree.html)
-- [Fuel](https://shieldon.io/en/guide/fuel.html)
-- [PHPixie](https://shieldon.io/en/guide/phpixie.html)
-
-## Firewall Panel
-
-Shieldon provides a Firewall Instance, and it's visualization UI called Firewall Panel. By using Shieldon Firewall, you can easily implement it on your web application.
-
 ![Firewall Panel](https://i.imgur.com/MELx6Vl.png)
-
-Click [here](https://shieldon.io/demo/) to view demo.
-
-- user: `demo`
-- password: `demo`
-
----
-
-## Screenshots
-
-Only a few screenshots are listed below.
-
-### Firewall Panel
-
-#### Captcha Stats
-
-![Captcha Statistics](https://i.imgur.com/tjc8mW8.png)
-
-#### Online Session Stats
-
-You can see the real-time data here if `Online Session Limit` is enabled.
-
-![Firewall Panel - Online Session Control](https://i.imgur.com/sfssPyj.png)
-
-#### Rule Table
-
-You can temporarily ban a user here.
-
-![Firewall Panel - Rule Table](https://i.imgur.com/5Vg2brX.png)
-
-#### Responsive
-
-Shieldon's Firewall Panel is fully responsive, and you can manage it when you are not in front of your computer, using your mobile phone at any time.
-
-![Responsive Firewall Panel](https://i.imgur.com/fUz9lZD.png)
-
-### Dialog
-
-#### Temporarily Ban a User
-
-When the users or robots are trying to view many your web pages in a short period of time, they will temporarily get banned. Get unbanned by solving a Catpcha.
-
-![Firewall Dialog 1](https://i.imgur.com/rlsEwSG.png)
-
-#### Permanently Ban a User
-
-When a user has been permanently banned.
-
-![Firewall Dialog 2](https://i.imgur.com/Qy1sADw.png)
-
-#### Online Session Control
-
-![Firewall Dialog 3](https://i.imgur.com/cAOKIY8.png)
-
-When a user has reached the online session limit.
-
-### Notification
-
-Provided by [Messenger](https://github.com/terrylinooo/messenger) library.
-
-![Telegram](https://i.imgur.com/3lqamO7.png)
-
-Send notification via Telegram API.
-
----
-
-## Contributing
-
-### Core Function
-
-Welcome to contribute your idea to this project. Before sending your pull request, please make sure everything is tested well without errors.
-
-#### Requirements
-
-- MySQL or MariaDB installed.
-- Redis installed. (Also include PHP extension `php_redis`)
-
-#### Steps
-
-1. Run `composer update` to install required libraries.
-    ```bash
-    composer update
-    ```
-2. Create a writable folder `tmp`. (same level with `src` folder.) for temporary testing files.
-    ```bash
-    mkdir tmp
-    chmod 777 tmp
-    ```
-3. Create a MySQL database `shieldon_unittest`
-    ```bash
-    mysql -u root -e 'CREATE DATABASE shieldon_unittest;'
-    ```
-4. Create a user `shieldon'@'localhost` with password `taiwan`.
-    ```bash
-    mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
-    ```
-5. Grant database permissions on `shieldon_unittest` to `shieldon'@'localhost`.
-    ```bash
-    mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
-    ```
-6. Install PHP Xdebug.
-    ```bash
-    apt-get install php7.2-xdebug
-    ```
-7. Run test.
-    ```bash
-    composer test
-    ```
-
-### Help with Transation
-
-Thank you very much for considering contributing to Shieldon Firewall, yet we need your help to translate our webiste, documentation and i18n files in Shieldon library. Here are the links:
-
-- [Website](https://github.com/shieldon-io/website-translations)
-- [Documentation](https://github.com/shieldon-io/document-translations)
-- [i18n files in Shieldon library](https://github.com/shieldon-io/library-translations)
 
 ## Author
 
@@ -437,5 +301,3 @@ Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
 ## License
 
 Shieldon Firewall is an open-sourced software licensed under the **MIT** license.
-
-- [Changelog](https://github.com/terrylinooo/shieldon/wiki/Changelog)

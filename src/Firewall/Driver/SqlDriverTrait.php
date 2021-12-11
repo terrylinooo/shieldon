@@ -22,8 +22,11 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Driver;
 
+use RuntimeException;
+
 use function is_array;
 use function is_bool;
+use function json_decode;
 
 /**
  * SQL Driver Trait
@@ -46,6 +49,9 @@ trait SqlDriverTrait
             LIMIT 1';
 
         $query = $this->db->prepare($sql);
+
+        $this->assertPrepare($query);
+
         $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
         $query->execute();
         $resultData = $query->fetch($this->db::FETCH_ASSOC);
@@ -78,6 +84,9 @@ trait SqlDriverTrait
             LIMIT 1';
 
         $query = $this->db->prepare($sql);
+
+        $this->assertPrepare($query);
+        
         $query->bindValue(':log_ip', $ip, $this->db::PARAM_STR);
         $query->execute();
         $resultData = $query->fetch($this->db::FETCH_ASSOC);
@@ -112,6 +121,8 @@ trait SqlDriverTrait
       
         $query = $this->db->prepare($sql);
 
+        $this->assertPrepare($query);
+
         $query->bindValue(':id', $id, $this->db::PARAM_STR);
         $query->execute();
         $resultData = $query->fetch($this->db::FETCH_ASSOC);
@@ -140,6 +151,9 @@ trait SqlDriverTrait
         $sql = 'SELECT log_ip, log_data FROM ' . $this->tableFilterLogs;
 
         $query = $this->db->prepare($sql);
+
+        $this->assertPrepare($query);
+
         $query->execute();
         $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
 
@@ -162,6 +176,9 @@ trait SqlDriverTrait
         $sql = 'SELECT * FROM ' . $this->tableRuleList;
 
         $query = $this->db->prepare($sql);
+
+        $this->assertPrepare($query);
+
         $query->execute();
         $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
 
@@ -181,9 +198,12 @@ trait SqlDriverTrait
     {
         $results = [];
 
-        $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY microtimesamp ASC';
+        $sql = 'SELECT * FROM ' . $this->tableSessions . ' ORDER BY microtimestamp ASC';
 
         $query = $this->db->prepare($sql);
+
+        $this->assertPrepare($query);
+
         $query->execute();
         $resultData = $query->fetchAll($this->db::FETCH_ASSOC);
 
@@ -192,5 +212,21 @@ trait SqlDriverTrait
         }
 
         return $results;
+    }
+
+    /**
+     * Check the prepare statement status.
+     *
+     * @param object|bool $status Return false if failed.
+     * 
+     * @return void
+     */
+    protected function assertPrepare($status): void
+    {
+        if (!$status) {
+            throw new RuntimeException(
+                json_encode($this->db->errorInfo())
+            );
+        }
     }
 }

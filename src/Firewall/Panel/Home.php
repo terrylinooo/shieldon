@@ -25,11 +25,10 @@ namespace Shieldon\Firewall\Panel;
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
 use Shieldon\Firewall\Driver as Driver;
+use ReflectionObject;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\unset_superglobal;
-
-use ReflectionObject;
 use function count;
 use function date;
 use function get_class;

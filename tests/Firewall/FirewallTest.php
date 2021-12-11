@@ -36,6 +36,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         // setChannel()
         $firewall->setConfig('channel_id', 'test_firewall');
+        $firewall->getKernel()->setChannel('test_firewall');
         $firewall->getKernel()->driver->rebuild();
         $firewall->getKernel()->setStrict(false);
 
@@ -207,9 +208,10 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testDataDriverOption()
     {
         $this->getWritableTestFilePath('_file_driver_initialized.txt', 'shieldon');
-        $this->getWritableTestFilePath('_file_driver_initialized.txt', 'test_sitelite_driver');
+        $this->getWritableTestFilePath('_file_driver_initialized.txt', 'test_sqlite_driver');
 
         $this->testFromJsonConfig();
+
         $firewall = \Shieldon\Firewall\Container::get('firewall');
 
         /*
@@ -220,24 +222,23 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         // SQLite
         $firewall->setConfig('driver_type', 'sqlite');
-        $firewall->setConfig('drivers.sqlite.directory_path', BOOTSTRAP_DIR . '/../tmp/test_sitelite_driver');
-        
-        $firewall->getKernel()->setIp($this->getRandomIpAddress());
+        $firewall->setConfig('drivers.sqlite.directory_path', BOOTSTRAP_DIR . '/../tmp/test_sqlite_driver');
         $firewall->setup();
+        $firewall->getKernel()->setIp($this->getRandomIpAddress());
         $firewall->getKernel()->driver->rebuild();
         $firewall->run();
         
         // Redis
         $firewall->setConfig('driver_type', 'redis');
-        $firewall->getKernel()->setIp($this->getRandomIpAddress());
         $firewall->setup();
+        $firewall->getKernel()->setIp($this->getRandomIpAddress());
         $firewall->getKernel()->driver->rebuild();
         $firewall->run();
          
         // MySQL
         $firewall->setConfig('driver_type', 'mysql');
-        $firewall->getKernel()->setIp($this->getRandomIpAddress());
         $firewall->setup();
+        $firewall->getKernel()->setIp($this->getRandomIpAddress());
         $firewall->getKernel()->driver->rebuild();
         $firewall->run();
     }
@@ -324,8 +325,13 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testCaptchaResponse()
     {
+       // $this->mockSession();
+       $this->getWritableTestFilePath('_file_driver_initialized.txt', 'shieldon');
+
         $this->testFromJsonConfig();
+
         $firewall = \Shieldon\Firewall\Container::get('firewall');
+
         $firewall->getKernel()->driver->rebuild();
         $firewall->getKernel()->setIp('140.132.75.15');
         $firewall->setup();
@@ -345,5 +351,98 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $response = $firewall->run();
 
         $this->assertSame($response->getStatusCode(), 303);
+    }
+
+    public function testHasCheckpoint()
+    {
+        $this->testFromJsonConfig();
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
+
+        $reflection = new \ReflectionObject($firewall);
+
+        $method = $reflection->getMethod('getCheckpoint');
+        $method->setAccessible(true);
+        $checkpointFile = $method->invokeArgs($firewall, []);
+
+        if (!file_exists($checkpointFile)) {
+            $method = $reflection->getMethod('setCheckpoint');
+            $method->setAccessible(true);
+            $method->invokeArgs($firewall, [true]);
+        }
+
+        $method = $reflection->getMethod('hasCheckpoint');
+        $method->setAccessible(true);
+        $hasCheckpoint = $method->invokeArgs($firewall, []);
+
+        $this->assertTrue($hasCheckpoint);
+
+        $method = $reflection->getMethod('getCheckpoint');
+        $method->setAccessible(true);
+        $checkpointFile = $method->invokeArgs($firewall, []);
+
+        if (file_exists($checkpointFile)) {
+            unlink($checkpointFile);
+        }
+
+        $method = $reflection->getMethod('hasCheckpoint');
+        $method->setAccessible(true);
+        $hasCheckpoint = $method->invokeArgs($firewall, []);
+
+        $this->assertFalse($hasCheckpoint);
+
+        $method = $reflection->getMethod('setCheckpoint');
+        $method->setAccessible(true);
+        $method->invokeArgs($firewall, [true]);
+
+        if (file_exists($checkpointFile)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+
+        if (file_exists($checkpointFile)) {
+            unlink($checkpointFile);
+        }
+
+        if (!file_exists($checkpointFile)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+
+        $firewall->setup();
+
+        if (file_exists($checkpointFile)) {
+            $this->assertTrue(true);
+        } else {
+            $this->assertTrue(false);
+        }
+    }
+
+    public function testDisplayPerformanceReport()
+    {
+        $this->testFromJsonConfig();
+        $firewall = \Shieldon\Firewall\Container::get('firewall');
+        $firewall->enablePerformanceReport();
+
+        $firewall->getKernel()->driver->rebuild();
+        $firewall->getKernel()->setIp('140.199.99.99');
+        $firewall->setup();
+
+        for ($i = 1; $i <= 6; $i++) {
+            $response = $firewall->run();
+        }
+
+        ob_start();
+
+        if ($response->getStatusCode() !== 200) {
+            $httpResolver = new \Shieldon\Firewall\HttpResolver();
+            $httpResolver($response);
+        }
+
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertStringContainsString('Memory consumed', $output);
     }
 }

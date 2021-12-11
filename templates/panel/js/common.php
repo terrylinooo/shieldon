@@ -80,11 +80,13 @@ defined('SHIELDON_VIEW') || die('Illegal access');
         });
 
         if (window.location.hash !== '') {
+            $('input:radio[name="tabs"]').prop('checked', false);
             $('input:radio[name="tabs"]').each(function() {
-                if (hash === $(this).val()) {
-                    $(this).attr('checked', 'checked');
+                var thisHash = '#' + $(this).val();
+                if (hash === thisHash) {
+                    $(this).prop('checked', true);
                 } else {
-                    $(this).attr('checked', '');
+                    $(this).prop('checked', false);
                 }
             });
         }

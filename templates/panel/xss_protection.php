@@ -40,7 +40,7 @@ $timezone = '';
             <table class="setting-table">
                 <form method="post">
                 <tbody>
-                    <?php $this->fieldCsrf(); ?>
+                    <?php echo $this->fieldCsrf(); ?>
                     <tr>
                         <td class="r1">POST</td>
                         <td class="r2">

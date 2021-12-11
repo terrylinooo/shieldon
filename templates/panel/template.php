@@ -46,9 +46,21 @@ use function Shieldon\Firewall\_e;
 
             <div class="collapse navbar-collapse" id="top-navbar">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a href="<?php echo $this->url('user/logout') ?>" class="nav-link"><?php _e('panel', 'logout', 'Logout'); ?></a></li>
+                    <li class="nav-item">
+                        <a href="<?php echo $this->url('user/logout') ?>" class="nav-link">
+                            <span class="f-icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </span>
+                            <?php _e('panel', 'logout', 'Logout'); ?>
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><?php _e('panel', 'nav_locale', 'Locale'); ?></a>
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                            <span class="f-icon">
+                                <i class="fas fa-globe-americas"></i>
+                            </span>
+                            <?php _e('panel', 'nav_locale', 'Locale'); ?>
+                        </a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <a href="#" data-lang="en" class="dropdown-item" onclick="selectLanguage(this, event);" role="button">English</a>
                             <a href="#" data-lang="zh" class="dropdown-item" onclick="selectLanguage(this, event);" role="button">中文</a>

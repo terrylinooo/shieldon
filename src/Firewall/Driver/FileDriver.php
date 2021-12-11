@@ -26,7 +26,6 @@ use Shieldon\Firewall\Driver\DriverProvider;
 use Shieldon\Firewall\Driver\FileDriverTrait;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-
 use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
@@ -118,19 +117,24 @@ class FileDriver extends DriverProvider
             foreach ($files as $file) {
                 if ($file->isFile()) {
 
-                    $content = json_decode(file_get_contents($file->getPath() . '/' . $file->getFilename()), true);
+                    $filename = $file->getPath() . '/' . $file->getFilename();
+                    $fileContent = file_get_contents($filename);
 
-                    if ($type === 'session') {
-                        $sort = $content['microtimesamp'] . '.' . $file->getFilename(); 
-                    } else {
-                        $sort = $file->getMTime() . '.' . $file->getFilename();
+                    if (!empty($fileContent)) {
+                        $content = json_decode($fileContent, true);
+
+                        if ($type === 'session') {
+                            $sort = $content['microtimestamp'] . '.' . $file->getFilename(); 
+                        } else {
+                            $sort = $file->getMTime() . '.' . $file->getFilename();
+                        }
+                        $results[$sort] = $content;
                     }
-                    $results[$sort] = $content;
                 }
             }
             unset($it, $files);
 
-            // Sort by ascending timesamp (microtimesamp).
+            // Sort by ascending timestamp (microtimestamp).
             ksort($results);
         }
 

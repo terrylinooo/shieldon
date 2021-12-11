@@ -30,6 +30,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function testSaveConfigCheckActionLoggerFalse()
     {
+        $this->mockSession();
+        
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
 
@@ -43,6 +45,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveConfigCheckActionLoggerFalseIsDisable()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('loggers.action.enable', false);
@@ -57,6 +61,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveConfigCheckiptablesFalse()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
 
@@ -70,6 +76,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveConfigCheckiptablesIsDisable()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('iptables.enable', false);
@@ -84,6 +92,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveConfigCheckDataDriverFalse()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('driver_type', 'file');
@@ -98,6 +108,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveConfigCheckDataDriverTrue()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('driver_type', 'file');
@@ -112,6 +124,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveCofigCheckDataDriverRedis()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('drivers.redis.host', '127.0.0.1');
@@ -127,6 +141,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveCofigCheckDataDriverRedisWithInalidSettings()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('drivers.redis.host', '127.0.0.1');
@@ -142,6 +158,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveCofigCheckDataDriverFile()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('drivers.file.directory_path', BOOTSTRAP_DIR . '/../tmp/shieldon');
@@ -156,6 +174,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveCofigCheckDataDriverSqlLite()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('drivers.sqlite.directory_path', BOOTSTRAP_DIR . '/../tmp/shieldon');
@@ -170,6 +190,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveCofigCheckDataDriverMySql()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('drivers.mysql.host', '127.0.0.1');
@@ -188,6 +210,8 @@ class ConfigMethodsTraitTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testSaveCofigCheckDataDriverMySqlWithInvaldeSettings()
     {
+        $this->mockSession();
+
         $firewall = new \Shieldon\Firewall\Firewall();
         $baseController = new \Shieldon\Firewall\Panel\BaseController();
         $baseController->setConfig('drivers.mysql.host', '127.0.0.1');

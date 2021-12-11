@@ -50,7 +50,7 @@ $timezone = '';
             <div class="board-field right">
                 <div class="heading"><?php _e('panel', 'table_heading_period', 'Period'); ?></div>
                 <div class="nums"><?php echo number_format($session_limit_period ); ?></div>
-                <div class="note"><?php _e('panel', 'table_note_period', 'Keep-alive period. (minutes)'); ?></div>
+                <div class="note"><?php _e('panel', 'table_note_period', 'Keep-alive period (in minutes)'); ?></div>
             </div>
         </div>
         <div class="so-board">
@@ -60,7 +60,7 @@ $timezone = '';
             <div class="board-field right">
                 <div class="heading"><?php _e('panel', 'table_heading_online', 'Online'); ?></div>
                 <div class="nums"><?php echo number_format($online_count ); ?></div>
-                <div class="note"><?php _e('panel', 'table_note_online', 'Online session amount.'); ?></div>
+                <div class="note"><?php _e('panel', 'table_note_online', 'Online user count.'); ?></div>
             </div>
         </div>
     </div>
@@ -77,8 +77,8 @@ $timezone = '';
             <?php _e('panel', 'table_heading_session', 'Session Table'); ?>
         </div>
         <div class="so-datatable-description">
-            <?php _e('panel', 'table_description_session_1', 'Read-time logs for <strong>Online Session Controll</strong>. All processes are automatic and instant, you can ignore that.'); ?><br />
-            <?php _e('panel', 'table_description_session_2', 'Notice this is only working when you have enabled that function.'); ?>
+            <?php _e('panel', 'table_description_session_1', 'Real-time logs for <strong>Online Session Controll</strong>.'); ?><br />
+            <?php _e('panel', 'table_description_session_2', 'Notice: this only works when enabled.'); ?>
         </div>
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>

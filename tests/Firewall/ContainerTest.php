@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace Shieldon\FirewallTest\Utils;
+namespace Shieldon\FirewallTest;
 
 class ContainerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {

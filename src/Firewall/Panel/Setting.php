@@ -29,14 +29,12 @@ use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
-
 use function array_keys;
 use function array_values;
 use function explode;
 use function filter_var;
 use function json_decode;
 use function json_last_error;
-
 use const JSON_PRETTY_PRINT;
 
 /**
@@ -225,7 +223,7 @@ class Setting extends BaseController
         $response = get_response();
 
         $stream = $response->getBody();
-        $stream->write(json_encode($this->configuration), JSON_PRETTY_PRINT);
+        $stream->write(json_encode($this->configuration, JSON_PRETTY_PRINT));
         $stream->rewind();
 
         $filename = 'shieldon_' . date('Y-m-d-Hi') . '.json';

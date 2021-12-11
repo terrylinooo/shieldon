@@ -33,10 +33,9 @@ trait CaptchaTrait
     /**
      *   Public methods       | Desctiotion
      *  ----------------------|---------------------------------------------
-     *   setIp                | Ban an IP.
-     *   getIp                | Get current user's browsing path.
-     *   setRdns              | Print a JavaScript snippet in the pages.
-     *   getRdns              | Used on testing purpose.
+     *   setCaptcha           | Set a captcha.
+     *   captchaResponse      | Return the result from Captchas.
+     *   disableCaptcha       | Mostly be used in unit testing purpose.
      *  ----------------------|---------------------------------------------
      */
 

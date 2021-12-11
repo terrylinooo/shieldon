@@ -419,6 +419,42 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
     }
 
+    public function testSessionHandler_uniqueSession($driver = 'file')
+    {
+        $kernel = $this->getKernelInstance($driver);
+
+        $kernel->disableFilters();
+        $kernel->setFilter('session', true);
+
+        $kernel->setChannel('testsessionlimit');
+
+        $_limit = 100;
+        $kernel->limitSession($_limit, 300, true);
+        $kernel->driver->rebuild();
+
+        $reflection = new \ReflectionObject($kernel);
+        $methodSessionHandler = $reflection->getMethod('sessionHandler');
+        $methodSessionHandler->setAccessible(true);
+
+        // The first visitor.
+        $kernel->setIp('140.112.172.11');
+        $methodSetSessionId = $reflection->getMethod('setSessionId');
+        $methodSetSessionId->setAccessible(true);
+
+        $sessionId = md5(date('YmdHis') . mt_rand(1, 999999));
+        $methodSetSessionId->invokeArgs($kernel, [$sessionId]);
+        $kernel->run();
+
+        for ($i = 1; $i <= 10; $i++) {
+            $kernel->setIp('140.112.172.12');
+            $sessionId = md5(date('YmdHis') . mt_rand(1, 999999));
+            $methodSetSessionId->invokeArgs($kernel, [$sessionId]);
+            $kernel->run();
+        }
+
+        $this->assertEquals(7, $kernel->getSessionCount());
+    }
+
     public function testSetProperty()
     {
         $kernel = new \Shieldon\Firewall\Kernel();
@@ -482,7 +518,9 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $reflection = new \ReflectionObject($kernel);
         $t = $reflection->getProperty('isCreateDatabase');
         $t->setAccessible(true);
-        $this->assertFalse($t->getValue($kernel));
+
+        // CLI returns true always.
+        $this->assertTrue($t->getValue($kernel));
     }
 
     public function testSetChannel($driver = 'sqlite')
@@ -496,11 +534,6 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         } else {
             $this->assertTrue(false);
         }
-
-        // Test exception.
-        $this->expectException(\LogicException::class);
-        $kernel = new \Shieldon\Firewall\Kernel();
-        $kernel->setChannel('unittest');
     }
 
     public function testSetCaptcha()
@@ -838,6 +871,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
+        $kernel->disableFilters();
 
         $reflection = new \ReflectionObject($kernel);
         $methodSetSessionId = $reflection->getMethod('setSessionId');
@@ -900,18 +934,28 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
      * File Driver 
      ***********************************************/
 
-    public function testDetect_fileDriver()
+    public function testDetect_fileDriver_filterFrequency()
     {
         $this->testDetectByFilterFrequency('file');
-        
+    }
+
+    public function testDetect_fileDriver_filterReferer()
+    {
         $this->testDetectByFilterReferer('file');
+    }
+
+    public function testDetect_fileDriver_filterCookie()
+    {
         $this->testDetectByFilterCookie('file');
+    }
+
+    public function testDetect_fileDriver_flagChecks()
+    {
         $this->testResetFilterFlagChecks('file');
     }
 
     public function testDetect_fileDriver_filterSession()
     {
-        // 剩下的問題是 ip 沒更新到 session 檔案裡。
         $this->testDetectByFilterSession('file');
     }
 
@@ -964,13 +1008,29 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
      * MySQL Driver 
      ***********************************************/
 
-    public function testDetect_mysqlDriver()
+    public function testDetect_mysqlDriver_filterFrequency()
     {
         $this->testDetectByFilterFrequency('mysql');
+    }
+
+    public function testDetect_mysqlDriver_filterSession()
+    {
         $this->testDetectByFilterSession('mysql');
-        $this->testDetectByFilterReferer('mysql');
+    }
+
+    public function testDetect_mysqlDriver_filterCookie()
+    {
         $this->testDetectByFilterCookie('mysql');
+    }
+
+    public function testDetect_mysqlDriver_flagChecks()
+    {
         $this->testResetFilterFlagChecks('mysql');
+    }
+
+    public function testDetect_mysqlDriver_filterReferer()
+    {
+        $this->testDetectByFilterReferer('mysql');
     }
 
     public function testAction_mysqlDriver()
@@ -1022,12 +1082,28 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
      * Redis Driver 
      ***********************************************/
 
-    public function testDetect_redisDriver()
+    public function testDetect_redisDriver_filterFrequency()
     {
         $this->testDetectByFilterFrequency('redis');
+    }
+
+    public function testDetect_redisDriver_filterSession()
+    {
         $this->testDetectByFilterSession('redis');
-        $this->testDetectByFilterReferer('redis');
+    }
+
+    public function testDetect_redisDriver_filterReferer()
+    {
+        $this->testDetectByFilterReferer('redis');;
+    }
+
+    public function testDetect_redisDriver_filterCookie()
+    {
         $this->testDetectByFilterCookie('redis');
+    }
+
+    public function testDetect_redisDriver()
+    {
         $this->testResetFilterFlagChecks('redis');
     }
 

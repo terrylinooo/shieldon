@@ -35,7 +35,7 @@
 
 per_second="1"
 debug_mode="0"
-timesamp="$(date +%s)"
+timestamp="$(date +%s)"
 date="$(date +%Y-%m-%d' '%H:%M:%S)"
 
 # Absolute path to this script.

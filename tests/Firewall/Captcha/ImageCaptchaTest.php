@@ -75,6 +75,8 @@ class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testResponse()
     {
+        $this->mockSession();
+        
         new Helpers();
 
         $this->mockUserSession('shieldon_image_captcha_hash', '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.');
@@ -91,6 +93,8 @@ class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testResponse2()
     {
+        $this->mockSession();
+
         new Helpers();
 
         $this->mockUserSession('shieldon_image_captcha_hash', '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.');
@@ -105,6 +109,8 @@ class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testForm()
     {
+        $this->mockSession();
+        
         $config = [
             'colors' => ''
         ];

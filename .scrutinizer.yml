@@ -1,0 +1,40 @@
+filter:
+  paths: ["src/*"]
+  excluded_paths: ["vendor/*", "tests/*"]
+
+checks:
+  php:
+    code_rating: true
+    duplication: true
+
+tools:
+  external_code_coverage: false
+
+build:
+  environment:
+    php:
+      version: 7.3.0
+      pecl_extensions:
+        - redis
+    mysql: true
+    redis: true
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run
+  dependencies:
+    before:
+      - composer self-update
+      - composer update --no-interaction --prefer-dist --no-progress --dev
+      # Create DB for testing.
+      - mysql -u root -e 'CREATE DATABASE shieldon_unittest;'
+      - mysql -u root -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
+      - mysql -u root -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
+  tests:
+    before:
+      -
+        command: composer test
+        coverage:
+          file: 'clover.xml'
+          format: 'clover'

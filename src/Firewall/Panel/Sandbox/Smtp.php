@@ -118,8 +118,8 @@ class Smtp
         } catch (Exception $e) {
             return false;
         }
-        // @codeCoverageIgnoreEnd
     }
+    // @codeCoverageIgnoreEnd
 
     /**
      * Check the SMTP host.

@@ -29,14 +29,13 @@ use PDOException;
 use Redis;
 use Exception;
 use function class_exists;
-use function file_exists;
+use function is_dir;
 use function is_numeric;
 use function is_string;
 use function is_writable;
 use function mkdir;
 use function password_hash;
 use function preg_split;
-use function rtrim;
 use function str_replace;
 use function umask;
 

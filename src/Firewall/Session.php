@@ -22,25 +22,45 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall;
 
-use Shieldon\Firewall\Driver\DirverProvider;
+use Shieldon\Event\Event;
 use Shieldon\Firewall\Container;
+use Shieldon\Firewall\Driver\DriverProvider;
+use Shieldon\Firewall\Log\SessionLogger;
 use RuntimeException;
+use function Shieldon\Firewall\create_session_id;
+use function Shieldon\Firewall\get_ip;
+use function Shieldon\Firewall\get_microtimestamp;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\set_response;
-use function Shieldon\Firewall\get_microtimesamp;
-use function Shieldon\Firewall\create_session_id;
-use function Shieldon\Firewall\get_ip;
-use function time;
-use function rand;
 use function intval;
+use function php_sapi_name;
+use function rand;
 use function setcookie;
+use function time;
 
 /*
  * Session for the use of Shieldon.
  */
 class Session
 {
+    /**
+     *   Public methods       | Desctiotion
+     *  ----------------------|---------------------------------------------
+     *   init                 | Initialize the session.
+     *   getId                | Get session ID.
+     *   setId                | Set session ID
+     *   isInitialized        | Check if a session has been initialized or not.
+     *   get                  | Get specific value from session by key.
+     *   set                  | To store data in the session.
+     *   remove               | To delete data from the session.
+     *   has                  | To determine if an item is present in the session.
+     *   clear                | Clear all data in the session array.
+     *   save                 | Save session data into database.
+     *   ::resetCookie        | Create a new session cookie for current user.
+     *  ----------------------|---------------------------------------------
+     */
+
     /**
      * The session data.
      *
@@ -66,7 +86,7 @@ class Session
     /**
      * The data driver.
      *
-     * @var DirverProvider|null
+     * @var DriverProvider|null
      */
     protected $driver;
 
@@ -97,43 +117,77 @@ class Session
          * Store the session data back into the database table when the 
          * Shieldon Kernel workflow is reaching the end of the process.
          */
-        add_listener('kernel_end', [$this, 'save'], 10);
+        Event::AddListener('kernel_end', [$this, 'save'], 10);
 
         /**
          * Store the session data back into the database table when the 
          * user is logged successfully.
          */
-        add_listener('user_login', [$this, 'save'], 10);
+        Event::AddListener('user_login', [$this, 'save'], 10);
 
         self::log();
     }
-    
+
     /**
-     * Log.
+     * Initialize.
+     *
+     * @param object $driver        The data driver.
+     * @param int    $gcExpires     The time of expiring.
+     * @param int    $gcProbability GC setting,
+     * @param int    $gcDivisor     GC setting,
+     * @param bool   $psr7          Reset the cookie the PSR-7 way?
      *
      * @return void
      */
-    protected static function log($text = '')
+    public function init(
+             $driver, 
+        int  $gcExpires     = 300, 
+        int  $gcProbability = 1, 
+        int  $gcDivisor     = 100, 
+        bool $psr7          = true
+    ): void {
+
+        $this->driver = $driver;
+        $this->gc($gcExpires, $gcProbability, $gcDivisor);
+
+        $this->data = [];
+
+        $cookie = get_request()->getCookieParams();
+
+        if (!empty($cookie['_shieldon'])) {
+            self::$id = $cookie['_shieldon'];
+            $this->data = $this->driver->get(self::$id, 'session');
+        }
+
+        if (empty($this->data)) {
+            self::resetCookie($psr7);
+            $this->create();
+        }
+
+        $this->parsedData();
+
+        self::$status = true;
+        self::log(self::$id);
+    }
+
+    /**
+     * Get the channel name from data driver.
+     *
+     * @return string
+     */
+    public function getChannel(): string
     {
-        if (php_sapi_name() !== 'cli') {
-            return;
-        }
+        return $this->driver->getChannel();
+    }
 
-        $dir = BOOTSTRAP_DIR . '/../tmp/shieldon/session_logs';
-        $file = $dir . '/' . date('Y-m-d') . '.json';
-    
-        $originalUmask = umask(0);
-
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-    
-        umask($originalUmask);
-
-        $method = debug_backtrace()[1]['function'];
-    
-        $content = date('Y-m-d H:i:s') . ' - [' . $method . '] ' . $text;
-        file_put_contents($file, $content . PHP_EOL, FILE_APPEND);
+    /**
+     * Check the initialization status.
+     *
+     * @return bool
+     */
+    public function isInitialized(): bool
+    {
+        return self::$status;
     }
 
     /**
@@ -164,62 +218,6 @@ class Session
     }
 
     /**
-     * Initialize.
-     *
-     * @param object $driver        The data driver.
-     * @param int    $gcExpires     The time of expiring.
-     * @param int    $gcProbability GC setting,
-     * @param int    $gcDivisor     GC setting,
-     * @param bool   $psr7          Reset the cookie the PSR-7 way?
-     *
-     * @return void
-     */
-    public function init(
-             $driver, 
-        int  $gcExpires     = 300, 
-        int  $gcProbability = 1, 
-        int  $gcDivisor     = 100, 
-        bool $psr7          = false
-    ): void {
-        $this->driver = $driver;
-
-        $cookie = get_request()->getCookieParams();
-
-        $this->gc($gcExpires, $gcProbability, $gcDivisor);
- 
-        // New visitor? Create a new session.
-        if (php_sapi_name() !== 'cli' && empty($cookie['_shieldon'])) {
-            self::resetCookie($psr7);
-            $this->create();
-            self::$status = true;
-            return;
-        }
-
-        $this->data = $this->driver->get(self::$id, 'session');
-
-        if (empty($this->data)) {
-            self::resetCookie($psr7);
-            $this->create();
-        }
-
-        $this->parsedData();
-
-        self::$status = true;
-
-        self::log(self::$id);
-    }
-
-    /**
-     * Check the initialization status.
-     *
-     * @return bool
-     */
-    public function IsInitialized(): bool
-    {
-        return $this->status;
-    }
-
-    /**
      * Get specific value from session by key.
      *
      * @param string $key The key of a data field.
@@ -231,19 +229,6 @@ class Session
         $this->assertInit();
 
         return $this->data['parsed_data'][$key] ?? '';
-    }
-
-    /**
-     * Parse JSON data and store it into parsed_data field.
-     *
-     * @return void
-     */
-    protected function parsedData()
-    {
-        if (empty($this->data['data'])) {
-            $this->data['data'] = '{}';
-        }
-        $this->data['parsed_data'] = json_decode($this->data['data'], true);
     }
 
     /**
@@ -304,6 +289,55 @@ class Session
     }
 
     /**
+     * Save session data into database.
+     *
+     * @return void
+     */
+    public function save(): void
+    {
+        $data = [];
+
+        $data['id'] = self::$id;
+        $data['ip'] = get_ip();
+        $data['time'] = time();
+        $data['microtimestamp'] = get_microtimestamp();
+        $data['data'] = json_encode($this->data['parsed_data']);
+
+        $this->driver->save(self::$id, $data, 'session');
+
+        self::log(self::$id . "\n" . $this->data['data']);
+    }
+
+    /**
+     * Reset cookie.
+     * 
+     * @param bool $psr7 Reset the cookie the PSR-7 way, otherwise native.
+     *
+     * @return void
+     */
+    public static function resetCookie(bool $psr7 = true): void
+    {
+        $sessionHashId = create_session_id();
+        $cookieName = '_shieldon';
+        $expiredTime = time() + 3600;
+
+        if ($psr7) {
+            $expires = date('D, d M Y H:i:s', $expiredTime) . ' GMT';
+            $response = get_response()->withHeader(
+                'Set-Cookie',
+                $cookieName . '=' . $sessionHashId . '; Path=/; Expires=' . $expires
+            );
+            set_response($response);
+
+        } else {
+            setcookie($cookieName, $sessionHashId, $expiredTime, '/');
+        }
+
+        self::$id = $sessionHashId;
+        self::log($sessionHashId);
+    }
+
+    /**
      * Perform session data garbage collection.
      *
      * @param int $expires     The time of expiring.
@@ -336,46 +370,19 @@ class Session
     }
 
     /**
-     * Reset cookie.
-     * 
-     * @param bool $psr7 Reset the cookie the PSR-7 way, otherwise native.
-     *
-     * @return void
-     */
-    public static function resetCookie(bool $psr7 = true): void
-    {
-        $sessionHashId = create_session_id();
-        $cookieName = '_shieldon';
-        $expiredTime = time() + 3600;
-
-        if ($psr7) {
-            $expires = date('D, d M Y H:i:s', $expiredTime) . ' GMT';
-            $response = get_response()->withHeader(
-                'Set-Cookie',
-                $cookieName . '=' . $sessionHashId . '; Path=/; Expires=' . $expires
-            );
-            set_response($response);
-        } else {
-            setcookie($cookieName, $sessionHashId, $expiredTime, '/');
-        }
-
-        self::$id = $sessionHashId;
-
-        self::log($sessionHashId);
-    }
-
-    /**
      * Create session data structure.
      *
      * @return void
      */
     protected function create(): void
     {
+        $data = [];
+
         // Initialize new session data.
         $data['id'] = self::$id;
         $data['ip'] = get_ip();
         $data['time'] = time();
-        $data['microtimesamp'] = get_microtimesamp();
+        $data['microtimestamp'] = get_microtimestamp();
 
         // This field is a JSON string.
         $data['data'] = '{}';
@@ -388,22 +395,15 @@ class Session
     }
 
     /**
-     * Save session data into database.
+     * Parse JSON data and store it into parsed_data field.
      *
      * @return void
      */
-    public function save(): void
+    protected function parsedData()
     {
-        $data['id'] = self::$id;
-        $data['ip'] = get_ip();
-        $data['time'] = (string) time();
-        $data['microtimesamp'] = (string) get_microtimesamp();
+        $data = $this->data['data'] ?? '{}';
 
-        $data['data'] = json_encode($this->data['parsed_data']);
-
-        $this->driver->save(self::$id, $data, 'session');
-
-        self::log(self::$id . "\n" . $this->data['data']);
+        $this->data['parsed_data'] = json_decode($data, true);
     }
 
     /**
@@ -413,10 +413,22 @@ class Session
      */
     protected function assertInit(): void
     {
-        if (!self::$status) {
+        if (!$this->isInitialized()) {
             throw new RuntimeException(
                 'The init method is supposed to run first.'
             );
+        }
+    }
+
+    /**
+     * Log.
+     *
+     * @return void
+     */
+    protected static function log($text = ''): void
+    {
+        if (php_sapi_name() === 'cli') {
+            SessionLogger::log($text);
         }
     }
 }

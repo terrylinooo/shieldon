@@ -27,10 +27,10 @@ use Shieldon\Firewall\Firewall\Captcha\CaptchaFactory;
 use Shieldon\Firewall\Firewall\Driver\DriverFactory;
 use Shieldon\Firewall\Log\ActionLogger;
 use Shieldon\Firewall\Middleware\HttpAuthentication;
+use Shieldon\Event\Event;
+use RuntimeException;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
-
-use RuntimeException;
 use function strpos;
 use function time;
 
@@ -105,7 +105,7 @@ trait SetupTrait
      *
      * @return void
      */
-    protected function setupDriver(): void
+    public function setupDriver(): void
     {
         $driverType = $this->getOption('driver_type');
         $driverSetting = $this->getOption($driverType, 'drivers');
@@ -116,17 +116,17 @@ trait SetupTrait
 
         $driverInstance = DriverFactory::getInstance($driverType, $driverSetting);
 
-        $this->status = false;
-        if ($driverInstance !== null) {
-            $this->kernel->setDriver($driverInstance);
-            $this->status = true;
-        }
-
         if ($this->hasCheckpoint()) {
             $this->kernel->disableDbBuilder();
         } else {
-            $this->kernel->driver->init(true);
             $this->setCheckpoint();
+        }
+
+        $this->status = false;
+
+        if ($driverInstance !== null) {
+            $this->kernel->setDriver($driverInstance);
+            $this->status = true;
         }
     }
 
@@ -203,7 +203,7 @@ trait SetupTrait
 
         $this->kernel->setProperty(
             'interval_check_session',
-            $settings['referer']['config']['time_buffer']
+            $settings['session']['config']['time_buffer']
         );
     }
 
@@ -313,8 +313,10 @@ trait SetupTrait
         $deniedList = [];
 
         foreach ($ipList as $ip) {
+            if (empty($ip))
+                continue;
 
-            if (0 === strpos($this->kernel->getCurrentUrl(), $ip['url']) ) {
+            if (0 === strpos($this->kernel->getCurrentUrl(), empty($ip['url']) ? '/' : $ip['url']) ) {
 
                 if ('allow' === $ip['rule']) {
                     $allowedList[] = $ip['ip'];
@@ -361,7 +363,7 @@ trait SetupTrait
             // @codeCoverageIgnoreEnd
         }
 
-        $this->kernel->setIp($ip);
+        $this->kernel->setIp($ip, true);
     }
 
     /**
@@ -521,11 +523,21 @@ trait SetupTrait
      */
     protected function setupDialogUserInterface()
     {
-        $ui = $this->getOption('dialog_ui');
+        Event::AddListener('session_init', function() {
+            $ui = $this->getOption('dialog_ui');
 
-        if (!empty($ui)) {
-            get_session_instance()->set('shieldon_ui_lang', $ui['lang']);
-            $this->kernel->setDialog($this->getOption('dialog_ui'));
-        }
+            if (!empty($ui)) {
+                get_session_instance()->set('shieldon_ui_lang', $ui['lang']);
+                $this->kernel->setDialog($this->getOption('dialog_ui'));
+            }
+        });
+
+        $dialogInfo = $this->getOption('dialog_info_disclosure');
+
+        $this->kernel->setProperty('display_online_info', $dialogInfo['online_user_amount']);
+        $this->kernel->setProperty('display_user_info',   $dialogInfo['user_inforamtion']);
+        $this->kernel->setProperty('display_http_code',   $dialogInfo['http_status_code']);
+        $this->kernel->setProperty('display_reason_code', $dialogInfo['reason_code']);
+        $this->kernel->setProperty('display_reason_text', $dialogInfo['reason_text']);
     }
 }

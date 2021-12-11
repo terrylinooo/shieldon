@@ -86,6 +86,8 @@ trait RuleTrait
             return false;
         }
 
+        $this->reason = $ipRule['reason'];
+
         $ruleType = (int) $ipRule['type'];
 
         // Apply the status code.

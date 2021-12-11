@@ -26,14 +26,13 @@ use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
 use Shieldon\Firewall\Firewall\Captcha\CaptchaFactory;
 use Shieldon\Firewall\Captcha\Foundation;
+use Shieldon\Event\Event;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
-
 use function password_verify;
-use function Shieldon\Firewall\do_dispatch;
 
 /**
  * User
@@ -98,7 +97,7 @@ class User extends BaseController
             // This session variable is to mark current session as a logged user.
             get_session_instance()->set('shieldon_user_login', true);
 
-            do_dispatch('user_login');
+            Event::doDispatch('user_login');
 
             // Redirect to overview page if logged in successfully.
             return get_response()->withHeader('Location', $this->url('home/overview'));
@@ -151,6 +150,14 @@ class User extends BaseController
         if (isset($sessionPanelLang)) {
             unset_superglobal('shieldon_panel_lang', 'session');
         }
+
+        // @codeCoverageIgnoreStart
+        if ($this->kernel->psr7) {
+            unset_superglobal('_shieldon', 'cookie');
+        } else {
+            setcookie('_shieldon', '', time() - 3600, '/');
+        }
+        // // @codeCoverageIgnoreEnd
 
         return $response->withHeader('Location', $this->url('user/login'));
     }

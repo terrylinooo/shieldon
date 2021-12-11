@@ -48,9 +48,27 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-secruity_96x96.png';
                             <img src="<?php echo $imgsrc; ?>">
                         </div>
                         <div class="status-message">
-                            <?php _e('core', 'stop_message', 'Please complete the CAPTCHA to confirm you are a human.') ?>
+                            <p>
+                                <?php _e('core', 'stop_message', 'Please complete the CAPTCHA to confirm you are a human.') ?>
+                            </p>
+                            <div>
+                                <?php if (!empty($uiInfo['is_display_display_http_code'])) : ?>
+                                    <span class="http-status-code">
+                                        <?php echo $uiInfo['http_status_code']; ?>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if (!empty($uiInfo['is_display_display_reason_code'])) : ?>
+                                    <span class="reason-code">
+                                        <?php echo $uiInfo['reason_code']; ?>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if (!empty($uiInfo['is_display_display_reason_text'])) : ?>
+                                    <span class="reason-text">
+                                        <?php echo $uiInfo['reason_text']; ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
                         </div>
-            
                     </div>
                     <div class="captcha-container">
                         <form action="<?php echo $form ?>" method="post">
@@ -60,11 +78,12 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-secruity_96x96.png';
                             <p><input type="submit" value="<?php _e('core', 'stop_submit', 'Submit') ?>" /></p>
                         </form>
                     </div>
-                    <?php if (!empty($ui['is_display_user_info'])) : ?>
+                    <?php if (!empty($uiInfo['is_display_user_information'])) : ?>
                         <div class="status-user-info">
                             <?php foreach ($dialoguserinfo as $key => $userinfo) : ?>
                                 <div class="row">
-                                    <strong><?php echo $key; ?></strong> <span><?php echo $userinfo; ?></span>
+                                    <strong><?php echo $key; ?></strong> 
+                                    <span><?php echo $userinfo; ?></span>
                                 </div>
                             <?php endforeach; ?>
                         </div>
@@ -73,6 +92,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-secruity_96x96.png';
             </div>
         </div>
     </div>
+    <?php echo $performanceReport; ?>
 </body>
 </html>
 

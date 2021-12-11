@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Kernel;
+use function Shieldon\Firewall\get_mock_session;
 
 /**
  * The test case for Shieldon Firewall
@@ -87,6 +88,7 @@ class ShieldonTestCase extends TestCase
         switch ($driver) {
 
             case 'file':
+                $kernel->setChannel('testsessionlimit');
                 $kernel->setDriver(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon/data_driver_file'));
                 break;
 
@@ -105,12 +107,14 @@ class ShieldonTestCase extends TestCase
                     $db['pass']
                 );
 
+                $kernel->setChannel('testsessionlimit');
                 $kernel->setDriver(new \Shieldon\Firewall\Driver\MysqlDriver($pdoInstance));
                 break;
 
             case 'redis':
                 $redisInstance = new \Redis();
-                $redisInstance->connect('127.0.0.1', 6379); 
+                $redisInstance->connect('127.0.0.1', 6379);
+                $kernel->setChannel('testsessionlimit');
                 $kernel->setDriver(new \Shieldon\Firewall\Driver\RedisDriver($redisInstance));
                 break;
             /*
@@ -143,17 +147,20 @@ class ShieldonTestCase extends TestCase
                 break;
             */
             case 'sqlite':
-            default:
                 $dbLocation = $this->getWritableTestFilePath('shieldon_unittest.sqlite3', 'shieldon/data_driver_sqlite');
 
                 try {
                     $pdoInstance = new \PDO('sqlite:' . $dbLocation);
-                    $kernel->setDriver(new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance));
+                    $kernel->setChannel('testsessionlimit');
+                    $driver = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
+                    $kernel->setDriver($driver);
+                    
                 } catch (\PDOException $e) {
                     throw $e->getMessage();
                 }
     
                 break;
+            default:
         }
 
         return $kernel;
@@ -256,7 +263,7 @@ class ShieldonTestCase extends TestCase
         $data['id'] = $sessionId;
         $data['ip'] = '192.168.95.1';
         $data['time'] = '1597028827';
-        $data['microtimesamp'] = '159702882767804400';
+        $data['microtimestamp'] = '159702882767804400';
         $data['parsed_data']['shieldon_ui_lang'] = 'en';
         $data['parsed_data']['shieldon_user_login'] = true;
 
@@ -285,5 +292,17 @@ class ShieldonTestCase extends TestCase
         umask($originalUmask);
 
         file_put_contents($file, $json);
+    }
+
+    /**
+     * Mock Session.
+     *
+     * @return void
+     */
+    public function mockSession(): void
+    {
+        $sessionId = '624689c34690a1d0a8c5658db66cf73d';
+        $_COOKIE['_shieldon'] = $sessionId;
+        get_mock_session($sessionId);
     }
 }

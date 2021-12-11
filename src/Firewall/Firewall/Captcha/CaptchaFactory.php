@@ -23,6 +23,10 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Firewall\Captcha;
 
 use Shieldon\Firewall\Captcha\CaptchaInterface;
+use function array_map;
+use function explode;
+use function implode;
+use function ucwords;
 
 /*
  * The factory creates driver instances.

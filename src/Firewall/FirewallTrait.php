@@ -23,7 +23,14 @@ declare(strict_types=1);
 namespace Shieldon\Firewall;
 
 use function count;
+use function date;
 use function explode;
+use function file_exists;
+use function file_put_contents;
+use function is_dir;
+use function json_encode;
+use function mkdir;
+use function umask;
 use const JSON_PRETTY_PRINT;
 
 /*
@@ -85,6 +92,13 @@ trait FirewallTrait
      * @var string
      */
     protected $channel = '';
+
+    /**
+     * Version number.
+     *
+     * @var string
+     */
+    protected $version = '2.0.1';
 
     /**
      * Get the Shieldon instance.
@@ -237,7 +251,10 @@ trait FirewallTrait
             }
         }
 
-        file_put_contents($configFilePath, json_encode($this->configuration, JSON_PRETTY_PRINT));
+        file_put_contents(
+            $configFilePath,
+            json_encode($this->configuration, JSON_PRETTY_PRINT)
+        );
     }
 
     /**
@@ -249,7 +266,13 @@ trait FirewallTrait
     {
         $driverType = (string) $this->getOption('driver_type');
 
-        return $this->directory . '/' . $this->channel .  '_' . $driverType . '_' . $this->checkpoint;
+        $channel = '';
+
+        if (!empty($this->channel)) {
+            $channel = '_' . $this->channel;
+        }
+
+        return $this->directory . '/' . $this->version . $channel .  '_' . $driverType . '_' . $this->checkpoint;
     }
 
     /**

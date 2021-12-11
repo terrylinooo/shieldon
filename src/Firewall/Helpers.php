@@ -24,20 +24,22 @@ namespace Shieldon\Firewall;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Shieldon\Firewall\Container;
+use Shieldon\Firewall\Driver\FileDriver;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Session;
-use Shieldon\Firewall\Container;
-use Shieldon\Firewall\EventDispatcher;
-use Shieldon\Firewall\Driver\FileDriver;
-
 use function explode;
 use function file_exists;
+use function file_put_contents;
 use function func_get_arg;
 use function func_num_args;
 use function implode;
 use function is_array;
 use function is_null;
+use function md5;
+use function microtime;
 use function preg_split;
+use function rand;
 use function round;
 use function shell_exec;
 use function str_repeat;
@@ -46,6 +48,7 @@ use function stripos;
 use function strtoupper;
 use function substr;
 use function sys_getloadavg;
+use function time;
 use function trim;
 use const PHP_OS;
 
@@ -59,7 +62,7 @@ define('SHIELDON_FIREWALL_VERSION', '2.0');
  */
 class Helpers
 {
-    //            ^_______^           //
+
 }
 
 /**
@@ -75,14 +78,23 @@ class Helpers
  *  get_default_properties| The default settings of Shieldon core.
  *  get_request           | Get PSR-7 HTTP server request from container.
  *  get_response          | Get PSR-7 HTTP response from container.
- *  get_session_instance  | Get PHP native session from container.
  *  set_request           | Set PSR-7 HTTP server request to container.
  *  set_response          | Set PSR-7 HTTP response to container.
- *  unset_global_cookie   | Unset superglobal COOKIE variable.
+ *  unset_global_cookie   | Unset superglobal COOKIE variable.F
  *  unset_global_post     | Unset superglobal POST variable.
  *  unset_global_get      | Unset superglobal GET variable.
  *  unset_global_session  | Unset superglobal SESSION variable.
  *  unset_superglobal     | Unset superglobal variables.
+ *  get_ip                | Get an IP address from container.
+ *  set_ip                | Set an IP address to container.
+ *  get_microtimestamp     | Get the microtimestamp.
+ *  get_session_instance  | Get a session instance.
+ *  create_new_session_i- | Create a new session instance for current user.
+ *  n stance              |
+ *  get_mock_session      | For unit testing purpose.
+ *  set_session_instance  | Set a session instance to container.
+ *  get_session_id        | Get session ID from cookie or creating new.
+ *  create_session_id     | Create a new session ID.
  *  ----------------------|---------------------------------------------
  */
 
@@ -316,7 +328,7 @@ function get_default_properties(): array
 
         'time_reset_limit'       => 3600,
         'interval_check_referer' => 5,
-        'interval_check_session' => 30,
+        'interval_check_session' => 5,
         'limit_unusual_behavior' => [
             'cookie'  => 5,
             'session' => 5,
@@ -328,6 +340,9 @@ function get_default_properties(): array
         'cookie_value'        => '1',
         'display_online_info' => true,
         'display_user_info'   => false,
+        'display_http_code'   => false,
+        'display_reason_code' => false,
+        'display_reason_text' => false,
 
         /**
          * If you set this option enabled, Shieldon will record every CAPTCHA fails 
@@ -539,10 +554,12 @@ function unset_global_session($name = null): void
 {
     if (empty($name)) {
         get_session_instance()->clear();
+        get_session_instance()->save();
         return;
     }
 
     get_session_instance()->remove($name);
+    get_session_instance()->save();
 }
 
 /**
@@ -612,56 +629,16 @@ function set_ip(string $ip)
 */
 
 /**
- * Get the microtimesamp.
+ * Get the microtimestamp.
  * 
- * @return int
+ * @return string
  */
-function get_microtimesamp(): int
+function get_microtimestamp()
 {
-    $microtimesamp = explode(' ', microtime());
-    $microtimesamp = $microtimesamp[1] . str_replace('0.', '', $microtimesamp[0]);
+    $microtimestamp = explode(' ', microtime());
+    $microtimestamp = $microtimestamp[1] . str_replace('0.', '', $microtimestamp[0]);
 
-    return (int) $microtimesamp;
-}
-
-/*
-|--------------------------------------------------------------------------
-| Event Dispatcher.
-|--------------------------------------------------------------------------
-*/
-
-/**
- * Add a new event Listener
- *
- * @param string  $name     The name of an event.
- * @param mixed   $func     Can be a function name, closure function or class.
- * @param integer $priority The execution priority.
- * 
- * @return void
- */
-function add_listener(string $name, $func, int $priority = 10)
-{
-    return EventDispatcher::instance()->addListener(
-        $name,
-        $func,
-        $priority
-    );
-}
-
-/**
- * Execute an event.
- *
- * @param string $name The name of an event.
- * @param array  $args The arguments.
- * 
- * @return mixed
- */
-function do_dispatch(string $name, array $args = [])
-{
-    return EventDispatcher::instance()->doDispatch(
-        $name,
-        $args
-    );
+    return $microtimestamp;
 }
 
 /*
@@ -680,14 +657,7 @@ function get_session_instance(): Session
     $session = Container::get('session');
 
     if (is_null($session)) {
-
-        // For unit testing purpose. Not use in production.
-        if (php_sapi_name() === 'cli') {
-            $session = get_mock_session(get_session_id());
-        } else {
-            $session = HttpFactory::createSession(get_session_id());
-        }
-
+        $session = HttpFactory::createSession(get_session_id());
         set_session_instance($session);
     }
 
@@ -705,8 +675,12 @@ function get_session_instance(): Session
 function create_new_session_instance(string $sessionId)
 {
     Container::set('session_id', $sessionId, true);
-    $session = get_mock_session($sessionId);
-    set_session_instance($session);
+    $session = Container::get('session');
+
+    if ($session instanceof Session) {
+        $session->setId($sessionId);
+        set_session_instance($session);
+    }
 }
 
 /**
@@ -723,16 +697,28 @@ function get_mock_session($sessionId): Session
     $dir = $fileDriverStorage . '/shieldon_sessions';
     $file = $dir . '/' . $sessionId . '.json';
 
+    if (!is_dir($dir)) {
+        $originalUmask = umask(0);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        umask($originalUmask);
+    }
+
     $session = HttpFactory::createSession($sessionId);
+
     $driver = new FileDriver($fileDriverStorage);
 
     if (!file_exists($file)) {
+        $data = [];
 
         // Prepare mock data.
         $data['id'] = $sessionId;
         $data['ip'] = get_ip();
         $data['time'] = time();
-        $data['microtimesamp'] = get_microtimesamp();
+        $data['microtimestamp'] = get_microtimestamp();
         $data['data'] = '{}';
     
         $json = json_encode($data);
@@ -750,6 +736,8 @@ function get_mock_session($sessionId): Session
     }
 
     $session->init($driver);
+
+    Container::set('session', $session, true);
 
     return $session;
 }

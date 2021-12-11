@@ -175,7 +175,7 @@ use function Shieldon\Firewall\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_ip_source', 'IP Source'); ?></td>
             <td class="r2">
-                <p><?php _e('panel', 'setting_note_ip_source', 'Is your website behind the CDN service? If you use CDN, you have to set this setting correctly; otherwise, all IP addresses from CDN servers will probably get banned.'); ?></p>
+                <p><?php _e('panel', 'setting_note_ip_source', 'Is your website behind a CDN service? If you use CDN, you have to set this setting correctly; otherwise, all IP addresses from CDN servers will probably get banned.'); ?></p>
                 <div class="col-sm-12">
                     <div class="radio-style">
                         <input name="ip_variable_source" value="REMOTE_ADDR" type="radio" id="ip-source-1" <?php $this->checked('ip_variable_source.REMOTE_ADDR', true); ?> /> 
@@ -228,7 +228,7 @@ use function Shieldon\Firewall\_e;
             <td class="r1"></td>
             <td class="r2">
                 <p>
-                    <?php _e('panel', 'setting_note_session_limit_1', 'When the online user amount has reached the limitation, other users not in the queue have to line up!'); ?><br />
+                    <?php _e('panel', 'setting_note_session_limit_1', 'When the number of users online has reached the limit, users that are not in the queue have to line up!ㄆ'); ?><br />
                     <?php _e('panel', 'setting_note_session_limit_2', 'The following image is an example.'); ?>
                 </p>
             </td>
@@ -260,7 +260,7 @@ use function Shieldon\Firewall\_e;
             <td class="r2">
                 <p>
                     <?php _e('panel', 'setting_note_unique_ip_only', 'Only allow one session per IP address.'); ?><br />
-                    <?php _e('panel', 'setting_note_unique_ip_only_2', 'Users with multiple sessions will be kicked off.'); ?>
+                    <?php _e('panel', 'setting_note_unique_ip_only_2', 'Users with multiple sessions will be kicked.'); ?>
                 </p>
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="online_session_limit__config__unique_only" value="off" />
@@ -314,7 +314,7 @@ use function Shieldon\Firewall\_e;
     <p><?php _e('panel', 'setting_note_install_iptables', 'Make sure you have installed <strong>iptables</strong> and <strong>ip6tables</strong> already in your server, and employ <strong>iptables_bridge.sh</strong> in <strong>crontab</strong> correctly.'); ?></p>
     <table class="setting-table">
         <tr>
-            <td class="r1"><?php _e('panel', 'setting_label_watching_folder', 'Watching Folder'); ?></td>
+            <td class="r1"><?php _e('panel', 'setting_label_watching_folder', 'Watch Folder'); ?></td>
             <td class="r2">
                 <input disabled type="text" name="iptables__config__watching_folder" class="form-control form-control-sm col-sm-7" value="<?php $this->_('iptables.config.watching_folder'); ?>">
                 <br />
@@ -340,9 +340,9 @@ use function Shieldon\Firewall\_e;
                     <textarea id="code2" class="form-control" rows="4" style="font-size: 12px; font-family: monospace;"></textarea>
                 </div><br />
                 <p>
-                    <?php _e('panel', 'setting_note_cronjob', 'Please use this code into the crontab file on your server.'); ?><br />
-                    <?php _e('panel', 'setting_note_iptables', '<strong>iptables_bridge.sh</strong> will watch the changes in this folder to employ command to iptables.'); ?><br />
-                    <span class="text-danger"><?php _e('panel', 'setting_note_iptables_bridge', 'Please move <strong>iptables_bridge.sh</strong> to a safe place that only you know, changing the path for security reason.'); ?></span>
+                    <?php _e('panel', 'setting_note_cronjob', 'Please insert this code into the crontab file on your server.'); ?><br />
+                    <?php _e('panel', 'setting_note_iptables', '<strong>iptables_bridge.sh</strong> will watch the changes in this folder to employ commands to iptables.'); ?><br />
+                    <span class="text-danger"><?php _e('panel', 'setting_note_iptables_bridge', 'Please move <strong>iptables_bridge.sh</strong> to a safe place only accessible to you, changing the path for security reasons.'); ?></span>
                 </p>
             </td>
         </tr>
@@ -353,7 +353,7 @@ use function Shieldon\Firewall\_e;
     <h2><?php _e('panel', 'setting_heading_deny_attempts', 'Deny Attempts'); ?></h2>
 </div>
 <div class="section-body my-0">
-    <p><?php _e('panel', 'setting_desc_deny_attempts', 'Say goodbye to bad behavior visitors.'); ?></p>
+    <p><?php _e('panel', 'setting_desc_deny_attempts', 'Say goodbye to badly behaved visitors.'); ?></p>
     <table class="setting-table">
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_record_attempt_detection_period', 'Detection Period'); ?></td>
@@ -374,9 +374,9 @@ use function Shieldon\Firewall\_e;
 <div class="section-body my-0">
     <table class="setting-table">
         <tr>
-            <td class="r1"><?php _e('panel', 'messenger_label_event_1', 'Ban a user permanently in current data cycle.'); ?></td>
+            <td class="r1"><?php _e('panel', 'messenger_label_event_1', 'Ban user in current data cycle.'); ?></td>
             <td class="r2">
-                <p><?php _e('panel', 'messenger_desc_event_1', 'This event is triggered typically when a user fails too many times due to invalid CAPTCHA in a row.'); ?></p>
+                <p><?php _e('panel', 'messenger_desc_event_1', 'This event is typically triggered when a user fails too many CAPTCHAs in a row.'); ?></p>
                 <label class="rocker rocker-sm">
                     <input type="hidden" name="events__failed_attempts_in_a_row__data_circle__enable" value="off" />
                     <input type="checkbox" name="events__failed_attempts_in_a_row__data_circle__enable" class="toggle-block" value="on" <?php $this->checked('events.failed_attempts_in_a_row.data_circle.enable', true); ?>>
@@ -397,10 +397,10 @@ use function Shieldon\Firewall\_e;
 <div class="section-body my-0">
     <table class="setting-table">
         <tr>
-            <td class="r1"><?php _e('panel', 'messenger_label_event_2', 'Ban a user permanently in system firwall'); ?></td>
+            <td class="r1"><?php _e('panel', 'messenger_label_event_2', 'Permanently ban user in system firewall'); ?></td>
             <td class="r2">
                 <p>
-                    <?php _e('panel', 'messenger_desc_event_2', 'This event is triggered typically when a user is already banned permanently in curent data cycle, but they are still access the warning pages too many times in a row, we can confirm that they are malicious bots.'); ?><br />
+                    <?php _e('panel', 'messenger_desc_event_2', 'This event is typically triggered when a user is already banned in the current data cycle, but they still access the warning pages too many times in a row - we can conclude that they are malicious bots.'); ?><br />
                     <?php _e('panel', 'messenger_desc_event_3', 'This option will take effect only when you have set the system-layer firewall correctly.'); ?>
                 </p>
                 <label class="rocker rocker-sm">

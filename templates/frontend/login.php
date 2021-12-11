@@ -152,7 +152,7 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                                 <button type="submit" class="btn-submit"><?php _e('panel', 'login_btn_login', 'Login'); ?></button>
                             </div>
                         </div>
-                        <?php $csrf; ?>
+                        <?php echo $csrf; ?>
                     </form>
                 </div>
             </div>

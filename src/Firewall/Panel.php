@@ -29,10 +29,9 @@ use Shieldon\Firewall\Panel\DemoModeTrait;
 use Shieldon\Firewall\Panel\User;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\Firewall;
+use RuntimeException;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
-
-use RuntimeException;
 use function call_user_func;
 use function explode;
 use function in_array;
@@ -53,6 +52,7 @@ class Panel
      *  ----------------------|---------------------------------------------
      *   __call               | Magic method. Let property can run as a method.
      *   entry                | Initialize the entry point of the control panel
+     *   ::getRoutes          | Get the path string list for all routes.
      *  ----------------------|---------------------------------------------
      */
 
@@ -96,38 +96,7 @@ class Panel
      */
     public function __construct() 
     {
-        $this->registerRoutes = [
-            'ajax/changeLocale',
-            'ajax/tryMessenger',
-            'circle/filter',
-            'circle/rule',
-            'circle/session',
-            'home/index',
-            'home/overview',
-            'iptables/ip4',
-            'iptables/ip4status',
-            'iptables/ip6',
-            'iptables/ip6status',
-            'report/actionLog',
-            'report/operation',
-            'security/authentication',
-            'security/xssProtection',
-            'setting/basic',
-            'setting/exclusion',
-            'setting/export',
-            'setting/import',
-            'setting/ipManager',
-            'setting/messenger',
-            'user/login',
-            'user/logout',
-            // Render the static asset files for embedding.
-            // Since 2.0, not link to shieldon-io.github.io anymore.
-            'asset/css',
-            'asset/js',
-            'asset/favicon',
-            'asset/logo',
-        ];
-
+        $this->registerRoutes = self::getRoutes();
         $this->resolver = new HttpResolver();
     }
 
@@ -197,6 +166,46 @@ class Panel
         }
 
         $this->resolver($response->withStatus(404));
+    }
+
+    /**
+     * Get routes.
+     *
+     * @return array
+     */
+    public static function getRoutes(): array
+    {
+        return [
+            'ajax/changeLocale',
+            'ajax/tryMessenger',
+            'circle/filter',
+            'circle/rule',
+            'circle/session',
+            'home/index',
+            'home/overview',
+            'iptables/ip4',
+            'iptables/ip4status',
+            'iptables/ip6',
+            'iptables/ip6status',
+            'report/actionLog',
+            'report/operation',
+            'security/authentication',
+            'security/xssProtection',
+            'setting/basic',
+            'setting/exclusion',
+            'setting/export',
+            'setting/import',
+            'setting/ipManager',
+            'setting/messenger',
+            'user/login',
+            'user/logout',
+            // Render the static asset files for embedding.
+            // Since 2.0, not link to shieldon-io.github.io anymore.
+            'asset/css',
+            'asset/js',
+            'asset/favicon',
+            'asset/logo',
+        ];
     }
 
     /**

@@ -87,6 +87,7 @@ class Ajax extends BaseController
     {
         $langCode = get_request()->getQueryParams()['langCode'] ?? 'en';
         get_session_instance()->set('shieldon_panel_lang', $langCode);
+        get_session_instance()->save();
         $data = [];
 
         $data['status'] = 'success';
@@ -141,17 +142,17 @@ class Ajax extends BaseController
         // Call testing method if exists.
         $status = $this->{$method}($getParams, $message);
 
-        if ( $status) {
+        if ($status) {
             $data['status'] = 'success';
             $postParams[$postKey] = 'on';
-            $this->saveConfig();
         } else {
             $data['status'] = 'error';
-            $postParams[$postKey] = 'off';
-            $this->saveConfig();
+            $postParams[$postKey] = 'off'; 
         }
 
         set_request($request->withParsedBody($postParams));
+
+        $this->saveConfig();
 
         // @codeCoverageIgnoreEnd
 

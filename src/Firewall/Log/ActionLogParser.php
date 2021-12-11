@@ -119,8 +119,8 @@ final class ActionLogParser
 
         // range: today ~ now
         $this->periods['today'] = [
-            'timesamp_begin' => strtotime('today'),
-            'timesamp_end'   => strtotime('tomorrow'),
+            'timestamp_begin' => strtotime('today'),
+            'timestamp_end'   => strtotime('tomorrow'),
             'display_format' =>'h:00 a',
             'display_count'  => 24,
             'period'         => 3600,
@@ -128,8 +128,8 @@ final class ActionLogParser
         
         // range: yesterday ~ today
         $this->periods['yesterday'] = [
-            'timesamp_begin' => strtotime('yesterday'),
-            'timesamp_end'   => strtotime('today'),
+            'timestamp_begin' => strtotime('yesterday'),
+            'timestamp_end'   => strtotime('today'),
             'display_format' =>'H:00',
             'display_count'  => 24,
             'period'         => 3600,
@@ -137,8 +137,8 @@ final class ActionLogParser
 
         // range: past_seven_hours ~ now
         $this->periods['past_seven_hours'] = [
-            'timesamp_begin' => strtotime(date('Y-m-d H:00:00', strtotime('-7 hours'))),
-            'timesamp_end'   => strtotime(date('Y-m-d H:00:00', strtotime('-1 hours'))),
+            'timestamp_begin' => strtotime(date('Y-m-d H:00:00', strtotime('-7 hours'))),
+            'timestamp_end'   => strtotime(date('Y-m-d H:00:00', strtotime('-1 hours'))),
             'display_format' =>'H:00',
             'display_count'  => 7,
             'period'         => 3600,
@@ -146,8 +146,8 @@ final class ActionLogParser
 
         // range: past_seven_days ~ today
         $this->periods['past_seven_days'] = [
-            'timesamp_begin' => strtotime(date('Ymd', strtotime('-7 days'))),
-            'timesamp_end'   => strtotime('today'),
+            'timestamp_begin' => strtotime(date('Ymd', strtotime('-7 days'))),
+            'timestamp_end'   => strtotime('today'),
             'display_format' => 'D',
             'display_count'  => 7,
             'period'         => 86400,
@@ -155,8 +155,8 @@ final class ActionLogParser
 
         // range: last_month ~ today
         $this->periods['this_month'] = [
-            'timesamp_begin' => strtotime(gmdate('Ym' . '01')),
-            'timesamp_end'   => strtotime('today'),
+            'timestamp_begin' => strtotime(gmdate('Ym' . '01')),
+            'timestamp_end'   => strtotime('today'),
             'display_format' =>'Y.m.d',
             'display_count'  => gmdate('j'),
             'period'         => 86400,   
@@ -164,8 +164,8 @@ final class ActionLogParser
 
         // range: last_month ~ this_month
         $this->periods['last_month'] = [
-            'timesamp_begin' => strtotime(gmdate('Ym' . '01', strtotime('-1 months'))),
-            'timesamp_end'   => strtotime(gmdate('Ym' . '01')),
+            'timestamp_begin' => strtotime(gmdate('Ym' . '01', strtotime('-1 months'))),
+            'timestamp_end'   => strtotime(gmdate('Ym' . '01')),
             'display_format' =>'Y.m.d',
             'display_count'  => gmdate('j', strtotime('-1 months')),
             'period'         => 86400,          
@@ -213,8 +213,8 @@ final class ActionLogParser
                 $endDate = date('Ymd');
 
                 $this->periods['past_' . $dayCount . '_days'] = [
-                    'timesamp_begin' => strtotime(date('Ymd', strtotime('-' . $dayCount . ' days'))),
-                    'timesamp_end'   => strtotime('today'),
+                    'timestamp_begin' => strtotime(date('Ymd', strtotime('-' . $dayCount . ' days'))),
+                    'timestamp_end'   => strtotime('today'),
                     'display_format' => 'D',
                     'display_count'  => $dayCount,
                     'period'         => 86400,
@@ -254,7 +254,7 @@ final class ActionLogParser
 
         foreach ($logs as $log) {
 
-            $logTimesamp = (int) $log['timesamp'];
+            $logTimesamp = (int) $log['timestamp'];
             $logIp = $log['ip'];
 
             // Add a new field `datetime` that original logs don't have.
@@ -264,7 +264,7 @@ final class ActionLogParser
 
                 for ($i = 0; $i < $this->periods[$t]['display_count']; $i++) {
 
-                    $kTimesamp = $this->periods[$t]['timesamp_begin'] + ($i * $this->periods[$t]['period']);
+                    $kTimesamp = $this->periods[$t]['timestamp_begin'] + ($i * $this->periods[$t]['period']);
 
                     $detailTimesampBegin = $kTimesamp;
                     $detailTimesampEnd = $kTimesamp + $this->periods[$t]['period'];

@@ -30,14 +30,13 @@ use Shieldon\Firewall\Panel\ConfigMethodsTrait;
 use Shieldon\Firewall\Panel\CsrfTrait;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\Log\ActionLogParser;
+use RuntimeException;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
 use function Shieldon\Firewall\get_user_lang;
-
-use RuntimeException;
 use function array_push;
 use function define;
 use function defined;

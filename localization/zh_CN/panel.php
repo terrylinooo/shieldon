@@ -176,7 +176,7 @@ return [
     'overview_thread_rows' => '列',
     'overview_thread_table' => '表',
     'overview_text_reset_data_circle_1' => '您想要重置当前的资料周期吗？',
-    'overview_text_reset_data_circle_2' => '进行这个动作将会移除所有目前资料周期的记录，以及重建资料表。',
+    'overview_text_reset_data_circle_2' => '进行这个动作将会移除所有目前资料周期的记录，以及重建资料表。您在控制台的状态将被登出。',
     'overview_text_reset_action_logs' => '您想要重置当前的访客动作日志吗？',
     'overview_heading_messenger' => '通讯器模组',
     'overview_label_telegram' => 'Telegram',
@@ -397,6 +397,20 @@ return [
     'setting_label_unique_ip_only' => '只许可独立 IP',
     'setting_note_unique_ip_only' => '每一个 IP 位址只许可一个工作阶段。',
     'setting_note_unique_ip_only_2' => '使用者有多重工作阶段将会被踢掉。',
+
+    // Added at 8/19/2020
+    'setting_heading_dialog_information' => '资讯揭露',
+    'setting_label_dialog_user_inforamtion' => '使用者资讯',
+    'setting_note_dialog_user_inforamtion' => '显示 IP 位址、反向域名和使用者代理。',
+    'setting_label_dialog_http_status' => 'HTTP 状态码',
+    'setting_note_dialog_http_status' => '向使用者显示 HTTP 状态码',
+    'setting_label_dialog_reason_code' => '原因代码',
+    'setting_note_dialog_reason_code' => '显示导致使用者被封锁的原因代码。',
+    'setting_label_dialog_reason_text' => '原因描述',
+    'setting_note_dialog_reason_text' => '显示导致使用者被封锁的原因描述。',
+    'setting_note_dialog_reason_notice' => '不建议显示这种资讯，有心人士或能从而得知穿透保护的方法。',
+    'setting_label_dialog_user_amount' => '线上使用者数',
+    'setting_note_dialog_user_amount' => '在工作阶段限制的对话框，显示线上使用者的总数。',
 
     // Messenger
     'messenger_heading_events' => '事件',

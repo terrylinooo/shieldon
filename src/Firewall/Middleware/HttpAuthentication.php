@@ -28,6 +28,8 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Shieldon\Psr7\Response;
 use InvalidArgumentException;
+use function array_column;
+use function count;
 use function password_verify;
 use function strpos;
 

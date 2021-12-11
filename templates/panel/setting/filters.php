@@ -166,7 +166,7 @@ use function Shieldon\Firewall\_e;
             <td class="r1"></td>
             <td class="r2">
                 <p>
-                    <?php _e('panel', 'setting_note_filter_session', 'Detect whether multiple sessions created by the same visitor.'); ?>
+                    <?php _e('panel', 'setting_note_filter_session', 'Detect whether multiple sessions were created by the same visitor.'); ?>
                 </p>
             </td>
         </tr>

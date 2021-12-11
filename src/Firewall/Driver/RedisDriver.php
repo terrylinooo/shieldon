@@ -24,7 +24,6 @@ namespace Shieldon\Firewall\Driver;
 
 use Shieldon\Firewall\Driver\DriverProvider;
 use Redis;
-use function is_array;
 use function is_bool;
 use function json_decode;
 use function json_encode;
@@ -102,18 +101,21 @@ class RedisDriver extends DriverProvider
 
         foreach ($keys as $key) {
             $content = $this->redis->get($key);
-            $content = json_decode($content, true);
 
-            if ($type === 'session') {
-                $sort = $content['microtimesamp'] . '.' . $content['id']; 
-            } else {
-                $sort = $content['log_ip'];
+            if (!empty($content)) {
+                $content = json_decode($content, true);
+
+                if ($type === 'session') {
+                    $sort = $content['microtimestamp'] . '.' . $content['id']; 
+                } else {
+                    $sort = $content['log_ip'];
+                }
+    
+                $results[$sort] = $content; 
             }
-
-            $results[$sort] = $content;   
         }
 
-        // Sort by ascending timesamp (microtimesamp).
+        // Sort by ascending timestamp (microtimestamp).
         ksort($results);
 
         return $results;
