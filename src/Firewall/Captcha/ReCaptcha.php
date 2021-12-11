@@ -26,6 +26,7 @@ use Shieldon\Firewall\Captcha\CaptchaProvider;
 
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\unset_superglobal;
+use CurlHandle; // PHP 8
 use function curl_error;
 use function curl_exec;
 use function curl_init;
@@ -116,10 +117,18 @@ class ReCaptcha extends CaptchaProvider
 
         $ch = curl_init();
 
-        if (!is_resource($ch)) {
-            // @codeCoverageIgnoreStart
-            return false;
-            // @codeCoverageIgnoreEnd
+        if (version_compare(phpversion(), '8.0.0', '>=')) {
+            if (!$ch instanceof CurlHandle) {
+                // @codeCoverageIgnoreStart
+                return false;
+                // @codeCoverageIgnoreEnd
+            }
+        } else {
+            if (!is_resource($ch)) {
+                // @codeCoverageIgnoreStart
+                return false;
+                // @codeCoverageIgnoreEnd
+            }
         }
 
         curl_setopt($ch, CURLOPT_URL, $this->googleServiceUrl);

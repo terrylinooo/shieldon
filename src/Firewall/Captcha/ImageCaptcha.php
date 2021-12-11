@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Captcha;
 
 use RuntimeException;
+use GdImage; // PHP 8
 use Shieldon\Firewall\Captcha\CaptchaProvider;
 
 use function Shieldon\Firewall\get_request;
@@ -450,17 +451,27 @@ class ImageCaptcha extends CaptchaProvider
     /**
      * Get image resource.
      *
-     * @return resource
+     * @return resource|GdImage
      */
     private function getImageResource()
     {
-        if (!is_resource($this->im)) {
+        if (version_compare(phpversion(), '8.0.0', '>=')) {
+            if (!$this->im instanceof GdImage)  {
+                // @codeCoverageIgnoreStart
+                throw new RuntimeException(
+                    'Cannot create image resource.'
+                );
+                // @codeCoverageIgnoreEnd
+            }
+        } else {
+            if (!is_resource($this->im))  {
 
-            // @codeCoverageIgnoreStart
-            throw new RuntimeException(
-                'Cannot create image resource.'
-            );
-            // @codeCoverageIgnoreEnd
+                // @codeCoverageIgnoreStart
+                throw new RuntimeException(
+                    'Cannot create image resource.'
+                );
+                // @codeCoverageIgnoreEnd
+            }
         }
 
         return $this->im;

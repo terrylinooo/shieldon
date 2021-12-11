@@ -150,7 +150,7 @@ function __(): string
          *     Search results: 5 items. Total items: 150.
          */
         foreach ($replacement as $i => $r) {
-            $resultString = str_replace('{' . $i . '}', $replacement[$i], $resultString);
+            $resultString = str_replace('{' . $i . '}', (string) $replacement[$i], (string) $resultString);
         }
     }
     

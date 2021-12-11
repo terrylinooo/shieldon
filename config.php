@@ -445,6 +445,14 @@ return [
         'shadow_opacity'   => '0.2',
     ],
 
+    'dialog_info_disclosure' => [
+        'user_inforamtion'   => false,
+        'http_status_code'   => false,
+        'reason_code'        => false,
+        'reason_text'        => false,
+        'online_user_amount' => false,
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Messenger
