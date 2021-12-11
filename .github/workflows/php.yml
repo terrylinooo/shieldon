@@ -18,42 +18,33 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         
-        - name: Start MySQL service
-          run: sudo service mysql start
+        - name: "Setup MySQL"
+          run: |
+            sudo service mysql start
+            sudo mysql -uroot -proot -h 127.0.0.1 -e "CREATE DATABASE shieldon_unittest;"
+            sudo mysql -uroot -proot -h 127.0.0.1 -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
 
-        - name: MySQL - Create database.
-          run: sudo mysql -uroot -proot -h 127.0.0.1 -e 'CREATE DATABASE shieldon_unittest;'
-
-        - name: MySQL - Create user.	
-          run: sudo mysql -uroot -proot -h 127.0.0.1 -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"	
-
-        - name: MySQL - Grant permission.	
-          run: sudo mysql -uroot -proot -h 127.0.0.1 -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
-
-        - name: Install Redis service.
-          run: sudo apt-get install -y redis-server
-
-        - name: Start Redis service.
-          run: sudo service redis-server start
+        - name: "Setup Redis"
+          run: |
+            sudo apt-get install -y redis-server
+            sudo service redis-server start
           
-        - name: Setup PHP with Xdebug
+        - name: "Setup PHP with Xdebug"
           uses: shivammathur/setup-php@v2
           with:
             php-version: ${{ matrix.php-versions }}
             extensions: mbstring, pdo, pdo_mysql, intl, zip, redis, ctype, json
             coverage: xdebug
        
-        - name: Create a folder for testing.
-          run: sudo mkdir /home/runner/work/shieldon/shieldon/tmp
-        
-        - name: Make folder writable.
-          run: sudo chmod 777 /home/runner/work/shieldon/shieldon/tmp
+        - name: "Setup test directory"
+          run: |
+            sudo mkdir /home/runner/work/shieldon/shieldon/tmp
+            sudo chmod 0777 /home/runner/work/shieldon/shieldon/tmp
 
-        - name: Install dependencies
-          run: composer install --prefer-dist --no-interaction --dev
+        - name: "Install dependencies"
+          run: |
+            composer update --prefer-dist --no-interaction --no-suggest
 
-        - name: Update packages
-          run: composer self-update
-
-        - name: Run tests.
-          run: composer test
+        - name: "Run tests"
+          run: |
+            composer test
