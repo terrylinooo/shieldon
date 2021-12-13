@@ -11,13 +11,13 @@ jobs:
       runs-on: ${{ matrix.operating-system }}
       strategy:
         matrix:
-          operating-system: [ubuntu-16.04]
+          operating-system: [ubuntu-18.04]
           php-versions: ['7.1', '7.2', '7.3']
       name: PHP ${{ matrix.php-versions }}
- 
+
       steps:
         - uses: actions/checkout@v2
-        
+
         - name: "Setup MySQL"
           run: |
             sudo service mysql start
@@ -28,14 +28,14 @@ jobs:
           run: |
             sudo apt-get install -y redis-server
             sudo service redis-server start
-          
+
         - name: "Setup PHP with Xdebug"
           uses: shivammathur/setup-php@v2
           with:
             php-version: ${{ matrix.php-versions }}
             extensions: mbstring, pdo, pdo_mysql, intl, zip, redis, ctype, json
             coverage: xdebug
-       
+
         - name: "Setup test directory"
           run: |
             sudo mkdir /home/runner/work/shieldon/shieldon/tmp
