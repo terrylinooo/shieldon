@@ -294,6 +294,19 @@ The default user and password is `shieldon_user` and `shieldon_pass`. The first 
 
 ![Firewall Panel](https://i.imgur.com/MELx6Vl.png)
 
+## Roadmap to Shieldon 3.0
+
+Shieldon 3.0 is under development, the primary goal is to imporve two things - supporting more data drviers and imporving its Control Panel.
+
+| Item | Feature |
+| --- | --- | --- |
+| Kernel | Current data drivers will be removed, use [SimpleCache](https://github.com/terrylinooo/simple-cache) instead.<br /> |
+| Control panel | Current control panel will be removed, rewirte it by using React.js |
+| CLI | Laravel Artisan console.
+
+Planning released date: mid-year of 2022.
+
+
 ## Author
 
 Shieldon library is brought to you by [Terry L.](https://terryl.in) from Taiwan.
