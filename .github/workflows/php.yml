@@ -12,7 +12,7 @@ jobs:
       strategy:
         matrix:
           operating-system: [ubuntu-18.04]
-          php-versions: ['7.1', '7.2', '7.3']
+          php-versions: ['7.4', '8.0']
       name: PHP ${{ matrix.php-versions }}
 
       steps:
