@@ -1,4 +1,4 @@
-#  Web Application Firewall :zap: `PHP` 
+#  Web Application Firewall :zap: `PHP`
 
 Shieldon is a Web Application Firewall (WAF) for PHP, with a beautiful and useful control panel that helps you easily manage the firewall rules and security settings.
 
@@ -27,11 +27,11 @@ composer require shieldon/shieldon ^2
 This will also install dependencies built for Shieldon:
 
 | package | description |
-| --- | --- | 
-| [shieldon/psr-http](https://github.com/terrylinooo/psr-http) | PSR-7, 15, 17 Implementation with full documented and well tested. | 
+| --- | --- |
+| [shieldon/psr-http](https://github.com/terrylinooo/psr-http) | PSR-7, 15, 17 Implementation with full documented and well tested. |
 | [shieldon/event-dispatcher](https://github.com/terrylinooo/event-dispatcher) | Simple event dispatcher. |
-| [shieldon/web-security](https://github.com/terrylinooo/web-security) | Collection of functions about web security. | 
-| [shieldon/messenger](https://github.com/terrylinooo/messenger) |  Collection of modules of sending message to third-party API or service, such as Telegram, Line, RocketChat, Slack, SendGrid, MailGun and more... | 
+| [shieldon/web-security](https://github.com/terrylinooo/web-security) | Collection of functions about web security. |
+| [shieldon/messenger](https://github.com/terrylinooo/messenger) |  Collection of modules of sending message to third-party API or service, such as Telegram, Line, RocketChat, Slack, SendGrid, MailGun and more... |
 
 ## Concepts
 
@@ -43,7 +43,7 @@ This is basic concepts about how Shieldon works.
 - The system-layer firewall such as iptables module.
 - To use firewall software in the Web application layer, you can implement Shieldon in a very early stage of your APP, mostly just after Composer autoloader, or at the first place of middleware-pipeline.
 - Shieldon analyzes all your HTTP and HTTPS requests.
-- Once Shieldon has detected strange behaviors of a request, blocking and prompting them CAPTCHA to unblock. 
+- Once Shieldon has detected strange behaviors of a request, blocking and prompting them CAPTCHA to unblock.
 ![Firewall Dialog 1](https://i.imgur.com/rlsEwSG.png)
 - If a request fails in a row many times (depends on your setting), they will be permanently banned in current data circle.
 ![Firewall Dialog 2](https://i.imgur.com/Qy1sADw.png)
@@ -57,14 +57,14 @@ There are some step-by-step installation guides that lead you implementing Shiel
 
 |   |   |   |   |
 | --- | --- | --- | --- |
-| ![Firewall in Laravel](https://shieldon.io/images/home/laravel-framework-firewall.png) | ![Firewall in CakePHP](https://shieldon.io/images/home/cakephp-framework-firewall.png) | ![Firewall in Symfony](https://shieldon.io/images/home/symfony-framework-firewall.png) | ![Firewall in PHPixie](https://shieldon.io/images/home/phpixie-framework-firewall.png) | 
+| ![Firewall in Laravel](https://shieldon.io/images/home/laravel-framework-firewall.png) | ![Firewall in CakePHP](https://shieldon.io/images/home/cakephp-framework-firewall.png) | ![Firewall in Symfony](https://shieldon.io/images/home/symfony-framework-firewall.png) | ![Firewall in PHPixie](https://shieldon.io/images/home/phpixie-framework-firewall.png) |
 | [Laravel](https://github.com/terrylinooo/shieldon/wiki/Laravel-Framework) | [CakePHP 3](https://github.com/terrylinooo/shieldon/wiki/CakePHP-Framework) | [Symfony](https://github.com/terrylinooo/shieldon/wiki/Symfony-Framework)  | [PHPixie](https://github.com/terrylinooo/shieldon/wiki/PHPixie-Framework) |
 | ![Firewall in FatFree](https://shieldon.io/images/home/fatfree-framework-firewall.png) | ![Firewall in CodeIgniterr](https://shieldon.io/images/home/codeigniter-framework-firewall.png) | ![Firewall in Yii Framework](https://shieldon.io/images/home/yii-framework-firewall.png) | ![Firewall in Zend](https://shieldon.io/images/home/zend-framework-firewall.png) |
 | [FatFree](https://github.com/terrylinooo/shieldon/wiki/FatFree-Framework) | [CodeIgniter 3](https://github.com/terrylinooo/shieldon/wiki/CodeIgniter-3-Framework)<br />[CodeIgniter 4](https://github.com/terrylinooo/shieldon/wiki/CodeIgniter-4-Framework) | [Yii 2](https://github.com/terrylinooo/shieldon/wiki/Yii-2-Framework) | [Zend MVC](https://github.com/terrylinooo/shieldon/wiki/Zend-Framework-MVC)<br />[Zend Expressive](https://github.com/terrylinooo/shieldon/wiki/Zend-Framework-Expressive) |
 | ![Firewall in Slim](https://shieldon.io/images/home/slim-framework-firewall.png) | ![Firewall in Fuel](https://shieldon.io/images/home/fuel-framework-firewall.png) | - |
 | [Slim 3](https://github.com/terrylinooo/shieldon/wiki/Slim-3-Framework)<br />[Slim 4](https://github.com/terrylinooo/shieldon/wiki/Slim-3-Framework) | [Fuel](https://github.com/terrylinooo/shieldon/wiki/Fuel-Framework) |  [Pure PHP project](https://github.com/terrylinooo/shieldon/wiki/Pure-PHP-Project) |
 
-Listed frameworks: [Laravel](https://shieldon.io/en/guide/laravel.html), [Symfony](https://shieldon.io/en/guide/symfony.html), [CodeIgniter](https://shieldon.io/en/guide/codeigniter.html), [CakePHP](https://shieldon.io/en/guide/cakephp.html), [Yii](https://shieldon.io/en/guide/yii.html), [Zend](https://shieldon.io/en/guide/zend.html), [Slim](https://shieldon.io/en/guide/slim.html), [Fat-Free](https://shieldon.io/en/guide/fatfree.html), [Fuel](https://shieldon.io/en/guide/fuel.html), [PHPixie](https://shieldon.io/en/guide/phpixie.html). Can't find the documentation of the framework you are using? 
+Listed frameworks: [Laravel](https://shieldon.io/en/guide/laravel.html), [Symfony](https://shieldon.io/en/guide/symfony.html), [CodeIgniter](https://shieldon.io/en/guide/codeigniter.html), [CakePHP](https://shieldon.io/en/guide/cakephp.html), [Yii](https://shieldon.io/en/guide/yii.html), [Zend](https://shieldon.io/en/guide/zend.html), [Slim](https://shieldon.io/en/guide/slim.html), [Fat-Free](https://shieldon.io/en/guide/fatfree.html), [Fuel](https://shieldon.io/en/guide/fuel.html), [PHPixie](https://shieldon.io/en/guide/phpixie.html). Can't find the documentation of the framework you are using?
 
 There are three ways you can choose to use Shieldon on your application.
 
@@ -145,7 +145,7 @@ $app->any('/firewall/panel[/{params:.*}]', function (Request $request, Response 
 ```
 
 Note:
-- The HTTP method `POST` and `GET` both should be applied to your website. 
+- The HTTP method `POST` and `GET` both should be applied to your website.
 - `POST` method is needed for solving CAPTCHA by users who were temporarily blocked.
 
 ### Bootstrap Stage
@@ -300,7 +300,6 @@ Shieldon 3.0 is under development, the primary goal is to imporve two things - s
 
 | Item | Feature |
 | --- | --- |
-| Kernel | Current data drivers will be removed, use [SimpleCache](https://github.com/terrylinooo/simple-cache) instead.<br /> |
 | Control panel | Current control panel will be removed, rewirte it by using React.js |
 | CLI | Laravel Artisan console.
 
