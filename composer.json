@@ -15,8 +15,8 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.1.0",
-        "psr/http-factory": "^1",
-        "psr/http-message": "^1",
+        "psr/http-factory": "*",
+        "psr/http-message": "*",
         "shieldon/event-dispatcher": "^1",
         "shieldon/messenger": "^1",
         "shieldon/psr-http": "^1.2",
