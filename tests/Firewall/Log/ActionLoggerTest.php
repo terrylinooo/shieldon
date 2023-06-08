@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Shieldon package.
  *
@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -32,7 +32,6 @@ class ActionLoggerTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $info = $logger->getCurrentLoggerInfo();
 
             $this->assertIsArray($info);
-
         } catch (\Exception $e) {
             $this->assertTrue(false);
         }
@@ -40,11 +39,9 @@ class ActionLoggerTest extends \Shieldon\FirewallTest\ShieldonTestCase
         if ($logger instanceof \Shieldon\Firewall\Log\ActionLogger) {
             $this->assertTrue(true);
         }
-
-        
     }
 
-    public function testAdd() 
+    public function testAdd()
     {
         $kernel = new \Shieldon\Firewall\Kernel();
         $logger = new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon/test_logs', '19890604');
@@ -74,7 +71,8 @@ class ActionLoggerTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $logger->purgeLogs();
     }
 
-    public function testGet() {
+    public function testGet()
+    {
         // This method has been tested in testAdd.
     }
 

@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -40,7 +40,14 @@ use function Shieldon\Firewall\_e;
             <a class="navbar-brand" href="#">
                 <img src="<?php echo $logo_url; ?>" class="logo-image">
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#top-navbar" aria-controls="top-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#top-navbar"
+                aria-controls="top-navbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -62,9 +69,15 @@ use function Shieldon\Firewall\_e;
                             <?php _e('panel', 'nav_locale', 'Locale'); ?>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a href="#" data-lang="en" class="dropdown-item" onclick="selectLanguage(this, event);" role="button">English</a>
-                            <a href="#" data-lang="zh" class="dropdown-item" onclick="selectLanguage(this, event);" role="button">中文</a>
-                            <a href="#" data-lang="zh_CN" class="dropdown-item" onclick="selectLanguage(this, event);" role="button">简体中文</a>
+                            <a href="#" data-lang="en" class="dropdown-item"
+                                onclick="selectLanguage(this, event);" role="button"
+                            >English</a>
+                            <a href="#" data-lang="zh" class="dropdown-item"
+                                onclick="selectLanguage(this, event);" role="button"
+                            >中文</a>
+                            <a href="#" data-lang="zh_CN" class="dropdown-item"
+                                onclick="selectLanguage(this, event);" role="button"
+                            >简体中文</a>
                         </div>
                     </li>
                 </ul>
@@ -257,14 +270,11 @@ use function Shieldon\Firewall\_e;
                     <div class="footer">
                         <div class="container-fluid">
                             <div class="col-md-12">
-                                    <!-- 
-                                        <?php _e('panel', 'channel', 'Channel'); ?>: <?php echo $channel_name; ?>
-                                        <?php _e('panel', 'mode', 'Mode'); ?>: <?php echo $mode_name; ?>
-                                    -->
-                                    Powered by <a href="https://shieldon.io" target="_blank">Shieldon</a> <?php echo SHIELDON_FIREWALL_VERSION; ?>
-                                    &copy; 2019-<?php echo date('Y'); ?> <a href="https://terryl.in" target="_blank">Terry Lin</a>
-                                    <a href="https://github.com/terrylinooo/shieldon" target="_blank"><i class="fab fa-github"></i></a>
-                                </div>
+Powered by <a href="https://shieldon.io" target="_blank">Shieldon</a>
+<?php echo SHIELDON_FIREWALL_VERSION; ?>
+&copy; 2019-<?php echo date('Y'); ?>
+<a href="https://terryl.in" target="_blank">Terry Lin</a>
+<a href="https://github.com/terrylinooo/shieldon" target="_blank"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
                     </div>
@@ -275,7 +285,8 @@ use function Shieldon\Firewall\_e;
         <div id="message-modal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-lightbox" role="document">
                 <div class="modal-content">
-                    <div class="modal-header <?php echo (count($this->messages) == 1 ? $this->messages[0]['class'] : 'info'); ?>">
+                    <?php $className = count($this->messages) == 1 ? $this->messages[0]['class'] : 'info'; ?>
+                    <div class="modal-header <?php echo $className; ?>">
                         <div class="icon-wrapper">
                             <?php if (count($this->messages) == 1) : ?>
                                 <div class="icon-box">
@@ -288,7 +299,7 @@ use function Shieldon\Firewall\_e;
                                         <?php endif; ?>
                                      </span>
                                 </div>
-                            <?php else: ?>
+                            <?php else : ?>
                                 <div class="icon-box">
                                     <span class="message-icon">
                                         <i class="fas fa-exclamation-circle"></i>
@@ -313,65 +324,65 @@ use function Shieldon\Firewall\_e;
         <script> $('#message-modal').modal(); </script>
         <?php endif; ?>
 
-        <script>
+<script>
 
-            function freezeUI() {
-                $('#loader').attr('data-status', 'loading');
-            }
+    function freezeUI() {
+        $('#loader').attr('data-status', 'loading');
+    }
 
-            function unFreezeUI() {
-                $('#loader').attr('data-status', 'waiting');
-            }
+    function unFreezeUI() {
+        $('#loader').attr('data-status', 'waiting');
+    }
 
-            $(function() {
+    $(function() {
 
-                var currentUrl = window.location.href.split('#')[0];
+        var currentUrl = window.location.href.split('#')[0];
 
-                $('.so-sidebar-menu').find('a[href="' + currentUrl + '"]').parent('li').addClass('active');
-                $('.so-sidebar-menu').find('a').filter(function () {
-                    return this.href == currentUrl;
-                }).parent('li').addClass('active').parents('ul').slideDown().parent().addClass('current-page');
+        $('.so-sidebar-menu').find('a[href="' + currentUrl + '"]').parent('li').addClass('active');
+        $('.so-sidebar-menu').find('a').filter(function () {
+            return this.href == currentUrl;
+        }).parent('li').addClass('active').parents('ul').slideDown().parent().addClass('current-page');
 
-                $('.so-sidebar-menu a').click(function () {
-                    if ($(this).parent('li').hasClass('active')) {
-                        $(this).parent().removeClass('active');
-                        if ($(this).closest('ul').hasClass('child-menu')) {
-                            $(this).closest('ul').slideUp(500);
-                        }
-                    } else {
-                        $('.parent-menu li').each(function() {  
-                            $(this).removeClass('active');
-                            $(this).removeClass('current-page');
-                            $('.child-menu').attr('style', '');
-                        });
-                        $(this).parent('li').addClass('active').parents('ul').slideDown(500).parent().addClass('active');
-                    }
+        $('.so-sidebar-menu a').click(function () {
+            if ($(this).parent('li').hasClass('active')) {
+                $(this).parent().removeClass('active');
+                if ($(this).closest('ul').hasClass('child-menu')) {
+                    $(this).closest('ul').slideUp(500);
+                }
+            } else {
+                $('.parent-menu li').each(function() {  
+                    $(this).removeClass('active');
+                    $(this).removeClass('current-page');
+                    $('.child-menu').attr('style', '');
                 });
+                $(this).parent('li').addClass('active').parents('ul').slideDown(500).parent().addClass('active');
+            }
+        });
 
-                var selectLanguage = function (obj, event) {
-                    event.preventDefault();
-                    var langCode = $(obj).attr('data-lang');
-                    var url = '<?php echo $this->url('ajax/changeLocale'); ?>';
-  
-                    $.ajax({
-                        url: url,
-                        type: 'get',
-                        data: {'langCode': langCode},
-                        dataType: 'json',
-                        cache: false,
-                        success: function (data) { 
-                            if (data.status === 'success') {
-                                console.log(data);
-                                location.reload();
-                            }
-                        }
-                    }); 
-                };
+        var selectLanguage = function (obj, event) {
+            event.preventDefault();
+            var langCode = $(obj).attr('data-lang');
+            var url = '<?php echo $this->url('ajax/changeLocale'); ?>';
 
-                window.selectLanguage = selectLanguage;
-            });
+            $.ajax({
+                url: url,
+                type: 'get',
+                data: {'langCode': langCode},
+                dataType: 'json',
+                cache: false,
+                success: function (data) { 
+                    if (data.status === 'success') {
+                        console.log(data);
+                        location.reload();
+                    }
+                }
+            }); 
+        };
 
-        </script>
+        window.selectLanguage = selectLanguage;
+    });
+
+</script>
         <div id="loader" data-status="waiting">
             <div class="cssload-box-loading"></div>
         </div>

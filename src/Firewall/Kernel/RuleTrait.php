@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -73,7 +73,7 @@ trait RuleTrait
     /**
      * Look up the rule table.
      *
-     * If a specific IP address doesn't exist, return false. 
+     * If a specific IP address doesn't exist, return false.
      * Otherwise, return true.
      *
      * @return bool
@@ -97,7 +97,7 @@ trait RuleTrait
             return true;
         }
 
-        // Current visitor has been blocked. If he still attempts accessing the site, 
+        // Current visitor has been blocked. If he still attempts accessing the site,
         // then we can drop him into the permanent block list.
         $attempts = $ipRule['attempts'] ?? 0;
         $attempts = (int) $attempts;
@@ -162,7 +162,7 @@ trait RuleTrait
      * @param array $logData    The log data.
      * @param int   $handleType The type for i18n string of the message.
      * @param int   $attempts   The attempt times.
-     * 
+     *
      * @return array
      */
     protected function determineAttemptsTemporaryDeny(array $logData, int $handleType, int $attempts): array
@@ -173,7 +173,6 @@ trait RuleTrait
             $buffer = $this->properties['deny_attempt_buffer']['data_circle'];
 
             if ($attempts >= $buffer) {
-
                 if ($this->properties['deny_attempt_notify']['data_circle']) {
                     $this->event['trigger_messengers'] = true;
                 }
@@ -198,21 +197,19 @@ trait RuleTrait
      * @param array $logData    The log data.
      * @param int   $handleType The type for i18n string of the message.
      * @param int   $attempts   The attempt times.
-     * 
+     *
      * @return array
      */
     protected function determineAttemptsPermanentDeny(array $logData, int $handleType, int $attempts): array
     {
         if ($this->properties['deny_attempt_enable']['system_firewall']) {
             $this->event['update_rule_table'] = true;
-
-            // For the requests that are already banned, but they are still attempting access, that means 
+            // For the requests that are already banned, but they are still attempting access, that means
             // that they are programmably accessing your website. Consider put them in the system-layer fireall
             // such as IPTABLE.
             $bufferIptable = $this->properties['deny_attempt_buffer']['system_firewall'];
 
             if ($attempts >= $bufferIptable) {
-
                 if ($this->properties['deny_attempt_notify']['system_firewall']) {
                     $this->event['trigger_messengers'] = true;
                 }
@@ -232,7 +229,7 @@ trait RuleTrait
                     }
 
                     // Add this IP address to itables_queue.log
-                    // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
+                    // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information.
                     file_put_contents($filePath, $command . "\n", FILE_APPEND | LOCK_EX);
 
                     $logData['attempts'] = 0;
@@ -252,7 +249,7 @@ trait RuleTrait
      *
      * @param array $logData    The log data.
      * @param int   $handleType The type for i18n string of the message.
-     * 
+     *
      * @return string
      */
     protected function prepareMessengerBody(array $logData, int $handleType): string

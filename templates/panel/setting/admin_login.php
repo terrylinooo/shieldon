@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -33,7 +33,11 @@ use function Shieldon\Firewall\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_user', 'User'); ?></td>
             <td class="r2">
-                <input type="text" name="admin__user" class="form-control form-control-sm col-sm-3" value="<?php $this->_('admin.user'); ?>"><br />
+                <input type="text"
+                    name="admin__user"
+                    class="form-control form-control-sm col-sm-3"
+                    value="<?php $this->_('admin.user'); ?>">
+                <br />
             </td>
         </tr>
     </table>
@@ -43,7 +47,11 @@ use function Shieldon\Firewall\_e;
         <tr>
             <td class="r1"><?php _e('panel', 'setting_label_password', 'Password'); ?></td>
             <td class="r2">
-                <input type="text" name="admin__pass" class="form-control form-control-sm col-sm-3" value="<?php $this->_('admin.pass'); ?>"><br />
+                <input type="text"
+                    name="admin__pass"
+                    class="form-control form-control-sm col-sm-3"
+                    value="<?php $this->_('admin.pass'); ?>">
+                <br />
             </td>
         </tr>
     </table>

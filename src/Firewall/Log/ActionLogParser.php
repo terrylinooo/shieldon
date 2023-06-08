@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -35,7 +35,7 @@ final class ActionLogParser
 {
     // Log codes. Same as Shieldon action codes.
     const LOG_BAN = 0;
-    const LOG_ALLOW = 1;    
+    const LOG_ALLOW = 1;
     const LOG_TEMPORARILY_BAN = 2;
     const LOG_UNBAN = 9;
     
@@ -60,7 +60,7 @@ final class ActionLogParser
 
     /**
      * Data detail.
-     * 
+     *
      * For example:
      * $this->periodDetail['today']['12:00 am'][$field] = 7;
      *
@@ -70,7 +70,7 @@ final class ActionLogParser
 
     /**
      * IP Detail
-     * 
+     *
      * For example:
      * $this->ipDetail['today']['127.0.0.1'][$fields] = 6;
      *
@@ -97,7 +97,7 @@ final class ActionLogParser
      *
      * @param string $directory The directory where to store the logs in.
      */
-    public function __construct(string $directory = '') 
+    public function __construct(string $directory = '')
     {
         if (!isset($this->logger)) {
             $this->logger = new Logger($directory);
@@ -121,54 +121,54 @@ final class ActionLogParser
         $this->periods['today'] = [
             'timestamp_begin' => strtotime('today'),
             'timestamp_end'   => strtotime('tomorrow'),
-            'display_format' =>'h:00 a',
-            'display_count'  => 24,
-            'period'         => 3600,
+            'display_format'  => 'h:00 a',
+            'display_count'   => 24,
+            'period'          => 3600,
         ];
         
         // range: yesterday ~ today
         $this->periods['yesterday'] = [
             'timestamp_begin' => strtotime('yesterday'),
             'timestamp_end'   => strtotime('today'),
-            'display_format' =>'H:00',
-            'display_count'  => 24,
-            'period'         => 3600,
+            'display_format'  => 'H:00',
+            'display_count'   => 24,
+            'period'          => 3600,
         ];
 
         // range: past_seven_hours ~ now
         $this->periods['past_seven_hours'] = [
             'timestamp_begin' => strtotime(date('Y-m-d H:00:00', strtotime('-7 hours'))),
             'timestamp_end'   => strtotime(date('Y-m-d H:00:00', strtotime('-1 hours'))),
-            'display_format' =>'H:00',
-            'display_count'  => 7,
-            'period'         => 3600,
+            'display_format'  => 'H:00',
+            'display_count'   => 7,
+            'period'          => 3600,
         ];
 
         // range: past_seven_days ~ today
         $this->periods['past_seven_days'] = [
             'timestamp_begin' => strtotime(date('Ymd', strtotime('-7 days'))),
             'timestamp_end'   => strtotime('today'),
-            'display_format' => 'D',
-            'display_count'  => 7,
-            'period'         => 86400,
+            'display_format'  => 'D',
+            'display_count'   => 7,
+            'period'          => 86400,
         ];
 
         // range: last_month ~ today
         $this->periods['this_month'] = [
             'timestamp_begin' => strtotime(gmdate('Ym' . '01')),
             'timestamp_end'   => strtotime('today'),
-            'display_format' =>'Y.m.d',
-            'display_count'  => gmdate('j'),
-            'period'         => 86400,   
+            'display_format'  => 'Y.m.d',
+            'display_count'   => gmdate('j'),
+            'period'          => 86400,
         ];
 
         // range: last_month ~ this_month
         $this->periods['last_month'] = [
             'timestamp_begin' => strtotime(gmdate('Ym' . '01', strtotime('-1 months'))),
             'timestamp_end'   => strtotime(gmdate('Ym' . '01')),
-            'display_format' =>'Y.m.d',
-            'display_count'  => gmdate('j', strtotime('-1 months')),
-            'period'         => 86400,          
+            'display_format'  => 'Y.m.d',
+            'display_count'   => gmdate('j', strtotime('-1 months')),
+            'period'          => 86400,
         ];
     }
 
@@ -207,7 +207,7 @@ final class ActionLogParser
         ];
 
         if (empty($dataRange[$this->type])) {
-            if (preg_match('/past_([0-9]+)_days/', $this->type, $matches) ) {
+            if (preg_match('/past_([0-9]+)_days/', $this->type, $matches)) {
                 $dayCount = $matches[1];
                 $startDate = date('Ymd', strtotime('-' . $dayCount . ' days'));
                 $endDate = date('Ymd');
@@ -237,7 +237,7 @@ final class ActionLogParser
 
     /**
      * Parse specific period of time of data.
-     * 
+     *
      * Warning: This method may take long time to generate real-time stats on a high-traffic website.
      * Aprroximately 10,000 rows for 3-5 seconds, depnonds on your server's CPU speed.
      *
@@ -253,7 +253,6 @@ final class ActionLogParser
         $logs = $this->logger->get($startDate, $endDate);
 
         foreach ($logs as $log) {
-
             $logTimesamp = (int) $log['timestamp'];
             $logIp = $log['ip'];
 
@@ -261,9 +260,7 @@ final class ActionLogParser
             $log['datetime'] = date('Y-m-d H:i:s', $logTimesamp);
             
             foreach (array_keys($this->periods) as $t) {
-
                 for ($i = 0; $i < $this->periods[$t]['display_count']; $i++) {
-
                     $kTimesamp = $this->periods[$t]['timestamp_begin'] + ($i * $this->periods[$t]['period']);
 
                     $detailTimesampBegin = $kTimesamp;
@@ -366,9 +363,7 @@ final class ActionLogParser
         $ipdData = $this->getIpData();
 
         if (!empty($ipdData)) {
-
             foreach ($ipdData as $ipKey => $ipInfo) {
-
                 if ($ipKey === $ip) {
                     $results['captcha_success_count'] += $ipInfo['captcha_success_count'];
                     $results['captcha_failure_count'] += $ipInfo['captcha_failure_count'];
@@ -383,9 +378,15 @@ final class ActionLogParser
             }
 
             if ($results['captcha_count'] > 0) {
-                $results['captcha_percentageage'] = (int) (round($results['captcha_count'] / ($results['captcha_count'] + $results['pageview_count']), 2) * 100);
-                $results['captcha_failure_percentage'] = (int) (round($results['captcha_failure_count'] / $results['captcha_count'], 2) * 100);
-                $results['captcha_success_percentage'] = (int) (round($results['captcha_success_count'] / $results['captcha_count'], 2) * 100);
+                $results['captcha_percentageage'] = (int) (
+                    round($results['captcha_count'] / ($results['captcha_count'] + $results['pageview_count']), 2) * 100
+                );
+                $results['captcha_failure_percentage'] = (int) (
+                    round($results['captcha_failure_count'] / $results['captcha_count'], 2) * 100
+                );
+                $results['captcha_success_percentage'] = (int) (
+                    round($results['captcha_success_count'] / $results['captcha_count'], 2) * 100
+                );
             }
         }
 
@@ -420,7 +421,6 @@ final class ActionLogParser
         $results['session_limit_count']        = 0;  // integer
 
         if (!empty($periodData)) {
-
             $chartCaptcha = [];
             $chartPageview = [];
             $chartCaptchaSuccess = [];
@@ -453,9 +453,15 @@ final class ActionLogParser
             $results['label_chart_string']           = "'" . implode("','", $labels) . "'";
 
             if ($results['captcha_count'] > 0) {
-                $results['captcha_percentageage'] = (int) (round($results['captcha_count'] / ($results['captcha_count'] + $results['pageview_count']), 2) * 100);
-                $results['captcha_failure_percentage'] = (int) (round($results['captcha_failure_count'] / $results['captcha_count'], 2) * 100);
-                $results['captcha_success_percentage'] = (int) (round($results['captcha_success_count'] / $results['captcha_count'], 2) * 100);
+                $results['captcha_percentageage'] = (int) (
+                    round($results['captcha_count'] / ($results['captcha_count'] + $results['pageview_count']), 2) * 100
+                );
+                $results['captcha_failure_percentage'] = (int) (
+                    round($results['captcha_failure_count'] / $results['captcha_count'], 2) * 100
+                );
+                $results['captcha_success_percentage'] = (int) (
+                    round($results['captcha_success_count'] / $results['captcha_count'], 2) * 100
+                );
             }
         }
 

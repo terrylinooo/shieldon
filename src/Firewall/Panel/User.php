@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -50,14 +50,14 @@ class User extends BaseController
     /**
      * Constructor.
      */
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
     }
 
     /**
      * Login
-     * 
+     *
      * @param string $mode login mode.
      *
      * @return ResponseInterface
@@ -73,8 +73,7 @@ class User extends BaseController
         $data['error'] = '';
         $addonTitle = $this->markAsDemo;
 
-        if (
-            isset($postParams['s_user']) &&
+        if (isset($postParams['s_user']) &&
             isset($postParams['s_pass'])
         ) {
             if ($this->mode === 'demo') {
@@ -232,20 +231,18 @@ class User extends BaseController
 
         if (
             // Default password, unencrypted.
-            $admin['user'] === $username && 
+            $admin['user'] === $username &&
             $admin['pass'] === $password
         ) {
             // @codeCoverageIgnoreStart
             $login = true;
             // @codeCoverageIgnoreEnd
-
         } elseif (
             // User has already changed password, encrypted.
-            $admin['user'] === $username && 
+            $admin['user'] === $username &&
             password_verify($password, $admin['pass'])
         ) {
             $login = true;
-
         } else {
             $errorMsg = __('panel', 'login_message_invalid_user_or_pass', 'Invalid username or password.');
         }
@@ -262,7 +259,7 @@ class User extends BaseController
 
     /**
      * Check Captcha.
-     * 
+     *
      * @param bool   $login    The login status that will be overwritten.
      * @param string $errorMsg The error message.
      *

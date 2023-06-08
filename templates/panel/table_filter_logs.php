@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -43,17 +43,41 @@ $timezone = '';
             <?php _e('panel', 'table_heading_ip_log', 'IP Log Table'); ?>
         </div>
         <div class="so-datatable-description">
-            <?php _e('panel', 'table_description_ip_log_1', 'This is where the Shieldon records the users’ strange behavior.'); ?><br />
-            <?php _e('panel', 'table_description_ip_log_3', 'IP log table will be all cleared after new cycle begins.'); ?><br />
+            <?php
+            _e(
+                'panel',
+                'table_description_ip_log_1',
+                'This is where the Shieldon records the users’ strange behavior.'
+            );
+            ?>
+            <br />
+            <?php
+            _e(
+                'panel',
+                'table_description_ip_log_3',
+                'IP log table will be all cleared after new cycle begins.'
+            );
+            ?>
+            <br />
         </div>
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th rowspan="2"><?php _e('panel', 'overview_label_ip', 'IP'); ?></th>
-                    <th rowspan="2"><?php _e('panel', 'table_label_resolved_hostname', 'Resolved hostname'); ?></th>
-                    <th colspan="4" class="merged-field"><?php _e('panel', 'table_label_pageviews', 'Pageviews'); ?></th>
-                    <th colspan="3" class="merged-field"><?php _e('panel', 'table_label_flags', 'Flags'); ?></th>
-                    <th rowspan="2"><?php _e('panel', 'table_label_last_visit', 'Last visit'); ?></th>
+                    <th rowspan="2">
+                        <?php _e('panel', 'overview_label_ip', 'IP'); ?>
+                    </th>
+                    <th rowspan="2">
+                        <?php _e('panel', 'table_label_resolved_hostname', 'Resolved hostname'); ?>
+                    </th>
+                    <th colspan="4" class="merged-field">
+                        <?php _e('panel', 'table_label_pageviews', 'Pageviews'); ?>
+                    </th>
+                    <th colspan="3" class="merged-field">
+                        <?php _e('panel', 'table_label_flags', 'Flags'); ?>
+                    </th>
+                    <th rowspan="2">
+                        <?php _e('panel', 'table_label_last_visit', 'Last visit'); ?>
+                    </th>
                 </tr>
                 <tr>
                     <th>S</th>
@@ -67,22 +91,39 @@ $timezone = '';
             </thead>
             <tbody>
                 <?php foreach ($ip_log_list as $ipInfo) : ?>
-                    <?php $logData = is_array($ipInfo['log_data']) ? $ipInfo['log_data'] : json_decode($ipInfo['log_data'], true); ?>
                     <?php
+                    $logData = is_array($ipInfo['log_data'])
+                        ? $ipInfo['log_data']
+                        : json_decode($ipInfo['log_data'], true);
 
-                        $text_warning = '';
+                    $text_warning = '';
 
-                        if ($logData['pageviews_m'] > 6 || $logData['pageviews_h'] > 50 || $logData['pageviews_d'] > 100 ) {
-                            $text_warning = '<span class="so-text-warning"><i class="fas fa-exclamation-triangle"></i></span>';
-                        }
+                    if ($logData['pageviews_m'] > 6 ||
+                        $logData['pageviews_h'] > 50 ||
+                        $logData['pageviews_d'] > 100
+                    ) {
+                        $text_warning = '<span class="so-text-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            </span>';
+                    }
 
-                        if ($logData['flag_js_cookie'] > 2 || $logData['flag_multi_session'] > 2 || $logData['flag_empty_referer'] > 2 ) {
-                            $text_warning = '<span class="so-text-warning"><i class="fas fa-exclamation-triangle"></i></span>';
-                        }
+                    if ($logData['flag_js_cookie'] > 2 ||
+                        $logData['flag_multi_session'] > 2 ||
+                        $logData['flag_empty_referer'] > 2
+                    ) {
+                        $text_warning = '<span class="so-text-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            </span>';
+                    }
 
-                        if ($logData['flag_js_cookie'] > 3 || $logData['flag_multi_session'] > 3 || $logData['flag_empty_referer'] > 3 ) {
-                            $text_warning = '<span class="so-text-danger"><i class="fas fa-exclamation-triangle"></i></span>';
-                        }
+                    if ($logData['flag_js_cookie'] > 3 ||
+                        $logData['flag_multi_session'] > 3 ||
+                        $logData['flag_empty_referer'] > 3
+                    ) {
+                        $text_warning = '<span class="so-text-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            </span>';
+                    }
                     ?>
                     <tr>
                         <td>

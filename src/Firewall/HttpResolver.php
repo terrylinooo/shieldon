@@ -37,15 +37,13 @@ class HttpResolver
      * Invoker.
      *
      * @param ResponseInterface $response The PSR-7 response.
-     * @param bool              $finally  Terminate current PHP proccess if 
+     * @param bool              $finally  Terminate current PHP proccess if
      *                                    this value is true.
-     *
      * @return void
      */
     public function __invoke(ResponseInterface $response, $finally = true): void
     {
         if (!headers_sent()) {
-
             foreach ($response->getHeaders() as $key => $values) {
                 $replace = stripos($key, 'Set-Cookie') === 0 ? false : true;
                 foreach ($values as $value) {
@@ -60,7 +58,7 @@ class HttpResolver
                     $response->getProtocolVersion(),
                     $response->getStatusCode(),
                     $response->getReasonPhrase()
-                ), 
+                ),
                 true,
                 $response->getStatusCode()
             );
@@ -69,7 +67,6 @@ class HttpResolver
         echo $response->getBody()->getContents();
 
         if ($finally && !defined('PHP_UNIT_TEST')) {
-
             // @codeCoverageIgnoreStart
             exit;
             // @codeCoverageIgnoreEnd

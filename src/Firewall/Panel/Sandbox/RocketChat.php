@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -49,20 +49,18 @@ class RocketChat
      *
      * @return bool
      */
-    private function sandbox($getParams, $message)
+    private function sandbox($getParams, $message): bool
     {
         $serverUrl = $getParams['serverUrl'] ?? '';
         $userId = $getParams['userId'] ?? '';
         $accessToken = $getParams['accessToken'] ?? '';
         $channel = $getParams['channel'] ?? '';
 
-        if (
-            !empty($serverUrl) &&
+        if (!empty($serverUrl) &&
             !empty($userId) &&
             !empty($accessToken) &&
             !empty($channel)
         ) {
-
             $messenger = new RocketChatTest(
                 $accessToken,
                 $userId,

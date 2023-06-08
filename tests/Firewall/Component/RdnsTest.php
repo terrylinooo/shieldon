@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -33,7 +33,7 @@ class RdnsTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $t = $reflection->getProperty('strictMode');
         $t->setAccessible(true);
   
-        $this->assertEquals('strictMode' , $t->name);
+        $this->assertEquals('strictMode', $t->name);
         $this->assertFalse($t->getValue($rdnsComponent));
     }
 
@@ -71,8 +71,9 @@ class RdnsTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $rdnsComponent = new \Shieldon\Firewall\Component\Rdns();
         $deniedList = $rdnsComponent->getDeniedItems();
 
-        $this->assertSame($deniedList, [
-            'unknown_1' => '.webcrawler.link']
+        $this->assertSame(
+            $deniedList,
+            ['unknown_1' => '.webcrawler.link'],
         );
     }
 
@@ -91,9 +92,10 @@ class RdnsTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $rdnsComponent->removeDeniedItem('yahoo');
         $deniedList = $rdnsComponent->getDeniedItems();
 
-        $this->assertSame($deniedList, [
-            'unknown_1' => '.webcrawler.link'
-        ]);
+        $this->assertSame(
+            $deniedList,
+            ['unknown_1' => '.webcrawler.link']
+        );
     }
 
     public function testIsDenied()

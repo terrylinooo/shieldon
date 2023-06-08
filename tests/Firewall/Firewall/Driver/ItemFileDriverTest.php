@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -29,7 +29,7 @@ class ItemFileDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $instance = new \Shieldon\Firewall\Firewall\Driver\ItemFileDriver();
         $fileDriver = $instance::get(
             [
-                'directory_path' => BOOTSTRAP_DIR . '/../tmp'
+                'directory_path' => BOOTSTRAP_DIR . '/../tmp',
             ]
         );
 

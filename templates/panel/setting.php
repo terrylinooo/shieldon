@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -58,7 +58,9 @@ $timezone = '';
         </section>
     </div>
     <div class="d-flex justify-content-center py-2">
-        <button type="submit" class="btn btn-enter"><i class="fas fa-fire-alt"></i> <?php _e('panel', 'overview_btn_save', 'SAVE'); ?></button>
+        <button type="submit" class="btn btn-enter">
+            <i class="fas fa-fire-alt"></i> <?php _e('panel', 'overview_btn_save', 'SAVE'); ?>
+        </button>
     </div>
 </div>
 <?php echo $this->fieldCsrf(); ?>
@@ -68,4 +70,7 @@ $timezone = '';
 
 <?php $this->loadViewPart('panel/setting/import_export'); ?>
 
-<?php $this->loadViewPart('panel/js/common'); ?>
+<?php
+
+$this->loadViewPart('panel/js/common');
+

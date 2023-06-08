@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -49,7 +49,11 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-secruity_96x96.png';
                         </div>
                         <div class="status-message">
                             <p>
-                                <?php _e('core', 'stop_message', 'Please complete the CAPTCHA to confirm you are a human.') ?>
+                                <?php _e(
+                                    'core',
+                                    'stop_message',
+                                    'Please complete the CAPTCHA to confirm you are a human.'
+                                ); ?>
                             </p>
                             <div>
                                 <?php if (!empty($uiInfo['is_display_display_http_code'])) : ?>

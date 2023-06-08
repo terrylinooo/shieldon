@@ -231,7 +231,7 @@ class Kernel
 
     /**
      * The result passed from filters, compoents, etc.
-     * 
+     *
      * DENY    : 0
      * ALLOW   : 1
      * CAPTCHA : 2
@@ -270,7 +270,7 @@ class Kernel
 
     /**
      * Strict mode.
-     * 
+     *
      * Set by `strictMode()` only. The default value of this propertry is undefined.
      *
      * @var bool|null
@@ -285,7 +285,7 @@ class Kernel
      */
     protected $firewallType = 'self';
 
-   /**
+    /**
      * The reason code of a user to be allowed or denied.
      *
      * @var int|null
@@ -332,24 +332,25 @@ class Kernel
         Container::set('response', $response);
         Container::set('shieldon', $this);
 
-        Event::AddListener('set_session_driver', function($args) {
-            $session = get_session_instance();
+        Event::AddListener(
+            'set_session_driver',
+            function ($args) {
+                $session = get_session_instance();
+                $session->init(
+                    $args['driver'],
+                    $args['gc_expires'],
+                    $args['gc_probability'],
+                    $args['gc_divisor'],
+                    $args['psr7']
+                );
 
-            $session->init(
-                $args['driver'],
-                $args['gc_expires'],
-                $args['gc_probability'],
-                $args['gc_divisor'],
-                $args['psr7']
-            );
-
-            /**
-             * Hook - session_init
-             */
-            Event::doDispatch('session_init');
-
-            set_session_instance($session);
-        });
+                /**
+                 * Hook - session_init
+                 */
+                Event::doDispatch('session_init');
+                set_session_instance($session);
+            }
+        );
     }
 
     /**
@@ -379,12 +380,11 @@ class Kernel
         $result = $this->process();
 
         if ($result !== self::RESPONSE_ALLOW) {
-
-            // Current session did not pass the CAPTCHA, it is still stuck in 
+            // Current session did not pass the CAPTCHA, it is still stuck in
             // CAPTCHA page.
             $actionCode = self::LOG_CAPTCHA;
 
-            // If current session's respone code is RESPONSE_DENY, record it as 
+            // If current session's respone code is RESPONSE_DENY, record it as
             // `blacklist_count` in our logs.
             // It is stuck in warning page, not CAPTCHA.
             if ($result === self::RESPONSE_DENY) {
@@ -396,9 +396,7 @@ class Kernel
             }
 
             $this->log($actionCode);
-
         } else {
-
             $this->log(self::LOG_PAGEVIEW);
         }
 
@@ -464,7 +462,7 @@ class Kernel
      *
      * @return void
      */
-    public function setProperty(string $key = '', $value = '')
+    public function setProperty(string $key = '', $value = ''): void
     {
         if (isset($this->properties[$key])) {
             $this->properties[$key] = $value;
@@ -473,7 +471,7 @@ class Kernel
 
     /**
      * Set the property settings.
-     * 
+     *
      * @param array $settings The settings.
      *
      * @return void
@@ -490,12 +488,12 @@ class Kernel
     /**
      * Strict mode.
      * This option will take effects to all components.
-     * 
+     *
      * @param bool $bool Set true to enble strict mode, false to disable it overwise.
      *
      * @return void
      */
-    public function setStrict(bool $bool)
+    public function setStrict(bool $bool): void
     {
         $this->strictMode = $bool;
     }
@@ -516,7 +514,7 @@ class Kernel
      * Add a path into the excluded list.
      *
      * @param string $uriPath The path component of a URI.
-     * 
+     *
      * @return void
      */
     public function exclude(string $uriPath): void
@@ -562,9 +560,9 @@ class Kernel
     }
 
     /**
-     * Displayed on Firewall Panel, telling you current what type of 
+     * Displayed on Firewall Panel, telling you current what type of
      * configuration is used.
-     * 
+     *
      * @param string $type The type of configuration.
      *                     accepted value: demo | managed | config
      *
@@ -600,7 +598,7 @@ class Kernel
             'isTrustedBot',  // Stage 2 - Detect popular search engine.
             'isFakeRobot',   // Stage 3 - Reject fake search engine crawlers.
             'isIpComponent', // Stage 4 - IP manager.
-            'isComponents'   // Stage 5 - Check other components.
+            'isComponents',  // Stage 5 - Check other components.
         ];
 
         foreach ($processMethods as $method) {
@@ -624,7 +622,7 @@ class Kernel
      * @param int    $actionCode The action code. - 0: deny, 1: allow, 9: unban.
      * @param string $reasonCode The response code.
      * @param string $assignIp   The IP address.
-     * 
+     *
      * @return void
      */
     protected function action(int $actionCode, int $reasonCode, string $assignIp = ''): void
@@ -692,13 +690,13 @@ class Kernel
      * Get a class name without namespace string.
      *
      * @param object $instance Class
-     * 
+     *
      * @return string
      */
     protected function getClassName($instance): string
     {
         $class = get_class($instance);
-        return substr($class, strrpos($class, '\\') + 1); 
+        return substr($class, strrpos($class, '\\') + 1);
     }
 
     /**

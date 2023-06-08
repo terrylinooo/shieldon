@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -70,7 +70,7 @@ class UserAgent extends ComponentProvider
 
     /**
      * Robot's user-agent text.
-     * 
+     *
      * @var string
      */
     private $userAgent = '';
@@ -83,7 +83,7 @@ class UserAgent extends ComponentProvider
         $this->userAgent = get_request()->getHeaderLine('user-agent');
 
         /**
-         * Those robots are considered as bad behavior. 
+         * Those robots are considered as bad behavior.
          * Therefore we list them here.
          */
         $this->deniedList = [
@@ -107,7 +107,7 @@ class UserAgent extends ComponentProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return bool
      */
     public function isDenied(): bool
@@ -119,7 +119,6 @@ class UserAgent extends ComponentProvider
         }
 
         if ($this->strictMode) {
-
             // If strict mode is on, this value can not be empty.
             if (empty($this->userAgent)) {
                 return true;
@@ -131,7 +130,7 @@ class UserAgent extends ComponentProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return int
      */
     public function getDenyStatusCode(): int

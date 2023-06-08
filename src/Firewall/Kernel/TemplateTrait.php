@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -80,7 +80,7 @@ trait TemplateTrait
 
     /**
      * Customize the dialog UI.
-     * 
+     *
      * @param array $settings The dialog UI settings.
      *
      * @return void
@@ -176,8 +176,8 @@ trait TemplateTrait
 
     /**
      * Print a JavaScript snippet in your webpages.
-     * 
-     * This snippet generate cookie on client's browser,then we check the 
+     *
+     * This snippet generate cookie on client's browser,then we check the
      * cookie to identify the client is a rebot or not.
      *
      * @return string
@@ -197,7 +197,8 @@ trait TemplateTrait
             <script>
                 var d = new Date();
                 d.setTime(d.getTime()+(60*60*24*30));
-                document.cookie = "' . $tmpCookieName . '=' . $tmpCookieValue . ';domain=.' . $tmpCookieDomain . ';expires="+d.toUTCString();
+                document.cookie = "' . $tmpCookieName . '=' . $tmpCookieValue . ';domain=.' . $tmpCookieDomain .
+                ';expires="+d.toUTCString();
             </script>
         ';
 
@@ -260,8 +261,8 @@ trait TemplateTrait
         $statStart = Container::get('shieldon_start');
         $statEnd = Container::get('shieldon_end');
 
-        $startTimeArr = explode(' ',$statStart['time']);
-        $endTimeArr = explode(' ',$statStart['time']);
+        $startTimeArr = explode(' ', $statStart['time']);
+        $endTimeArr = explode(' ', $statStart['time']);
 
         $timeDifference = ($endTimeArr[1] - $startTimeArr[1]) + ($endTimeArr[0] - $startTimeArr[0]);
         $memoryDifference = round(($statEnd['memory'] - $statStart['memory']) / 1024, 2); // KB
@@ -334,7 +335,7 @@ trait TemplateTrait
 
     /**
      * Confirm UI information settings.
-     * 
+     *
      * @param int $statusCode HTTP status code.
      *
      * @return array

@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -43,7 +43,6 @@ class ItemRedisDriver
         $instance = null;
 
         try {
-
             $host = '127.0.0.1';
             $port = 6379;
 
@@ -73,11 +72,9 @@ class ItemRedisDriver
             $instance = new RedisDriver($redis);
 
             // @codeCoverageIgnoreStart
-
         } catch (Exception $e) {
-            // echo $e->getMessage();
+            echo $e->getMessage();
         }
-
         // @codeCoverageIgnoreEnd
 
         return $instance;

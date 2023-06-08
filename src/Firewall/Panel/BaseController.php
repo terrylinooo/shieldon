@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -150,9 +150,9 @@ class BaseController
     public $base = '';
 
     /**
-     * Firewall panel base controller.                  
+     * Firewall panel base controller.
      */
-    public function __construct() 
+    public function __construct()
     {
         $firewall = Container::get('firewall');
 
@@ -170,7 +170,6 @@ class BaseController
         $this->base          = SHIELDON_PANEL_BASE;
 
         if (!empty($this->kernel->logger)) {
-
             // We need to know where the logs stored in.
             $logDirectory = $this->kernel->logger->getDirectory();
 
@@ -205,7 +204,7 @@ class BaseController
             define('SHIELDON_VIEW', true);
         }
 
-        $viewFilePath =  __DIR__ . '/../../../templates/' . $page . '.php';
+        $viewFilePath = __DIR__ . '/../../../templates/' . $page . '.php';
     
         if (!empty($data)) {
             extract($data);
@@ -277,7 +276,7 @@ class BaseController
     }
 
     /**
-     * Include a view file. This 
+     * Include a view file.
      * This method is used in a template loading other templates.
      *
      * @param string $page The page type. (filename)
@@ -393,7 +392,6 @@ class BaseController
     protected function _(string $field, $default = ''): void
     {
         if ($this->mode === 'demo') {
-
             // Hide sensitive data because of security concerns.
             $hiddenForDemo = [
                 'drivers.redis.auth',
@@ -473,7 +471,7 @@ class BaseController
     {
         $echo = [];
 
-        $echo['css'] = $this->getConfig('messengers.' . $moduleName . '.confirm_test') ? 
+        $echo['css'] = $this->getConfig('messengers.' . $moduleName . '.confirm_test') ?
             'success' :
             '';
         

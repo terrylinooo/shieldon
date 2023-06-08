@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -85,7 +85,6 @@ trait XssProtectionTrait
     private function cleanPost(array $enable, Xss $xss): void
     {
         if ($enable['post']) {
-
             $this->kernel->setClosure(
                 'xss_post',
                 function () use ($xss) {
@@ -110,7 +109,6 @@ trait XssProtectionTrait
     private function cleanGet(array $enable, Xss $xss): void
     {
         if ($enable['get']) {
-
             $this->kernel->setClosure(
                 'xss_get',
                 function () use ($xss) {
@@ -135,7 +133,6 @@ trait XssProtectionTrait
     private function cleanCookie(array $enable, Xss $xss): void
     {
         if ($enable['cookie']) {
-
             $this->kernel->setClosure(
                 'xss_cookie',
                 function () use ($xss) {
@@ -160,9 +157,8 @@ trait XssProtectionTrait
     private function cleanProtectedList(array $protectedList, Xss $xss): void
     {
         if (!empty($protectedList)) {
-
             $this->kernel->setClosure(
-                'xss_protection', 
+                'xss_protection',
                 function () use ($xss, $protectedList) {
                     foreach ($protectedList as $v) {
                         $k = $v['variable'] ?? 'undefined';

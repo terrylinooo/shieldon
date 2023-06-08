@@ -50,7 +50,7 @@ trait IpTrait
 
     /**
      * The RDNS recond of the Robot's IP address.
-     * This is the most important value because that the IP of the most popular 
+     * This is the most important value because that the IP of the most popular
      * search engines can be resolved to their domain name.
      *
      * @var string
@@ -73,11 +73,9 @@ trait IpTrait
         set_ip($this->ip);
 
         if ($queryRdns) {
-
-            // Check if your IP is from localhost, perhaps your are in development 
+            // Check if your IP is from localhost, perhaps your are in development
             // environment?
-            if (
-                substr($this->ip, 0, 8) === '192.168.' || 
+            if (substr($this->ip, 0, 8) === '192.168.' ||
                 substr($this->ip, 0, 6) === '127.0.'
             ) {
                 $this->setRdns('localhost');

@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -45,7 +45,7 @@ trait ComponentTrait
      * Get a class name without namespace string.
      *
      * @param object $instance Class
-     * 
+     *
      * @return string
      */
     abstract protected function getClassName($instance): string;
@@ -161,32 +161,27 @@ trait ComponentTrait
         $trustedBot = $this->getComponent('TrustedBot');
 
         if ($trustedBot instanceof TrustedBot) {
-
-            // We want to put all the allowed robot into the rule list, so that the checking of IP's resolved hostname 
+            // We want to put all the allowed robot into the rule list, so that the checking of IP's resolved hostname
             // is no more needed for that IP.
             if ($trustedBot->isAllowed()) {
-
                 if ($trustedBot->isGoogle()) {
                     // Add current IP into allowed list, because it is from real Google domain.
                     $this->action(
                         Kernel::ACTION_ALLOW,
                         Kernel::REASON_IS_GOOGLE
                     );
-
                 } elseif ($trustedBot->isBing()) {
                     // Add current IP into allowed list, because it is from real Bing domain.
                     $this->action(
                         Kernel::ACTION_ALLOW,
                         Kernel::REASON_IS_BING
                     );
-
                 } elseif ($trustedBot->isYahoo()) {
                     // Add current IP into allowed list, because it is from real Yahoo domain.
                     $this->action(
                         Kernel::ACTION_ALLOW,
                         Kernel::REASON_IS_YAHOO
                     );
-
                 } else {
                     // Add current IP into allowed list, because you trust it.
                     // You have already defined it in the settings.
@@ -236,23 +231,18 @@ trait ComponentTrait
         $ipComponent = $this->getComponent('Ip');
 
         if ($ipComponent instanceof Ip) {
-
             $result = $ipComponent->check($this->ip);
 
             if (!empty($result)) {
-
                 switch ($result['status']) {
-
                     case 'allow':
                         $actionCode = Kernel::ACTION_ALLOW;
                         $reasonCode = $result['code'];
                         break;
-    
-                    
                     case 'deny':
                     default:
                         $actionCode = Kernel::ACTION_DENY;
-                        $reasonCode = $result['code']; 
+                        $reasonCode = $result['code'];
                         break;
                 }
 
@@ -274,9 +264,7 @@ trait ComponentTrait
     protected function isComponents()
     {
         foreach ($this->component as $component) {
-
             if ($component->isDenied()) {
-
                 $this->action(
                     Kernel::ACTION_DENY,
                     $component->getDenyStatusCode()

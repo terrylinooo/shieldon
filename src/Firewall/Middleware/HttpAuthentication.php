@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -52,16 +52,14 @@ class HttpAuthentication implements MiddlewareInterface
      */
     protected $list = [
         [
-            // Begin-with URL 
-            'url' => '/wp-amdin', 
-
+            // Begin-with URL
+            'url' => '/wp-amdin',
             // Username
             'user' => 'wp_shieldon_user',
-
             // Password encrypted by `password_hash()` function.
             // In this case, the uncrypted string is `wp_shieldon_pass`.
-            'pass' => '$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq'  
-        ]
+            'pass' => '$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq',
+        ],
     ];
 
     /**
@@ -74,7 +72,7 @@ class HttpAuthentication implements MiddlewareInterface
 
     /**
      * Constructor.
-     * 
+     *
      * @param array  $list  The list that want to be protected.
      * @param string $realm The welcome message.
      *
@@ -100,13 +98,10 @@ class HttpAuthentication implements MiddlewareInterface
         $serverParams = $request->getServerParams();
 
         foreach ($this->list as $urlInfo) {
-
             // If we have set the protection for current URL.
             if (0 === strpos($currentUrl, $urlInfo['url'])) {
-
                 // Prompt a window to ask for username and password.
-                if (
-                    !isset($serverParams['PHP_AUTH_USER']) ||
+                if (!isset($serverParams['PHP_AUTH_USER']) ||
                     !isset($serverParams['PHP_AUTH_PW'])
                 ) {
                     $authenticate = 'Basic realm="' . $this->realm . '"';
@@ -116,8 +111,7 @@ class HttpAuthentication implements MiddlewareInterface
                 }
 
                 // Identify the username and password for current URL.
-                if (
-                    $urlInfo['user'] !== $serverParams['PHP_AUTH_USER'] ||
+                if ($urlInfo['user'] !== $serverParams['PHP_AUTH_USER'] ||
                     !password_verify($serverParams['PHP_AUTH_PW'], $urlInfo['pass'])
                 ) {
                     unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
@@ -131,7 +125,7 @@ class HttpAuthentication implements MiddlewareInterface
 
     /**
      * Set up the URL list that you want to protect.
-     * 
+     *
      * @param array $list The URL list want to be protected.
      *
      * @return void
@@ -144,9 +138,8 @@ class HttpAuthentication implements MiddlewareInterface
             $userCount = count(array_column($list, 'user'));
             $passCount = count(array_column($list, 'pass'));
 
-            if (
-                $count !== $urlCount || 
-                $count !== $userCount || 
+            if ($count !== $urlCount ||
+                $count !== $userCount ||
                 $count !== $passCount
             ) {
                 throw new InvalidArgumentException(

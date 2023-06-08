@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -27,7 +27,7 @@ class RedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function test__construct()
     {
         $redisInstance = new \Redis();
-        $redisInstance->connect('127.0.0.1', 6379); 
+        $redisInstance->connect('127.0.0.1', 6379);
 
         try {
             $redis = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
@@ -43,7 +43,7 @@ class RedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testDoFetchAll()
     {
         $redisInstance = new \Redis();
-        $redisInstance->connect('127.0.0.1', 6379); 
+        $redisInstance->connect('127.0.0.1', 6379);
         $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $redisDriver->rebuild();
@@ -71,7 +71,7 @@ class RedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testCheckExist()
     {
         $redisInstance = new \Redis();
-        $redisInstance->connect('127.0.0.1', 6379); 
+        $redisInstance->connect('127.0.0.1', 6379);
         $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $redisDriver->rebuild();
@@ -92,7 +92,7 @@ class RedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testDoSave()
     {
         $redisInstance = new \Redis();
-        $redisInstance->connect('127.0.0.1', 6379); 
+        $redisInstance->connect('127.0.0.1', 6379);
         $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $redisDriver->rebuild();
@@ -106,7 +106,10 @@ class RedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $resultA = $methodDoSave->invokeArgs($redisDriver, ['19.89.4.15', $data, 'filter', $expire]);
         $resultB = $methodDoSave->invokeArgs($redisDriver, ['19.89.6.4', $data, 'rule', $expire]);
-        $resultC = $methodDoSave->invokeArgs($redisDriver, ['8a7d7ba288ca0f0ea1ecf975b026e8e1', $data, 'session', $expire]);
+        $resultC = $methodDoSave->invokeArgs(
+            $redisDriver,
+            ['8a7d7ba288ca0f0ea1ecf975b026e8e1', $data, 'session', $expire]
+        );
 
         $this->assertSame($resultA, true);
         $this->assertSame($resultB, true);
@@ -138,7 +141,7 @@ class RedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testDoDelete()
     {
         $redisInstance = new \Redis();
-        $redisInstance->connect('127.0.0.1', 6379); 
+        $redisInstance->connect('127.0.0.1', 6379);
         $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $redisDriver->rebuild();
@@ -154,7 +157,7 @@ class RedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testGetKeyName()
     {
         $redisInstance = new \Redis();
-        $redisInstance->connect('127.0.0.1', 6379); 
+        $redisInstance->connect('127.0.0.1', 6379);
         $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $reflection = new \ReflectionObject($redisDriver);
@@ -168,7 +171,7 @@ class RedisDriverTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testGetNamespace()
     {
         $redisInstance = new \Redis();
-        $redisInstance->connect('127.0.0.1', 6379); 
+        $redisInstance->connect('127.0.0.1', 6379);
         $redisDriver = new \Shieldon\Firewall\Driver\RedisDriver($redisInstance);
 
         $reflection = new \ReflectionObject($redisDriver);

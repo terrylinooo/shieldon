@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -25,7 +25,6 @@ namespace Shieldon\Firewall;
 use Shieldon\Event\Event;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\Driver\DriverProvider;
-use Shieldon\Firewall\Log\SessionLogger;
 use RuntimeException;
 use function Shieldon\Firewall\create_session_id;
 use function Shieldon\Firewall\get_ip;
@@ -34,7 +33,6 @@ use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_response;
 use function Shieldon\Firewall\set_response;
 use function intval;
-use function php_sapi_name;
 use function rand;
 use function setcookie;
 use function time;
@@ -106,7 +104,7 @@ class Session
 
     /**
      * Constructor.
-     * 
+     *
      * @param string $id Session ID
      */
     public function __construct(string $sessionId = '')
@@ -114,39 +112,37 @@ class Session
         $this->setId($sessionId);
 
         /**
-         * Store the session data back into the database table when the 
+         * Store the session data back into the database table when the
          * Shieldon Kernel workflow is reaching the end of the process.
          */
         Event::AddListener('kernel_end', [$this, 'save'], 10);
 
         /**
-         * Store the session data back into the database table when the 
+         * Store the session data back into the database table when the
          * user is logged successfully.
          */
         Event::AddListener('user_login', [$this, 'save'], 10);
-
-        self::log();
     }
 
     /**
      * Initialize.
      *
-     * @param object $driver        The data driver.
-     * @param int    $gcExpires     The time of expiring.
-     * @param int    $gcProbability GC setting,
-     * @param int    $gcDivisor     GC setting,
-     * @param bool   $psr7          Reset the cookie the PSR-7 way?
+     * @param DriverProvider $driver        The data driver.
+     * @param int            $gcExpires     The time of expiring.
+     * @param int            $gcProbability GC setting,
+     * @param int            $gcDivisor     GC setting,
+     * @param bool           $psr7          Reset the cookie the PSR-7 way?
      *
      * @return void
      */
     public function init(
-             $driver, 
-        int  $gcExpires     = 300, 
-        int  $gcProbability = 1, 
-        int  $gcDivisor     = 100, 
-        bool $psr7          = true
-    ): void {
-
+        DriverProvider $driver,
+        int  $gcExpires = 300,
+        int  $gcProbability = 1,
+        int  $gcDivisor = 100,
+        bool $psr7 = true
+    ): void
+    {
         $this->driver = $driver;
         $this->gc($gcExpires, $gcProbability, $gcDivisor);
 
@@ -167,7 +163,6 @@ class Session
         $this->parsedData();
 
         self::$status = true;
-        self::log(self::$id);
     }
 
     /**
@@ -213,8 +208,6 @@ class Session
 
         // We store this session ID into the container for the use of other functions.
         Container::set('session_id', $id, true);
-
-        self::log($id);
     }
 
     /**
@@ -304,13 +297,11 @@ class Session
         $data['data'] = json_encode($this->data['parsed_data']);
 
         $this->driver->save(self::$id, $data, 'session');
-
-        self::log(self::$id . "\n" . $this->data['data']);
     }
 
     /**
      * Reset cookie.
-     * 
+     *
      * @param bool $psr7 Reset the cookie the PSR-7 way, otherwise native.
      *
      * @return void
@@ -328,13 +319,10 @@ class Session
                 $cookieName . '=' . $sessionHashId . '; Path=/; Expires=' . $expires
             );
             set_response($response);
-
         } else {
             setcookie($cookieName, $sessionHashId, $expiredTime, '/');
         }
-
         self::$id = $sessionHashId;
-        self::log($sessionHashId);
     }
 
     /**
@@ -352,7 +340,6 @@ class Session
         $hit = rand(1, $chance);
 
         if ($hit === 1) {
-            
             $sessionData = $this->driver->getAll('session');
 
             if (!empty($sessionData)) {
@@ -390,8 +377,6 @@ class Session
 
         $this->data = $data;
         $this->save();
-
-        self::log(json_encode($this->data));
     }
 
     /**
@@ -417,18 +402,6 @@ class Session
             throw new RuntimeException(
                 'The init method is supposed to run first.'
             );
-        }
-    }
-
-    /**
-     * Log.
-     *
-     * @return void
-     */
-    protected static function log($text = ''): void
-    {
-        if (php_sapi_name() === 'cli') {
-            SessionLogger::log($text);
         }
     }
 }

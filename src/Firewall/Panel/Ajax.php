@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -54,7 +54,7 @@ class Ajax extends BaseController
     /**
      * Constructor.
      */
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
     }
@@ -67,7 +67,7 @@ class Ajax extends BaseController
      *
      * @return bool
      */
-    public function __call($function , $args)
+    public function __call($function, $args): bool
     {
         $className = 'Shieldon\Firewall\Panel\Sandbox\\' . $function;
 
@@ -120,18 +120,23 @@ class Ajax extends BaseController
         $data['result']['moduleName'] = $moduleName;
 
         $message['title'] = __('panel', 'test_msg_title', 'Testing Message from Host: ') . $serverName;
-        $message['body'] = __('panel', 'test_msg_body', 'Messenger module "{0}" has been tested and confirmed successfully.', [$moduleName]);
+        $message['body'] = __(
+            'panel',
+            'test_msg_body',
+            'Messenger module "{0}" has been tested and confirmed successfully.',
+            [$moduleName]
+        );
     
         // @codeCoverageIgnoreStart
 
         // Name the testing method.
         $method = explode('-', $moduleName);
         $method = implode(
-            '', 
+            '',
             array_map(
                 function ($word) {
-                    return ucwords($word); 
-                }, 
+                    return ucwords($word);
+                },
                 $method
             )
         );
@@ -147,7 +152,7 @@ class Ajax extends BaseController
             $postParams[$postKey] = 'on';
         } else {
             $data['status'] = 'error';
-            $postParams[$postKey] = 'off'; 
+            $postParams[$postKey] = 'off';
         }
 
         set_request($request->withParsedBody($postParams));
@@ -165,7 +170,7 @@ class Ajax extends BaseController
 
     /**
      * Respond the JSON format result.
-     * 
+     *
      * @param string $output The string you want to output to the browser.
      *
      * @return ResponseInterface

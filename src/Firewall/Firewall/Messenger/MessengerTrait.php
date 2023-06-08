@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -63,16 +63,14 @@ trait MessengerTrait
             $setting = $this->getOption($messenger, 'messengers');
 
             if (is_array($setting)) {
-
                 // Initialize messenger instances from the factory/
                 if (MessengerFactory::check($setting)) {
-    
                     $this->kernel->setMessenger(
                         MessengerFactory::getInstance(
                             // The ID of the messenger module in the configuration.
-                            $messenger, 
+                            $messenger,
                             // The settings of the messenger module in the configuration.
-                            $setting    
+                            $setting
                         )
                     );
                 }

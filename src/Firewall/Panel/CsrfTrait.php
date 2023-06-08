@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -66,7 +66,7 @@ trait CsrfTrait
     /**
      * Set CSRF input fields.
      *
-     * @param array $csrfParams
+     * @param array $csrfParams The arguments.
      *
      * @return void
      */
@@ -85,7 +85,11 @@ trait CsrfTrait
         $string = '';
         if (!empty($this->csrfField)) {
             foreach ($this->csrfField as $value) {
-                $string .= '<input type="hidden" name="' . $value['name'] . '" value="' . $value['value'] . '" id="csrf-field">';
+                $string .= '<input type="hidden"
+                    name="' . $value['name'] .'"
+                    value="' . $value['value'] . '"
+                    id="csrf-field"
+                >';
             }
         }
         return $string;

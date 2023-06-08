@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -46,7 +46,7 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * PDO instance.
-     * 
+     *
      * @var object
      */
     protected $db;
@@ -56,7 +56,7 @@ class SqlDriverProvider extends DriverProvider
      *
      * @param PDO  $pdo   The PDO instance.
      * @param bool $debug The option to enable debugging or not.
-     * 
+     *
      * @return void
      */
     public function __construct(PDO $pdo, bool $debug = false)
@@ -93,10 +93,10 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The data id of the entry to fetch.
      * @param string $type The type of the data table.
-     * 
+     *
      * @return array
      */
     protected function doFetch(string $ip, string $type = 'filter'): array
@@ -115,9 +115,9 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $type The type of the data table.
-     * 
+     *
      * @return bool
      */
     protected function doFetchAll(string $type = 'filter'): array
@@ -138,7 +138,7 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The data id of the entry to check for.
      * @param string $type The type of the data table.
      *
@@ -175,7 +175,7 @@ class SqlDriverProvider extends DriverProvider
         $result = $query->fetch();
 
         if (!empty($result[$field])) {
-            return true; 
+            return true;
         }
 
         return false;
@@ -183,7 +183,7 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip     The data id.
      * @param array  $data   The data.
      * @param string $type   The type of the data table.
@@ -200,7 +200,6 @@ class SqlDriverProvider extends DriverProvider
         $logWhere = [];
 
         switch ($type) {
-
             case 'rule':
                 $tableName = $this->tableRuleList;
 
@@ -241,10 +240,10 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The key name of a redis entry.
      * @param string $type The type of the data table.
-     * 
+     *
      * @return bool
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
@@ -278,7 +277,7 @@ class SqlDriverProvider extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Rebuild data tables.
      *
      * @return bool
@@ -314,7 +313,6 @@ class SqlDriverProvider extends DriverProvider
         $wherePlaceholder = implode(' AND ', $placeholder);
 
         try {
-
             $paramTypeCheck = [
                 'integer' => $this->db::PARAM_INT,
                 'boolean' => $this->db::PARAM_BOOL,
@@ -344,12 +342,10 @@ class SqlDriverProvider extends DriverProvider
             return $query->execute();
 
             // @codeCoverageIgnoreStart
-        
         } catch (Exception $e) {
             return false;
         }
-
-        // @codeCoverageIgnoreEnd 
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -373,7 +369,6 @@ class SqlDriverProvider extends DriverProvider
         $dataPlaceholderValue = implode(', ', $placeholderValue);
 
         try {
-
             $paramTypeCheck = [
                 'integer' => $this->db::PARAM_INT,
                 'boolean' => $this->db::PARAM_BOOL,
@@ -423,7 +418,6 @@ class SqlDriverProvider extends DriverProvider
         $dataPlaceholder = implode(' AND ', $placeholder);
 
         try {
-
             $paramTypeCheck = [
                 'integer' => $this->db::PARAM_INT,
                 'boolean' => $this->db::PARAM_BOOL,
@@ -442,7 +436,6 @@ class SqlDriverProvider extends DriverProvider
 
             return $query->execute();
             // @codeCoverageIgnoreStart
-
         } catch (Exception $e) {
             return false;
         }
@@ -457,7 +450,6 @@ class SqlDriverProvider extends DriverProvider
     protected function installSql(): bool
     {
         try {
-
             $sql = "
                 CREATE TABLE IF NOT EXISTS `{$this->tableFilterLogs}` (
                     `log_ip` varchar(46) NOT NULL,

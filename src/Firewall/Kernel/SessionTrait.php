@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -96,7 +96,7 @@ trait SessionTrait
      *
      * @param int $count   The amount of online users. If reached, users will be
      *                     in queue.
-     * @param int $period  The period of time allows users browsing. 
+     * @param int $period  The period of time allows users browsing.
      *                     (unit: second)
      * @param bool $unique Allow only one session per IP address.
      *
@@ -137,9 +137,7 @@ trait SessionTrait
         // If you don't enable `limit traffic`, ignore the following steps.
         if (empty($this->sessionLimit['count'])) {
             return Kernel::RESPONSE_ALLOW;
-
         } else {
-
             // Get the proerties.
             $limit = (int) ($this->sessionLimit['count'] ?? 0);
             $period = (int) ($this->sessionLimit['period'] ?? 300);
@@ -213,7 +211,7 @@ trait SessionTrait
     /**
      * Remove sessions using the same IP address.
      * This method must be run after `sessionHandler`.
-     * 
+     *
      * @param string $ip An IP address
      *
      * @return void
@@ -244,6 +242,5 @@ trait SessionTrait
             create_new_session_instance($sessionId);
         }
     }
-
     // @codeCoverageIgnoreEnd
 }

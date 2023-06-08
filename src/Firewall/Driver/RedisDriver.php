@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -45,7 +45,7 @@ class RedisDriver extends DriverProvider
      * Constructor.
      *
      * @param Redis $redis The Redis instance.
-     * 
+     *
      * @return void
      */
     public function __construct(Redis $redis)
@@ -86,9 +86,9 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $type The type of the data table.
-     * 
+     *
      * @return bool
      */
     protected function doFetchAll(string $type = 'filter'): array
@@ -106,12 +106,12 @@ class RedisDriver extends DriverProvider
                 $content = json_decode($content, true);
 
                 if ($type === 'session') {
-                    $sort = $content['microtimestamp'] . '.' . $content['id']; 
+                    $sort = $content['microtimestamp'] . '.' . $content['id'];
                 } else {
                     $sort = $content['log_ip'];
                 }
     
-                $results[$sort] = $content; 
+                $results[$sort] = $content;
             }
         }
 
@@ -123,10 +123,10 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The data id of the entry to fetch.
      * @param string $type The type of the data table.
-     * 
+     *
      * @return array
      */
     protected function doFetch(string $ip, string $type = 'filter'): array
@@ -142,9 +142,8 @@ class RedisDriver extends DriverProvider
             $resultData = json_decode($content, true);
 
             if (!empty($resultData['log_data'])) {
-                $results = $resultData['log_data']; 
+                $results = $resultData['log_data'];
             }
-
         } else {
             // type: rule | session
             $content = $this->redis->get($this->getKeyName($ip, $type));
@@ -179,7 +178,7 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip     The data id.
      * @param array  $data   The data.
      * @param string $type   The type of the data table.
@@ -190,7 +189,6 @@ class RedisDriver extends DriverProvider
     protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
         switch ($type) {
-
             case 'rule':
                 $logData = $data;
                 $logData['log_ip'] = $ip;
@@ -228,10 +226,10 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The key name of a redis entry.
      * @param string $type The type of the data table.
-     * 
+     *
      * @return bool
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
@@ -244,7 +242,7 @@ class RedisDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Rebuild data tables.
      *
      * @return bool

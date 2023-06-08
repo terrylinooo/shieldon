@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -90,10 +90,6 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
             padding-right: 5px;
         }
 
-        .logo-wrapper {
-          
-        }
-
         .main-content {
             padding: 10px;
         }
@@ -149,7 +145,9 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-warning_96x96.png';
                             </div>
                             <?php endif; ?>
                             <div class="input-box">
-                                <button type="submit" class="btn-submit"><?php _e('panel', 'login_btn_login', 'Login'); ?></button>
+                                <button type="submit" class="btn-submit">
+                                    <?php _e('panel', 'login_btn_login', 'Login'); ?>
+                                </button>
                             </div>
                         </div>
                         <?php echo $csrf; ?>

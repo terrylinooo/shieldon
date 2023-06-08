@@ -79,7 +79,7 @@ trait FirewallTrait
     protected $filename = 'config.firewall.json';
 
     /**
-     * A file that confirms the required dictories or database tables 
+     * A file that confirms the required dictories or database tables
      * have been created.
      *
      * @var string
@@ -240,9 +240,8 @@ trait FirewallTrait
 
         if (!file_exists($configFilePath)) {
             if (!is_dir($this->directory)) {
-
                 // @codeCoverageIgnoreStart
-        
+
                 $originalUmask = umask(0);
                 mkdir($this->directory, 0777, true);
                 umask($originalUmask);
@@ -276,7 +275,7 @@ trait FirewallTrait
     }
 
     /**
-     * Are database tables created? 
+     * Are database tables created?
      *
      * @return bool
      */
@@ -291,7 +290,7 @@ trait FirewallTrait
 
     /**
      * Are database tables created?
-     * 
+     *
      * @param bool $create Is create the checkpoint file, or not.
      *
      * @return void

@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -52,18 +52,25 @@ use function Shieldon\Firewall\_e;
                 </button>
             </div>
             <div class="modal-body">
-                <form action="<?php echo $this->url(); ?>?so_page=import_settings" enctype="multipart/form-data" method="post">
+                <form action="<?php echo $this->url(); ?>?so_page=import_settings"
+                    enctype="multipart/form-data"
+                    method="post"
+                >
                     <p>
                         <div class="custom-file">
                             <input type="file" name="json_file" class="custom-file-input" id="file-upload">
-                            <label class="custom-file-label" for="file-upload"><?php _e('panel', 'setting_button_choose_file', 'Choose file'); ?></label>
+                            <label class="custom-file-label" for="file-upload">
+                                <?php _e('panel', 'setting_button_choose_file', 'Choose file'); ?>
+                            </label>
                         </div>
                     </p>
                     <p id="file-name">
                         <?php _e('panel', 'setting_note_import', 'Please select the .json file exported before.'); ?>
                     </p>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary"><?php _e('panel', 'auth_btn_submit', 'Submit'); ?></button>
+                        <button type="submit" class="btn btn-primary">
+                            <?php _e('panel', 'auth_btn_submit', 'Submit'); ?>
+                        </button>
                     </div>
                 </form>
             </div>

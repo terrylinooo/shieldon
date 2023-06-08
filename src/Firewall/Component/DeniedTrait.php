@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -79,7 +79,6 @@ trait DeniedTrait
     {
         if (!empty($key)) {
             $this->deniedList[$key] = $value;
-
         } elseif (!in_array($value, $this->deniedList)) {
             array_push($this->deniedList, $value);
         }
@@ -97,7 +96,7 @@ trait DeniedTrait
 
     /**
      * Get an item from the blacklist pool.
-     * 
+     *
      * @param string $key The key of the data field.
      *
      * @return string|array

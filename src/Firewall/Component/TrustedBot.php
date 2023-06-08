@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -93,7 +93,7 @@ class TrustedBot extends ComponentProvider
 
     /**
      * Robot's user-agent text.
-     * 
+     *
      * @var string
      */
     private $userAgent = '';
@@ -203,7 +203,7 @@ class TrustedBot extends ComponentProvider
 
     /**
      * Check the user-agent string and rdns in the trusted list.
-     * 
+     *
      * @return bool
      */
     public function isAllowed(): bool
@@ -226,11 +226,9 @@ class TrustedBot extends ComponentProvider
 
         // We will check the RDNS record to see if it is in the whitelist.
         if (preg_match('/(' . implode('|', $rdns) . ')/i', $this->rdns)) {
-
             // To prevent "fake" RDNS such as "abc.google.com.fakedomain.com" pass thorugh our checking process.
             // We need to check it one by one.
             foreach ($rdns as $r) {
-
                 // For example:
                 // $x = strstr('abc.googlebot.com.fake', '.googlebot.com');
                 // $x will be `.googlebot.com.fake` so that we can identify this is a fake domain.
@@ -252,7 +250,6 @@ class TrustedBot extends ComponentProvider
                         return false;
                     }
                 }
-
             } else {
                 // We can identify that current access uses a fake RDNS record.
                 $this->isFake = true;
@@ -262,7 +259,8 @@ class TrustedBot extends ComponentProvider
             return true;
         }
 
-        // Here, once a request uses a user-agent that contains search engine information, but it does't pass the RDNS check.
+        // Here, once a request uses a user-agent that contains search engine information,
+        // but it does't pass the RDNS check.
         // We can identify it is fake.
         $this->isFake = true;
 
@@ -271,7 +269,7 @@ class TrustedBot extends ComponentProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return bool
      */
     public function isGoogle(): bool
@@ -285,7 +283,7 @@ class TrustedBot extends ComponentProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return bool
      */
     public function isYahoo(): bool
@@ -299,7 +297,7 @@ class TrustedBot extends ComponentProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return bool
      */
     public function isBing(): bool
@@ -313,7 +311,7 @@ class TrustedBot extends ComponentProvider
 
     /**
      * Not used in TrustedBots component.
-     * 
+     *
      * @return bool always false.
      */
     public function isDenied(): bool

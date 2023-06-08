@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -48,7 +48,7 @@ final class ActionLogParsedCache
      *
      * @param string $directory The directory where to store the logs in.
      */
-    public function __construct(string $directory = '') 
+    public function __construct(string $directory = '')
     {
         $this->directory = $directory;
     }
@@ -83,7 +83,6 @@ final class ActionLogParsedCache
     public function get(string $type = 'today'): array
     {
         $data = [];
-
         $filePath = rtrim($this->directory, '/') . '/cache_' . $type . '.json';
 
         if (file_exists($filePath)) {
@@ -95,7 +94,6 @@ final class ActionLogParsedCache
             $keepCache = true;
 
             switch ($type) {
-
                 case 'yesterday':
                 case 'past_seven_days':
 
@@ -121,7 +119,6 @@ final class ActionLogParsedCache
                 case 'past_seven_hours':
                 case 'today':
                 default:
-
                     // Update cache file hourly.
                     $endTime = strtotime(date('Y-m-d H:00:00', time()));
                     $beginTime = strtotime(date('Y-m-d H:00:00', strtotime('-1 hour')));

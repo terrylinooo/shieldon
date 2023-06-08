@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
  * This file is part of the Messenger package.
  *
@@ -14,7 +14,7 @@ namespace Shieldon\FirewallTest\Mock;
 
 class MockSaveConfig
 {
-    public static function get() 
+    public static function get()
     {
         $json = file_get_contents(__DIR__ . '/save_config_form_test.json');
 

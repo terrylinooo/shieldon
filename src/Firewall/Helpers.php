@@ -87,7 +87,7 @@ class Helpers
  *  unset_superglobal     | Unset superglobal variables.
  *  get_ip                | Get an IP address from container.
  *  set_ip                | Set an IP address to container.
- *  get_microtimestamp     | Get the microtimestamp.
+ *  get_microtimestamp    | Get the microtimestamp.
  *  get_session_instance  | Get a session instance.
  *  create_new_session_i- | Create a new session instance for current user.
  *  n stance              |
@@ -685,6 +685,8 @@ function create_new_session_instance(string $sessionId)
 
 /**
  * For unit testing purpose. Not use in production.
+ * 
+ * @param string $sessionId A session ID string.
  *
  * @return Session
  */

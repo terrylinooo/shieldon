@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -48,15 +48,37 @@ $imgsrc = 'https://shieldon-io.github.io/static/icons/icon-clock_96x96.png';
                             <img src="<?php echo $imgsrc; ?>">
                         </div>
                         <div class="status-message">
-                            <?php _e('core', 'limit_message', 'This page is limiting the number of people online. Please wait a moment.'); ?>
+                            <?php
+                            _e(
+                                'core',
+                                'limit_message',
+                                'This page is limiting the number of people online. Please wait a moment.'
+                            );
+                            ?>
                         </div>
                     </div>
  
                     <div class="status-info">
-                        <?php _e('core', 'lineup_info', '', ['<strong>' . $onlineinfo['queue'] . '</strong>']); ?><br />
+                        <?php
+                        _e(
+                            'core',
+                            'lineup_info',
+                            '',
+                            ['<strong>' . $onlineinfo['queue'] . '</strong>']
+                        );
+                        ?>
+                        <br />
 
                         <?php if (!empty($uiInfo['is_display_online_user_amount'])) : ?>
-                            <?php _e('core', 'online_info', '', ['<strong>' . $onlineinfo['count'] . '</strong>']); ?><br />
+                            <?php
+                            _e(
+                                'core',
+                                'online_info',
+                                '',
+                                ['<strong>' . $onlineinfo['count'] . '</strong>']
+                            );
+                            ?>
+                            <br />
                         <?php endif; ?>
 
                         <br /><small><?php _e('core', 'keepalive_info', '', [$onlineinfo['period']]); ?></small>

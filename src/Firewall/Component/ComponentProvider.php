@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -36,7 +36,7 @@ abstract class ComponentProvider
 
     /**
      * Enable strict mode.
-     * 
+     *
      * @param bool $bool Set true to enble strict mode, false to disable it overwise.
      *
      * @return void

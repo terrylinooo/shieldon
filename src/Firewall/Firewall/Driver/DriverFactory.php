@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -55,14 +55,14 @@ class DriverFactory
      *
      * @return string
      */
-    public static function getCamelCase(string $string = '')
+    public static function getCamelCase(string $string = ''): string
     {
         $str = explode('-', $string);
         $str = implode(
             '',
             array_map(
                 function ($word) {
-                    return ucwords($word); 
+                    return ucwords($word);
                 },
                 $str
             )

@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -40,12 +40,12 @@ class ItemSmtp
      */
     public static function get(array $setting): MessengerInterface
     {
-        $sender     = $setting['config']['sender']     ?? '';
+        $sender     = $setting['config']['sender'] ?? '';
         $recipients = $setting['config']['recipients'] ?? [];
-        $host       = $setting['config']['host']       ?? '';
-        $user       = $setting['config']['user']       ?? '';
-        $pass       = $setting['config']['pass']       ?? '';
-        $port       = $setting['config']['port']       ?? '';
+        $host       = $setting['config']['host'] ?? '';
+        $user       = $setting['config']['user'] ?? '';
+        $pass       = $setting['config']['pass'] ?? '';
+        $port       = $setting['config']['port'] ?? '';
 
         $instance = new Smtp($user, $pass, $host, (int) $port);
         $instance->setSubject(__('core', 'messenger_text_mail_subject'));

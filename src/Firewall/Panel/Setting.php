@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -56,7 +56,7 @@ class Setting extends BaseController
     /**
      * Constructor
      */
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
     }
@@ -114,11 +114,9 @@ class Setting extends BaseController
     {
         $postParams = get_request()->getParsedBody();
 
-        if (
-            isset($postParams['ip']) &&
+        if (isset($postParams['ip']) &&
             filter_var(explode('/', $postParams['ip'])[0], FILTER_VALIDATE_IP)
         ) {
-
             $url = $postParams['url'];
             $ip = $postParams['ip'];
             $rule = $postParams['action'];
@@ -131,16 +129,12 @@ class Setting extends BaseController
             $ipList = (array) $this->getConfig('ip_manager');
 
             if ('allow' === $rule || 'deny' === $rule) {
-
                 $newIpList = [];
                 $newIpList[$order]['url'] = $url;
                 $newIpList[$order]['ip'] = $ip;
                 $newIpList[$order]['rule'] = $rule;
-
                 array_splice($ipList, $order, 0, $newIpList);
-
                 $this->setConfig('ip_manager', $ipList);
-
             } elseif ('remove' === $rule) {
                 unset($ipList[$order]);
                 $ipList = array_values($ipList);
@@ -174,7 +168,6 @@ class Setting extends BaseController
         $postParams = get_request()->getParsedBody();
 
         if (isset($postParams['url'])) {
-
             $url = $postParams['url'];
             $action = $postParams['action'];
             $order = (int) $postParams['order'];
@@ -185,10 +178,9 @@ class Setting extends BaseController
                 array_push(
                     $excludedUrls,
                     [
-                        'url' => $url
+                        'url' => $url,
                     ]
                 );
-
             } elseif ('remove' === $action) {
                 unset($excludedUrls[$order]);
 

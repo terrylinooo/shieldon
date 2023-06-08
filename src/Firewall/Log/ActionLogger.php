@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -41,7 +41,7 @@ use function umask;
 use function unlink;
 
 /**
- * Action Logger only support storing log into files, 
+ * Action Logger only support storing log into files,
  * I don't want to make it complex, that's it.
  */
 final class ActionLogger
@@ -111,10 +111,10 @@ final class ActionLogger
 
         $data = [];
 
-        $data[0] = $record['ip']          ?? 'null';
-        $data[1] = $record['session_id']  ?? 'null';
+        $data[0] = $record['ip'] ?? 'null';
+        $data[1] = $record['session_id'] ?? 'null';
         $data[2] = $record['action_code'] ?? 'null';
-        $data[3] = $record['timestamp']    ?? 'null';
+        $data[3] = $record['timestamp'] ?? 'null';
 
         file_put_contents($this->filePath, implode(',', $data) . "\n", FILE_APPEND | LOCK_EX);
     }
@@ -157,7 +157,9 @@ final class ActionLogger
 
         // @codeCoverageIgnoreStart
         if (!is_writable($this->directory)) {
-            throw new RuntimeException('The directory usded by ActionLogger must be writable. (' . $this->directory . ')');
+            throw new RuntimeException(
+                'The directory usded by ActionLogger must be writable. (' . $this->directory . ')'
+            );
         }
         // @codeCoverageIgnoreEnd
     
@@ -224,7 +226,7 @@ final class ActionLogger
 
                     // Data: datetime => file size.
                     $data[$key] = $size;
-                } 
+                }
             }
         }
 
@@ -248,7 +250,6 @@ final class ActionLogger
         $this->filePath = rtrim($this->directory, '/') . '/' . $this->file;
 
         if (file_exists($this->filePath)) {
-
             $logFile = fopen($this->filePath, 'r');
 
             if (is_resource($logFile)) {
@@ -292,17 +293,14 @@ final class ActionLogger
 
         $begin = new DateTime($fromYmd);
         $end = new DateTime($toYmd);
-        $end = $end->modify('+1 day'); 
-
+        $end = $end->modify('+1 day');
         $interval = new DateInterval('P1D');
         $daterange = new DatePeriod($begin, $interval, $end);
 
         foreach ($daterange as $date) {
-
             $thisDayLogFile = $this->directory . '/' . $date->format('Ymd') . '.' . $this->extension;
 
             if (file_exists($thisDayLogFile)) {
-
                 $logFile = fopen($thisDayLogFile, 'r');
 
                 if (is_resource($logFile)) {

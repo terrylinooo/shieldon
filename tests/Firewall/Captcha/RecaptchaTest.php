@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -93,10 +93,12 @@ class ReCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $html  = '<div><div style="display: inline-block">';
         $html .= '<input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response" value="">';
-        $html .= '<script src="https://www.google.com/recaptcha/api.js?render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI&hl=zh"></script>';
+        $html .= '<script src="https://www.google.com/recaptcha/api.js?';
+        $html .= 'render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI&hl=zh"></script>';
         $html .= '<script>';
         $html .= '    grecaptcha.ready(function() {';
-        $html .= '        grecaptcha.execute("6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI", {action: "homepage"}).then(function(token) {';
+        $html .= '        grecaptcha.execute("6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",';
+        $html .= ' {action: "homepage"}).then(function(token) {';
         $html .= '            document.getElementById("g-recaptcha-response").value = token;';
         $html .= '        }); ';
         $html .= '    });';

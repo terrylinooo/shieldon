@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -32,15 +32,15 @@ use const PHP_EOL;
 use const FILE_APPEND;
 
 /**
- * Only use this ckass for debugging after running the unit tests.
+ * Only use this class for debugging after running the unit tests.
  */
 final class SessionLogger
 {
     /**
      * Log the message for debugging.
-     * 
+     *
      * @param string $text The message.
-     * 
+     *
      * @return void
      */
     public static function log(string $text = ''): void

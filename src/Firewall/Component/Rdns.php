@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -76,12 +76,12 @@ class Rdns extends ComponentProvider
         // RDNS for robot's IP address.
         $this->deniedList = [
             'unknown_1' => '.webcrawler.link',
-        ]; 
+        ];
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return bool
      */
     public function isDenied(): bool
@@ -93,7 +93,6 @@ class Rdns extends ComponentProvider
         }
 
         if ($this->strictMode) {
-
             // If strict mode is on, this value can not be empty.
             if (empty($this->rdns)) {
                 return true;
@@ -110,7 +109,7 @@ class Rdns extends ComponentProvider
             // If the IP is different as hostname's resolved IP.
             if ($ip !== $this->ip) {
                 return true;
-            } 
+            }
         }
 
         return false;

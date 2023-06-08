@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -57,7 +57,7 @@ class Iptables extends BaseController
     /**
      * Constructor
      */
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
     }
@@ -104,7 +104,7 @@ class Iptables extends BaseController
 
     /**
      * System layer firwall - iptables
-     * 
+     *
      * @param string $type The type of IP address.
      *
      * @return ResponseInterface
@@ -137,7 +137,7 @@ class Iptables extends BaseController
                 $line = trim($file->fgets());
                 $ipInfo = explode(',', $line);
 
-                // If the column amount is at least 6 maning that the data is 
+                // If the column amount is at least 6 maning that the data is
                 // existed so that we can use it.
                 if (!empty($ipInfo[6])) {
                     $ipCommand[] = $ipInfo;
@@ -156,7 +156,7 @@ class Iptables extends BaseController
     /**
      * System layer firwall - iptables Status
      * iptables -L
-     * 
+     *
      * @param string $type The type of IP address.
      *
      * @return ResponseInterface
@@ -198,7 +198,7 @@ class Iptables extends BaseController
      *
      * @param string $type              IPv4 or IPv6
      * @param string $commandLogFile    The log file contains executed commands.
-     * @param string $iptablesQueueFile The file contains the commands that wil 
+     * @param string $iptablesQueueFile The file contains the commands that wil
      *                                  be executed by iptables
      *
      * @return void
@@ -232,18 +232,17 @@ class Iptables extends BaseController
 
         /**
          * The process of add or remove command string from two files:
-         * 
+         *
          * (1) The command file -
-         *     This file is used on display the commands on the page 
+         *     This file is used on display the commands on the page
          *     iptables Manager.
          * (2) The queue file -
          *     This file is a bridge between Shieldon Firewall and Iptalbes.
-         *     ipbales_bridge.sh will monitor this file, once commands come, 
-         *     transforming the commands into iptables syntax commands and 
+         *     ipbales_bridge.sh will monitor this file, once commands come,
+         *     transforming the commands into iptables syntax commands and
          *     then execute the iptables commands.
          */
         if ($postParams['remove'] === 'yes') {
-
             $originCommandString = "add,$ipv,$ip,$subnet,$port,$protocol,$action";
 
             // Delete line from the log file.
@@ -339,8 +338,7 @@ class Iptables extends BaseController
      */
     private function checkFieldPort($postParams): bool
     {
-        if (
-            is_numeric($postParams['port']) || 
+        if (is_numeric($postParams['port']) ||
             in_array($postParams['port'], ['all', 'custom'])
         ) {
             return true;
@@ -357,8 +355,7 @@ class Iptables extends BaseController
      */
     private function checkFieldSubnet($postParams): bool
     {
-        if (
-            is_numeric($postParams['subnet']) || 
+        if (is_numeric($postParams['subnet']) ||
             $postParams['subnet'] === 'null'
         ) {
             return true;

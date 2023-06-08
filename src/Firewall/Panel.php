@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -83,7 +83,7 @@ class Panel
 
     /**
      * The HTTP resolver.
-     * 
+     *
      * We need to resolve the HTTP result by ourselves to prevent conficts
      * with other frameworks.
      *
@@ -92,9 +92,9 @@ class Panel
     protected $resolver = null;
 
     /**
-     * Firewall panel constructor.                         
+     * Firewall panel constructor.
      */
-    public function __construct() 
+    public function __construct()
     {
         $this->registerRoutes = self::getRoutes();
         $this->resolver = new HttpResolver();
@@ -142,7 +142,6 @@ class Panel
         $method = $urlParts[1] ?? 'index';
 
         if (in_array($controller . '/' . $method, $this->registerRoutes)) {
-
             $this->setRouteBase($base);
             $this->checkAuth();
 
@@ -151,7 +150,7 @@ class Panel
             $controllerClass->setCsrfField($this->getCsrfField());
 
             if ('demo' === $this->mode) {
-                // For security reasons, the POST method is not allowed 
+                // For security reasons, the POST method is not allowed
                 // in the Demo mode.
                 set_request(get_request()->withParsedBody([])->withMethod('GET'));
                 unset_superglobal(null, 'post');
@@ -250,9 +249,9 @@ class Panel
 
     /**
      * Magic method.
-     * 
+     *
      * Helps the property `$resolver` to work like a function.
-     * 
+     *
      * @param string $method The method name.
      * @param array  $args   The arguments.
      *

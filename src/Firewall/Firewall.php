@@ -112,11 +112,11 @@ class Firewall
 
     /**
      * Constructor.
-     * 
+     *
      * @param ServerRequestInterface|null $request  A PSR-7 server request.
      * @param ResponseInterface|null      $response A PSR-7 server response.
      */
-    public function __construct(?ServerRequestInterface $request = null, ?ResponseInterface $response = null) 
+    public function __construct(?ServerRequestInterface $request = null, ?ResponseInterface $response = null)
     {
         Container::set('firewall', $this);
 
@@ -135,8 +135,9 @@ class Firewall
             'memory' => memory_get_usage(),
         ]);
 
-        Event::AddListener('dialog_output',
-            function() {
+        Event::AddListener(
+            'dialog_output',
+            function () {
                 Container::set('shieldon_end', [
                     'time'   => microtime(),
                     'memory' => memory_get_usage(),
@@ -186,7 +187,7 @@ class Firewall
      *
      * @param string $source The path.
      * @param string $type   The type.
-     * 
+     *
      * @return void
      */
     public function configure(string $source, string $type = 'json'): void
@@ -197,7 +198,6 @@ class Firewall
 
             if (file_exists($configFilePath)) {
                 $jsonString = file_get_contents($configFilePath);
-
             } else {
                 $jsonString = file_get_contents(__DIR__ . '/../../config.json');
 
@@ -208,7 +208,6 @@ class Firewall
 
             $this->configuration = json_decode($jsonString, true);
             $this->kernel->managedBy('managed');
-
         } elseif ($type === 'php') {
             $this->configuration = include $source;
             $this->kernel->managedBy('config');
@@ -226,7 +225,6 @@ class Firewall
     {
         // If settings are ready, let's start monitoring requests.
         if ($this->status) {
-
             $response = get_request();
 
             // PSR-15 request handler.
@@ -246,7 +244,6 @@ class Firewall
             $result = $this->kernel->run();
 
             if ($result !== $this->kernel::RESPONSE_ALLOW) {
-
                 if ($this->kernel->captchaResponse()) {
                     $this->kernel->unban();
 

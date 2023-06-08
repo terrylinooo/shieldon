@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -55,7 +55,7 @@ class Home extends BaseController
     /**
      * Constructor
      */
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
     }
@@ -64,7 +64,7 @@ class Home extends BaseController
 
     /**
      * Default entry
-     * 
+     *
      * @return ResponseInterface
      */
     public function index(): ResponseInterface
@@ -148,43 +148,43 @@ class Home extends BaseController
     {
         $postParams = get_request()->getParsedBody();
 
-        if (isset($postParams['action_type'])) {
+        if (!isset($postParams['action_type'])) {
+            return;
+        }
 
-            switch ($postParams['action_type']) {
+        switch ($postParams['action_type']) {
+            case 'reset_data_circle':
+                $this->setConfig('cronjob.reset_circle.config.last_update', date('Y-m-d H:i:s'));
+                $this->kernel->driver->rebuild();
+                sleep(2);
 
-                case 'reset_data_circle':
-                    $this->setConfig('cronjob.reset_circle.config.last_update', date('Y-m-d H:i:s'));
-                    $this->kernel->driver->rebuild();
-                    sleep(2);
+                unset_superglobal('action_type', 'post');
 
-                    unset_superglobal('action_type', 'post');
+                $this->saveConfig();
 
-                    $this->saveConfig();
+                $this->pushMessage(
+                    'success',
+                    __(
+                        'panel',
+                        'reset_data_circle',
+                        'Data circle tables have been reset.'
+                    )
+                );
+                break;
 
-                    $this->pushMessage(
-                        'success',
-                        __(
-                            'panel',
-                            'reset_data_circle',
-                            'Data circle tables have been reset.'
-                        )
-                    );
-                    break;
+            case 'reset_action_logs':
+                $this->kernel->logger->purgeLogs();
+                sleep(2);
 
-                case 'reset_action_logs':
-                    $this->kernel->logger->purgeLogs();
-                    sleep(2);
-
-                    $this->pushMessage(
-                        'success',
-                        __(
-                            'panel',
-                            'reset_action_logs',
-                            'Action logs have been removed.'
-                        )
-                    );
-                    break;
-            }
+                $this->pushMessage(
+                    'success',
+                    __(
+                        'panel',
+                        'reset_action_logs',
+                        'Action logs have been removed.'
+                    )
+                );
+                break;
         }
     }
 
@@ -209,7 +209,6 @@ class Home extends BaseController
         $data['logger_total_size'] = '0 MB';
 
         if (!empty($loggerInfo)) {
-
             $i = 0;
             ksort($loggerInfo);
 
@@ -257,11 +256,11 @@ class Home extends BaseController
     private function overviewTemplateVarsOfComponents(array $data = []): array
     {
         $data['components'] = [
-            'Ip'         => (!empty($this->kernel->component['Ip']))         ? true : false,
+            'Ip'         => (!empty($this->kernel->component['Ip'])) ? true : false,
             'TrustedBot' => (!empty($this->kernel->component['TrustedBot'])) ? true : false,
-            'Header'     => (!empty($this->kernel->component['Header']))     ? true : false,
-            'Rdns'       => (!empty($this->kernel->component['Rdns']))       ? true : false,
-            'UserAgent'  => (!empty($this->kernel->component['UserAgent']))  ? true : false,
+            'Header'     => (!empty($this->kernel->component['Header'])) ? true : false,
+            'Rdns'       => (!empty($this->kernel->component['Rdns'])) ? true : false,
+            'UserAgent'  => (!empty($this->kernel->component['UserAgent'])) ? true : false,
         ];
 
         return $data;

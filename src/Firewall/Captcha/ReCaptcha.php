@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -176,7 +176,8 @@ class ReCaptcha extends CaptchaProvider
             $html .= '<div class="g-recaptcha" data-sitekey="' . $this->key . '"></div>';
         } else {
             $html .= '<input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response" value="">';
-            $html .= '<script src="https://www.google.com/recaptcha/api.js?render=' . $this->key . '&hl=' . $this->lang . '"></script>';
+            $html .= '<script src="https://www.google.com/recaptcha/api.js?render=' .
+                $this->key .'&hl=' . $this->lang . '"></script>';
             $html .= '<script>';
             $html .= '    grecaptcha.ready(function() {';
             $html .= '        grecaptcha.execute("' . $this->key . '", {action: "homepage"}).then(function(token) {';

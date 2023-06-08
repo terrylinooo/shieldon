@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -27,7 +27,6 @@ use Shieldon\Messenger\Smtp as SmtpTest;
 use function explode;
 use function filter_var;
 use function str_replace;
-
 
 /**
  * The sandbox for SMTP.
@@ -54,7 +53,7 @@ class Smtp
      *
      * @return bool
      */
-    private function sandbox($getParams, $message)
+    private function sandbox($getParams, $message): bool
     {
         $type = '';
         $host = '';
@@ -130,8 +129,7 @@ class Smtp
      */
     private function checkHost(string $host): bool
     {
-        if (
-            !filter_var($host, FILTER_VALIDATE_IP) && 
+        if (!filter_var($host, FILTER_VALIDATE_IP) &&
             !filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
         ) {
             return false;

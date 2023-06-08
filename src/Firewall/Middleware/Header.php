@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -41,8 +41,8 @@ class Header implements MiddlewareInterface
     const HTTP_STATUS_CODE = 406;
 
     /**
-     *  Very common requests from normal users.
-     * 
+     * Very common requests from normal users.
+     *
      * @var array
      */
     protected $fieldList = [
@@ -53,7 +53,7 @@ class Header implements MiddlewareInterface
 
     /**
      * Constructor.
-     * 
+     *
      * @param array $fieldList The list that want to be denied.
      *
      * @return void
@@ -80,7 +80,6 @@ class Header implements MiddlewareInterface
                 return (new Response)->withStatus(self::HTTP_STATUS_CODE);
             }
         }
-
         return $handler->handle($request);
     }
 }

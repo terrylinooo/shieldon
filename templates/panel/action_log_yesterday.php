@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -35,9 +35,15 @@ use function Shieldon\Firewall\mask_string;
                 <div id="chart-1"></div>
             </div>
             <div class="board-field right">
-                <div class="heading"><?php _e('panel', 'log_heading_captchas', 'CAPTCHAs'); ?></div>
-                <div class="nums"><?php echo number_format($period_data['captcha_count']); ?></div>
-                <div class="note"><?php _e('panel', 'log_note_captcha_yesterday', 'CAPTCHA statistic yesterday.'); ?></div>
+                <div class="heading">
+                    <?php _e('panel', 'log_heading_captchas', 'CAPTCHAs'); ?>
+                </div>
+                <div class="nums">
+                    <?php echo number_format($period_data['captcha_count']); ?>
+                </div>
+                <div class="note">
+                    <?php _e('panel', 'log_note_captcha_yesterday', 'CAPTCHA statistic yesterday.'); ?>
+                </div>
             </div>
         </div>
         <div class="so-board">
@@ -45,9 +51,15 @@ use function Shieldon\Firewall\mask_string;
                 <div id="chart-2"></div>
             </div>
             <div class="board-field right">
-                <div class="heading"><?php _e('panel', 'log_heading_pageviews', 'Pageviews'); ?></div>
-                <div class="nums"><?php echo number_format($period_data['pageview_count']); ?></div>
-                <div class="note"><?php _e('panel', 'log_note_pageview_yesterday', 'Total pageviews yesterday.'); ?></div>
+                <div class="heading">
+                    <?php _e('panel', 'log_heading_pageviews', 'Pageviews'); ?>
+                </div>
+                <div class="nums">
+                    <?php echo number_format($period_data['pageview_count']); ?>
+                </div>
+                <div class="note">
+                    <?php _e('panel', 'log_note_pageview_yesterday', 'Total pageviews yesterday.'); ?>
+                </div>
             </div>
         </div>
         <div class="so-board area-chart-container">
@@ -57,11 +69,31 @@ use function Shieldon\Firewall\mask_string;
     <?php endif; ?>
     <div class="so-tabs">
         <ul>
-            <li><a href="<?php echo $this->url('report/actionLog'); ?>?tab=today"><?php _e('panel', 'log_label_today', 'Today'); ?></a></li>
-            <li class="is-active"><a href="<?php echo $this->url('report/actionLog'); ?>?tab=yesterday"><?php _e('panel', 'log_label_yesterday', 'Yesterday'); ?></a></li>
-            <li><a href="<?php echo $this->url('report/actionLog'); ?>?tab=past_seven_days"><?php _e('panel', 'log_label_last_7_days', 'Last 7 days'); ?></a></li>
-            <li><a href="<?php echo $this->url('report/actionLog'); ?>?tab=this_month"><?php _e('panel', 'log_label_this_month', 'This month'); ?></a></li>
-            <li><a href="<?php echo $this->url('report/actionLog'); ?>?tab=last_month"><?php _e('panel', 'log_label_last_month', 'Last month'); ?></a></li>
+            <li class="is-active">
+                <a href="<?php echo $this->url('report/actionLog'); ?>?tab=today">
+                    <?php _e('panel', 'log_label_today', 'Today'); ?>
+                </a>
+            </li>
+            <li class="is-active">
+                <a href="<?php echo $this->url('report/actionLog'); ?>?tab=yesterday">
+                    <?php _e('panel', 'log_label_yesterday', 'Yesterday'); ?>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo $this->url('report/actionLog'); ?>?tab=past_seven_days">
+                    <?php _e('panel', 'log_label_last_7_days', 'Last 7 days'); ?>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo $this->url('report/actionLog'); ?>?tab=this_month">
+                    <?php _e('panel', 'log_label_this_month', 'This month'); ?>
+                </a>
+            </li>
+            <li>
+                <a href="<?php echo $this->url('report/actionLog'); ?>?tab=last_month">
+                    <?php _e('panel', 'log_label_last_month', 'Last month'); ?>
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -76,8 +108,13 @@ use function Shieldon\Firewall\mask_string;
         </div>
     <?php else : ?>
         <div class="alert alert-danger">
-            <?php _e('panel', 'log_msg_no_logger', 'Sorry, you have to implement ActionLogger to use this function.'); ?>
-            
+            <?php
+            _e(
+                'panel',
+                'log_msg_no_logger',
+                'Sorry, you have to implement ActionLogger to use this function.'
+            );
+            ?>
         </div>
     <?php endif; ?>
 
@@ -100,30 +137,33 @@ use function Shieldon\Firewall\mask_string;
             </thead>
             <tbody>
                 <?php if (!empty($ip_details)) : ?>
-                <?php foreach ($ip_details as $ip => $ipInfo) : ?>
-                <tr>
-                    <td>
-                        <?php if ($this->mode === 'demo') : ?>
-                            <?php $ip = mask_string($ip); ?>
-                        <?php endif; ?>
-                        <?php echo $ip; ?>
-                    </td>
-                    <td><?php echo count($ipInfo['session_id']); ?></td>
-                    <td><?php echo $ipInfo['pageview_count']; ?></td>
-                    <td><?php echo $ipInfo['captcha_success_count']; ?></td>
-                    <td><?php echo $ipInfo['captcha_failure_count']; ?></td>
-                    <td><?php echo $ipInfo['captcha_count']; ?></td>
-                    <td><?php echo $ipInfo['blacklist_count']; ?></td>
-                    <td><?php echo $ipInfo['session_limit_count']; ?></td>
-                </tr>
-                <?php endforeach; ?>
+                    <?php foreach ($ip_details as $ip => $ipInfo) : ?>
+                    <tr>
+                        <td>
+                            <?php if ($this->mode === 'demo') : ?>
+                                <?php $ip = mask_string($ip); ?>
+                            <?php endif; ?>
+                            <?php echo $ip; ?>
+                        </td>
+                        <td><?php echo count($ipInfo['session_id']); ?></td>
+                        <td><?php echo $ipInfo['pageview_count']; ?></td>
+                        <td><?php echo $ipInfo['captcha_success_count']; ?></td>
+                        <td><?php echo $ipInfo['captcha_failure_count']; ?></td>
+                        <td><?php echo $ipInfo['captcha_count']; ?></td>
+                        <td><?php echo $ipInfo['blacklist_count']; ?></td>
+                        <td><?php echo $ipInfo['session_limit_count']; ?></td>
+                    </tr>
+                    <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>   
         </table>
     </div>
     <div class="so-timezone">
         <?php if (!empty($last_cached_time)) : ?>
-            <?php _e('panel', 'log_label_cache_time', 'Report generated time'); ?>: <strong class="text-info"><?php echo $last_cached_time; ?></strong>
+            <?php _e('panel', 'log_label_cache_time', 'Report generated time'); ?>:
+            <strong class="text-info">
+                <?php echo $last_cached_time; ?>
+            </strong>
             &nbsp;&nbsp;&nbsp;&nbsp; 
         <?php endif; ?>
         <?php _e('panel', 'log_label_timezone', 'Timezone'); ?>: <?php echo date_default_timezone_get(); ?>
@@ -132,8 +172,7 @@ use function Shieldon\Firewall\mask_string;
 
 <?php
 
-    if (!empty($period_data)) {
-        $data['period_data'] = $period_data;
-        $this->loadViewPart('panel/js/chart', $data);
-    }
-?>
+if (!empty($period_data)) {
+    $data['period_data'] = $period_data;
+    $this->loadViewPart('panel/js/chart', $data);
+}

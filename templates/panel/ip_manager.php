@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -35,7 +35,15 @@ $timezone = '';
             <?php _e('panel', 'ipma_heading', 'IP Manager'); ?>
         </div>
         <div class="so-datatable-description">
-            <?php _e('panel', 'ipma_description', 'IP Manager is not like Rule Table (effective period depends on the data cycle), everything you have done here is permanent.'); ?><br />
+            <?php
+            _e(
+                'panel',
+                'ipma_description',
+                'IP Manager is not like Rule Table (effective period depends on the data cycle), 
+                everything you have done here is permanent.'
+            );
+            ?>
+            <br />
         </div>
         <div class="so-rule-form iptables-form">
             <form method="post" onsubmit="freezeUI();">
@@ -53,7 +61,7 @@ $timezone = '';
                 <div class="d-inline-block align-top">
                     <label for="action"><?php _e('panel', 'ipma_label_action', 'Action'); ?></label><br />
                     <select name="action" class="regular" id="action">
-                        <option value="none">--- <?php _e('panel', 'ipma_label_plz_select', 'Please select'); ?> ---</option>
+                        <option value="none"><?php _e('panel', 'ipma_label_plz_select', 'Please select'); ?></option>
                         <option value="allow"><?php _e('panel', 'ipma_label_allow_ip', 'Allow this IP'); ?></option>
                         <option value="deny"><?php _e('panel', 'ipma_label_deny_ip', 'Deny this IP'); ?></option>
                         <option value="remove"><?php _e('panel', 'ipma_label_remove_ip', 'Remove this IP'); ?></option>
@@ -65,13 +73,18 @@ $timezone = '';
                 </div>
                 <div class="d-inline-block align-top">
                     <label class="visible">&nbsp;</label><br />
-                    <input type="submit" name="submit" id="btn-add-rule" class="button button-primary" value="<?php _e('panel', 'auth_btn_submit', 'Submit'); ?>">
+                    <input type="submit"
+                        name="submit"
+                        id="btn-add-rule"
+                        class="button button-primary"
+                        value="<?php _e('panel', 'auth_btn_submit', 'Submit'); ?>"
+                    >
                 </div>
             </form>
         </div>
     </div>
     <br />
-    <?php if ( empty($ip_list)) : ?>
+    <?php if (empty($ip_list)) : ?>
     <div id="so-table-container" class="so-datatables">
         <table id="so-datalog" class="cell-border compact stripe responsive" cellspacing="0" width="100%">
             <tbody>
@@ -83,7 +96,7 @@ $timezone = '';
             </tbdoy>
         </table>
     </div>
-    <?php else: ?>
+    <?php else : ?>
     <div id="so-table-loading" class="so-datatables">
         <div class="lds-css ng-scope">
             <div class="lds-ripple">
@@ -107,22 +120,35 @@ $timezone = '';
             </thead>
             <tbody>
                 <?php if (!empty($ip_list)) : ?>
-                <?php foreach ($ip_list as $i => $ipInfo) : ?>
-                <tr>
-                    <td><?php echo $i + 1; ?></td>
-                    <td><?php echo $ipInfo['url']; ?></td>
-                    <td>
+                    <?php foreach ($ip_list as $i => $ipInfo) : ?>
+                    <tr>
+                        <td>
+                            <?php echo $i + 1; ?>
+                        </td>
+                        <td>
+                            <?php echo $ipInfo['url']; ?>
+                        </td>
+                        <td>
 
-                        <?php if ($this->mode === 'demo') : ?>
-                        <?php $ipInfo['ip'] = mask_string($ipInfo['ip']); ?>
-                        <?php endif; ?>
+                            <?php if ($this->mode === 'demo') : ?>
+                                <?php $ipInfo['ip'] = mask_string($ipInfo['ip']); ?>
+                            <?php endif; ?>
 
-                        <?php echo $ipInfo['ip']; ?>
-                    </td>
-                    <td><?php echo $ipInfo['rule']; ?></td>
-                    <td><button type="button" class="button btn-remove-ip" data-ip="<?php echo $ipInfo['ip']; ?>" data-order="<?php echo ($i + 1); ?>"><i class="far fa-trash-alt"></i></button></td>
-                </tr>
-                <?php endforeach; ?>
+                            <?php echo $ipInfo['ip']; ?>
+                        </td>
+                        <td>
+                            <?php echo $ipInfo['rule']; ?>
+                        </td>
+                        <td>
+                            <button type="button"
+                                class="button btn-remove-ip"
+                                data-ip="<?php echo $ipInfo['ip']; ?>"
+                                data-order="<?php echo ($i + 1); ?>">
+                                    <i class="far fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>   
         </table>
@@ -130,7 +156,6 @@ $timezone = '';
 </div>
 
 <?php if (!empty($ip_list)) : ?>
-
 <script>
 
     $(function() {
@@ -156,5 +181,4 @@ $timezone = '';
     });
 
 </script>
-
-<?php endif; ?>
+<?php endif;

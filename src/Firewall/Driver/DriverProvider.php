@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -129,13 +129,12 @@ class DriverProvider extends AbstractDriver
             case 'filter':
                 // no break
             default:
-
                 $fields = [
 
                     // Basic IP data.
-                    'ip'       => 'string', 
-                    'session'  => 'string', 
-                    'hostname' => 'string', 
+                    'ip'       => 'string',
+                    'session'  => 'string',
+                    'hostname' => 'string',
 
                     // timestamp while visting first time.
                     'first_time_s'    => 'int',
@@ -226,7 +225,7 @@ class DriverProvider extends AbstractDriver
      *
      * @return bool
      */
-    protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool 
+    protected function doSave(string $ip, array $data, string $type = 'filter', $expire = 0): bool
     {
         return false;
     }
@@ -264,7 +263,6 @@ class DriverProvider extends AbstractDriver
      */
     protected function doInitialize(bool $dbCheck = true): void
     {
-
     }
 
     /**
@@ -282,6 +280,5 @@ class DriverProvider extends AbstractDriver
             );
         }
     }
-
     // @codeCoverageIgnoreEnd
 }

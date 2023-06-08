@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -125,14 +125,18 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $data['action_code'] = $kernel::ACTION_UNBAN;
         $data['timestamp'] = $this->mockTimesamp(15, $type);
 
-        $logger->add($data); // 127.0.0.1 - pagview: 5, temporarily ban: 1, stuck in captcha: 3, captcha falied: 2, captcha soloved: 1, unban: 1
+        $logger->add($data);
+        // 127.0.0.1 - pagview: 5, temporarily ban: 1,
+        // stuck in captcha: 3, captcha falied: 2, captcha soloved: 1, unban: 1
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
         $data['action_code'] = $kernel::LOG_PAGEVIEW;
         $data['timestamp'] = $this->mockTimesamp(17, $type);
 
-        $logger->add($data); // 127.0.0.1 - pagview: 6, temporarily ban: 1, stuck in captcha: 3, captcha falied: 2, captcha soloved: 1, unban: 1
+        $logger->add($data);
+        // 127.0.0.1 - pagview: 6, temporarily ban: 1,
+        // stuck in captcha: 3, captcha falied: 2, captcha soloved: 1, unban: 1
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = 'lo1hk46k6io3vdugamg762c6m1';
@@ -148,21 +152,27 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $data['action_code'] = $kernel::ACTION_TEMPORARILY_DENY;
         $data['timestamp'] = $this->mockTimesamp(2, $type);
 
-        $logger->add($data); // 127.0.0.2 - pagview: 3 (9), temporarily ban: 1 (2), , stuck in captcha: 1 (4), captcha falied: 1 (3), captcha soloved: 0 (1), unban: 0 (1)
+        $logger->add($data);
+        // 127.0.0.2 - pagview: 3 (9), temporarily ban: 1 (2),
+        // stuck in captcha: 1 (4), captcha falied: 1 (3), captcha soloved: 0 (1), unban: 0 (1)
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
         $data['action_code'] = $kernel::LOG_CAPTCHA; // display captcha.
         $data['timestamp'] = $this->mockTimesamp(3, $type);
 
-        $logger->add($data); // 127.0.0.2 - pagview: 3 (9), temporarily ban: 2 (3), , stuck in captcha: 2 (5), captcha falied: 2 (4), captcha soloved: 0 (1), unban: 0 (1)
+        $logger->add($data);
+        // 127.0.0.2 - pagview: 3 (9), temporarily ban: 2 (3),
+        // stuck in captcha: 2 (5), captcha falied: 2 (4), captcha soloved: 0 (1), unban: 0 (1)
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = 'lo1hk46k6io3vdugamg762c6m1';
         $data['action_code'] = $kernel::ACTION_UNBAN;
         $data['timestamp'] = $this->mockTimesamp(4, $type);
 
-        $logger->add($data); // 127.0.0.2 - pagview: 3 (9), temporarily ban: 2 (3), , stuck in captcha: 2 (5), captcha falied: 1 (3), captcha soloved: 1 (2), unban: 1 (2)
+        $logger->add($data);
+        // 127.0.0.2 - pagview: 3 (9), temporarily ban: 2 (3),
+        // stuck in captcha: 2 (5), captcha falied: 1 (3), captcha soloved: 1 (2), unban: 1 (2)
 
         $data['ip'] = '32.10.1.2';
         $data['session_id'] = '3as8ukdfpdgred2q4c2b6r4bgm';
@@ -232,8 +242,14 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
                 break;
 
             case 'today':
-                $this->assertSame('5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['captcha_chart_string']);
-                $this->assertSame('9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['pageview_chart_string']);
+                $this->assertSame(
+                    '5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+                    $periodData['captcha_chart_string']
+                );
+                $this->assertSame(
+                    '9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+                    $periodData['pageview_chart_string']
+                );
                 $this->assertSame(2, $periodData['captcha_success_count']);
                 $this->assertSame(3, $periodData['captcha_failure_count']);
                 $this->assertSame(5, $periodData['captcha_count']);
@@ -241,51 +257,60 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
                 $this->assertSame(36, $periodData['captcha_percentageage']);
                 $this->assertSame(1, $periodData['blacklist_count']);
                 $this->assertSame(1, $periodData['session_limit_count']);
-                $this->assertSame('2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['captcha_success_chart_string']);
-                $this->assertSame('3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0', $periodData['captcha_failure_chart_string']);
-                $this->assertSame("'12:00 am','01:00 am','02:00 am','03:00 am','04:00 am','05:00 am','06:00 am','07:00 am','08:00 am','09:00 am','10:00 am','11:00 am','12:00 pm','01:00 pm','02:00 pm','03:00 pm','04:00 pm','05:00 pm','06:00 pm','07:00 pm','08:00 pm','09:00 pm','10:00 pm','11:00 pm'", $periodData['label_chart_string']);
+                $this->assertSame(
+                    '2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+                    $periodData['captcha_success_chart_string']
+                );
+                $this->assertSame(
+                    '3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+                    $periodData['captcha_failure_chart_string']
+                );
+                $this->assertSame(
+                    "'12:00 am','01:00 am','02:00 am','03:00 am','04:00 am','05:00 am','06:00 am','07:00 am','08:00 am','09:00 am','10:00 am','11:00 am','12:00 pm','01:00 pm','02:00 pm','03:00 pm','04:00 pm','05:00 pm','06:00 pm','07:00 pm','08:00 pm','09:00 pm','10:00 pm','11:00 pm'",
+                    $periodData['label_chart_string']
+                );
                 break;
 
             default:
         }
     }
 
-    function testParse_pastSevenHours()
+    public function testParse_pastSevenHours()
     {
         $this->testParse('past_seven_hours');
     }
 
-    function testParse_yesterday()
+    public function testParse_yesterday()
     {
         $this->testParse('yesterday');
     }
 
-    function testParse_lastMonth()
+    public function testParse_lastMonth()
     {
         $this->testParse('last_month');
     }
 
-    function testParse_thisMonth()
+    public function testParse_thisMonth()
     {
         $this->testParse('this_month');
     }
 
-    function testParse_pastSevenDays()
+    public function testParse_pastSevenDays()
     {
         $this->testParse('past_seven_days');
     }
 
-    function testParse_pastNumDays()
+    public function testParse_pastNumDays()
     {
         $this->testParse('past_14_days');
     }
 
-    function testParse_randomTypeString()
+    public function testParse_randomTypeString()
     {
         $this->testParse('random_type_string');
     }
 
-    function testGetParsedIpDataEmpty()
+    public function testGetParsedIpDataEmpty()
     {
         $parser = new \Shieldon\Firewall\Log\ActionLogParser(BOOTSTRAP_DIR . '/../tmp/shieldon');
         $ipData = $parser->getParsedIpData();
@@ -293,7 +318,7 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertSame($ipData, []);
     }
 
-    function testGetPeriodDataEmpty()
+    public function testGetPeriodDataEmpty()
     {
         $parser = new \Shieldon\Firewall\Log\ActionLogParser(BOOTSTRAP_DIR . '/../tmp/shieldon');
         $periodData = $parser->getPeriodData();
@@ -332,12 +357,10 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
                 break;
 
             default:
-
                 if (preg_match('/past_([0-9]+)_days/', $type, $matches) ) {
 
                     $dayCount = $matches[1];
                     $startDate = date('Ymd', strtotime('-' . $dayCount . ' days'));
-
                 } else {
                     $startDate = date('Ymd');
                 }

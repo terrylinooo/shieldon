@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -81,6 +81,50 @@ trait ConfigMethodsTrait
     abstract protected function pushMessage(string $type, string $text): void;
 
     /**
+     * Handle to update settings.
+     *
+     * @param string $postKey  The key of the post data.
+     * @param string $postData The value of the post data.
+     * @param array $postParams The post data.
+     * @return void
+     */
+    private function handleUpdatingSettings(string $postKey, string $postData, array $postParams): void
+    {
+        if ($postData === 'on') {
+            $this->setConfig(str_replace('__', '.', $postKey), true);
+        } elseif ($postData === 'off') {
+            $this->setConfig(str_replace('__', '.', $postKey), false);
+        } elseif ($postKey === 'ip_variable_source') {
+            $this->setConfig('ip_variable_source.REMOTE_ADDR', false);
+            $this->setConfig('ip_variable_source.HTTP_CF_CONNECTING_IP', false);
+            $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', false);
+            $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', false);
+            $this->setConfig('ip_variable_source.' . $postData, true);
+        } elseif ($postKey === 'dialog_ui__shadow_opacity') {
+            $this->setConfig('dialog_ui.shadow_opacity', (string) $postData);
+        } elseif ($postKey === 'admin__pass') {
+            if (strlen($postParams['admin__pass']) < 58) {
+                $this->setConfig('admin.pass', password_hash($postData, PASSWORD_BCRYPT));
+            }
+        } elseif (strpos($postKey, 'config__recipients') !== false) {
+            // For example:
+            // messengers__sendgrid__config__recipients
+            // => messengers.sendgrid.config.recipients
+            $this->setConfig(
+                str_replace('__', '.', $postKey),
+                preg_split(
+                    '/\r\n|[\r\n]/',
+                    $postData
+                )
+            );
+        } elseif (is_numeric($postData)) {
+            $this->setConfig(str_replace('__', '.', $postKey), (int) $postData);
+        } else {
+            $this->setConfig(str_replace('__', '.', $postKey), $postData);
+        }
+    }
+
+    /**
      * Parse the POST fields and set them into configuration data structure.
      * Used for saveConfig method only.
      *
@@ -91,54 +135,16 @@ trait ConfigMethodsTrait
     protected function saveConfigPrepareSettings(array $postParams): void
     {
         foreach ($postParams as $postKey => $postData) {
-
-            if (is_string($postData)) {
-                if ($postData === 'on') {
-                    $this->setConfig(str_replace('__', '.', $postKey), true);
-
-                } elseif ($postData === 'off') {
-                    $this->setConfig(str_replace('__', '.', $postKey), false);
-
-                } elseif ($postKey === 'ip_variable_source') {
-                    $this->setConfig('ip_variable_source.REMOTE_ADDR', false);
-                    $this->setConfig('ip_variable_source.HTTP_CF_CONNECTING_IP', false);
-                    $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_FOR', false);
-                    $this->setConfig('ip_variable_source.HTTP_X_FORWARDED_HOST', false);
-                    $this->setConfig('ip_variable_source.' . $postData, true);
-
-                } elseif ($postKey === 'dialog_ui__shadow_opacity') {
-                    $this->setConfig('dialog_ui.shadow_opacity', (string) $postData);
-
-                } elseif ($postKey === 'admin__pass') {
-                    if (strlen($postParams['admin__pass']) < 58) {
-                        $this->setConfig('admin.pass', password_hash($postData, PASSWORD_BCRYPT));
-                    }
-
-                } else if (strpos($postKey, 'config__recipients') !== false) {
-                    // For example: 
-                    // messengers__sendgrid__config__recipients
-                    // => messengers.sendgrid.config.recipients
-                    $this->setConfig(
-                        str_replace('__', '.', $postKey),
-                        preg_split(
-                            '/\r\n|[\r\n]/',
-                            $postData
-                        )
-                    );
-
-                } elseif (is_numeric($postData)) {
-                    $this->setConfig(str_replace('__', '.', $postKey), (int) $postData);
-
-                } else {
-                    $this->setConfig(str_replace('__', '.', $postKey), $postData);
-                }
+            if (!is_string($postData)) {
+                continue;
             }
+            $this->handleUpdatingSettings($postKey, $postData, $postParams);
         }
     }
 
     /**
      * Check the settings of Action Logger.
-     * 
+     *
      * @param bool $result The result passed from previous check.
      *
      * @return bool
@@ -186,7 +192,7 @@ trait ConfigMethodsTrait
 
     /**
      * Check the settings of iptables.
-     * 
+     *
      * @param bool $result The result passed from previous check.
      *
      * @return bool
@@ -217,10 +223,10 @@ trait ConfigMethodsTrait
             // Create default log files.
             if (is_writable($iptablesWatchingFolder)) {
                 fopen($iptablesWatchingFolder . '/iptables_queue.log', 'w+');
-                fopen($iptablesWatchingFolder . '/ipv4_status.log',    'w+');
-                fopen($iptablesWatchingFolder . '/ipv6_status.log',    'w+');
-                fopen($iptablesWatchingFolder . '/ipv4_command.log',   'w+');
-                fopen($iptablesWatchingFolder . '/ipv6_command.log',   'w+');
+                fopen($iptablesWatchingFolder . '/ipv4_status.log', 'w+');
+                fopen($iptablesWatchingFolder . '/ipv6_status.log', 'w+');
+                fopen($iptablesWatchingFolder . '/ipv4_command.log', 'w+');
+                fopen($iptablesWatchingFolder . '/ipv6_command.log', 'w+');
 
                 return $result;
             }
@@ -280,7 +286,6 @@ trait ConfigMethodsTrait
     protected function saveCofigCheckDataDriverMySql(bool $result): bool
     {
         if (class_exists('PDO')) {
-
             $db = [
                 'host'    => $this->getConfig('drivers.mysql.host'),
                 'dbname'  => $this->getConfig('drivers.mysql.dbname'),
@@ -296,11 +301,10 @@ trait ConfigMethodsTrait
                     (string) $db['pass']
                 );
             } catch (PDOException $e) {
-
                 $result = false;
 
                 $this->pushMessage(
-                    'error', 
+                    'error',
                     __(
                         'panel',
                         'error_mysql_connection',
@@ -354,12 +358,11 @@ trait ConfigMethodsTrait
         }
 
         if (class_exists('PDO')) {
-
             try {
                 new PDO('sqlite:' . $sqliteFilePath);
 
                 // @codeCoverageIgnoreStart
-            } catch (PDOException $e) { 
+            } catch (PDOException $e) {
                 $this->pushMessage('error', $e->getMessage());
                 $result = false;
             }
@@ -367,7 +370,6 @@ trait ConfigMethodsTrait
             // @codeCoverageIgnoreEnd
 
             if (!is_writable($sqliteFilePath)) {
-
                 // @codeCoverageIgnoreStart
                 $this->pushMessage(
                     'error',
@@ -412,15 +414,13 @@ trait ConfigMethodsTrait
     protected function saveCofigCheckDataDriverRedis(bool $result): bool
     {
         if (class_exists('Redis')) {
-
             try {
                 $redis = new Redis();
                 $redis->connect(
-                    (string) $this->getConfig('drivers.redis.host'), 
-                    (int)    $this->getConfig('drivers.redis.port')
+                    (string) $this->getConfig('drivers.redis.host'),
+                    (int) $this->getConfig('drivers.redis.port')
                 );
                 unset($redis);
-
             } catch (Exception $e) {
                 $this->pushMessage('error', $e->getMessage());
                 $result = false;

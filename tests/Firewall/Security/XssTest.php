@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -28,11 +28,17 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $xssInstance = new \Shieldon\Security\Xss();
 
-        $_POST['username'] = 'javascript:/*--></title></style></textarea></script></xmp><svg/onload=\'+/"/+/onmouseover=1/+/[*/[]/+alert(1)//\'>';
+        $text = 'javascript:/*--></title></style></textarea></script>';
+        $text .= '</xmp><svg/onload=\'+/"/+/onmouseover=1/+/[*/[]/+alert(1)//\'>';
+
+        $_POST['username'] = $text;
 
         $username = $xssInstance->clean($_POST['username'], false);
 
-        $this->assertSame($username, '[removed]/*--&gt;&lt;/title&gt;&lt;/style&gt;&lt;/textarea&gt;[removed]</xmp>&lt;svg/[removed]&gt;');
+        $this->assertSame(
+            $username,
+            '[removed]/*--&gt;&lt;/title&gt;&lt;/style&gt;&lt;/textarea&gt;[removed]</xmp>&lt;svg/[removed]&gt;'
+        );
 
         $_POST['products'] = [
             '<IMG SRC=javascript:alert(String.fromCharCode(88,83,83))>',
@@ -42,7 +48,7 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $products = $xssInstance->clean($_POST['products'], false);
 
         $this->assertSame($products[0], '<IMG>');
-        $this->assertSame( $products[1], '<IMG>');
+        $this->assertSame($products[1], '<IMG>');
  
         unset($_POST['username'], $_POST['products']);
     }
@@ -136,7 +142,7 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $e = $xssInstance->entityDecode($string);
 
-        $string ='<p>Hello world! Let A&lt;B and A=&#x222C;dxdy</p>';
+        $string = '<p>Hello world! Let A&lt;B and A=&#x222C;dxdy</p>';
         $f = $xssInstance->entityDecode($string);
 
         $this->assertSame($b, 'I will "walk" the <b>dog</b> now. &lpar;ok)');
@@ -147,9 +153,7 @@ class XssTest extends \Shieldon\FirewallTest\ShieldonTestCase
     public function testSanitizeFilename()
     {
         $xssInstance = new \Shieldon\Security\Xss();
-
         $filename = $xssInstance->sanitizeFilename('something<?php exit;?>.jpg');
-
         $this->assertSame($filename, 'somethingphp exit.jpg');
     }
 }

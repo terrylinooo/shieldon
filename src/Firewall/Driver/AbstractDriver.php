@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -31,7 +31,7 @@ abstract class AbstractDriver implements DriverInterface
 {
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The data id of the entry to fetch.
      * @param string $type The type of data table. accepts: filter | session | rule
      *
@@ -44,7 +44,7 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $type The type of data table. accepts: filter | session | rule
      *
      * @return array
@@ -56,7 +56,7 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The IP address as well as the data id.
      * @param string $type The type of data table. accepts: filter | session | rule
      *
@@ -69,7 +69,7 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip     The IP address as well as the data id.
      * @param array  $data   The data.
      * @param string $type   The type of data table. accepts: filter | session | rule
@@ -84,7 +84,7 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The IP address as well as the data id.
      * @param string $type The type of data table. accepts: filter | session | rule
      *
@@ -99,7 +99,7 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return bool
      */
     public function rebuild(): bool
@@ -109,7 +109,7 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param bool $dbCheck This is for creating data tables automatically
      *
      * @return void
@@ -179,7 +179,7 @@ abstract class AbstractDriver implements DriverInterface
 
     /**
      * Initial data tables.
-     * 
+     *
      * @param bool $dbCheck This is for creating data tables automatically
      *                      Turn it off, if you don't want to check data tables every pageview.
      *

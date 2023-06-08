@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -33,7 +33,7 @@ class TrustedBotTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $t = $reflection->getProperty('strictMode');
         $t->setAccessible(true);
   
-        $this->assertEquals('strictMode' , $t->name);
+        $this->assertEquals('strictMode', $t->name);
         $this->assertFalse($t->getValue($trustedBotComponent));
     }
 
@@ -111,8 +111,8 @@ class TrustedBotTest extends \Shieldon\FirewallTest\ShieldonTestCase
         
         $test = $list['acer'];
 
-        $this->assertSame($test['userAgent'] , 'acer');
-        $this->assertSame($test['rdns'] , '.acer-euro.com');
+        $this->assertSame($test['userAgent'], 'acer');
+        $this->assertSame($test['rdns'], '.acer-euro.com');
     }
 
     public function testAddList()

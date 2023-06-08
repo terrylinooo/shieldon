@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -57,8 +57,8 @@ class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
                 'background' => [255, 255, 255],
                 'border' => [153, 200, 255],
                 'text' => [20, 153, 255],
-                'grid' => '153'
-            ]
+                'grid' => '153',
+            ],
         ];
 
         $captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha($config);
@@ -79,7 +79,10 @@ class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
         
         new Helpers();
 
-        $this->mockUserSession('shieldon_image_captcha_hash', '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.');
+        $this->mockUserSession(
+            'shieldon_image_captcha_hash',
+            '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.'
+        );
 
         //$_SESSION['shieldon_image_captcha_hash'] = '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.';
         $_POST['shieldon_image_captcha'] = 'hh';
@@ -97,7 +100,10 @@ class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         new Helpers();
 
-        $this->mockUserSession('shieldon_image_captcha_hash', '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.');
+        $this->mockUserSession(
+            'shieldon_image_captcha_hash',
+            '$2y$10$fg4oDCcCUY.w2OJUCzR/SubQ1tFP8QFIladHwlexF1.ye.8.fEAP.'
+        );
 
         $_POST['shieldon_image_captcha'] = 'IA63BXxo';
         $this->refreshRequest();
@@ -112,7 +118,7 @@ class ImageCaptchaTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->mockSession();
         
         $config = [
-            'colors' => ''
+            'colors' => '',
         ];
 
         $captchaInstance = new \Shieldon\Firewall\Captcha\ImageCaptcha($config);

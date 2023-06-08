@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -47,7 +47,7 @@ class Report extends BaseController
     /**
      * Constructor
      */
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
     }
@@ -136,10 +136,8 @@ class Report extends BaseController
             $data = array_merge($data, $result);
         }
 
-        $data['page_availability'] = $this->pageAvailability['logs'];;
-
+        $data['page_availability'] = $this->pageAvailability['logs'];
         $data['page_url'] = $this->url('report/actionLog');
-
         $data['title'] = __('panel', 'title_action_logs', 'Action Logs');
 
         return $this->renderPage('panel/action_log_' . $type, $data);
@@ -163,7 +161,6 @@ class Report extends BaseController
         // If we have cached data then we don't need to parse them again.
         // This will save a lot of time in parsing logs.
         if (!empty($ipDetailsCachedData)) {
-
             $data['ip_details'] = $ipDetailsCachedData['ip_details'];
             $data['period_data'] = $ipDetailsCachedData['period_data'];
             $data['last_cached_time'] = date('Y-m-d H:i:s', $ipDetailsCachedData['time']);
@@ -172,9 +169,7 @@ class Report extends BaseController
                 $ipDetailsCachedData = $logCacheHandler->get('past_seven_hours');
                 $data['past_seven_hours'] = $ipDetailsCachedData['period_data'];
             }
-
         } else {
-
             $this->parser->prepare($type);
 
             $data['ip_details'] = $this->parser->getIpData();
@@ -189,7 +184,7 @@ class Report extends BaseController
                 $logCacheHandler->save(
                     'past_seven_hours',
                     [
-                        'period_data' => $data['past_seven_hours']
+                        'period_data' => $data['past_seven_hours'],
                     ]
                 );
             }
@@ -208,11 +203,11 @@ class Report extends BaseController
     private function operationTemplateVarsOfComponents(array $data = []): array
     {
         $data['components'] = [
-            'Ip'         => (!empty($this->kernel->component['Ip']))         ? true : false,
-            'TrustedBot' => (!empty($this->kernel->component['TrustedBot'])) ? true : false,
-            'Header'     => (!empty($this->kernel->component['Header']))     ? true : false,
-            'Rdns'       => (!empty($this->kernel->component['Rdns']))       ? true : false,
-            'UserAgent'  => (!empty($this->kernel->component['UserAgent']))  ? true : false,
+            'Ip'         => !empty($this->kernel->component['Ip']),
+            'TrustedBot' => !empty($this->kernel->component['TrustedBot']),
+            'Header'     => !empty($this->kernel->component['Header']),
+            'Rdns'       => !empty($this->kernel->component['Rdns']),
+            'UserAgent'  => !empty($this->kernel->component['UserAgent']),
         ];
 
         return $data;
@@ -317,7 +312,7 @@ class Report extends BaseController
 
     /**
      * Get components' data.
-     * 
+     *
      * @param array $data    The data array.
      * @param array $counter The counter array.
      * @param array $info    The into array.

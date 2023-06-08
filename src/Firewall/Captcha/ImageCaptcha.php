@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -114,8 +114,8 @@ class ImageCaptcha extends CaptchaProvider
                 'background' => [255, 255, 255],
                 'border'     => [153, 200, 255],
                 'text'       => [51,  153, 255],
-                'grid'       => [153, 200, 255]
-            ]
+                'grid'       => [153, 200, 255],
+            ],
         ];
 
         foreach ($defaults as $k => $v) {
@@ -190,7 +190,11 @@ class ImageCaptcha extends CaptchaProvider
                 display: inline-block;
                 padding: 5px;
                 box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.08);">';
-            $html .= '<div style="margin-bottom: 2px;"><img src="data:image/' . $this->imageType . ';base64,' . $base64image . '" style="width: ' . $imgWidth . '; height: ' . $imgHeight . ';"></div>';
+            $html .= '<div style="margin-bottom: 2px;"><img src="data:image/' .
+                $this->imageType . ';base64,' .
+                $base64image . '" style="width: ' .
+                $imgWidth . '; height: ' .
+                $imgHeight . ';"></div>';
             $html .= '<div><input type="text" name="shieldon_image_captcha" style="
                 width: 100px;
                 border: 1px solid rgba(27,31,35,.2);
@@ -223,7 +227,7 @@ class ImageCaptcha extends CaptchaProvider
 
         $im = $this->getImageResource();
 
-        // Assign colors. 
+        // Assign colors.
         $colors = [];
 
         foreach ($this->properties['colors'] as $k => $v) {
@@ -240,7 +244,7 @@ class ImageCaptcha extends CaptchaProvider
 
         $this->createBackground(
             $imgWidth,
-            $imgHeight, 
+            $imgHeight,
             $colors['background']
         );
 
@@ -294,7 +298,7 @@ class ImageCaptcha extends CaptchaProvider
      * Create a canvas.
      *
      * This method initialize the $im.
-     * 
+     *
      * @param int $imgWidth  The width of the image.
      * @param int $imgHeight The height of the image.
      *
@@ -306,7 +310,6 @@ class ImageCaptcha extends CaptchaProvider
             $this->im = imagecreatetruecolor($imgWidth, $imgHeight);
     
             // @codeCoverageIgnoreStart
-
         } else {
             $this->im = imagecreate($imgWidth, $imgHeight);
         }
@@ -316,7 +319,7 @@ class ImageCaptcha extends CaptchaProvider
 
     /**
      * Create the background.
-     * 
+     *
      * @param int $imgWidth  The width of the image.
      * @param int $imgHeight The height of the image.
      * @param int $bgColor   The RGB color for the background of the image.
@@ -370,7 +373,7 @@ class ImageCaptcha extends CaptchaProvider
 
             imageline($im, $x, $y, $x1, $y1, $gridColor);
             $theta -= $thetac;
-        }  
+        }
     }
 
     /**
@@ -431,7 +434,6 @@ class ImageCaptcha extends CaptchaProvider
             imagejpeg($im);
 
             // @codeCoverageIgnoreStart
-
         } elseif (function_exists('imagepng')) {
             $this->imageType = 'png';
             imagepng($im);
@@ -456,7 +458,7 @@ class ImageCaptcha extends CaptchaProvider
     private function getImageResource()
     {
         if (version_compare(phpversion(), '8.0.0', '>=')) {
-            if (!$this->im instanceof GdImage)  {
+            if (!$this->im instanceof GdImage) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException(
                     'Cannot create image resource.'
@@ -464,8 +466,7 @@ class ImageCaptcha extends CaptchaProvider
                 // @codeCoverageIgnoreEnd
             }
         } else {
-            if (!is_resource($this->im))  {
-
+            if (!is_resource($this->im)) {
                 // @codeCoverageIgnoreStart
                 throw new RuntimeException(
                     'Cannot create image resource.'

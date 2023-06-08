@@ -6,9 +6,9 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * php version 7.1.0
- * 
+ *
  * @category  Web-security
  * @package   Shieldon
  * @author    Terry Lin <contact@terryl.in>
@@ -64,7 +64,7 @@ trait FilterTrait
         'referer' => false,
 
         /**
-         * Most of web crawlers do not render JavaScript, they only get the 
+         * Most of web crawlers do not render JavaScript, they only get the
          * content they want, so we can check whether the cookie can be created
          * by JavaScript or not.
          */
@@ -72,7 +72,7 @@ trait FilterTrait
 
         /**
          * Every unique user should only has a unique session, but if a user
-         * creates different sessions every connection... meaning that the 
+         * creates different sessions every connection... meaning that the
          * user's browser doesn't support cookie.
          * It is almost impossible that modern browsers not support cookie,
          * therefore the user MUST be a web crawler.
@@ -98,10 +98,10 @@ trait FilterTrait
      * @param int    $actionCode The action code. - 0: deny, 1: allow, 9: unban.
      * @param string $reasonCode The response code.
      * @param string $assignIp   The IP address.
-     * 
+     *
      * @return void
      */
-    abstract function action(int $actionCode, int $reasonCode, string $assignIp = ''): void;
+    abstract public function action(int $actionCode, int $reasonCode, string $assignIp = ''): void;
 
     /**
      * Set the filters.
@@ -136,7 +136,7 @@ trait FilterTrait
 
     /**
      * Disable filters.
-     * 
+     *
      * @return void
      */
     public function disableFilters(): void
@@ -176,7 +176,6 @@ trait FilterTrait
 
         // Counting user pageviews.
         foreach (array_keys($this->filterResetStatus) as $unit) {
-
             // Each time unit will increase by 1.
             $logData['pageviews_' . $unit] = $ipDetail['pageviews_' . $unit] + 1;
             $logData['first_time_' . $unit] = $ipDetail['first_time_' . $unit];
@@ -192,7 +191,6 @@ trait FilterTrait
 
             // Start checking...
             foreach (array_keys($this->filterStatus) as $filter) {
-
                 // For example: filterSession
                 $method = 'filter' . ucfirst($filter);
 
@@ -215,7 +213,9 @@ trait FilterTrait
 
             // Is fagged as unusual beavior? Count the first time.
             if ($isFlagged) {
-                $logData['first_time_flag'] = (!empty($logData['first_time_flag'])) ? $logData['first_time_flag'] : $now;
+                $logData['first_time_flag'] = !empty($logData['first_time_flag'])
+                    ? $logData['first_time_flag']
+                    : $now;
             }
 
             // Reset the flagged factor check.
@@ -228,9 +228,7 @@ trait FilterTrait
             }
 
             $this->driver->save($this->ip, $logData, 'filter');
-
         } else {
-
             // If $ipDetail[ip] is empty.
             // It means that the user is first time visiting our webiste.
             $this->InitializeFirstTimeFilter($logData);
@@ -249,12 +247,12 @@ trait FilterTrait
     /**
      * When the user is first time visiting our webiste.
      * Initialize the log data.
-     * 
+     *
      * @param array $logData The user's log data.
      *
      * @return void
      */
-    protected function InitializeFirstTimeFilter($logData)
+    protected function InitializeFirstTimeFilter($logData): void
     {
         $now = time();
 
@@ -285,7 +283,6 @@ trait FilterTrait
 
         if ($this->filterStatus['referer']) {
             if ($logData['last_time'] - $ipDetail['last_time'] > $this->properties['interval_check_referer']) {
-
                 // Get values from data table. We will count it and save it back to data table.
                 // If an user is already in your website, it is impossible no referer when he views other pages.
                 $logData['flag_empty_referer'] = $ipDetail['flag_empty_referer'];
@@ -328,12 +325,10 @@ trait FilterTrait
         $sessionId = get_session_instance()->getId();
 
         if ($this->filterStatus['session']) {
-
             // Get values from data table. We will count it and save it back to data table.
             $logData['flag_multi_session'] = $ipDetail['flag_multi_session'];
 
             if ($sessionId !== $ipDetail['session']) {
-
                 // Is is possible because of direct access by the same user many times.
                 // Or they don't have session cookie set.
                 $logData['flag_multi_session']++;
@@ -372,7 +367,6 @@ trait FilterTrait
 
         // Let's checking cookie created by javascript..
         if ($this->filterStatus['cookie']) {
-
             // Get values from data table. We will count it and save it back to data table.
             $logData['flag_js_cookie'] = $ipDetail['flag_js_cookie'];
             $logData['pageviews_cookie'] = $ipDetail['pageviews_cookie'];
@@ -385,7 +379,6 @@ trait FilterTrait
             if (!empty($jsCookie)) {
                 if ($jsCookie == '1') {
                     $logData['pageviews_cookie']++;
-
                 } else {
                     // Flag it if the value is not 1.
                     $logData['flag_js_cookie']++;
@@ -398,7 +391,6 @@ trait FilterTrait
             }
 
             if ($logData['flag_js_cookie'] > $this->properties['limit_unusual_behavior']['cookie']) {
-
                 // Ban this IP if they reached the limit.
                 $this->action(
                     kernel::ACTION_TEMPORARILY_DENY,
@@ -443,20 +435,15 @@ trait FilterTrait
             $timeSecond['d'] = 86400;
 
             foreach (array_keys($this->properties['time_unit_quota']) as $unit) {
-
                 if (($logData['last_time'] - $ipDetail['first_time_' . $unit]) >= ($timeSecond[$unit] + 1)) {
-
                     // For example:
-                    // (1) minutely: now > first_time_m about 61, (2) hourly: now > first_time_h about 3601, 
+                    // (1) minutely: now > first_time_m about 61, (2) hourly: now > first_time_h about 3601,
                     // Let's prepare to rest the the pageview count.
                     $this->filterResetStatus[$unit] = true;
-
                 } else {
-
                     // If an user's pageview count is more than the time period limit
                     // He or she will get banned.
                     if ($logData['pageviews_' . $unit] > $this->properties['time_unit_quota'][$unit]) {
-
                         $actionReason = [
                             's' => kernel::REASON_REACHED_LIMIT_SECOND,
                             'm' => kernel::REASON_REACHED_LIMIT_MINUTE,
