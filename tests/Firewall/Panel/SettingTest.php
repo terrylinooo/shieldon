@@ -198,7 +198,7 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
                 'tmp_name' => BOOTSTRAP_DIR . '/../tmp/shieldon/config.firewall.json',
                 'error' => 0,
                 'size' => 100000,
-            ]
+            ],
         ];
 
         $response = $this->getRouteResponse('firewall/panel/setting/import');
@@ -220,7 +220,7 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
                 'tmp_name' => BOOTSTRAP_DIR . '/samples/json_files/invalid_json_format.json',
                 'error' => 0,
                 'size' => 100000,
-            ]
+            ],
         ];
 
         $response = $this->getRouteResponse('firewall/panel/setting/import');
@@ -242,7 +242,7 @@ class SettingTest extends \Shieldon\FirewallTest\ShieldonTestCase
                 'tmp_name' => BOOTSTRAP_DIR . '/samples/json_files/invalid_spec.json',
                 'error' => 0,
                 'size' => 100000,
-            ]
+            ],
         ];
 
         $response = $this->getRouteResponse('firewall/panel/setting/import');

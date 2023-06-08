@@ -44,12 +44,13 @@ class HttpResolverTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         if (function_exists('xdebug_get_headers')) {
             $this->assertContains(
-                'Set-Cookie: name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0', xdebug_get_headers()
+                'Set-Cookie: name=; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0',
+                xdebug_get_headers()
             );
         } else {
             $this->console('function "xdebug_get_headers()" is needed to test the header output.', 'notice');
         }
 
-        $this->assertStringContainsString('test', $output);   
+        $this->assertStringContainsString('test', $output);
     }
 }

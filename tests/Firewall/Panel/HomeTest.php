@@ -77,7 +77,7 @@ class HomeTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $controllerClass = new \Shieldon\Firewall\Panel\Home();
         
         ob_start();
-        $resolver(call_user_func([$controllerClass, 'overview'])); 
+        $resolver(call_user_func([$controllerClass, 'overview']));
         $output = ob_get_contents();
         ob_end_clean();
 

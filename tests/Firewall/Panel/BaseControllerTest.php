@@ -43,7 +43,7 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
                 'type' => 'success',
                 'text' => 'This is a flash message.',
                 'class' => 'success',
-            ]
+            ],
         ];
 
         $this->mockUserSession('flash_messages', $_SESSION['flash_messages']);
@@ -84,9 +84,9 @@ class BaseControllerTest extends \Shieldon\FirewallTest\ShieldonTestCase
             [
                 'type' => 'error',
                 'text' => 'This is an error message.',
-                'class' => 'danger'
+                'class' => 'danger',
             ],
-        ]);  
+        ]);
     }
 
     public function testCsrfFiels()

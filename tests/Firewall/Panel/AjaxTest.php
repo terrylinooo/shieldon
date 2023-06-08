@@ -41,6 +41,7 @@ class AjaxTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->route();
 
+        // phpcs:ignore
         $this->expectOutputString('{"status":"error","result":{"moduleName":"","postKey":"messengers____confirm_test"}}');
     }
 
@@ -95,8 +96,8 @@ class AjaxTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $output = ob_get_contents();
         ob_end_clean();
 
+        // phpcs:ignore
         $this->assertStringContainsString('result":{"moduleName":"native-php-mail","postKey":"messengers__native-php-mail__confirm_test"}', $output);   
-     
     }
 
     public function testTryMessengersSendgrid()
@@ -197,6 +198,7 @@ class AjaxTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->refreshRequest();
 
+        // phpcs:ignore
         $expectedString = '{"status":"error","result":{"moduleName":"' . $module . '","postKey":"messengers__' . $module . '__confirm_test"}}';
 
         $this->route();

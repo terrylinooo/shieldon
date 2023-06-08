@@ -69,7 +69,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
             3306 - MySQL
             6379 - Redis
             27017 - MongoDB
-            custom 
+            custom
         */
 
         switch ($type) {
@@ -197,6 +197,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $statusIp4FilePath = $this->getWritableTestFilePath('ipv4_status.log', 'shieldon/iptables');
         $statusIp6FilePath = $this->getWritableTestFilePath('ipv6_status.log', 'shieldon/iptables');
 
+        // phpcs:ignore
         file_put_contents($logIp4FilePath, 'add,4,33.33.33.33,16,8080,tcp,allow' . "\n" . 'add,4,33.34.34.34,16,8080,tcp,allow');
         file_put_contents($logIp6FilePath, 'add,2607:f0d0:1002:51::4,8080,tcp,allow');
         file_put_contents($statusIp4FilePath, 'test');
@@ -238,7 +239,7 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $resolver = new \Shieldon\Firewall\HttpResolver();
         $controllerClass = new \Shieldon\Firewall\Panel\Iptables();
         ob_start();
-        $resolver(call_user_func([$controllerClass, 'ip4'])); 
+        $resolver(call_user_func([$controllerClass, 'ip4']));
         $output = ob_get_contents();
         ob_end_clean();
 
@@ -254,11 +255,13 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $resolver = new \Shieldon\Firewall\HttpResolver();
         $controllerClass = new \Shieldon\Firewall\Panel\Iptables();
         ob_start();
-        $resolver(call_user_func([$controllerClass, 'ip4'])); 
+        $resolver(call_user_func([$controllerClass, 'ip4']));
         $output = ob_get_contents();
         ob_end_clean();
 
         $string = file_get_contents($queueFilePath);
+
+        // phpcs:ignore
         $this->assertSame(trim($string), 'add,4,33.33.33.33,16,8080,tcp,allow' . "\n". 'delete,4,33.33.33.33,16,8080,tcp,allow');
     }
 

@@ -55,10 +55,10 @@ class ShieldonTestCase extends TestCase
      *
      * @param  string $filename File name.
      * @return string $dir      The file's path.
-     * 
+     *
      * @return string
      */
-    function getWritableTestFilePath($filename, $dir = ''): string
+    public function getWritableTestFilePath($filename, $dir = ''): string
     {
         if ($dir !== '') {
             $dir = BOOTSTRAP_DIR . '/../tmp/' . $dir;
@@ -81,14 +81,14 @@ class ShieldonTestCase extends TestCase
      *
      * @return Kernel
      */
-    function getKernelInstance($driver = 'sqlite'): Kernel
+    public function getKernelInstance($driver = 'sqlite'): Kernel
     {
         $kernel = new \Shieldon\Firewall\Kernel();
 
         switch ($driver) {
-
             case 'file':
                 $kernel->setChannel('testsessionlimit');
+                // phpcs:ignore
                 $kernel->setDriver(new \Shieldon\Firewall\Driver\FileDriver(BOOTSTRAP_DIR . '/../tmp/shieldon/data_driver_file'));
                 break;
 
@@ -147,14 +147,16 @@ class ShieldonTestCase extends TestCase
                 break;
             */
             case 'sqlite':
-                $dbLocation = $this->getWritableTestFilePath('shieldon_unittest.sqlite3', 'shieldon/data_driver_sqlite');
+                $dbLocation = $this->getWritableTestFilePath(
+                    'shieldon_unittest.sqlite3',
+                    'shieldon/data_driver_sqlite'
+                );
 
                 try {
                     $pdoInstance = new \PDO('sqlite:' . $dbLocation);
                     $kernel->setChannel('testsessionlimit');
                     $driver = new \Shieldon\Firewall\Driver\SqliteDriver($pdoInstance);
                     $kernel->setDriver($driver);
-                    
                 } catch (\PDOException $e) {
                     throw $e->getMessage();
                 }
@@ -175,7 +177,7 @@ class ShieldonTestCase extends TestCase
      *
      * @return void
      */
-    function console(string $text, string $type = 'notice', $bg = false)
+    public function console(string $text, string $type = 'notice', $bg = false)
     {
         $reset = "\e[0m";
     
@@ -231,7 +233,7 @@ class ShieldonTestCase extends TestCase
                 default:
                     print $_yellow . $black . $text . $reset;
                     break;
-            } 
+            }
         }
     
         print "\n";
@@ -242,9 +244,9 @@ class ShieldonTestCase extends TestCase
      *
      * @return string
      */
-    function getRandomIpAddress():string
+    public function getRandomIpAddress():string
     {
-        return rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255) . '.' . rand(1,255);
+        return rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255);
     }
 
     /**

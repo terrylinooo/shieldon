@@ -38,10 +38,10 @@ class BashScriptTest extends \Shieldon\FirewallTest\ShieldonTestCase
             // Create default log files.
             if (is_writable($this->iptablesWatchingFolder)) {
                 fopen($this->iptablesWatchingFolder . '/iptables_queue.log', 'w+');
-                fopen($this->iptablesWatchingFolder . '/ipv4_status.log',    'w+');
-                fopen($this->iptablesWatchingFolder . '/ipv6_status.log',    'w+');
-                fopen($this->iptablesWatchingFolder . '/ipv4_command.log',   'w+');
-                fopen($this->iptablesWatchingFolder . '/ipv6_command.log',   'w+');
+                fopen($this->iptablesWatchingFolder . '/ipv4_status.log', 'w+');
+                fopen($this->iptablesWatchingFolder . '/ipv6_status.log', 'w+');
+                fopen($this->iptablesWatchingFolder . '/ipv4_command.log', 'w+');
+                fopen($this->iptablesWatchingFolder . '/ipv6_command.log', 'w+');
             }
         }
     }
@@ -74,7 +74,7 @@ class BashScriptTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $command = 'add,4,33.33.33.34,all,all,all,deny';
 
         // Add this IP address to itables_queue.log
-        // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information. 
+        // Use `bin/iptables.sh` for adding it into IPTABLES. See document for more information.
         file_put_contents($queueFilePath, $command . "\n", FILE_APPEND | LOCK_EX);
 
         @exec('sudo bash ' . $bashScriptPath . ' --watch=' . $this->iptablesWatchingFolder);

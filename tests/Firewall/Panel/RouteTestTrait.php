@@ -164,7 +164,6 @@ trait RouteTestTrait
             } else {
                 return call_user_func([$controllerClass, $method]);
             }
-            
         }
 
         if ($output) {
@@ -220,7 +219,7 @@ trait RouteTestTrait
      * @param string $uri    The page's URI path.
      * @param string $string Usually the page title.
      *
-     * @return void
+     * @return ResponseInterface
      */
     public function getRouteResponse(string $uri): ResponseInterface
     {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * This file is part of the Shieldon package.
  *
@@ -60,6 +60,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel = $this->getKernelInstance($driver);
         $kernel->driver->rebuild();
 
+         // phpcs:ignore
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
         $kernel->setComponent(new \Shieldon\Firewall\Component\Ip());
         $kernel->setComponent(new \Shieldon\Firewall\Component\UserAgent());
@@ -74,9 +75,9 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $kernel->setProperty('time_unit_quota', [
             's' => 2,
-            'm' => 20, 
-            'h' => 60, 
-            'd' => 240
+            'm' => 20,
+            'h' => 60,
+            'd' => 240,
         ]);
 
         $result = [];
@@ -121,7 +122,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
 
         // Let's get started checking Session.
-        for ($i =  0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $kernel->setIp('140.112.172.255');
             $kernel->limitSession(1000, 9999);
             $reflection = new \ReflectionObject($kernel);
@@ -154,7 +155,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->setProperty('interval_check_referer', 1);
         $kernel->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
 
-        for ($i =  0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $kernel->setIp('140.112.173.1');
             $results[$i] = $kernel->run();
             sleep(2);
@@ -179,7 +180,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $kernel->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
 
-        for ($i =  0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $kernel->setIp('140.112.174.8');
             $results[$i] = $kernel->run();
         }
@@ -194,7 +195,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $_COOKIE['unittest'] = 1;
         $this->refreshRequest();
 
-        for ($i =  0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $kernel->setIp('140.112.175.10');
             $results[$i] = $kernel->run();
 
@@ -251,6 +252,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $kernel->setLogger(new \Shieldon\Firewall\Log\ActionLogger(BOOTSTRAP_DIR . '/../tmp/shieldon'));
 
+         // phpcs:ignore
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
         $kernel->setComponent(new \Shieldon\Firewall\Component\Ip());
         $kernel->setComponent(new \Shieldon\Firewall\Component\UserAgent());
@@ -264,7 +266,8 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $method = $reflection->getMethod('action');
         $method->setAccessible(true);
         $method->invokeArgs($kernel, [
-            $kernel::ACTION_TEMPORARILY_DENY, $kernel::REASON_REACHED_LIMIT_MINUTE, '140.112.172.11'
+            $kernel::ACTION_TEMPORARILY_DENY, $kernel::REASON_REACHED_LIMIT_MINUTE,
+            '140.112.172.11',
         ]);
 
         $kernel->setIp('140.112.172.11');
@@ -274,7 +277,8 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         // Test 2. Check unbaning.
 
         $method->invokeArgs($kernel, [
-            $kernel::ACTION_UNBAN, $kernel::REASON_MANUAL_BAN, '140.112.172.11'
+            $kernel::ACTION_UNBAN, $kernel::REASON_MANUAL_BAN,
+            '140.112.172.11',
         ]);
 
         $result = $kernel->run();
@@ -682,9 +686,9 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $kernel->setProperty('time_unit_quota', [
             's' => 2,
-            'm' => 20, 
-            'h' => 60, 
-            'd' => 240
+            'm' => 20,
+            'h' => 60,
+            'd' => 240,
         ]);
 
         $result = [];
@@ -741,7 +745,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $t = $reflection->getProperty('strictMode');
         $t->setAccessible(true);
   
-        $this->assertEquals('strictMode' , $t->name);
+        $this->assertEquals('strictMode', $t->name);
         $this->assertFalse($t->getValue($kernel));
     }
 
@@ -834,6 +838,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->assertSame($kernel::RESPONSE_ALLOW, $result);
 
         // YAHOO
+        // phpcs:ignore
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)';
         $this->refreshRequest();
 
@@ -927,11 +932,11 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $ipDetail = $kernel->driver->get('0:0:0:0:0:ffff:c0a8:5f01', 'filter');
 
-        $this->assertSame($ipDetail['ip'], '0:0:0:0:0:ffff:c0a8:5f01'); 
+        $this->assertSame($ipDetail['ip'], '0:0:0:0:0:ffff:c0a8:5f01');
     }
 
     /***********************************************
-     * File Driver 
+     * File Driver
      ***********************************************/
 
     public function testDetect_fileDriver_filterFrequency()
@@ -1005,7 +1010,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
     }
 
     /***********************************************
-     * MySQL Driver 
+     * MySQL Driver
      ***********************************************/
 
     public function testDetect_mysqlDriver_filterFrequency()
@@ -1079,7 +1084,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
     }
 
     /***********************************************
-     * Redis Driver 
+     * Redis Driver
      ***********************************************/
 
     public function testDetect_redisDriver_filterFrequency()
@@ -1094,7 +1099,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
     public function testDetect_redisDriver_filterReferer()
     {
-        $this->testDetectByFilterReferer('redis');;
+        $this->testDetectByFilterReferer('redis');
     }
 
     public function testDetect_redisDriver_filterCookie()
@@ -1152,8 +1157,6 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->testIPv6('redis');
     }
 
-    /*****************/
-
     public function testSetMessenger()
     {
         $kernel = new \Shieldon\Firewall\Kernel();
@@ -1198,7 +1201,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $kernel = new \Shieldon\Firewall\Kernel();
 
-        $kernel->setClosure('key', function() {
+        $kernel->setClosure('key', function () {
             return true;
         });
     }
@@ -1211,7 +1214,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
     }
 
     /***********************************************
-     * Test for building bridge to Iptable 
+     * Test for building bridge to Iptable
      ***********************************************/
 
     public function testDenyAttempts()
@@ -1219,6 +1222,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel = $this->getKernelInstance('file');
 
         //$_SERVER['HTTP_USER_AGENT'] = 'google';
+        // phpcs:ignore
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
 
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
@@ -1232,24 +1236,23 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $kernel->setProperty('deny_attempt_enable', [
             'data_circle' => true,
-            'system_firewall' => true, 
+            'system_firewall' => true,
         ]);
 
         $kernel->setProperty('deny_attempt_notify', [
             'data_circle' => true,
-            'system_firewall' => true, 
+            'system_firewall' => true,
         ]);
 
         $kernel->setProperty('deny_attempt_buffer', [
             'data_circle' => 2,
-            'system_firewall' => 2, 
+            'system_firewall' => 2,
         ]);
 
         $kernel->setProperty('reset_attempt_counter', 5);
 
         // Test for IPv4 and IPv6.
         foreach (['127.0.1.1', '2607:f0d0:1002:51::4'] as $ip) {
-
             $kernel->setIp($ip);
 
             $result = $kernel->run();
@@ -1277,9 +1280,8 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $this->assertEquals($result, $kernel::RESPONSE_DENY);
         }
 
-        // Test for IPv4 and IPv6. 
+        // Test for IPv4 and IPv6.
         foreach (['127.0.1.2', '2607:f0d0:1002:52::4'] as $ip) {
-
             $kernel->setIp($ip);
 
             $result = $kernel->run();
