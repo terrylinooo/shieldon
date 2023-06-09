@@ -88,7 +88,7 @@ class SecurityTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertOutputContainsString(
             'firewall/panel/security/xssProtection',
-            '<input type="checkbox" name="xss_protection__cookie" class="toggle-block" value="on" checked>'
+            '<input type="checkbox" name="xss_protection__cookie" class="toggle-block" value="on" checked />'
         );
     }
 

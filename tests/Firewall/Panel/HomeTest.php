@@ -81,8 +81,8 @@ class HomeTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $output = ob_get_contents();
         ob_end_clean();
 
-        $this->assertStringContainsString('<li><span>since</span> <strong>2020-02-03</strong></li>', $output);
-        $this->assertStringContainsString('<li><span>days</span> <strong>16</strong></li>', $output);
-        $this->assertStringContainsString('<li><span>size</span> <strong>0.41663 MB</strong></li>', $output);
+        $this->assertStringContainsString('<strong>2020-02-03</strong>', $output);
+        $this->assertStringContainsString('<strong>16</strong>', $output);
+        $this->assertStringContainsString('<strong>0.41663 MB</strong>', $output);
     }
 }

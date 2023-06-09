@@ -253,6 +253,10 @@ class BaseController
         $body['favicon_url'] = $this->url('asset/favicon');
         $body['logo_url'] = $this->url('asset/logo');
 
+        if ($this->mode === 'demo') {
+            $body['title'] .= ' (DEMO)';
+        }
+
         $page = $this->loadView('panel/template', $body);
 
         return $this->respond($page);

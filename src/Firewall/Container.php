@@ -67,7 +67,7 @@ class Container
     /**
      * Set an entry into container.
      *
-     * @param object $id        Identifier of the entry to look for.
+     * @param string $id        Identifier of the entry to look for.
      * @param mixed  $entry     Entry.
      * @param bool   $overwrite Overwrite it even exists.
      *

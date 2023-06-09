@@ -117,6 +117,7 @@ class Smtp
         } catch (Exception $e) {
             return false;
         }
+        return false;
     }
     // @codeCoverageIgnoreEnd
 

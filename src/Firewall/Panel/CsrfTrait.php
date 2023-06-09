@@ -85,11 +85,8 @@ trait CsrfTrait
         $string = '';
         if (!empty($this->csrfField)) {
             foreach ($this->csrfField as $value) {
-                $string .= '<input type="hidden"
-                    name="' . $value['name'] .'"
-                    value="' . $value['value'] . '"
-                    id="csrf-field"
-                >';
+                // phpcs:ignore
+                $string .= '<input type="hidden" name="' . $value['name'] .'" value="' . $value['value'] . '" id="csrf-field">';
             }
         }
         return $string;

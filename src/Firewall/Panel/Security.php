@@ -48,7 +48,7 @@ class Security extends BaseController
     /**
      * Constructor
      */
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
     }
@@ -63,7 +63,6 @@ class Security extends BaseController
         $postParams = get_request()->getParsedBody();
 
         if ($this->checkPostParamsExist('url', 'user', 'pass', 'action')) {
-
             $url = $postParams['url'];
             $user = $postParams['user'];
             $pass = $postParams['pass'];
@@ -81,7 +80,6 @@ class Security extends BaseController
                         'pass' => password_hash($pass, PASSWORD_BCRYPT),
                     ]
                 );
-
             } elseif ('remove' === $action) {
                 unset($authenticatedList[$order]);
                 $authenticatedList = array_values($authenticatedList);
@@ -122,9 +120,7 @@ class Security extends BaseController
             unset_superglobal('submit', 'post');
 
             $this->saveConfig();
-
         } elseif ($this->checkPostParamsExist('xss_form_2', 'type', 'action')) {
-
             $type     = $postParams['type'];
             $variable = $postParams['variable'];
             $action   = $postParams['action'];
@@ -134,7 +130,6 @@ class Security extends BaseController
 
             // Check variable name. Should be mixed with a-zA-Z and underscore.
             if (!ctype_alnum(str_replace('_', '', $variable))) {
-
                 // @codeCoverageIgnoreStart
                 // Ignore the `add` process.
                 $action = 'undefined';
@@ -145,13 +140,12 @@ class Security extends BaseController
 
             if ('add' === $action) {
                 array_push(
-                    $xssProtectedList, 
+                    $xssProtectedList,
                     [
                         'type'     => $type,
-                        'variable' => $variable
+                        'variable' => $variable,
                     ]
                 );
-                
             } elseif ('remove' === $action) {
                 unset($xssProtectedList[$order]);
                 $xssProtectedList = array_values($xssProtectedList);

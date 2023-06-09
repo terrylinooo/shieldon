@@ -74,7 +74,7 @@ class Helpers
  *  include_i18n_file     | Include i18n file.
  *  mask_string           | Mask strings with asterisks.
  *  get_cpu_usage         | Get current CPU usage information.
- *  get_memory_usage      | Get current RAM usage information. 
+ *  get_memory_usage      | Get current RAM usage information.
  *  get_default_properties| The default settings of Shieldon core.
  *  get_request           | Get PSR-7 HTTP server request from container.
  *  get_response          | Get PSR-7 HTTP response from container.
@@ -106,17 +106,17 @@ class Helpers
 function __(): string
 {
     /**
-     * Load locale string from i18n files and store them into this array 
+     * Load locale string from i18n files and store them into this array
      * for further use.
-     * 
-     * @var array 
+     *
+     * @var array
      */
     static $i18n;
 
     /**
      * Check the file exists for not.
      *
-     * @var array 
+     * @var array
      */
     static $fileChecked;
 
@@ -133,7 +133,7 @@ function __(): string
         $i18n[$filename] = include_i18n_file($lang, $filename);
     }
 
-    // If we don't get the string from the localization file, use placeholder 
+    // If we don't get the string from the localization file, use placeholder
     // instead.
     $resultString = $placeholder;
 
@@ -141,11 +141,11 @@ function __(): string
         $resultString = $i18n[$filename][$langcode];
     }
 
-    if (is_array($replacement)) { 
+    if (is_array($replacement)) {
         /**
          * Example:
          *     __('test', 'example_string', 'Search results: {0} items. Total items: {1}.', [5, 150]);
-         * 
+         *
          * Result:
          *     Search results: 5 items. Total items: 150.
          */
@@ -176,7 +176,7 @@ function _e(): void
 
 /**
  * Get user lang.
- * 
+ *
  * This method is a part of  __()
  *
  * @return string
@@ -205,7 +205,7 @@ function get_user_lang(): string
 
 /**
  * Include i18n file.
- * 
+ *
  * This method is a part of  __()
  *
  * @param string $lang     The language code.
@@ -249,9 +249,8 @@ function mask_string($str): string
         $tmp[0] = '*';
         $tmp[1] = '*';
         $masked = implode('.', $tmp);
-
     } else {
-        $masked =  str_repeat('*', strlen($str) - 6) . substr($str, -6);
+        $masked = str_repeat('*', strlen($str) - 6) . substr($str, -6);
     }
 
     return $masked;
@@ -260,8 +259,8 @@ function mask_string($str): string
 /**
  * Get current CPU usage information.
  *
- * This function is only used in sending notifications and it is unavailable 
- * on Win system. If you are using shared hosting and your hosting provider 
+ * This function is only used in sending notifications and it is unavailable
+ * on Win system. If you are using shared hosting and your hosting provider
  * has disabled `sys_getloadavg` and `shell_exec`, it won't work either.
  *
  * @return string
@@ -285,9 +284,9 @@ function get_cpu_usage(): string
 }
 
 /**
- * Get current RAM usage information. 
+ * Get current RAM usage information.
  *
- * If you are using shared hosting and your hosting provider has disabled 
+ * If you are using shared hosting and your hosting provider has disabled
  * `shell_exec`, this function may not work as expected.
  *
  * @return string
@@ -323,7 +322,7 @@ function get_default_properties(): array
             's' => 2,
             'm' => 10,
             'h' => 30,
-            'd' => 60
+            'd' => 60,
         ],
 
         'time_reset_limit'       => 3600,
@@ -332,7 +331,7 @@ function get_default_properties(): array
         'limit_unusual_behavior' => [
             'cookie'  => 5,
             'session' => 5,
-            'referer' => 10
+            'referer' => 10,
         ],
 
         'cookie_name'         => 'ssjd',
@@ -345,12 +344,12 @@ function get_default_properties(): array
         'display_reason_text' => false,
 
         /**
-         * If you set this option enabled, Shieldon will record every CAPTCHA fails 
+         * If you set this option enabled, Shieldon will record every CAPTCHA fails
          * in a row, once that user have reached the limitation number, Shieldon will
          * put it as a blocked IP in rule table, until the new data cycle begins.
-         * 
-         * Once that user have been blocked, they are still access the warning page, 
-         * it means that they are not humain for sure, so let's throw them into the 
+         *
+         * Once that user have been blocked, they are still access the warning page,
+         * it means that they are not humain for sure, so let's throw them into the
          * system firewall and say goodbye to them forever.
          */
         'deny_attempt_enable' => [
@@ -369,8 +368,8 @@ function get_default_properties(): array
         ],
 
         /**
-         * To prevent dropping social platform robots into iptables firewall, such 
-         * as Facebook, Line and others who scrape snapshots from your web pages, 
+         * To prevent dropping social platform robots into iptables firewall, such
+         * as Facebook, Line and others who scrape snapshots from your web pages,
          * you should adjust the values below to fit your needs. (unit: second)
          */
         'record_attempt_detection_period' => 5, // 5 seconds.
@@ -378,7 +377,7 @@ function get_default_properties(): array
         // Reset the counter after n second.
         'reset_attempt_counter' => 1800, // 30 minutes.
 
-        // System-layer firewall, ip6table service watches this folder to 
+        // System-layer firewall, ip6table service watches this folder to
         // receive command created by Shieldon Firewall.
         'iptables_watching_folder' => '/tmp/',
     ];
@@ -630,7 +629,7 @@ function set_ip(string $ip)
 
 /**
  * Get the microtimestamp.
- * 
+ *
  * @return string
  */
 function get_microtimestamp()
@@ -649,7 +648,7 @@ function get_microtimestamp()
 
 /**
  * Session
- * 
+ *
  * @return Session
  */
 function get_session_instance(): Session
@@ -667,7 +666,7 @@ function get_session_instance(): Session
 /**
  * For unit testing purpose. Not use in production.
  * Create new session by specifying a session ID.
- * 
+ *
  * @param string $sessionId A session ID string.
  *
  * @return void
@@ -685,7 +684,7 @@ function create_new_session_instance(string $sessionId)
 
 /**
  * For unit testing purpose. Not use in production.
- * 
+ *
  * @param string $sessionId A session ID string.
  *
  * @return Session
@@ -748,7 +747,7 @@ function get_mock_session($sessionId): Session
  * Set the Session, if exists, it will be overwritten.
  *
  * @param Session $session The session instance.
- * 
+ *
  * @return void
  */
 function set_session_instance(Session $session): void
@@ -785,7 +784,7 @@ function get_session_id(): string
  */
 function create_session_id(): string
 {
-    $hash =  rand() . 'ej;1zj47vu;3e;31g642941ek62au/41' . time();
+    $hash = rand() . 'ej;1zj47vu;3e;31g642941ek62au/41' . time();
 
     return md5($hash);
 }

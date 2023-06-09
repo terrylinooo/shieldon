@@ -96,11 +96,8 @@ $timezone = '';
                             <br />
                             <label class="rocker rocker-sm">
                                 <input type="hidden" name="xss_protection__cookie" value="off" />
-                                <input type="checkbox"
-                                    name="xss_protection__cookie"
-                                    class="toggle-block"
-                                    value="on" <?php $this->checked('xss_protection.cookie', true); ?>
-                                >
+                                <?php // phpcs:ignore ?>
+                                <input type="checkbox" name="xss_protection__cookie" class="toggle-block" value="on" <?php $this->checked('xss_protection.cookie', true); ?> />
                                 <span class="switch-left"><i>ON</i></span>
                                 <span class="switch-right"><i>OFF</i></span>
                             </label>

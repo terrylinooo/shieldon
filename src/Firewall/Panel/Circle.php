@@ -47,7 +47,7 @@ class Circle extends BaseController
     /**
      * Constructor
      */
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
     }
@@ -62,7 +62,6 @@ class Circle extends BaseController
         $postParams = get_request()->getParsedBody();
 
         if ($this->checkPostParamsExist('ip', 'action')) {
-
             $ip = $postParams['ip'];
             $action = $postParams['action'];
 

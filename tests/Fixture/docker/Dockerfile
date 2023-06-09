@@ -1,59 +1,57 @@
-FROM php:7.4-cli
+FROM ubuntu:22.04
 
-RUN  apt-get update \ 
-    && apt-get install wget sudo -y 
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    wget \
+    gnupg \
+    gnupg \
+    libonig-dev \
+    libicu-dev \
+    zlib1g-dev \
+    libssl-dev \
+    software-properties-common \
+    curl \
+    sudo \
+    iptables 
+
+RUN add-apt-repository --yes ppa:ondrej/php
 
 RUN apt-get update && apt-get install -y \
     mariadb-server \
     redis-server \
     memcached \
-    gnupg \
-    libonig-dev \
-    libicu-dev \
-    libmemcached-dev \
-    zlib1g-dev \
-    libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libmemcached-dev
 
-# Intall old version of MongoDB for testing with old PHP version.
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
-RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-RUN apt-get update && apt-get install -y mongodb-org=4.4.15 mongodb-org-server=4.4.15 mongodb-org-shell=4.4.15 mongodb-org-mongos=4.4.15 mongodb-org-tools=4.4.15
+RUN apt-get install -y \
+    php8.2-fpm \
+    php-pear \
+    php8.2-cli \
+    php8.2-common \
+    php8.2-curl \
+    php8.2-intl \
+    php8.2-mbstring \
+    php8.2-memcached \
+    php8.2-mongodb \
+    php8.2-mysql \
+    php8.2-redis \
+    php8.2-sqlite3 \
+    php8.2- zip \
+    php8.2-xdebug \
+    php8.2-gd
 
-RUN docker-php-ext-install \
-    mbstring \
-    pdo \
-    pdo_mysql \
-    exif
-
-RUN pecl install redis && docker-php-ext-enable redis
-RUN pecl install apcu \
-    && pecl install apcu_bc \
-    && docker-php-ext-enable apcu \
-    # For testing the APC backward compatibility
-    && echo "apc.enabled=1" >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini \
-    && echo "apc.enable_cli=1" >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini \
-    # Load APCu before APC
-    && echo "extension=apc.so" >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
-
-RUN pecl install memcache-4.0.5.2 && docker-php-ext-enable memcache
-RUN pecl install memcached && docker-php-ext-enable memcached
-RUN pecl install mongodb && docker-php-ext-enable mongodb
-RUN pecl install xdebug-3.1.5 && docker-php-ext-enable xdebug \
-    && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-
-# Well, we want to test the authentication for Redis version > 6.0.0
-RUN sed -i 's/# aclfile \/etc\/redis\/users.acl/aclfile \/etc\/redis\/users.acl/' /etc/redis/redis.conf
-RUN echo "requirepass world" >> /etc/redis/redis.conf
-RUN echo "user hello on >world +@all ~*" >> /etc/redis/users.acl
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN echo "xdebug.mode=coverage" >> /etc/php/8.2/cli/php.ini
+RUN sed -i 's/bind 127.0.0.1/#bind 127.0.0.1/' /etc/redis/redis.conf
 
 WORKDIR /app
 COPY . /app
-COPY ./tests/Fixture/docker/mongod.sh /etc/init.d/mongod
 
-RUN composer install --prefer-dist --no-interaction --dev
+RUN rm -rf /var/lib/apt/lists/
+
+RUN wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -- --quiet
+RUN mv composer.phar /usr/local/bin/composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer update --no-interaction
 RUN chmod +x ./tests/Fixture/docker/entry-point.sh
 
 ENTRYPOINT ["./tests/Fixture/docker/entry-point.sh"]
