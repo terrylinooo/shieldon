@@ -32,7 +32,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $this->assertOutputContainsString(
             'firewall/panel/user/login',
-            'Login to Shieldon firewall panel'
+            'Login to Shieldon Firewall Panel'
         );
     }
 

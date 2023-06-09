@@ -654,7 +654,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $response = $kernel->respond();
             $output = $response->getBody()->getContents();
 
-            if (strpos($output, 'Please line up') !== false) {
+            if (strpos($output, 'Please Queue') !== false) {
                 $this->assertTrue(true);
             } else {
                 $this->assertTrue(false);
@@ -670,7 +670,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $response = $kernel->respond();
             $output = $response->getBody()->getContents();
 
-            if (strpos($output, 'Access denied') !== false) {
+            if (strpos($output, 'Access Denied') !== false) {
                 $this->assertTrue(true);
             } else {
                 $this->assertTrue(false);
