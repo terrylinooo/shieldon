@@ -12,17 +12,23 @@ jobs:
       strategy:
         matrix:
           operating-system: [ubuntu-latest]
-          php-versions: ['7.4', '8.0', '8.1', '8.2']
+          php-versions: ['7.4', '8.1', '8.2']
       name: PHP ${{ matrix.php-versions }}
 
       steps:
-        - uses: actions/checkout@v2
+        - uses: actions/checkout@v3
 
-        - name: "Setup MySQL"
-          run: |
-            sudo service mysql start
-            sudo mysql -uroot -proot -h 127.0.0.1 -e "CREATE DATABASE shieldon_unittest;"
-            sudo mysql -uroot -proot -h 127.0.0.1 -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost' IDENTIFIED WITH mysql_native_password BY 'taiwan';"
+        - name: Start MySQL service
+          run: sudo service mysql start
+  
+        - name: MySQL - Create database.
+          run: sudo mysql -uroot -proot -h 127.0.0.1 -e 'CREATE DATABASE shieldon_unittest;'
+
+        - name: MySQL - Create user.	
+          run: sudo mysql -uroot -proot -h 127.0.0.1 -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED WITH mysql_native_password BY 'taiwan';"	
+
+        - name: MySQL - Grant permission.	
+          run: sudo mysql -uroot -proot -h 127.0.0.1 -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost';"
 
         - name: "Setup Redis"
           run: |
