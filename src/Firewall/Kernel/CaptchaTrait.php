@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Kernel;
 
-use Shieldon\Firewall\Kernel;
+use Shieldon\Firewall\Kernel\Enum;
 use Shieldon\Firewall\Captcha\CaptchaInterface;
 
 /*
@@ -51,7 +51,7 @@ trait CaptchaTrait
      * Get a class name without namespace string.
      *
      * @param object $instance Class
-     * 
+     *
      * @return string
      */
     abstract protected function getClassName($instance): string;
@@ -96,7 +96,6 @@ trait CaptchaTrait
     public function captchaResponse(): bool
     {
         foreach ($this->captcha as $captcha) {
-            
             if (!$captcha->response()) {
                 return false;
             }
@@ -108,7 +107,7 @@ trait CaptchaTrait
          */
         if (!empty($this->sessionLimit['count'])) {
             return (bool) $this->setResultCode(
-                $this->sessionHandler(Kernel::RESPONSE_ALLOW)
+                $this->sessionHandler(Enum::RESPONSE_ALLOW)
             );
         }
 

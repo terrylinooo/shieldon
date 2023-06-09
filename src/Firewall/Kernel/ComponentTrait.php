@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Kernel;
 
-use Shieldon\Firewall\Kernel;
+use Shieldon\Firewall\Kernel\Enum;
 use Shieldon\Firewall\Component\ComponentProvider;
 use Shieldon\Firewall\Component\TrustedBot;
 use Shieldon\Firewall\Component\Ip;
@@ -167,31 +167,31 @@ trait ComponentTrait
                 if ($trustedBot->isGoogle()) {
                     // Add current IP into allowed list, because it is from real Google domain.
                     $this->action(
-                        Kernel::ACTION_ALLOW,
-                        Kernel::REASON_IS_GOOGLE
+                        Enum::ACTION_ALLOW,
+                        Enum::REASON_IS_GOOGLE_ALLOWED
                     );
                 } elseif ($trustedBot->isBing()) {
                     // Add current IP into allowed list, because it is from real Bing domain.
                     $this->action(
-                        Kernel::ACTION_ALLOW,
-                        Kernel::REASON_IS_BING
+                        Enum::ACTION_ALLOW,
+                        Enum::REASON_IS_BING_ALLOWED
                     );
                 } elseif ($trustedBot->isYahoo()) {
                     // Add current IP into allowed list, because it is from real Yahoo domain.
                     $this->action(
-                        Kernel::ACTION_ALLOW,
-                        Kernel::REASON_IS_YAHOO
+                        Enum::ACTION_ALLOW,
+                        Enum::REASON_IS_YAHOO_ALLOWED
                     );
                 } else {
                     // Add current IP into allowed list, because you trust it.
                     // You have already defined it in the settings.
                     $this->action(
-                        Kernel::ACTION_ALLOW,
-                        Kernel::REASON_IS_SEARCH_ENGINE
+                        Enum::ACTION_ALLOW,
+                        Enum::REASON_IS_SEARCH_ENGINE_ALLOWED
                     );
                 }
                 // Allowed robots not join to our traffic handler.
-                $this->setResultCode(Kernel::RESPONSE_ALLOW);
+                $this->setResultCode(Enum::RESPONSE_ALLOW);
                 return true;
             }
         }
@@ -211,10 +211,10 @@ trait ComponentTrait
         if ($trustedBot instanceof TrustedBot) {
             if ($trustedBot->isFakeRobot()) {
                 $this->action(
-                    Kernel::ACTION_DENY,
-                    Kernel::REASON_COMPONENT_TRUSTED_ROBOT
+                    Enum::ACTION_DENY,
+                    Enum::REASON_COMPONENT_TRUSTED_ROBOT_DENIED
                 );
-                $this->setResultCode(Kernel::RESPONSE_DENY);
+                $this->setResultCode(Enum::RESPONSE_DENY);
                 return true;
             }
         }
@@ -236,12 +236,12 @@ trait ComponentTrait
             if (!empty($result)) {
                 switch ($result['status']) {
                     case 'allow':
-                        $actionCode = Kernel::ACTION_ALLOW;
+                        $actionCode = Enum::ACTION_ALLOW;
                         $reasonCode = $result['code'];
                         break;
                     case 'deny':
                     default:
-                        $actionCode = Kernel::ACTION_DENY;
+                        $actionCode = Enum::ACTION_DENY;
                         $reasonCode = $result['code'];
                         break;
                 }
@@ -266,11 +266,11 @@ trait ComponentTrait
         foreach ($this->component as $component) {
             if ($component->isDenied()) {
                 $this->action(
-                    Kernel::ACTION_DENY,
+                    Enum::ACTION_DENY,
                     $component->getDenyStatusCode()
                 );
 
-                $this->setResultCode(Kernel::RESPONSE_DENY);
+                $this->setResultCode(Enum::RESPONSE_DENY);
                 return true;
             }
         }

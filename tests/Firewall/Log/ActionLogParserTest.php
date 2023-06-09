@@ -20,6 +20,8 @@
 
 namespace Shieldon\FirewallTest\Log;
 
+use Shieldon\Firewall\Kernel\Enum;
+
 class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
@@ -78,7 +80,7 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
-        $data['action_code'] = $kernel::LOG_PAGEVIEW;
+        $data['action_code'] = Enum::LOG_PAGEVIEW;
         $data['timestamp'] = $this->mockTimesamp(1, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 1
@@ -101,28 +103,28 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
-        $data['action_code'] = $kernel::ACTION_TEMPORARILY_DENY;
+        $data['action_code'] = Enum::ACTION_TEMPORARILY_DENY;
         $data['timestamp'] = $this->mockTimesamp(9, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 5, temporarily ban: 1, stuck in captcha: 1, captcha falied: 1
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
-        $data['action_code'] = $kernel::LOG_CAPTCHA;
+        $data['action_code'] = Enum::LOG_CAPTCHA;
         $data['timestamp'] = $this->mockTimesamp(11, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 5, temporarily ban: 1, stuck in captcha: 2, captcha falied: 2
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
-        $data['action_code'] = $kernel::LOG_CAPTCHA;
+        $data['action_code'] = Enum::LOG_CAPTCHA;
         $data['timestamp'] = $this->mockTimesamp(13, $type);
 
         $logger->add($data); // 127.0.0.1 - pagview: 5, temporarily ban: 1, stuck in captcha: 3, captcha falied: 3
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
-        $data['action_code'] = $kernel::ACTION_UNBAN;
+        $data['action_code'] = Enum::ACTION_UNBAN;
         $data['timestamp'] = $this->mockTimesamp(15, $type);
 
         $logger->add($data);
@@ -131,7 +133,7 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
-        $data['action_code'] = $kernel::LOG_PAGEVIEW;
+        $data['action_code'] = Enum::LOG_PAGEVIEW;
         $data['timestamp'] = $this->mockTimesamp(17, $type);
 
         $logger->add($data);
@@ -140,7 +142,7 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = 'lo1hk46k6io3vdugamg762c6m1';
-        $data['action_code'] = $kernel::LOG_PAGEVIEW;
+        $data['action_code'] = Enum::LOG_PAGEVIEW;
         $data['timestamp'] = $this->mockTimesamp(1, $type);
 
         $logger->add($data); // 127.0.0.2 - pagview: 1 (7)
@@ -149,7 +151,7 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = 'lo1hk46k6io3vdugamg762c6m1';
-        $data['action_code'] = $kernel::ACTION_TEMPORARILY_DENY;
+        $data['action_code'] = Enum::ACTION_TEMPORARILY_DENY;
         $data['timestamp'] = $this->mockTimesamp(2, $type);
 
         $logger->add($data);
@@ -158,7 +160,7 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = '2ss8ukvfpdgrec2qb6r44c2bgm';
-        $data['action_code'] = $kernel::LOG_CAPTCHA; // display captcha.
+        $data['action_code'] = Enum::LOG_CAPTCHA; // display captcha.
         $data['timestamp'] = $this->mockTimesamp(3, $type);
 
         $logger->add($data);
@@ -167,7 +169,7 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $data['ip'] = '127.0.0.2';
         $data['session_id'] = 'lo1hk46k6io3vdugamg762c6m1';
-        $data['action_code'] = $kernel::ACTION_UNBAN;
+        $data['action_code'] = Enum::ACTION_UNBAN;
         $data['timestamp'] = $this->mockTimesamp(4, $type);
 
         $logger->add($data);
@@ -176,28 +178,28 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $data['ip'] = '32.10.1.2';
         $data['session_id'] = '3as8ukdfpdgred2q4c2b6r4bgm';
-        $data['action_code'] = $kernel::ACTION_DENY;
+        $data['action_code'] = Enum::ACTION_DENY;
         $data['timestamp'] = $this->mockTimesamp(5, $type);
 
         $logger->add($data); // 32.10.1.2 - ban 1
 
         $data['ip'] = '32.10.1.2';
         $data['session_id'] = '3as8ukdfpdgred2q4c2b6r4bgm';
-        $data['action_code'] = $kernel::ACTION_DENY;
+        $data['action_code'] = Enum::ACTION_DENY;
         $data['timestamp'] = $this->mockTimesamp(6, $type);
 
         $logger->add($data); // 32.10.1.2 - ban 1
 
         $data['ip'] = '32.10.1.2';
         $data['session_id'] = '3as8ukdfpdgred2q4c2b6r4bgm';
-        $data['action_code'] = $kernel::LOG_BLACKLIST;
+        $data['action_code'] = Enum::LOG_BLACKLIST;
         $data['timestamp'] = $this->mockTimesamp(6, $type);
 
         $logger->add($data); // 32.10.1.2 - ban 1, blacklist: 1
 
         $data['ip'] = '32.10.1.3';
         $data['session_id'] = '2q4c2b6r4hk43as8ukdfpdgred';
-        $data['action_code'] = $kernel::LOG_LIMIT;
+        $data['action_code'] = Enum::LOG_LIMIT;
         $data['timestamp'] = $this->mockTimesamp(6, $type);
 
         $logger->add($data); // 32.10.1.2 - ban 1, blacklist: 1
@@ -266,6 +268,7 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
                     $periodData['captcha_failure_chart_string']
                 );
                 $this->assertSame(
+                    // phpcs:ignore
                     "'12:00 am','01:00 am','02:00 am','03:00 am','04:00 am','05:00 am','06:00 am','07:00 am','08:00 am','09:00 am','10:00 am','11:00 am','12:00 pm','01:00 pm','02:00 pm','03:00 pm','04:00 pm','05:00 pm','06:00 pm','07:00 pm','08:00 pm','09:00 pm','10:00 pm','11:00 pm'",
                     $periodData['label_chart_string']
                 );
@@ -350,15 +353,13 @@ class ActionLogParserTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
             case 'past_seven_hours':
                 return strtotime('-7 hours') + $unit;
-                break;
 
             case 'today':
                 $startDate = date('Ymd');
                 break;
 
             default:
-                if (preg_match('/past_([0-9]+)_days/', $type, $matches) ) {
-
+                if (preg_match('/past_([0-9]+)_days/', $type, $matches)) {
                     $dayCount = $matches[1];
                     $startDate = date('Ymd', strtotime('-' . $dayCount . ' days'));
                 } else {

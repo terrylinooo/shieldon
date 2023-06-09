@@ -33,7 +33,7 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $t = $reflection->getProperty('strictMode');
         $t->setAccessible(true);
   
-        $this->assertEquals('strictMode' , $t->name);
+        $this->assertEquals('strictMode', $t->name);
         $this->assertFalse($t->getValue($ipComponent));
     }
 
@@ -43,8 +43,8 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->check('128.232.234.256');
         $this->assertIsArray($t);
-        $this->assertEquals(3 , count($t));
-        $this->assertEquals('deny' , $t['status']);
+        $this->assertEquals(3, count($t));
+        $this->assertEquals('deny', $t['status']);
         unset($ipComponent, $t);
 
         // Test 2. Check denied list.
@@ -53,8 +53,8 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $t = $ipComponent->check('127.0.55.44');
 
         $this->assertIsArray($t);
-        $this->assertEquals(3 , count($t));
-        $this->assertEquals('deny' , $t['status']);
+        $this->assertEquals(3, count($t));
+        $this->assertEquals('deny', $t['status']);
         unset($ipComponent, $t);
 
         // Test 3. Check  allowed list.
@@ -63,8 +63,8 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $t = $ipComponent->check('39.9.197.241');
 
         $this->assertIsArray($t);
-        $this->assertEquals(3 , count($t));
-        $this->assertEquals('allow' , $t['status']);
+        $this->assertEquals(3, count($t));
+        $this->assertEquals('allow', $t['status']);
         unset($ipComponent, $t);
 
         // Test 4. Check IP is if in denied IP range.
@@ -72,8 +72,8 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $ipComponent->setDeniedItem('127.0.55.0/16');
         $t = $ipComponent->check('127.0.33.1');
         $this->assertIsArray($t);
-        $this->assertEquals(3 , count($t));
-        $this->assertEquals('deny' , $t['status']);
+        $this->assertEquals(3, count($t));
+        $this->assertEquals('deny', $t['status']);
         unset($ipComponent, $t);
 
         // Test 5. Check IP is if in allowed IP range.
@@ -82,8 +82,8 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $ipComponent->setAllowedItem('127.0.55.0/16');
         $t = $ipComponent->check('127.0.33.1');
         $this->assertIsArray($t);
-        $this->assertEquals(3 , count($t));
-        $this->assertEquals('allow' , $t['status']);
+        $this->assertEquals(3, count($t));
+        $this->assertEquals('allow', $t['status']);
         unset($ipComponent, $t);
 
         // Test 6. Test denyAll
@@ -91,8 +91,8 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $ipComponent->denyAll();
         $t = $ipComponent->check('127.0.33.1');
         $this->assertIsArray($t);
-        $this->assertEquals(3 , count($t));
-        $this->assertEquals('deny' , $t['status']);
+        $this->assertEquals(3, count($t));
+        $this->assertEquals('deny', $t['status']);
         unset($ipComponent, $t);
     }
 
@@ -101,46 +101,46 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         // Test 1. Check IP is if in D class subnet.
         $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('127.0.0.44', '127.0.0.0/24');
-        $this->assertEquals(true , $t);
+        $this->assertEquals(true, $t);
         $t = $ipComponent->inRange('127.0.250.44', '127.0.250.250/24');
-        $this->assertEquals(true , $t);
+        $this->assertEquals(true, $t);
         $t = $ipComponent->inRange('127.0.1.44', '127.0.0.0/24');
-        $this->assertEquals(false , $t);
+        $this->assertEquals(false, $t);
 
         // Single Ip
         $t = $ipComponent->inRange('127.0.0.1', '127.0.0.1');
-        $this->assertEquals(true , $t);
+        $this->assertEquals(true, $t);
 
         // Test 2. Check IP is if in C class subnet.
         $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('127.0.33.33', '127.0.0.0/16');
-        $this->assertEquals(true , $t);
+        $this->assertEquals(true, $t);
         $t = $ipComponent->inRange('127.0.33.33', '127.0.250.0/16');
-        $this->assertEquals(true , $t);
+        $this->assertEquals(true, $t);
         $t = $ipComponent->inRange('127.1.33.33', '127.0.0.0/16');
-        $this->assertEquals(false , $t);
+        $this->assertEquals(false, $t);
 
         // Test 3. Check IP is if in B class subnet.
         $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('127.33.250.33', '127.0.0.0/8');
-        $this->assertEquals(true , $t);
+        $this->assertEquals(true, $t);
         $t = $ipComponent->inRange('127.33.33.33', '127.0.0.0/8');
-        $this->assertEquals(true , $t); 
+        $this->assertEquals(true, $t);
         $t = $ipComponent->inRange('128.33.250.33', '127.0.0.0/8');
-        $this->assertEquals(false , $t);
+        $this->assertEquals(false, $t);
 
         // Test 4. Check IPv6
         $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('2001:db8:ffff:ffff:ffff:ffff:ffff:ffff', '2001:db8::/32');
-        $this->assertEquals(true , $t);
+        $this->assertEquals(true, $t);
 
         $t = $ipComponent->inRange('2001:db8:ffff:ffff:ffff:ffff:ffff:ffff', '2001:db8::0/32');
-        $this->assertEquals(false , $t);
+        $this->assertEquals(false, $t);
 
         // Test 5. Check Invalid IP
         $ipComponent = new \Shieldon\Firewall\Component\Ip();
         $t = $ipComponent->inRange('127.0.333.33', '127.0.250.0/16');
-        $this->assertEquals(false , $t);
+        $this->assertEquals(false, $t);
     }
 
     public function testDecimalIpv6()
@@ -240,7 +240,7 @@ class IpTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $t = $reflection->getProperty('isDenyAll');
         $t->setAccessible(true);
   
-        $this->assertEquals('isDenyAll' , $t->name);
+        $this->assertEquals('isDenyAll', $t->name);
         $this->assertTrue($t->getValue($ipComponent));
     }
 

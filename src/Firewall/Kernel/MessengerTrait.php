@@ -56,7 +56,7 @@ trait MessengerTrait
      * Get a class name without namespace string.
      *
      * @param object $instance Class
-     * 
+     *
      * @return string
      */
     abstract protected function getClassName($instance): string;
@@ -104,6 +104,7 @@ trait MessengerTrait
                 $messenger->setTimeout(2);
                 $messenger->send($this->msgBody);
             }
+        // phpcs:ignore
         } catch (RuntimeException $e) {
             // Do not throw error, becasue the third-party services might be unavailable.
         }

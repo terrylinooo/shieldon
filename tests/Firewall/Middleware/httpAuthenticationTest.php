@@ -72,10 +72,10 @@ class HttpAuthenticationTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $list = [
             [
-                'url' => '/test-protection', 
+                'url' => '/test-protection',
                 'user' => 'testuser',
-                'pass' => '$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq'  
-            ]
+                'pass' => '$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq',
+            ],
         ];
 
         $httpAuthentication->set($list);
@@ -87,10 +87,10 @@ class HttpAuthenticationTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $list = [
             [
-                'url2' => '/test-protection', 
+                'url2' => '/test-protection',
                 'user' => 'testuser',
-                'pass' => '$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq'  
-            ]
+                'pass' => '$2y$10$eA/S6rH3JDkYV9nrrUvuMOTh8Q/ts33DdCerbNAUpdwtSl3Xq9cQq',
+            ],
         ];
 
         $this->expectException(\InvalidArgumentException::class);

@@ -24,6 +24,7 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
+use Shieldon\Firewall\Kernel\Enum;
 use Shieldon\Firewall\Log\ActionLogParsedCache;
 use ReflectionObject;
 use function Shieldon\Firewall\__;
@@ -66,33 +67,33 @@ class Report extends BaseController
         $data = $this->operationTemplateVarsOfStatistics($data);
 
         $reasons = [
-            $this->kernel::REASON_MANUAL_BAN              => __('panel', 'reason_manual_ban', 'Added manually by administrator'),
-            $this->kernel::REASON_IS_SEARCH_ENGINE        => __('panel', 'reason_is_search_engine', 'Search engine bot'),
-            $this->kernel::REASON_IS_GOOGLE               => __('panel', 'reason_is_google', 'Google bot'),
-            $this->kernel::REASON_IS_BING                 => __('panel', 'reason_is_bing', 'Bing bot'),
-            $this->kernel::REASON_IS_YAHOO                => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
-            $this->kernel::REASON_TOO_MANY_SESSIONS       => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
-            $this->kernel::REASON_TOO_MANY_ACCESSES       => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
-            $this->kernel::REASON_EMPTY_JS_COOKIE         => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'),
-            $this->kernel::REASON_EMPTY_REFERER           => __('panel', 'reason_empty_referer', 'Empty referrer'),
-            $this->kernel::REASON_REACHED_LIMIT_DAY       => __('panel', 'reason_reached_limit_day', 'Limit per day reached'),
-            $this->kernel::REASON_REACHED_LIMIT_HOUR      => __('panel', 'reason_reached_limit_hour', 'Limit per hour reached'),
-            $this->kernel::REASON_REACHED_LIMIT_MINUTE    => __('panel', 'reason_reached_limit_minute', 'Limit per minute reached'),
-            $this->kernel::REASON_REACHED_LIMIT_SECOND    => __('panel', 'reason_reached_limit_second', 'Limit per second reached'),
-            $this->kernel::REASON_INVALID_IP              => __('panel', 'reason_invalid_ip', 'Invalid IP address.'),
-            $this->kernel::REASON_DENY_IP                 => __('panel', 'reason_deny_ip', 'Denied by IP component.'),
-            $this->kernel::REASON_ALLOW_IP                => __('panel', 'reason_allow_ip', 'Allowed by IP component.'),
-            $this->kernel::REASON_COMPONENT_IP            => __('panel', 'reason_component_ip', 'Denied by IP component.'),
-            $this->kernel::REASON_COMPONENT_RDNS          => __('panel', 'reason_component_rdns', 'Denied by RDNS component.'),
-            $this->kernel::REASON_COMPONENT_HEADER        => __('panel', 'reason_component_header', 'Denied by Header component.'),
-            $this->kernel::REASON_COMPONENT_USERAGENT     => __('panel', 'reason_component_useragent', 'Denied by User-agent component.'),
-            $this->kernel::REASON_COMPONENT_TRUSTED_ROBOT => __('panel', 'reason_component_trusted_robot', 'Identified as a fake search engine.'),
+            Enum::REASON_MANUAL_BAN_DENIED              => __('panel', 'reason_manual_ban', 'Added manually by administrator'), // phpcs:ignore
+            Enum::REASON_IS_SEARCH_ENGINE_ALLOWED       => __('panel', 'reason_is_search_engine', 'Search engine bot'),
+            Enum::REASON_IS_GOOGLE_ALLOWED              => __('panel', 'reason_is_google', 'Google bot'),
+            Enum::REASON_IS_BING_ALLOWED                => __('panel', 'reason_is_bing', 'Bing bot'),
+            Enum::REASON_IS_YAHOO_ALLOWED               => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
+            Enum::REASON_TOO_MANY_SESSIONS_DENIED       => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
+            Enum::REASON_TOO_MANY_ACCESSE_DENIED        => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
+            Enum::REASON_EMPTY_JS_COOKIE_DENIED         => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'), // phpcs:ignore
+            Enum::REASON_EMPTY_REFERER_DENIED           => __('panel', 'reason_empty_referer', 'Empty referrer'),
+            Enum::REASON_REACH_DAILY_LIMIT_DENIED       => __('panel', 'reason_reached_limit_day', 'Limit per day reached'), // phpcs:ignore
+            Enum::REASON_REACH_HOURLY_LIMIT_DENIED      => __('panel', 'reason_reached_limit_hour', 'Limit per hour reached'), // phpcs:ignore
+            Enum::REASON_REACH_MINUTELY_LIMIT_DENIED    => __('panel', 'reason_reached_limit_minute', 'Limit per minute reached'), // phpcs:ignore
+            Enum::REASON_REACH_SECONDLY_LIMIT_DENIED    => __('panel', 'reason_reached_limit_second', 'Limit per second reached'), // phpcs:ignore
+            Enum::REASON_INVALID_IP_DENIED              => __('panel', 'reason_invalid_ip', 'Invalid IP address.'),
+            Enum::REASON_DENY_IP_DENIED                 => __('panel', 'reason_deny_ip', 'Denied by IP component.'),
+            Enum::REASON_ALLOW_IP_DENIED                => __('panel', 'reason_allow_ip', 'Allowed by IP component.'),
+            Enum::REASON_COMPONENT_IP_DENIED            => __('panel', 'reason_component_ip', 'Denied by IP component.'), // phpcs:ignore
+            Enum::REASON_COMPONENT_RDNS_DENIED          => __('panel', 'reason_component_rdns', 'Denied by RDNS component.'), // phpcs:ignore
+            Enum::REASON_COMPONENT_HEADER_DENIED        => __('panel', 'reason_component_header', 'Denied by Header component.'), // phpcs:ignore
+            Enum::REASON_COMPONENT_USERAGENT_DENIED     => __('panel', 'reason_component_useragent', 'Denied by User-agent component.'), // phpcs:ignore
+            Enum::REASON_COMPONENT_TRUSTED_ROBOT_DENIED => __('panel', 'reason_component_trusted_robot', 'Identified as a fake search engine.'), // phpcs:ignore
         ];
 
         $types = [
-            $this->kernel::ACTION_DENY             => 'DENY',
-            $this->kernel::ACTION_ALLOW            => 'ALLOW',
-            $this->kernel::ACTION_TEMPORARILY_DENY => 'CAPTCHA',
+            Enum::ACTION_DENY             => 'DENY',
+            Enum::ACTION_ALLOW            => 'ALLOW',
+            Enum::ACTION_TEMPORARILY_DENY => 'CAPTCHA',
         ];
 
         $data['reason_mapping'] = $reasons;
@@ -279,31 +280,31 @@ class Report extends BaseController
             $data['rule_list'][$v] = [];
         }
 
-        $a = $counter[$this->kernel::REASON_TOO_MANY_ACCESSES];
-        $b = $counter[$this->kernel::REASON_REACHED_LIMIT_DAY];
-        $c = $counter[$this->kernel::REASON_REACHED_LIMIT_HOUR];
-        $d = $counter[$this->kernel::REASON_REACHED_LIMIT_MINUTE];
-        $e = $counter[$this->kernel::REASON_REACHED_LIMIT_SECOND];
-        $f = $info[$this->kernel::REASON_DENY_IP];
-        $g = $info[$this->kernel::REASON_REACHED_LIMIT_DAY];
-        $h = $info[$this->kernel::REASON_REACHED_LIMIT_HOUR];
-        $i = $info[$this->kernel::REASON_REACHED_LIMIT_MINUTE];
-        $j = $info[$this->kernel::REASON_REACHED_LIMIT_SECOND];
+        $a = $counter[Enum::REASON_TOO_MANY_ACCESSE_DENIED];
+        $b = $counter[Enum::REASON_REACH_DAILY_LIMIT_DENIED];
+        $c = $counter[Enum::REASON_REACH_HOURLY_LIMIT_DENIED];
+        $d = $counter[Enum::REASON_REACH_MINUTELY_LIMIT_DENIED];
+        $e = $counter[Enum::REASON_REACH_SECONDLY_LIMIT_DENIED];
+        $f = $info[Enum::REASON_DENY_IP_DENIED];
+        $g = $info[Enum::REASON_REACH_DAILY_LIMIT_DENIED];
+        $h = $info[Enum::REASON_REACH_HOURLY_LIMIT_DENIED];
+        $i = $info[Enum::REASON_REACH_MINUTELY_LIMIT_DENIED];
+        $j = $info[Enum::REASON_REACH_SECONDLY_LIMIT_DENIED];
         $data['filter_frequency'] = $a + $b + $c + $d + $e;
         $data['rule_list']['frequency'] = array_merge_recursive($f, $g, $h, $i, $j);
 
-        $a = $counter[$this->kernel::REASON_EMPTY_REFERER];
-        $b = $info[$this->kernel::REASON_EMPTY_REFERER];
+        $a = $counter[Enum::REASON_EMPTY_REFERER_DENIED];
+        $b = $info[Enum::REASON_EMPTY_REFERER_DENIED];
         $data['filter_referer'] = $a;
         $data['rule_list']['referer'] = $b;
 
-        $a = $counter[$this->kernel::REASON_EMPTY_JS_COOKIE];
-        $b = $info[$this->kernel::REASON_EMPTY_JS_COOKIE];
+        $a = $counter[Enum::REASON_EMPTY_JS_COOKIE_DENIED];
+        $b = $info[Enum::REASON_EMPTY_JS_COOKIE_DENIED];
         $data['filter_cookie'] = $a;
         $data['rule_list']['cookie'] = $b;
 
-        $a = $counter[$this->kernel::REASON_TOO_MANY_SESSIONS];
-        $b = $info[$this->kernel::REASON_TOO_MANY_SESSIONS];
+        $a = $counter[Enum::REASON_TOO_MANY_SESSIONS_DENIED];
+        $b = $info[Enum::REASON_TOO_MANY_SESSIONS_DENIED];
         $data['filter_session'] = $a;
         $data['rule_list']['session'] = $b;
 
@@ -328,30 +329,30 @@ class Report extends BaseController
             $data['rule_list'][$v] = [];
         }
 
-        $a = $counter[$this->kernel::REASON_DENY_IP];
-        $b = $counter[$this->kernel::REASON_COMPONENT_IP];
-        $c = $info[$this->kernel::REASON_DENY_IP];
-        $d = $info[$this->kernel::REASON_COMPONENT_IP];
+        $a = $counter[Enum::REASON_DENY_IP_DENIED];
+        $b = $counter[Enum::REASON_COMPONENT_IP_DENIED];
+        $c = $info[Enum::REASON_DENY_IP_DENIED];
+        $d = $info[Enum::REASON_COMPONENT_IP_DENIED];
         $data['component_ip'] = $a + $b;
         $data['rule_list']['ip'] = array_merge_recursive($c, $d);
 
-        $a = $counter[$this->kernel::REASON_COMPONENT_RDNS];
-        $b = $info[$this->kernel::REASON_COMPONENT_RDNS];
+        $a = $counter[Enum::REASON_COMPONENT_RDNS_DENIED];
+        $b = $info[Enum::REASON_COMPONENT_RDNS_DENIED];
         $data['component_rdns'] = $a;
         $data['rule_list']['rdns'] = $b;
 
-        $a = $counter[$this->kernel::REASON_COMPONENT_HEADER];
-        $b = $info[$this->kernel::REASON_COMPONENT_HEADER];
+        $a = $counter[Enum::REASON_COMPONENT_HEADER_DENIED];
+        $b = $info[Enum::REASON_COMPONENT_HEADER_DENIED];
         $data['component_header'] = $a;
         $data['rule_list']['header'] = $b;
 
-        $a = $counter[$this->kernel::REASON_COMPONENT_USERAGENT];
-        $b = $info[$this->kernel::REASON_COMPONENT_USERAGENT];
+        $a = $counter[Enum::REASON_COMPONENT_USERAGENT_DENIED];
+        $b = $info[Enum::REASON_COMPONENT_USERAGENT_DENIED];
         $data['component_useragent'] = $a;
         $data['rule_list']['useragent'] = $b;
 
-        $a = $counter[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT];
-        $b = $info[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT];
+        $a = $counter[Enum::REASON_COMPONENT_TRUSTED_ROBOT_DENIED];
+        $b = $info[Enum::REASON_COMPONENT_TRUSTED_ROBOT_DENIED];
         $data['component_trustedbot'] = $a;
         $data['rule_list']['trustedbot'] = $b;
 
@@ -367,20 +368,20 @@ class Report extends BaseController
     {
         $counter = [];
 
-        $counter[$this->kernel::REASON_DENY_IP]                 = 0;
-        $counter[$this->kernel::REASON_COMPONENT_IP]            = 0;
-        $counter[$this->kernel::REASON_COMPONENT_RDNS]          = 0;
-        $counter[$this->kernel::REASON_COMPONENT_HEADER]        = 0;
-        $counter[$this->kernel::REASON_COMPONENT_USERAGENT]     = 0;
-        $counter[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT] = 0;
-        $counter[$this->kernel::REASON_TOO_MANY_ACCESSES]       = 0;
-        $counter[$this->kernel::REASON_REACHED_LIMIT_DAY]       = 0;
-        $counter[$this->kernel::REASON_REACHED_LIMIT_HOUR]      = 0;
-        $counter[$this->kernel::REASON_REACHED_LIMIT_MINUTE]    = 0;
-        $counter[$this->kernel::REASON_REACHED_LIMIT_SECOND]    = 0;
-        $counter[$this->kernel::REASON_EMPTY_REFERER]           = 0;
-        $counter[$this->kernel::REASON_EMPTY_JS_COOKIE]         = 0;
-        $counter[$this->kernel::REASON_TOO_MANY_SESSIONS]       = 0;
+        $counter[Enum::REASON_DENY_IP_DENIED]                 = 0;
+        $counter[Enum::REASON_COMPONENT_IP_DENIED]            = 0;
+        $counter[Enum::REASON_COMPONENT_RDNS_DENIED]          = 0;
+        $counter[Enum::REASON_COMPONENT_HEADER_DENIED]        = 0;
+        $counter[Enum::REASON_COMPONENT_USERAGENT_DENIED]     = 0;
+        $counter[Enum::REASON_COMPONENT_TRUSTED_ROBOT_DENIED] = 0;
+        $counter[Enum::REASON_TOO_MANY_ACCESSE_DENIED]       = 0;
+        $counter[Enum::REASON_REACH_DAILY_LIMIT_DENIED]       = 0;
+        $counter[Enum::REASON_REACH_HOURLY_LIMIT_DENIED]      = 0;
+        $counter[Enum::REASON_REACH_MINUTELY_LIMIT_DENIED]    = 0;
+        $counter[Enum::REASON_REACH_SECONDLY_LIMIT_DENIED]    = 0;
+        $counter[Enum::REASON_EMPTY_REFERER_DENIED]           = 0;
+        $counter[Enum::REASON_EMPTY_JS_COOKIE_DENIED]         = 0;
+        $counter[Enum::REASON_TOO_MANY_SESSIONS_DENIED]       = 0;
 
         return $counter;
     }
@@ -394,20 +395,20 @@ class Report extends BaseController
     {
         $info = [];
 
-        $info[$this->kernel::REASON_DENY_IP]                 = [];
-        $info[$this->kernel::REASON_COMPONENT_IP]            = [];
-        $info[$this->kernel::REASON_COMPONENT_RDNS]          = [];
-        $info[$this->kernel::REASON_COMPONENT_HEADER]        = [];
-        $info[$this->kernel::REASON_COMPONENT_USERAGENT]     = [];
-        $info[$this->kernel::REASON_COMPONENT_TRUSTED_ROBOT] = [];
-        $info[$this->kernel::REASON_DENY_IP]                 = [];
-        $info[$this->kernel::REASON_REACHED_LIMIT_DAY]       = [];
-        $info[$this->kernel::REASON_REACHED_LIMIT_HOUR]      = [];
-        $info[$this->kernel::REASON_REACHED_LIMIT_MINUTE]    = [];
-        $info[$this->kernel::REASON_REACHED_LIMIT_SECOND]    = [];
-        $info[$this->kernel::REASON_EMPTY_REFERER]           = [];
-        $info[$this->kernel::REASON_EMPTY_JS_COOKIE]         = [];
-        $info[$this->kernel::REASON_TOO_MANY_SESSIONS]       = [];
+        $info[Enum::REASON_DENY_IP_DENIED]                 = [];
+        $info[Enum::REASON_COMPONENT_IP_DENIED]            = [];
+        $info[Enum::REASON_COMPONENT_RDNS_DENIED]          = [];
+        $info[Enum::REASON_COMPONENT_HEADER_DENIED]        = [];
+        $info[Enum::REASON_COMPONENT_USERAGENT_DENIED]     = [];
+        $info[Enum::REASON_COMPONENT_TRUSTED_ROBOT_DENIED] = [];
+        $info[Enum::REASON_DENY_IP_DENIED]                 = [];
+        $info[Enum::REASON_REACH_DAILY_LIMIT_DENIED]       = [];
+        $info[Enum::REASON_REACH_HOURLY_LIMIT_DENIED]      = [];
+        $info[Enum::REASON_REACH_MINUTELY_LIMIT_DENIED]    = [];
+        $info[Enum::REASON_REACH_SECONDLY_LIMIT_DENIED]    = [];
+        $info[Enum::REASON_EMPTY_REFERER_DENIED]           = [];
+        $info[Enum::REASON_EMPTY_JS_COOKIE_DENIED]         = [];
+        $info[Enum::REASON_TOO_MANY_SESSIONS_DENIED]       = [];
 
         return $info;
     }

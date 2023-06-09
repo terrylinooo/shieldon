@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest\Log;
 
+use Shieldon\Firewall\Kernel\Enum;
+
 class ActionLoggerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 {
     public function test__construct()
@@ -48,14 +50,14 @@ class ActionLoggerTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = md5((string) time());
-        $data['action_code'] = $kernel::ACTION_TEMPORARILY_DENY;
+        $data['action_code'] = Enum::ACTION_TEMPORARILY_DENY;
         $data['timestamp'] = time();
 
         $logger->add($data);
 
         $data['ip'] = '127.0.0.1';
         $data['session_id'] = md5((string) time());
-        $data['action_code'] = $kernel::ACTION_UNBAN;
+        $data['action_code'] = Enum::ACTION_UNBAN;
         $data['timestamp'] = time() + 4;
 
         $logger->add($data);

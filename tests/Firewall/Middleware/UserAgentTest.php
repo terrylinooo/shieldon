@@ -30,15 +30,15 @@ class UserAgentTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $this->refreshRequest();
 
         $deniedList = [
-            'Ahrefs', 
-            'roger', 
+            'Ahrefs',
+            'roger',
             'moz.com',
             'MJ12bot',
             'findlinks',
             'Semrush',
             'domain',
             'copyright',
-            'archive', 
+            'archive',
         ];
 
         $firewall = new \Shieldon\Firewall\Firewall();

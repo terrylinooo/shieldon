@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Kernel;
 
-use Shieldon\Firewall\Kernel;
+use Shieldon\Firewall\Kernel\Enum;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_cpu_usage;
 use function Shieldon\Firewall\get_memory_usage;
@@ -93,7 +93,7 @@ trait RuleTrait
         // Apply the status code.
         $this->setResultCode($ruleType);
 
-        if ($ruleType === kernel::ACTION_ALLOW) {
+        if ($ruleType === Enum::ACTION_ALLOW) {
             return true;
         }
 
@@ -126,13 +126,13 @@ trait RuleTrait
             $logData['attempts'] = 0;
         }
 
-        if ($ruleType === kernel::ACTION_TEMPORARILY_DENY) {
+        if ($ruleType === Enum::ACTION_TEMPORARILY_DENY) {
             $ratd = $this->determineAttemptsTemporaryDeny($logData, $handleType, $attempts);
             $logData = $ratd['log_data'];
             $handleType = $ratd['handle_type'];
         }
 
-        if ($ruleType === kernel::ACTION_DENY) {
+        if ($ruleType === Enum::ACTION_DENY) {
             $rapd = $this->determineAttemptsPermanentDeny($logData, $handleType, $attempts);
             $logData = $rapd['log_data'];
             $handleType = $rapd['handle_type'];
@@ -177,7 +177,7 @@ trait RuleTrait
                     $this->event['trigger_messengers'] = true;
                 }
 
-                $logData['type'] = kernel::ACTION_DENY;
+                $logData['type'] = Enum::ACTION_DENY;
 
                 // Reset this value for next checking process - iptables.
                 $logData['attempts'] = 0;

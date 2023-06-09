@@ -24,6 +24,7 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
+use Shieldon\Firewall\Kernel\Enum;
 use ReflectionObject;
 use function Shieldon\Firewall\__;
 use function Shieldon\Firewall\get_request;
@@ -67,9 +68,9 @@ class Circle extends BaseController
 
             $actionCode = [];
 
-            $actionCode['temporarily_ban'] = $this->kernel::ACTION_TEMPORARILY_DENY;
-            $actionCode['permanently_ban'] = $this->kernel::ACTION_DENY;
-            $actionCode['allow'] = $this->kernel::ACTION_ALLOW;
+            $actionCode['temporarily_ban'] = Enum::ACTION_TEMPORARILY_DENY;
+            $actionCode['permanently_ban'] = Enum::ACTION_DENY;
+            $actionCode['allow'] = Enum::ACTION_ALLOW;
 
             switch ($action) {
                 case 'temporarily_ban':
@@ -81,7 +82,7 @@ class Circle extends BaseController
                     $logData['ip_resolve'] = gethostbyaddr($ip);
                     $logData['time']       = time();
                     $logData['type']       = $actionCode[$action];
-                    $logData['reason']     = $this->kernel::REASON_MANUAL_BAN;
+                    $logData['reason']     = Enum::REASON_MANUAL_BAN_DENIED;
 
                     $this->kernel->driver->save($ip, $logData, 'rule');
                     break;
@@ -93,33 +94,38 @@ class Circle extends BaseController
         }
 
         $reasons = [
-            $this->kernel::REASON_MANUAL_BAN              => __('panel', 'reason_manual_ban', 'Added manually by administrator'),
-            $this->kernel::REASON_IS_SEARCH_ENGINE        => __('panel', 'reason_is_search_engine', 'Search engine bot'),
-            $this->kernel::REASON_IS_GOOGLE               => __('panel', 'reason_is_google', 'Google bot'),
-            $this->kernel::REASON_IS_BING                 => __('panel', 'reason_is_bing', 'Bing bot'),
-            $this->kernel::REASON_IS_YAHOO                => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
-            $this->kernel::REASON_TOO_MANY_SESSIONS       => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
-            $this->kernel::REASON_TOO_MANY_ACCESSES       => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
-            $this->kernel::REASON_EMPTY_JS_COOKIE         => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'),
-            $this->kernel::REASON_EMPTY_REFERER           => __('panel', 'reason_empty_referer', 'Empty referrer'),
-            $this->kernel::REASON_REACHED_LIMIT_DAY       => __('panel', 'reason_reached_limit_day', 'Limit per day reached'),
-            $this->kernel::REASON_REACHED_LIMIT_HOUR      => __('panel', 'reason_reached_limit_hour', 'Limit per hour reached'),
-            $this->kernel::REASON_REACHED_LIMIT_MINUTE    => __('panel', 'reason_reached_limit_minute', 'Limit per minute reached'),
-            $this->kernel::REASON_REACHED_LIMIT_SECOND    => __('panel', 'reason_reached_limit_second', 'Limit per second reached'),
-            $this->kernel::REASON_INVALID_IP              => __('panel', 'reason_invalid_ip', 'Invalid IP address.'),
-            $this->kernel::REASON_DENY_IP                 => __('panel', 'reason_deny_ip', 'Denied by IP component.'),
-            $this->kernel::REASON_ALLOW_IP                => __('panel', 'reason_allow_ip', 'Allowed by IP component.'),
-            $this->kernel::REASON_COMPONENT_IP            => __('panel', 'reason_component_ip', 'Denied by IP component.'),
-            $this->kernel::REASON_COMPONENT_RDNS          => __('panel', 'reason_component_rdns', 'Denied by RDNS component.'),
-            $this->kernel::REASON_COMPONENT_HEADER        => __('panel', 'reason_component_header', 'Denied by Header component.'),
-            $this->kernel::REASON_COMPONENT_USERAGENT     => __('panel', 'reason_component_useragent', 'Denied by User-agent component.'),
-            $this->kernel::REASON_COMPONENT_TRUSTED_ROBOT => __('panel', 'reason_component_trusted_robot', 'Identified as a fake search engine.'),
+            Enum::REASON_MANUAL_BAN_DENIED              => __('panel', 'reason_manual_ban', 'Added manually by administrator'),
+            Enum::REASON_IS_SEARCH_ENGINE_ALLOWED        => __('panel', 'reason_is_search_engine', 'Search engine bot'),
+            Enum::REASON_IS_GOOGLE_ALLOWED               => __('panel', 'reason_is_google', 'Google bot'),
+            Enum::REASON_IS_BING_ALLOWED                 => __('panel', 'reason_is_bing', 'Bing bot'),
+            Enum::REASON_IS_YAHOO_ALLOWED                => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
+            Enum::REASON_TOO_MANY_SESSIONS_DENIED       => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
+            Enum::REASON_TOO_MANY_ACCESSE_DENIED      => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
+            Enum::REASON_EMPTY_JS_COOKIE_DENIED         => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'),
+            Enum::REASON_EMPTY_REFERER_DENIED           => __('panel', 'reason_empty_referer', 'Empty referrer'),
+            Enum::REASON_REACH_DAILY_LIMIT_DENIED       => __('panel', 'reason_reached_limit_day', 'Limit per day reached'),
+            Enum::REASON_REACH_HOURLY_LIMIT_DENIED     => __('panel', 'reason_reached_limit_hour', 'Limit per hour reached'),
+            // phpcs:ignore
+            Enum::REASON_REACH_MINUTELY_LIMIT_DENIED    => __('panel', 'reason_reached_limit_minute', 'Limit per minute reached'),
+            // phpcs:ignore
+            Enum::REASON_REACH_SECONDLY_LIMIT_DENIED    => __('panel', 'reason_reached_limit_second', 'Limit per second reached'),
+            Enum::REASON_INVALID_IP_DENIED              => __('panel', 'reason_invalid_ip', 'Invalid IP address.'),
+            Enum::REASON_DENY_IP_DENIED                 => __('panel', 'reason_deny_ip', 'Denied by IP component.'),
+            Enum::REASON_ALLOW_IP_DENIED                => __('panel', 'reason_allow_ip', 'Allowed by IP component.'),
+            Enum::REASON_COMPONENT_IP_DENIED            => __('panel', 'reason_component_ip', 'Denied by IP component.'),
+            Enum::REASON_COMPONENT_RDNS_DENIED          => __('panel', 'reason_component_rdns', 'Denied by RDNS component.'),
+            // phpcs:ignore
+            Enum::REASON_COMPONENT_HEADER_DENIED        => __('panel', 'reason_component_header', 'Denied by Header component.'),
+            // phpcs:ignore
+            Enum::REASON_COMPONENT_USERAGENT_DENIED     => __('panel', 'reason_component_useragent', 'Denied by User-agent component.'),
+            // phpcs:ignore
+            Enum::REASON_COMPONENT_TRUSTED_ROBOT_DENIED => __('panel', 'reason_component_trusted_robot', 'Identified as a fake search engine.'),
         ];
 
         $types = [
-            $this->kernel::ACTION_DENY             => 'DENY',
-            $this->kernel::ACTION_ALLOW            => 'ALLOW',
-            $this->kernel::ACTION_TEMPORARILY_DENY => 'CAPTCHA',
+            Enum::ACTION_DENY             => 'DENY',
+            Enum::ACTION_ALLOW            => 'ALLOW',
+            Enum::ACTION_TEMPORARILY_DENY => 'CAPTCHA',
         ];
 
         $data = [];

@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Shieldon\Firewall\Kernel;
 
 use Psr\Http\Message\ResponseInterface;
-use Shieldon\Firewall\Kernel;
+use Shieldon\Firewall\Kernel\Enum;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Container;
 use Shieldon\Event\Event;
@@ -100,19 +100,19 @@ trait TemplateTrait
         $response = get_response();
 
         $httpStatusCodes = [
-            Kernel::RESPONSE_TEMPORARILY_DENY => [
+            Enum::RESPONSE_TEMPORARILY_DENY => [
                 'type' => 'captcha',
-                'code' => Kernel::HTTP_STATUS_FORBIDDEN,
+                'code' => Enum::HTTP_STATUS_FORBIDDEN,
             ],
 
-            Kernel::RESPONSE_LIMIT_SESSION => [
+            Enum::RESPONSE_LIMIT_SESSION => [
                 'type' => 'session_limitation',
-                'code' => Kernel::HTTP_STATUS_TOO_MANY_REQUESTS,
+                'code' => Enum::HTTP_STATUS_TOO_MANY_REQUESTS,
             ],
 
-            Kernel::RESPONSE_DENY => [
+            Enum::RESPONSE_DENY => [
                 'type' => 'rejection',
-                'code' => Kernel::HTTP_STATUS_BAD_REQUEST,
+                'code' => Enum::HTTP_STATUS_BAD_REQUEST,
             ],
         ];
 
@@ -231,7 +231,7 @@ trait TemplateTrait
      */
     protected function getTemplate(string $type): string
     {
-        $directory = Kernel::KERNEL_DIR . '/../../templates/frontend';
+        $directory = Enum::KERNEL_DIR . '/../../templates/frontend';
 
         if (!empty($this->templateDirectory)) {
             $directory = $this->templateDirectory;

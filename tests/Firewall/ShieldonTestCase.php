@@ -25,6 +25,7 @@ namespace Shieldon\FirewallTest;
 use PHPUnit\Framework\TestCase;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\HttpFactory;
+use Shieldon\Firewall\Kernel\Enum;
 use Shieldon\Firewall\Kernel;
 use function Shieldon\Firewall\get_mock_session;
 
@@ -83,7 +84,7 @@ class ShieldonTestCase extends TestCase
      */
     public function getKernelInstance($driver = 'sqlite'): Kernel
     {
-        $kernel = new \Shieldon\Firewall\Kernel();
+        $kernel = new Kernel();
 
         switch ($driver) {
             case 'file':

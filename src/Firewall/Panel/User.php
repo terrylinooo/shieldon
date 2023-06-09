@@ -24,6 +24,7 @@ namespace Shieldon\Firewall\Panel;
 
 use Psr\Http\Message\ResponseInterface;
 use Shieldon\Firewall\Panel\BaseController;
+use Shieldon\Firewall\Kernel\Enum;
 use Shieldon\Firewall\Firewall\Captcha\CaptchaFactory;
 use Shieldon\Firewall\Captcha\Foundation;
 use Shieldon\Event\Event;
@@ -120,7 +121,7 @@ class User extends BaseController
         $data['form'] = get_request()->getUri()->getPath();
         $data['captchas'] = $this->captcha;
 
-        $data['css'] = include $this->kernel::KERNEL_DIR . '/../../templates/frontend/css/default.php';
+        $data['css'] = include Enum::KERNEL_DIR . '/../../templates/frontend/css/default.php';
 
         unset($ui);
 

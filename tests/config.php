@@ -6,7 +6,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Notice: This file is a sample file for configuration.
  */
 
@@ -118,7 +118,7 @@ return [
     | Filters
     |--------------------------------------------------------------------------
     |
-    | Filters are the soft rule-sets to detect bad-behavior requests then we 
+    | Filters are the soft rule-sets to detect bad-behavior requests then we
     | can "temporarily" ban them. (Unbannend by solving CAPTCHA by themselves.)
     |
     */
@@ -171,7 +171,7 @@ return [
     | Components
     |--------------------------------------------------------------------------
     |
-    | Components are the hard rule-sets to detect bad-behavior requests then we 
+    | Components are the hard rule-sets to detect bad-behavior requests then we
     | can "permanently" ban them. (No CAPTCHA shows.)
     |
     | Each component provides its public APIs for further control.
@@ -237,8 +237,8 @@ return [
         'image' => [
             'enable' => false,
             'config' => [
-                'type' =>  'alnum', // // alnum, alpha, numeric
-                'length' => 4
+                'type' => 'alnum', // // alnum, alpha, numeric
+                'length' => 4,
             ],
         ],
     ],
@@ -254,9 +254,9 @@ return [
 
     'ip_variable_source' => [
         'REMOTE_ADDR' => true,
-        'HTTP_CF_CONNECTING_IP' =>  false,
-        'HTTP_X_FORWARDED_FOR'  =>  false,
-        'HTTP_X_FORWARDED_HOST' =>  false
+        'HTTP_CF_CONNECTING_IP' => false,
+        'HTTP_X_FORWARDED_FOR'  => false,
+        'HTTP_X_FORWARDED_HOST' => false,
     ],
 
     /*
@@ -264,7 +264,7 @@ return [
     | Online Session Limit
     |--------------------------------------------------------------------------
     |
-    | When the Online user count has reached the limit, other users not in the 
+    | When the Online user count has reached the limit, other users not in the
     | queue have to line up!
     |
     */
@@ -329,7 +329,7 @@ return [
         'config' => [
             'attacks' => 10,
             'handler' => [
-                'type' => 'shieldon' // shieldon, iptable, utw (Ubuntu firewall).
+                'type' => 'shieldon', // shieldon, iptable, utw (Ubuntu firewall).
             ],
         ],
     ],
@@ -516,7 +516,7 @@ return [
                 'recipients' => [
                     'user1@email.com',
                     'user2@email.com',
-                ]
+                ],
             ],
             'confirm_test' => false,
         ],
@@ -542,7 +542,7 @@ return [
                 'recipients' => [
                     'user1@email.com',
                     'user2@email.com',
-                ]
+                ],
             ],
             'confirm_test' => false,
         ],
@@ -554,7 +554,7 @@ return [
                 'recipients' => [
                     'user1@email.com',
                     'user2@email.com',
-                ]
+                ],
             ],
             'confirm_test' => false,
         ],
@@ -571,7 +571,7 @@ return [
                 'recipients' => [
                     'user1@email.com',
                     'user2@email.com',
-                ]
+                ],
             ],
             'confirm_test' => false,
         ],
@@ -597,9 +597,8 @@ return [
                 'enable' => true,
                 'messenger' => true,
                 'buffer' => 10,
-            ]
-        ]
-
+            ],
+        ],
     ],
 
     /*
@@ -625,13 +624,13 @@ return [
         'enable' => false,
         'config' => [
             'watching_folder' => '',
-        ]
+        ],
     ],
 
     'ip6tables' => [
         'enable' => false,
         'config' => [
             'watching_folder' => '',
-        ]
+        ],
     ],
 ];

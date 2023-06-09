@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\FirewallTest;
 
+use Shieldon\Firewall\Kernel\Enum;
 use function Shieldon\Firewall\get_session_instance;
 
 class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
@@ -85,17 +86,17 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $result[$i] = $kernel->run();
         }
 
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result[1]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result[2]);
-        $this->assertSame($kernel::RESPONSE_TEMPORARILY_DENY, $result[3]);
-        $this->assertSame($kernel::RESPONSE_TEMPORARILY_DENY, $result[4]);
-        $this->assertSame($kernel::RESPONSE_TEMPORARILY_DENY, $result[5]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result[1]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result[2]);
+        $this->assertSame(Enum::RESPONSE_TEMPORARILY_DENY, $result[3]);
+        $this->assertSame(Enum::RESPONSE_TEMPORARILY_DENY, $result[4]);
+        $this->assertSame(Enum::RESPONSE_TEMPORARILY_DENY, $result[5]);
 
         // Reset the pageview check for specfic time unit.
         $kernel->setIp('141.112.175.2');
-        $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
+        $this->assertSame(Enum::RESPONSE_ALLOW, $kernel->run());
         sleep(2);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
+        $this->assertSame(Enum::RESPONSE_ALLOW, $kernel->run());
         $ipDetail = $kernel->driver->get('141.112.175.2', 'filter');
 
         if ($ipDetail['pageviews_s'] == 0) {
@@ -133,11 +134,11 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             sleep(2);
         }
 
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[0]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[1]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[2]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[3]);
-        $this->assertSame($kernel::RESPONSE_TEMPORARILY_DENY, $results[4]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[0]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[1]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[2]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[3]);
+        $this->assertSame(Enum::RESPONSE_TEMPORARILY_DENY, $results[4]);
     }
 
     public function testDetectByFilterReferer($driver = 'sqlite')
@@ -161,11 +162,11 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             sleep(2);
         }
 
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[0]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[1]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[2]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[3]);
-        $this->assertSame($kernel::RESPONSE_TEMPORARILY_DENY, $results[4]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[0]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[1]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[2]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[3]);
+        $this->assertSame(Enum::RESPONSE_TEMPORARILY_DENY, $results[4]);
     }
 
     public function testDetectByFilterCookie($driver = 'sqlite')
@@ -185,11 +186,11 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $results[$i] = $kernel->run();
         }
 
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[0]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[1]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[2]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[3]);
-        $this->assertSame($kernel::RESPONSE_TEMPORARILY_DENY, $results[4]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[0]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[1]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[2]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[3]);
+        $this->assertSame(Enum::RESPONSE_TEMPORARILY_DENY, $results[4]);
 
         $kernel->setProperty('cookie_name', 'unittest');
         $_COOKIE['unittest'] = 1;
@@ -205,16 +206,16 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             }
         }
 
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[0]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[1]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[2]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[3]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[4]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[5]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[6]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $results[7]);
-        $this->assertSame($kernel::RESPONSE_TEMPORARILY_DENY, $results[8]);
-        $this->assertSame($kernel::RESPONSE_TEMPORARILY_DENY, $results[9]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[0]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[1]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[2]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[3]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[4]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[5]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[6]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $results[7]);
+        $this->assertSame(Enum::RESPONSE_TEMPORARILY_DENY, $results[8]);
+        $this->assertSame(Enum::RESPONSE_TEMPORARILY_DENY, $results[9]);
     }
 
     public function testResetFilterFlagChecks($driver = 'sqlite')
@@ -233,13 +234,13 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->setProperty('limit_unusual_behavior', ['cookie' => 3, 'session' => 3, 'referer' => 3]);
 
         $kernel->setIp('140.112.173.11');
-        $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
+        $this->assertSame(Enum::RESPONSE_ALLOW, $kernel->run());
         sleep(2);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
+        $this->assertSame(Enum::RESPONSE_ALLOW, $kernel->run());
         $ipDetail = $kernel->driver->get('140.112.173.11', 'filter');
         $this->assertEquals($ipDetail['flag_empty_referer'], 1);
         sleep(2);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
+        $this->assertSame(Enum::RESPONSE_ALLOW, $kernel->run());
         $ipDetail = $kernel->driver->get('140.112.173.11', 'filter');
         $this->assertEquals($ipDetail['flag_empty_referer'], 0);
     }
@@ -266,23 +267,23 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $method = $reflection->getMethod('action');
         $method->setAccessible(true);
         $method->invokeArgs($kernel, [
-            $kernel::ACTION_TEMPORARILY_DENY, $kernel::REASON_REACHED_LIMIT_MINUTE,
+            Enum::ACTION_TEMPORARILY_DENY, Enum::REASON_REACH_MINUTELY_LIMIT_DENIED,
             '140.112.172.11',
         ]);
 
         $kernel->setIp('140.112.172.11');
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_TEMPORARILY_DENY, $result);
+        $this->assertSame(Enum::RESPONSE_TEMPORARILY_DENY, $result);
 
         // Test 2. Check unbaning.
 
         $method->invokeArgs($kernel, [
-            $kernel::ACTION_UNBAN, $kernel::REASON_MANUAL_BAN,
+            Enum::ACTION_UNBAN, Enum::REASON_MANUAL_BAN_DENIED,
             '140.112.172.11',
         ]);
 
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
     }
 
     public function testNoComponentAndFilters()
@@ -293,7 +294,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->disableFilters();
         $result = $kernel->run();
 
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
     }
 
     public function testGetComponent()
@@ -341,9 +342,9 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $this->assertSame($sessionId, $testSessionId);
 
-        $sessionHandlerResult = $methodSessionHandler->invokeArgs($kernel, [$kernel::RESPONSE_ALLOW]);
+        $sessionHandlerResult = $methodSessionHandler->invokeArgs($kernel, [Enum::RESPONSE_ALLOW]);
 
-        $this->assertSame($sessionHandlerResult, $kernel::RESPONSE_ALLOW);
+        $this->assertSame($sessionHandlerResult, Enum::RESPONSE_ALLOW);
 
         $t = $reflection->getProperty('sessionStatus');
         $t->setAccessible(true);
@@ -371,7 +372,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $currentSessionOrder = $sessionStatus['order'];
 
         $this->assertSame(2, $currentSessionOrder);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // The third visitor.
         $kernel->setIp('140.112.172.13');
@@ -386,7 +387,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $currentSessionOrder = $sessionStatus['order'];
         $this->assertSame(3, $currentSessionOrder);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // The fourth visitor.
         $kernel->setIp('140.112.172.14');
@@ -401,7 +402,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $currentSessionOrder = $sessionStatus['order'];
         $this->assertSame(4, $currentSessionOrder);
-        $this->assertSame($kernel::RESPONSE_LIMIT_SESSION, $result);
+        $this->assertSame(Enum::RESPONSE_LIMIT_SESSION, $result);
 
         // The fifth vistor.
         $kernel->setIp('140.112.172.15');
@@ -410,17 +411,17 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $methodSetSessionId->invokeArgs($kernel, [md5(date('YmdHis') . mt_rand(1, 999999))]);
 
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_LIMIT_SESSION, $result);
+        $this->assertSame(Enum::RESPONSE_LIMIT_SESSION, $result);
 
         // // Remove session if it expires.
         $kernel->limitSession($_limit, 1);
         sleep(3);
         $result = $kernel->run();
 
-        $this->assertSame($kernel::RESPONSE_LIMIT_SESSION, $result);
+        $this->assertSame(Enum::RESPONSE_LIMIT_SESSION, $result);
 
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
     }
 
     public function testSessionHandler_uniqueSession($driver = 'file')
@@ -607,10 +608,10 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $kernel->ban();
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_DENY, $result);
+        $this->assertSame(Enum::RESPONSE_DENY, $result);
 
         $kernel->unban();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
+        $this->assertSame(Enum::RESPONSE_ALLOW, $kernel->run());
     }
 
     public function testUnBan($driver = 'sqlite')
@@ -620,10 +621,10 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->setIp('33.33.33.33');
 
         $kernel->ban('33.33.33.33');
-        $this->assertSame($kernel::RESPONSE_DENY, $kernel->run());
+        $this->assertSame(Enum::RESPONSE_DENY, $kernel->run());
 
         $kernel->unban('33.33.33.33');
-        $this->assertSame($kernel::RESPONSE_ALLOW, $kernel->run());
+        $this->assertSame(Enum::RESPONSE_ALLOW, $kernel->run());
     }
 
     public function testRespond($driver = 'sqlite')
@@ -646,10 +647,10 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $kernel->limitSession(1, 30000);
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
         $result = $kernel->run();
 
-        if ($result === $kernel::RESPONSE_LIMIT_SESSION) {
+        if ($result === Enum::RESPONSE_LIMIT_SESSION) {
             $response = $kernel->respond();
             $output = $response->getBody()->getContents();
 
@@ -665,7 +666,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->ban('33.33.33.33');
         $result = $kernel->run();
 
-        if ($result === $kernel::RESPONSE_DENY) {
+        if ($result === Enum::RESPONSE_DENY) {
             $response = $kernel->respond();
             $output = $response->getBody()->getContents();
 
@@ -696,9 +697,9 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $result[$i] = $kernel->run();
         }
 
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result[1]);
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result[2]);
-        if ($result[3] === $kernel::RESPONSE_TEMPORARILY_DENY) {
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result[1]);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result[2]);
+        if ($result[3] === Enum::RESPONSE_TEMPORARILY_DENY) {
             $response = $kernel->respond();
             $output = $response->getBody()->getContents();
 
@@ -726,14 +727,14 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         // Set an IP to whitelist.
         $kernel->component['Ip']->setAllowedItem('8.8.8.8');
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // Set an IP to blacklist.
 
         $kernel->setIp('8.8.4.4');
         $kernel->component['Ip']->setDeniedItem('8.8.4.4');
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_DENY, $result);
+        $this->assertSame(Enum::RESPONSE_DENY, $result);
     }
 
     public function testSetStrict()
@@ -804,7 +805,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
 
         $kernel->setIp('8.8.8.8');
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_DENY, $result);
+        $this->assertSame(Enum::RESPONSE_DENY, $result);
 
         // Check trusted bots.
 
@@ -817,11 +818,11 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->setIp('40.77.169.1', true);
    
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // Code coverage for - // is no more needed for that IP.
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // GOOGLE
         $_SERVER['HTTP_USER_AGENT'] = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
@@ -831,11 +832,11 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('66.249.66.1', true);
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // Code coverage for - // is no more needed for that IP.
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // YAHOO
         // phpcs:ignore
@@ -846,11 +847,11 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('8.12.144.1', true);
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // Code coverage for - // is no more needed for that IP.
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // OTHER
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)';
@@ -860,16 +861,16 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->setComponent(new \Shieldon\Firewall\Component\TrustedBot());
         $kernel->setIp('100.43.90.1', true);
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         // Code coverage for - // is no more needed for that IP.
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
 
         $kernel = $this->getKernelInstance($driver);
         $kernel->disableFilters();
         $result = $kernel->run();
-        $this->assertSame($kernel::RESPONSE_ALLOW, $result);
+        $this->assertSame(Enum::RESPONSE_ALLOW, $result);
     }
 
     public function testGetSessionCount($driver = 'sqlite')
@@ -1256,28 +1257,28 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $kernel->setIp($ip);
 
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_ALLOW);
+            $this->assertEquals($result, Enum::RESPONSE_ALLOW);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_ALLOW);
+            $this->assertEquals($result, Enum::RESPONSE_ALLOW);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_TEMPORARILY_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_TEMPORARILY_DENY);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_TEMPORARILY_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_TEMPORARILY_DENY);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_TEMPORARILY_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_TEMPORARILY_DENY);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_DENY);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_DENY);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_DENY);
         }
 
         // Test for IPv4 and IPv6.
@@ -1285,30 +1286,30 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
             $kernel->setIp($ip);
 
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_ALLOW);
+            $this->assertEquals($result, Enum::RESPONSE_ALLOW);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_ALLOW);
+            $this->assertEquals($result, Enum::RESPONSE_ALLOW);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_TEMPORARILY_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_TEMPORARILY_DENY);
 
             sleep(7);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_TEMPORARILY_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_TEMPORARILY_DENY);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_TEMPORARILY_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_TEMPORARILY_DENY);
 
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_TEMPORARILY_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_TEMPORARILY_DENY);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_DENY);
     
             $result = $kernel->run();
-            $this->assertEquals($result, $kernel::RESPONSE_DENY);
+            $this->assertEquals($result, Enum::RESPONSE_DENY);
         }
     }
 
@@ -1321,7 +1322,7 @@ class KernelTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $kernel->disableFilters();
         $result = $kernel->run();
 
-        $this->assertSame($kernel::RESPONSE_DENY, $result);
+        $this->assertSame(Enum::RESPONSE_DENY, $result);
     }
 
     public function testSetAndGetTemplate()

@@ -104,7 +104,8 @@ trait DriverTrait
         if (!is_null($this->driver)) {
             $this->driver->setChannel($channel);
         } else {
-            Event::AddListener('set_driver',
+            Event::AddListener(
+                'set_driver',
                 function ($args) use ($channel) {
                     $args['driver']->setChannel($channel);
                 }
@@ -114,9 +115,9 @@ trait DriverTrait
 
     /**
      * Shieldon creating data tables automatically.
-     * Turning it off when the data tables exist overwise checling 
+     * Turning it off when the data tables exist overwise checling
      * every pageview.
-     * 
+     *
      * @return void
      */
     public function disableDbBuilder(): void

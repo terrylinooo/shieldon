@@ -94,9 +94,9 @@ class Ip extends ComponentProvider
      */
     const STATUS_CODE = 81;
 
-    const REASON_INVALID_IP = 40;
-    const REASON_DENY_IP    = 41;
-    const REASON_ALLOW_IP   = 42;
+    const REASON_INVALID_IP_DENIED = 40;
+    const REASON_DENY_IP_DENIED    = 41;
+    const REASON_ALLOW_IP_DENIED   = 42;
 
     /**
      * Only allow IPs in allowedList, then deny all.
@@ -123,7 +123,7 @@ class Ip extends ComponentProvider
         if (!filter_var($this->ip, FILTER_VALIDATE_IP)) {
             return [
                 'status' => 'deny',
-                'code' => self::REASON_INVALID_IP,
+                'code' => self::REASON_INVALID_IP_DENIED,
                 'comment' => 'Invalid IP.',
             ];
         }
@@ -131,7 +131,7 @@ class Ip extends ComponentProvider
         if ($this->isAllowed()) {
             return [
                 'status' => 'allow',
-                'code' => self::REASON_ALLOW_IP,
+                'code' => self::REASON_ALLOW_IP_DENIED,
                 'comment' => 'IP is in allowed list.',
             ];
         }
@@ -139,7 +139,7 @@ class Ip extends ComponentProvider
         if ($this->isDenied()) {
             return [
                 'status' => 'deny',
-                'code' => self::REASON_DENY_IP,
+                'code' => self::REASON_DENY_IP_DENIED,
                 'comment' => 'IP is in denied list.',
             ];
         }
@@ -147,7 +147,7 @@ class Ip extends ComponentProvider
         if ($this->isDenyAll) {
             return [
                 'status' => 'deny',
-                'code' => self::REASON_DENY_IP,
+                'code' => self::REASON_DENY_IP_DENIED,
                 'comment' => 'Deny all in strict mode.',
             ];
         }

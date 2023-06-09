@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Kernel;
 
-use Shieldon\Firewall\Kernel;
+use Shieldon\Firewall\Kernel\Enum;
 use function Shieldon\Firewall\get_request;
 use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\unset_superglobal;
@@ -207,7 +207,7 @@ trait FilterTrait
                 $isReject = $filterReturnData['is_reject'];
 
                 if ($isReject) {
-                    return kernel::RESPONSE_TEMPORARILY_DENY;
+                    return Enum::RESPONSE_TEMPORARILY_DENY;
                 }
             }
 
@@ -234,7 +234,7 @@ trait FilterTrait
             $this->InitializeFirstTimeFilter($logData);
         }
 
-        return kernel::RESPONSE_ALLOW;
+        return Enum::RESPONSE_ALLOW;
     }
 
     /*
@@ -295,8 +295,8 @@ trait FilterTrait
                 // Ban this IP if they reached the limit.
                 if ($logData['flag_empty_referer'] > $this->properties['limit_unusual_behavior']['referer']) {
                     $this->action(
-                        kernel::ACTION_TEMPORARILY_DENY,
-                        kernel::REASON_EMPTY_REFERER
+                        Enum::ACTION_TEMPORARILY_DENY,
+                        Enum::REASON_EMPTY_REFERER_DENIED
                     );
                     $isReject = true;
                 }
@@ -338,8 +338,8 @@ trait FilterTrait
             // Ban this IP if they reached the limit.
             if ($logData['flag_multi_session'] > $this->properties['limit_unusual_behavior']['session']) {
                 $this->action(
-                    kernel::ACTION_TEMPORARILY_DENY,
-                    kernel::REASON_TOO_MANY_SESSIONS
+                    Enum::ACTION_TEMPORARILY_DENY,
+                    Enum::REASON_TOO_MANY_SESSIONS_DENIED
                 );
                 $isReject = true;
             }
@@ -393,8 +393,8 @@ trait FilterTrait
             if ($logData['flag_js_cookie'] > $this->properties['limit_unusual_behavior']['cookie']) {
                 // Ban this IP if they reached the limit.
                 $this->action(
-                    kernel::ACTION_TEMPORARILY_DENY,
-                    kernel::REASON_EMPTY_JS_COOKIE
+                    Enum::ACTION_TEMPORARILY_DENY,
+                    Enum::REASON_EMPTY_JS_COOKIE_DENIED
                 );
                 $isReject = true;
             }
@@ -445,14 +445,14 @@ trait FilterTrait
                     // He or she will get banned.
                     if ($logData['pageviews_' . $unit] > $this->properties['time_unit_quota'][$unit]) {
                         $actionReason = [
-                            's' => kernel::REASON_REACHED_LIMIT_SECOND,
-                            'm' => kernel::REASON_REACHED_LIMIT_MINUTE,
-                            'h' => kernel::REASON_REACHED_LIMIT_HOUR,
-                            'd' => kernel::REASON_REACHED_LIMIT_DAY,
+                            's' => Enum::REASON_REACH_SECONDLY_LIMIT_DENIED,
+                            'm' => Enum::REASON_REACH_MINUTELY_LIMIT_DENIED,
+                            'h' => Enum::REASON_REACH_HOURLY_LIMIT_DENIED,
+                            'd' => Enum::REASON_REACH_DAILY_LIMIT_DENIED,
                         ];
 
                         $this->action(
-                            kernel::ACTION_TEMPORARILY_DENY,
+                            Enum::ACTION_TEMPORARILY_DENY,
                             $actionReason[$unit]
                         );
 

@@ -22,10 +22,9 @@ declare(strict_types=1);
 
 namespace Shieldon\Firewall\Kernel;
 
-use Shieldon\Firewall\Kernel;
+use Shieldon\Firewall\Kernel\Enum;
 use function Shieldon\Firewall\get_session_instance;
 use function Shieldon\Firewall\create_new_session_instance;
-use function Shieldon\Firewall\get_microtimestamp;
 use function time;
 
 /*
@@ -130,13 +129,13 @@ trait SessionTrait
      */
     protected function sessionHandler($statusCode): int
     {
-        if (Kernel::RESPONSE_ALLOW !== $statusCode) {
+        if (Enum::RESPONSE_ALLOW !== $statusCode) {
             return $statusCode;
         }
 
         // If you don't enable `limit traffic`, ignore the following steps.
         if (empty($this->sessionLimit['count'])) {
-            return Kernel::RESPONSE_ALLOW;
+            return Enum::RESPONSE_ALLOW;
         } else {
             // Get the proerties.
             $limit = (int) ($this->sessionLimit['count'] ?? 0);
@@ -201,11 +200,11 @@ trait SessionTrait
 
             // Online session count reached the limit. So return RESPONSE_LIMIT_SESSION response code.
             if ($sessionOrder >= $limit) {
-                return Kernel::RESPONSE_LIMIT_SESSION;
+                return Enum::RESPONSE_LIMIT_SESSION;
             }
         }
 
-        return Kernel::RESPONSE_ALLOW;
+        return Enum::RESPONSE_ALLOW;
     }
 
     /**

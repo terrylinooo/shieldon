@@ -25,7 +25,7 @@ namespace Shieldon\Firewall;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Shieldon\Firewall\Kernel;
+use Shieldon\Firewall\Kernel\Enum;
 use Shieldon\Firewall\HttpFactory;
 use Shieldon\Firewall\Container;
 use Shieldon\Firewall\FirewallTrait;
@@ -237,18 +237,18 @@ class Firewall
             $response = $requestHandler->handle($response);
 
             // Something is detected by Middlewares, return.
-            if ($response->getStatusCode() !== $this->kernel::HTTP_STATUS_OK) {
+            if ($response->getStatusCode() !== Enum::HTTP_STATUS_OK) {
                 return $response;
             }
 
             $result = $this->kernel->run();
 
-            if ($result !== $this->kernel::RESPONSE_ALLOW) {
+            if ($result !== Enum::RESPONSE_ALLOW) {
                 if ($this->kernel->captchaResponse()) {
                     $this->kernel->unban();
 
                     $response = $response->withHeader('Location', $this->kernel->getCurrentUrl());
-                    $response = $response->withStatus($this->kernel::HTTP_STATUS_SEE_OTHER);
+                    $response = $response->withStatus(Enum::HTTP_STATUS_SEE_OTHER);
 
                     return $response;
                 }
