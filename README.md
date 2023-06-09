@@ -294,17 +294,42 @@ The default user and password is `shieldon_user` and `shieldon_pass`. The first 
 
 ![Firewall Panel](https://i.imgur.com/MELx6Vl.png)
 
-## Roadmap to Shieldon 3.0
 
-Shieldon 3.0 is under development, the primary goal is to imporve two things - supporting more data drviers and improving its Control Panel.
+##  Contributing
 
-| Item | Feature |
-| --- | --- |
-| Control panel | Current control panel will be removed, rewirte it by using React.js |
-| CLI | Laravel Artisan console.
+Thank you for your interest in contributing to our project! We welcome contributions from everyone. Before getting started, please take a moment to review the guidelines below:
 
-Planning released date: mid-year of 2022.
+### Guidelines
 
+- Fork the repository and create your branch from master.
+- Make sure your code follows our coding style and conventions.
+- Keep your code concise, well-documented, and modular.
+- Write clear commit messages that describe the purpose of your changes.
+- Test your changes thoroughly to ensure they don't introduce any new issues.
+- Make sure your code builds successfully without any errors or warnings.
+- Update relevant documentation, including README files if necessary.
+- Submit a pull request (PR) to the master branch of the original repository.
+
+### Code Testing
+
+We utilize a Docker image that includes various dependencies for our code testing. The image is based on `/tests/Fixture/docker/Dockerfile`.
+
+Follow the steps below to run the tests:
+
+- Make sure you have Docker installed on your machine. If not, you can download and install it from the official Docker website.
+- Navigate to the project directory and build the Docker image by running the following command:
+    ```
+    composer test:docker:build
+    ```
+- Once the Docker image is built, you can run the tests by executing the following command:
+    ```
+    composer test:docker:run
+    ```
+- Observe the test results and make note of any failures or errors. The output will be displayed in the terminal.
+
+The coverage report will be generated in the `/tests/report` directory. You can view the report by opening the `index.html` file in your browser.
+
+---
 
 ## Author
 
