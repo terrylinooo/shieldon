@@ -22,7 +22,7 @@ jobs:
           run: |
             sudo service mysql start
             sudo mysql -uroot -proot -h 127.0.0.1 -e "CREATE DATABASE shieldon_unittest;"
-            sudo mysql -uroot -proot -h 127.0.0.1 -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"
+            sudo mysql -uroot -proot -h 127.0.0.1 -e "GRANT ALL ON shieldon_unittest.* TO 'shieldon'@'localhost' IDENTIFIED WITH mysql_native_password BY 'taiwan';"
 
         - name: "Setup Redis"
           run: |
