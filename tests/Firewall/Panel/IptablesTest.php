@@ -43,12 +43,12 @@ class IptablesTest extends \Shieldon\FirewallTest\ShieldonTestCase
     {
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip4status',
-            'iptables Status (IPv4)'
+            'IpTables Status (IPv4)'
         );
 
         $this->assertOutputContainsString(
             'firewall/panel/iptables/ip6status',
-            'iptables Status (IPv6)'
+            'IpTables Status (IPv6)'
         );
     }
 

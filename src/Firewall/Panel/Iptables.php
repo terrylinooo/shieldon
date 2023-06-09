@@ -154,7 +154,7 @@ class Iptables extends BaseController
     }
 
     /**
-     * System layer firwall - iptables Status
+     * System layer firewall - iptables Status
      * iptables -L
      *
      * @param string $type The type of IP address.

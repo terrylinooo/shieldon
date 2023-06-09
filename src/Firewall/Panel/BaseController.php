@@ -422,7 +422,7 @@ class BaseController
             ];
 
             if (in_array($field, $hiddenForDemo)) {
-                echo __('panel', 'field_not_visible', 'Cannot view this field in demonstration mode.');
+                echo __('panel', 'field_not_visible', 'This field cannot be viewed in demonstration mode.');
                 return;
             }
         }

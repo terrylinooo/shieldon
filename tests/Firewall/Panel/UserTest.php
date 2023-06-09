@@ -103,7 +103,7 @@ class UserTest extends \Shieldon\FirewallTest\ShieldonTestCase
         $output = ob_get_contents();
         ob_end_clean();
 
-        $this->assertStringContainsString('Login to Shieldon firewall panel (DEMO)', $output);
+        $this->assertStringContainsString('Login to Shieldon Firewall Panel (DEMO)', $output);
     }
 
     public function testLoginAsDemoPostFormWithCaptcha()
