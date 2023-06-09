@@ -24,7 +24,7 @@
         "shieldon/web-security": "^1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9"
+        "phpunit/phpunit": "^8 || ^9 || ^10"
     },
     "autoload": {
         "psr-4": {
@@ -41,6 +41,9 @@
         "sort-packages": true
     },
     "scripts": {
-        "test": "php vendor/phpunit/phpunit/phpunit"
+        "test": "php vendor/phpunit/phpunit/phpunit",
+        "test:docker:build": "docker build -t shieldon-test -f ./tests/Fixture/docker/Dockerfile .",
+        "test:docker:run": "docker run --privileged --cap-add=NET_ADMIN -v .:/test-app --rm shieldon-test",
+        "test:docker:ssh": "docker run --privileged --cap-add=NET_ADMIN -v .:/test-app -it --entrypoint /bin/bash shieldon-test "
     }
 }

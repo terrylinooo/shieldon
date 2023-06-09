@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit bootstrap="tests/bootstrap.php" stderr="true" processIsolation="true" colors="true" beStrictAboutTestsThatDoNotTestAnything="false">
-    <testsuites>
-        <testsuite name="Shieldon Firewall Test Suite">
-            <directory>tests/Firewall/</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src/Firewall/</directory>
-            <exclude>
-                <file>src/Firewall/Helpers.php</file>
-                <directory suffix=".php">src/Firewall/Integration/</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-    <php>
-        <ini name="date.timezone" value="UTC"/>
-        <const name="PHP_UNIT_TEST" value="TRUE"/>
-    </php>
-    <logging>
-        <log type="coverage-clover" target="clover.xml"/>
-        <log type="coverage-html" target="tests/report"/>
-    </logging>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="tests/bootstrap.php" stderr="true" processIsolation="true" colors="true" beStrictAboutTestsThatDoNotTestAnything="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.2/phpunit.xsd">
+  <coverage>
+    <report>
+      <clover outputFile="clover.xml"/>
+      <html outputDirectory="tests/report"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="Shieldon Firewall Test Suite">
+      <directory>tests/Firewall/</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <ini name="date.timezone" value="UTC"/>
+    <const name="PHP_UNIT_TEST" value="TRUE"/>
+  </php>
+  <logging/>
+  <source>
+    <include>
+      <directory suffix=".php">src/Firewall/</directory>
+    </include>
+    <exclude>
+      <file>src/Firewall/Helpers.php</file>
+      <directory suffix=".php">src/Firewall/Integration/</directory>
+    </exclude>
+  </source>
 </phpunit>

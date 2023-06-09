@@ -1,10 +1,8 @@
 #!/bin/sh
 
 service mariadb start
-service redis-server start
+service redis-server restart
 service memcached start
-service mongod start
-
 
 mysql -uroot -e 'CREATE DATABASE shieldon_unittest;'
 mysql -uroot -e "CREATE USER 'shieldon'@'localhost' IDENTIFIED BY 'taiwan';"		
