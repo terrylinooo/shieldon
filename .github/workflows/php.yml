@@ -11,8 +11,8 @@ jobs:
       runs-on: ${{ matrix.operating-system }}
       strategy:
         matrix:
-          operating-system: [ubuntu-18.04]
-          php-versions: ['7.4', '8.0', '8.1']
+          operating-system: [ubuntu-latest]
+          php-versions: ['7.4', '8.0', '8.1', '8.2']
       name: PHP ${{ matrix.php-versions }}
 
       steps:
@@ -33,7 +33,7 @@ jobs:
           uses: shivammathur/setup-php@v2
           with:
             php-version: ${{ matrix.php-versions }}
-            extensions: mbstring, pdo, pdo_mysql, intl, zip, redis, ctype, json
+            extensions: mbstring, pdo, pdo_mysql, intl, zip, redis, ctype, json, gd
             coverage: xdebug
 
         - name: "Setup test directory"
