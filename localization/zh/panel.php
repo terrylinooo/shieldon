@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable Generic.Files.LineLength
 
 return [
 
@@ -134,7 +135,7 @@ return [
     'overview_label_mysql' => 'MySQL',
     'overview_text_rows' => 'rows',
     'overview_note_sql_db' => 'SQL 資料庫。',
-    'overview_note_memory_db' =>  '使用記憶體的資料庫。',
+    'overview_note_memory_db' => '使用記憶體的資料庫。',
     'overview_label_redis' => 'Redis',
     'overview_btn_close' => '關閉',
     'overview_btn_save' => '儲存',

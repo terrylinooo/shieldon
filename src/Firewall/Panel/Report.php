@@ -1,4 +1,5 @@
 <?php
+// phpcs:disable Generic.Files.LineLength
 /**
  * This file is part of the Shieldon package.
  *
@@ -67,27 +68,27 @@ class Report extends BaseController
         $data = $this->operationTemplateVarsOfStatistics($data);
 
         $reasons = [
-            Enum::REASON_MANUAL_BAN_DENIED              => __('panel', 'reason_manual_ban', 'Added manually by administrator'), // phpcs:ignore
+            Enum::REASON_MANUAL_BAN_DENIED              => __('panel', 'reason_manual_ban', 'Manually added by administrator'),
             Enum::REASON_IS_SEARCH_ENGINE_ALLOWED       => __('panel', 'reason_is_search_engine', 'Search engine bot'),
             Enum::REASON_IS_GOOGLE_ALLOWED              => __('panel', 'reason_is_google', 'Google bot'),
             Enum::REASON_IS_BING_ALLOWED                => __('panel', 'reason_is_bing', 'Bing bot'),
             Enum::REASON_IS_YAHOO_ALLOWED               => __('panel', 'reason_is_yahoo', 'Yahoo bot'),
             Enum::REASON_TOO_MANY_SESSIONS_DENIED       => __('panel', 'reason_too_many_sessions', 'Too many sessions'),
             Enum::REASON_TOO_MANY_ACCESSE_DENIED        => __('panel', 'reason_too_many_accesses', 'Too many accesses'),
-            Enum::REASON_EMPTY_JS_COOKIE_DENIED         => __('panel', 'reason_empty_js_cookie', 'Cannot create JS cookies'), // phpcs:ignore
+            Enum::REASON_EMPTY_JS_COOKIE_DENIED         => __('panel', 'reason_empty_js_cookie', 'Unable to create JS cookies'),
             Enum::REASON_EMPTY_REFERER_DENIED           => __('panel', 'reason_empty_referer', 'Empty referrer'),
-            Enum::REASON_REACH_DAILY_LIMIT_DENIED       => __('panel', 'reason_reached_limit_day', 'Limit per day reached'), // phpcs:ignore
-            Enum::REASON_REACH_HOURLY_LIMIT_DENIED      => __('panel', 'reason_reached_limit_hour', 'Limit per hour reached'), // phpcs:ignore
-            Enum::REASON_REACH_MINUTELY_LIMIT_DENIED    => __('panel', 'reason_reached_limit_minute', 'Limit per minute reached'), // phpcs:ignore
-            Enum::REASON_REACH_SECONDLY_LIMIT_DENIED    => __('panel', 'reason_reached_limit_second', 'Limit per second reached'), // phpcs:ignore
+            Enum::REASON_REACH_DAILY_LIMIT_DENIED       => __('panel', 'reason_reached_limit_day', 'Daily limit reached'),
+            Enum::REASON_REACH_HOURLY_LIMIT_DENIED      => __('panel', 'reason_reached_limit_hour', 'Hourly limit reached'),
+            Enum::REASON_REACH_MINUTELY_LIMIT_DENIED    => __('panel', 'reason_reached_limit_minute', 'Minute limit reached'),
+            Enum::REASON_REACH_SECONDLY_LIMIT_DENIED    => __('panel', 'reason_reached_limit_second', 'Second limit reached'),
             Enum::REASON_INVALID_IP_DENIED              => __('panel', 'reason_invalid_ip', 'Invalid IP address.'),
             Enum::REASON_DENY_IP_DENIED                 => __('panel', 'reason_deny_ip', 'Denied by IP component.'),
             Enum::REASON_ALLOW_IP_DENIED                => __('panel', 'reason_allow_ip', 'Allowed by IP component.'),
-            Enum::REASON_COMPONENT_IP_DENIED            => __('panel', 'reason_component_ip', 'Denied by IP component.'), // phpcs:ignore
-            Enum::REASON_COMPONENT_RDNS_DENIED          => __('panel', 'reason_component_rdns', 'Denied by RDNS component.'), // phpcs:ignore
-            Enum::REASON_COMPONENT_HEADER_DENIED        => __('panel', 'reason_component_header', 'Denied by Header component.'), // phpcs:ignore
-            Enum::REASON_COMPONENT_USERAGENT_DENIED     => __('panel', 'reason_component_useragent', 'Denied by User-agent component.'), // phpcs:ignore
-            Enum::REASON_COMPONENT_TRUSTED_ROBOT_DENIED => __('panel', 'reason_component_trusted_robot', 'Identified as a fake search engine.'), // phpcs:ignore
+            Enum::REASON_COMPONENT_IP_DENIED            => __('panel', 'reason_component_ip', 'Denied by IP component.'),
+            Enum::REASON_COMPONENT_RDNS_DENIED          => __('panel', 'reason_component_rdns', 'Denied by RDNS component.'),
+            Enum::REASON_COMPONENT_HEADER_DENIED        => __('panel', 'reason_component_header', 'Denied by Header component.'),
+            Enum::REASON_COMPONENT_USERAGENT_DENIED     => __('panel', 'reason_component_useragent', 'Denied by User Agent component.'),
+            Enum::REASON_COMPONENT_TRUSTED_ROBOT_DENIED => __('panel', 'reason_component_trusted_robot', 'Identified as a fake search engine.'),
         ];
 
         $types = [

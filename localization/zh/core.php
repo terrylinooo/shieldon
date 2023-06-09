@@ -1,6 +1,7 @@
 <?php
+// phpcs:disable Generic.Files.LineLength
 
-return[
+return [
     'deny_title' => '禁止連線',
     'deny_heading' => '禁止連線',
     'deny_message' => '您的IP位址已被封鎖。',

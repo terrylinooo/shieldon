@@ -77,7 +77,7 @@ class Setting extends BaseController
             $this->saveConfig();
         }
 
-        $data['title'] = __('panel', 'title_basic_setting', 'Basic Setting');
+        $data['title'] = __('panel', 'title_basic_setting', 'Basic Settings');
 
         return $this->renderPage('panel/setting', $data);
     }
@@ -200,7 +200,7 @@ class Setting extends BaseController
 
         $data['exclusion_list'] = $this->getConfig('excluded_urls');
 
-        $data['title'] = __('panel', 'title_exclusion_list', 'Exclusion');
+        $data['title'] = __('panel', 'title_exclusion_list', 'Exclusion List');
 
         return $this->renderPage('panel/exclusion', $data);
     }

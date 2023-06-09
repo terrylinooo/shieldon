@@ -1,7 +1,7 @@
 <?php
+// phpcs:disable Generic.Files.LineLength
 
 return [
-
     'reason_manual_ban' => '被管理员手动加入。',
     'reason_is_search_engine' => '搜寻引擎机器人。',
     'reason_is_google' => 'Google 机器人。',
@@ -15,7 +15,7 @@ return [
     'reason_reached_limit_hour' => '达到每小时限制。',
     'reason_reached_limit_minute' => '达到每分限制。',
     'reason_reached_limit_second' => '达到每秒限制。',
-    'reason_invalid_ip' =>' 无效的 IP 位址。',
+    'reason_invalid_ip' => '无效的 IP 位址。',
     'reason_deny_ip' => '被 IP 元件拒绝。',
     'reason_allow_ip' => '由 IP 元件允许。',
     'reason_component_ip' => '被 IP 元件拒绝。',

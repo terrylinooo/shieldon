@@ -102,7 +102,7 @@ use function Shieldon\Firewall\_e;
                                     <li>
                                     <a href="<?php echo $this->url('report/operation'); ?>">
                                         <span class="subcategory-icon"><i class="fas fa-fan"></i></span>
-                                        <span><?php _e('panel', 'menu_operation_status', 'Operation'); ?></span>
+                                        <span><?php _e('panel', 'menu_operation_status', 'Operation Status'); ?></span>
                                     </a>
                                 </li>
                                 </li>

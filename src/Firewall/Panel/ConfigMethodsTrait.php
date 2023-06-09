@@ -308,7 +308,7 @@ trait ConfigMethodsTrait
                     __(
                         'panel',
                         'error_mysql_connection',
-                        'Cannot access to your MySQL database, please check your settings.'
+                        'Cannot connect to your MySQL database, please check your settings.'
                     )
                 );
             }
