@@ -6,7 +6,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
  */
 
 declare(strict_types=1);
@@ -82,7 +81,7 @@ class CodeIgniter4 implements FilterInterface
             return;
         }
 
-        // CodeIgniter 4 is not a PSR-7 compatible framework, therefore we don't 
+        // CodeIgniter 4 is not a PSR-7 compatible framework, therefore we don't
         // pass the Reqest and Reposne to Firewall instance.
         // Shieldon will create them by its HTTP factory.
         $firewall = new Firewall();
@@ -115,6 +114,6 @@ class CodeIgniter4 implements FilterInterface
      */
     public function after(Request $request, Response $response)
     {
-
+        // We don't have anything to do here.
     }
 }

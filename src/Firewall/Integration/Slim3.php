@@ -6,7 +6,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
  */
 
 declare(strict_types=1);
@@ -83,7 +82,7 @@ class Slim3
 
         // Pass Slim CSRF Token to Captcha form.
         // Slim-Csrf no longer support Slim 3, please install older version 0.8.3 to get supported.
-        // composer require slim/csrf:0.8.3  
+        // composer require slim/csrf:0.8.3
         $firewall->getKernel()->setCaptcha(
             new Csrf([
                 'name' => 'csrf_name',

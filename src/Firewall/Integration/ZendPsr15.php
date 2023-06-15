@@ -6,7 +6,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
  */
 
 declare(strict_types=1);
@@ -71,7 +70,7 @@ class ZendPsr15 implements Middleware
     /**
      * Shieldon middleware invokable class.
      *
-     * @param ServerRequest  $request PSR-7 request
+     * @param Request        $request PSR-7 request
      * @param RequestHandler $delegat PSR-15 request handler
      *
      * @return Response

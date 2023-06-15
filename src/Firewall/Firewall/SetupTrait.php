@@ -84,7 +84,7 @@ trait SetupTrait
     abstract public function add(MiddlewareInterface $middleware): void;
 
     /**
-     * Are database tables created? 
+     * Are database tables created?
      *
      * @return bool
      */
@@ -92,7 +92,7 @@ trait SetupTrait
 
     /**
      * Are database tables created?
-     * 
+     *
      * @param bool $create Is create the checkpoint file, or not.
      *
      * @return void
@@ -111,7 +111,8 @@ trait SetupTrait
         $driverSetting = $this->getOption($driverType, 'drivers');
 
         if (isset($driverSetting['directory_path'])) {
-            $driverSetting['directory_path'] = $driverSetting['directory_path'] ?: $this->directory . '/data_driver_' . $driverType;
+            $driverSetting['directory_path'] = $driverSetting['directory_path'] ?:
+                $this->directory . '/data_driver_' . $driverType;
         }
 
         $driverInstance = DriverFactory::getInstance($driverType, $driverSetting);
@@ -209,7 +210,7 @@ trait SetupTrait
 
     /**
      * Components
-     * 
+     *
      * (1) Ip
      * (2) Rdns
      * (3) Header
@@ -249,7 +250,7 @@ trait SetupTrait
 
     /**
      * Captcha modules.
-     * 
+     *
      * (1) Google ReCaptcha
      * (2) Simple image captcha.
      *
@@ -267,13 +268,12 @@ trait SetupTrait
 
             // Initialize messenger instances from the factory/
             if (CaptchaFactory::check($setting)) {
-
                 $this->kernel->setCaptcha(
                     CaptchaFactory::getInstance(
                         // The ID of the captcha module in the configuration.
-                        $captcha, 
+                        $captcha,
                         // The settings of the captcha module in the configuration.
-                        $setting    
+                        $setting
                     )
                 );
             }
@@ -302,7 +302,7 @@ trait SetupTrait
 
     /**
      * Apply the denied list and the allowed list to Ip Component.
-     * 
+     *
      * @return void
      */
     protected function setupAndApplyComponentIpManager(): void
@@ -313,11 +313,11 @@ trait SetupTrait
         $deniedList = [];
 
         foreach ($ipList as $ip) {
-            if (empty($ip))
+            if (empty($ip)) {
                 continue;
+            }
 
-            if (0 === strpos($this->kernel->getCurrentUrl(), empty($ip['url']) ? '/' : $ip['url']) ) {
-
+            if (0 === strpos($this->kernel->getCurrentUrl(), empty($ip['url']) ? '/' : $ip['url'])) {
                 if ('allow' === $ip['rule']) {
                     $allowedList[] = $ip['ip'];
                 }
@@ -328,10 +328,10 @@ trait SetupTrait
             }
         }
 
-        /** @scrutinizer ignore-call */ 
+        // @scrutinizer ignore-call
         $this->kernel->component['Ip']->setAllowedItems($allowedList);
 
-        /** @scrutinizer ignore-call */ 
+        // @scrutinizer ignore-call
         $this->kernel->component['Ip']->setDeniedItems($deniedList);
     }
 
@@ -355,7 +355,6 @@ trait SetupTrait
         $ip = $serverParams[$key];
 
         if (empty($ip)) {
-
             // @codeCoverageIgnoreStart
             throw new RuntimeException(
                 'IP source is not set correctly.'
@@ -378,8 +377,8 @@ trait SetupTrait
         $this->kernel->setProperty(
             'deny_attempt_enable',
             [
-                'data_circle'     => $setting['data_circle']['enable'],     // false   
-                'system_firewall' => $setting['system_firewall']['enable'], // false   
+                'data_circle'     => $setting['data_circle']['enable'],     // false
+                'system_firewall' => $setting['system_firewall']['enable'], // false
             ]
         );
 
@@ -397,12 +396,12 @@ trait SetupTrait
         $this->kernel->setProperty(
             'record_attempt_detection_period',
             $recordAttempt['detection_period'] // 5
-        ); 
+        );
 
         $this->kernel->setProperty(
             'reset_attempt_counter',
             $recordAttempt['time_to_reset'] // 1800
-        );  
+        );
     }
 
     /**
@@ -430,7 +429,6 @@ trait SetupTrait
         $sessionLimitSetting = $this->getOption('online_session_limit');
 
         if ($sessionLimitSetting['enable']) {
-
             $onlineUsers = $sessionLimitSetting['config']['count'];       // default: 100
             $alivePeriod = $sessionLimitSetting['config']['period'];      // default: 300
             $isUniqueIp  = $sessionLimitSetting['config']['unique_only']; // false
@@ -445,17 +443,16 @@ trait SetupTrait
      *
      * @return void
      */
-    protected function setupCronJob(): void 
+    protected function setupCronJob(): void
     {
         $cronjobSetting = $this->getOption('reset_circle', 'cronjob');
 
         if ($cronjobSetting['enable']) {
-
             $nowTime = time();
 
             $lastResetTime = $cronjobSetting['config']['last_update'];
 
-            if (!empty($lastResetTime) ) {
+            if (!empty($lastResetTime)) {
                 $lastResetTime = strtotime($lastResetTime);
             } else {
                 // @codeCoverageIgnoreStart
@@ -466,7 +463,6 @@ trait SetupTrait
             }
 
             if (($nowTime - $lastResetTime) > $cronjobSetting['config']['period']) {
-
                 $updateResetTime = date('Y-m-d 00:00:00');
 
                 // Update new reset time.
@@ -478,7 +474,7 @@ trait SetupTrait
                 $this->updateConfig();
 
                 // Remove all logs.
-                /** @scrutinizer ignore-call */ 
+                // @scrutinizer ignore-call
                 $this->kernel->driver->rebuild();
             }
         }
@@ -523,9 +519,8 @@ trait SetupTrait
      */
     protected function setupDialogUserInterface()
     {
-        Event::AddListener('session_init', function() {
+        Event::AddListener('session_init', function () {
             $ui = $this->getOption('dialog_ui');
-
             if (!empty($ui)) {
                 get_session_instance()->set('shieldon_ui_lang', $ui['lang']);
                 $this->kernel->setDialog($this->getOption('dialog_ui'));
@@ -535,8 +530,8 @@ trait SetupTrait
         $dialogInfo = $this->getOption('dialog_info_disclosure');
 
         $this->kernel->setProperty('display_online_info', $dialogInfo['online_user_amount']);
-        $this->kernel->setProperty('display_user_info',   $dialogInfo['user_inforamtion']);
-        $this->kernel->setProperty('display_http_code',   $dialogInfo['http_status_code']);
+        $this->kernel->setProperty('display_user_info', $dialogInfo['user_inforamtion']);
+        $this->kernel->setProperty('display_http_code', $dialogInfo['http_status_code']);
         $this->kernel->setProperty('display_reason_code', $dialogInfo['reason_code']);
         $this->kernel->setProperty('display_reason_text', $dialogInfo['reason_text']);
     }
