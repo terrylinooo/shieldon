@@ -97,9 +97,9 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $type The type of the data table.
-     * 
+     *
      * @return array
      */
     protected function doFetchAll(string $type = 'filter'): array
@@ -116,7 +116,6 @@ class FileDriver extends DriverProvider
 
             foreach ($files as $file) {
                 if ($file->isFile()) {
-
                     $filename = $file->getPath() . '/' . $file->getFilename();
                     $fileContent = file_get_contents($filename);
 
@@ -124,7 +123,7 @@ class FileDriver extends DriverProvider
                         $content = json_decode($fileContent, true);
 
                         if ($type === 'session') {
-                            $sort = $content['microtimestamp'] . '.' . $file->getFilename(); 
+                            $sort = $content['microtimestamp'] . '.' . $file->getFilename();
                         } else {
                             $sort = $file->getMTime() . '.' . $file->getFilename();
                         }
@@ -143,18 +142,17 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The data id of the entry to fetch.
      * @param string $type The type of the data table.
-     * 
+     *
      * @return array
      */
     protected function doFetch(string $ip, string $type = 'filter'): array
     {
         $results = [];
 
-        if (
-            !file_exists($this->getFilename($ip, $type)) || 
+        if (!file_exists($this->getFilename($ip, $type)) ||
             !in_array($type, $this->tableTypes)
         ) {
             return $results;
@@ -168,9 +166,9 @@ class FileDriver extends DriverProvider
             $results = $resultData;
         }
 
-        // filter 
+        // filter
         if (!empty($resultData['log_data'])) {
-            return $resultData['log_data']; 
+            return $resultData['log_data'];
         }
 
         return $results;
@@ -178,7 +176,7 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The data id of the entry to check for.
      * @param string $type The type of the data table.
      *
@@ -195,7 +193,7 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip     The data id.
      * @param array  $data   The data.
      * @param string $type   The type of the data table.
@@ -208,7 +206,6 @@ class FileDriver extends DriverProvider
         $logData = [];
 
         switch ($type) {
-
             case 'rule':
                 $logData = $data;
                 $logData['log_ip'] = $ip;
@@ -235,10 +232,10 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param string $ip   The key name of a redis entry.
      * @param string $type The type of the data table.
-     * 
+     *
      * @return bool
      */
     protected function doDelete(string $ip, string $type = 'filter'): bool
@@ -252,7 +249,7 @@ class FileDriver extends DriverProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Rebuild data tables.
      *
      * @return bool
@@ -295,7 +292,7 @@ class FileDriver extends DriverProvider
     /**
      * Remove a Shieldon log file.
      * Removing a log file works as the same as removing a SQL table's row.
-     * 
+     *
      * @param string $logFilePath The absolute path of the log file.
      *
      * @return bool

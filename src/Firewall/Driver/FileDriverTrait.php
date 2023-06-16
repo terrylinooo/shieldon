@@ -67,15 +67,14 @@ trait FileDriverTrait
 
     /**
      * Check the directory if is writable.
-     * 
+     *
      * Not real use in Kernel. only use it in unit tests.
      *
      * @return bool
      */
     protected function checkDirectory(): bool
     {
-        if (
-            !is_dir($this->directory) || 
+        if (!is_dir($this->directory) ||
             !is_writable($this->directory)
         ) {
             throw new RuntimeException(

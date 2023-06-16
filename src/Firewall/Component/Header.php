@@ -66,8 +66,8 @@ class Header extends ComponentProvider
     const STATUS_CODE = 83;
 
     /**
-     *  Very common requests from normal users.
-     * 
+     * Very common requests from normal users.
+     *
      * @var array
      */
     protected $commonHeaderFileds = [
@@ -94,7 +94,7 @@ class Header extends ComponentProvider
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @return bool
      */
     public function isDenied(): bool
@@ -113,7 +113,6 @@ class Header extends ComponentProvider
         }
 
         if ($this->strictMode) {
-
             foreach ($this->commonHeaderFileds as $fieldName) {
                 // If strict mode is on, this value must be found.
                 if (!isset($this->headers[$fieldName]) && empty($this->headers['referer'])) {
